@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3a0b6676-600f-4237-8073-a35bd0a500b3" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.MatchImages/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MatchImages/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Saves/LevelsProgress.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Saves/LevelsProgress.txt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Handlers/LevelSessionHandler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/EAE584CE-26BC-4022-9C1B-1AA476BFA589/31/d6e203de/Action.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Level/Game/LevelVisualHandler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/EAE584CE-26BC-4022-9C1B-1AA476BFA589/3f/c3a6fa58/Task.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://C:/Program Files/Unity/Hub/Editor/2019.4.26f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.ugui/Runtime/UI/Core/ScrollRect.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Pooling/ObjectsPoolHandler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/FCB9DAC8-AE3A-4886-93B0-F4CD5B0DB0BE/54/0dc6f91d/Action.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A5949084-5872-4118-9A97-4C7DF1839E1C/0e/648d5221/ScriptableObject.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/DE1F8EF4-975B-4EAC-BEB0-ACCC1B22C9B0/6d/01b73320/TweenerCore`3.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A5949084-5872-4118-9A97-4C7DF1839E1C/e7/5e818a53/Component.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/DE1F8EF4-975B-4EAC-BEB0-ACCC1B22C9B0/45/a3233095/TweenExtensions.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/Assets/Scripts/Handlers/PopupsHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Handlers/IPopupsHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Screen/SubElements/LevelEnterPopupHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/GameState/LevelSessionHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Handlers/ILevelSessionHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Screen/LevelCompleteScreen.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Handlers/LevelParamsParamsHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Screen/WelcomeScreenHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Services/ProcessProgressDataService.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Handlers/IProgressHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Screen/ScreenHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Storage/Levels/Params/LevelParams.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Storage/Levels/Params/LevelsParamsStorage.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Handlers/ProgressHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Screen/LevelCompleteScreenHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Handlers/LevelParamsHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/GameState/OnGameEnterState.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Screen/ChooseLevelScreenHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Screen/ScreenBase.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Screen/ChooseLevelScreenBase.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Screen/WelcomeScreenBase.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Level/Hud/ILevelHUDHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Level/Hud/LevelHUDScrollHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Level/Click/ClickHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Level/Click/IClickHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Handlers/ObjectPoolHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Handlers/ObjectsPoolHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Storage/FigureByTypes/FigureByTypeParams.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Storage/FiguresStorage.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Figures/Animals/IFigureAnimalTarget.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Figures/Animals/IFigureAnimalsMenu.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Figures/Animals/FigureAnimalsMenu.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Figures/Animals/FigureAnimalTarget.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Installers/MainInstaller.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Handlers/PoolObjectService.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Pooling/IPoolObject.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Figures/Figure.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Figures/IFigure.cs" />
+        <option value="$PROJECT_DIR$/Assets/Saves/LevelsProgress.txt" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Pooling/IObjectsPoolHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Pooling/PoolObject.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Level/Game/LevelVisualHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Level/Hud/ILevelHudHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Level/Game/ILevelVisualHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Level/Hud/LevelHudScrollHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Handlers/IScreenHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Level/Hud/LevelHudHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Handlers/LevelSessionHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Handlers/ScreenHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Pooling/ObjectsPoolHandler.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Screen/LevelCompleteScreenBase.cs" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1xfPfADmwUO4DzqUWUGmKdySjIK" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DebuggerViewTab_PTCS_FirstProportionKey" value="0.34994584" />
+    <property name="DebuggerViewTab_PTCS_LastProportionKey" value="0.30010834" />
+    <property name="Discover.Launch.Via.Unity" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
+    <configuration name="Attach to Unity Editor &amp; Play" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="UNITY_ATTACH_AND_PLAY" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+      <option name="allowRunningInParallel" value="false" />
+      <option name="listenPortForConnections" value="false" />
+      <option name="pid" />
+      <option name="selectedOptions">
+        <set />
+      </option>
+      <method v="2" />
+    </configuration>
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+      <option name="allowRunningInParallel" value="false" />
+      <option name="listenPortForConnections" value="false" />
+      <option name="pid" />
+      <option name="selectedOptions">
+        <set />
+      </option>
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3a0b6676-600f-4237-8073-a35bd0a500b3" name="Default Changelist" comment="" />
+      <created>1630743269762</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1630743269762</updated>
+      <workItem from="1630743276188" duration="11774000" />
+      <workItem from="1630756552255" duration="20469000" />
+      <workItem from="1630828977222" duration="30329000" />
+      <workItem from="1630930077061" duration="890000" />
+      <workItem from="1630940056021" duration="10167000" />
+      <workItem from="1631032726631" duration="12423000" />
+      <workItem from="1631125148033" duration="14520000" />
+      <workItem from="1631953225249" duration="580000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="true" />
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="EditMode" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="584" height="464" key="DebuggerActiveHint" timestamp="1631133070697">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="584" height="464" key="DebuggerActiveHint/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631133070697" />
+    <state width="1877" height="124" key="GridCell.Tab.0.bottom" timestamp="1631139736395">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="124" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631139736395" />
+    <state width="1877" height="124" key="GridCell.Tab.0.center" timestamp="1631139736395">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="124" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631139736395" />
+    <state width="1877" height="124" key="GridCell.Tab.0.left" timestamp="1631139736395">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="124" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631139736395" />
+    <state width="1877" height="124" key="GridCell.Tab.0.right" timestamp="1631139736395">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="124" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631139736395" />
+    <state width="1877" height="124" key="GridCell.Tab.1.bottom" timestamp="1631139766286">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="124" key="GridCell.Tab.1.bottom/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631139766286" />
+    <state width="1877" height="124" key="GridCell.Tab.1.center" timestamp="1631139766286">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="124" key="GridCell.Tab.1.center/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631139766286" />
+    <state width="1877" height="124" key="GridCell.Tab.1.left" timestamp="1631139766285">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="124" key="GridCell.Tab.1.left/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631139766285" />
+    <state width="1877" height="124" key="GridCell.Tab.1.right" timestamp="1631139766286">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="124" key="GridCell.Tab.1.right/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631139766286" />
+    <state width="1877" height="124" key="GridCell.Tab.2.bottom" timestamp="1631139736146">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="124" key="GridCell.Tab.2.bottom/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631139736146" />
+    <state width="1877" height="124" key="GridCell.Tab.2.center" timestamp="1631139736146">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="124" key="GridCell.Tab.2.center/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631139736146" />
+    <state width="1877" height="124" key="GridCell.Tab.2.left" timestamp="1631139736145">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="124" key="GridCell.Tab.2.left/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631139736145" />
+    <state width="1877" height="124" key="GridCell.Tab.2.right" timestamp="1631139736146">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="124" key="GridCell.Tab.2.right/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631139736146" />
+    <state width="1877" height="124" key="GridCell.Tab.3.bottom" timestamp="1631139736146">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="124" key="GridCell.Tab.3.bottom/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631139736146" />
+    <state width="1877" height="124" key="GridCell.Tab.3.center" timestamp="1631139736146">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="124" key="GridCell.Tab.3.center/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631139736146" />
+    <state width="1877" height="124" key="GridCell.Tab.3.left" timestamp="1631139736146">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="124" key="GridCell.Tab.3.left/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631139736146" />
+    <state width="1877" height="124" key="GridCell.Tab.3.right" timestamp="1631139736146">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="124" key="GridCell.Tab.3.right/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631139736146" />
+    <state x="731" y="221" key="RiderGenerateDialog" timestamp="1631033647742">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="731" y="221" key="RiderGenerateDialog/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631033647742" />
+    <state x="92" y="92" width="1736" height="856" key="VCS.FileHistoryDialog" timestamp="1630765799344">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="92" y="92" width="1736" height="856" key="VCS.FileHistoryDialog/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1630765799344" />
+    <state x="380" y="345" width="1543" height="889" maximized="true" key="dock-window-1" timestamp="1630962533968">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="380" y="345" width="1543" height="889" maximized="true" key="dock-window-1/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1630962533968" />
+    <state x="607" y="253" width="705" height="534" key="find.popup" timestamp="1630846196573">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="607" y="253" width="705" height="534" key="find.popup/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1630846196573" />
+    <state x="616" y="240" key="run.anything.popup" timestamp="1631039768870">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631039768870" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1631125254026">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.-11.1536.824/3840.302.1366.728@0.0.1920.1040" timestamp="1631125254026" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/Screen/LevelCompleteScreenBase.cs</url>
+          <line>86</line>
+          <properties documentPath="D:\Unity\MatchImages\Assets\Scripts\Screen\LevelCompleteScreenBase.cs" initialLine="86">
+            <startOffsets>
+              <option value="-1" />
+            </startOffsets>
+            <endOffsets>
+              <option value="-1" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/Screen/LevelCompleteScreenBase.cs</url>
+          <line>67</line>
+          <properties documentPath="D:\Unity\MatchImages\Assets\Scripts\Screen\LevelCompleteScreenBase.cs" initialLine="67">
+            <startOffsets>
+              <option value="2353" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2487" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="35" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
