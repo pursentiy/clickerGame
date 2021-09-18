@@ -11,6 +11,7 @@ namespace Pooling
         [SerializeField] private PoolObject _gamePrefab;
 
         private Dictionary<PoolType, Queue<PoolObject>> _poolDictionary;
+        private const int PoolItemsNumber = 50;
 
         private void Awake()
         {
@@ -21,8 +22,8 @@ namespace Pooling
         {
             _poolDictionary = new Dictionary<PoolType, Queue<PoolObject>>();
 
-            InstantiateObjects(20, PoolType.Game, _gamePrefab);
-            InstantiateObjects(20, PoolType.Canvas, _canvasPrefab);
+            InstantiateObjects(PoolItemsNumber, PoolType.Game, _gamePrefab);
+            InstantiateObjects(PoolItemsNumber, PoolType.Canvas, _canvasPrefab);
         }
 
         private void InstantiateObjects(int numberOfObjects, PoolType type, PoolObject prefab)
