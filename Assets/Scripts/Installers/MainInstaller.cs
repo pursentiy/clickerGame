@@ -18,6 +18,7 @@ namespace Installers
         [SerializeField] private LevelSessionHandler _levelSessionHandler;
         [SerializeField] private LevelParamsHandler _levelParamsHandler;
         [SerializeField] private ObjectsPoolHandler _objectsPoolHandler;
+        [SerializeField] private UIBlockHandler _uiBlockHandler;
 
         public override void InstallBindings()
         {
@@ -27,6 +28,7 @@ namespace Installers
             Container.Bind<ScreenHandler>().FromInstance(_screenHandler);
             Container.Bind<LevelSessionHandler>().FromInstance(_levelSessionHandler);
             Container.Bind<LevelParamsHandler>().FromInstance(_levelParamsHandler);
+            Container.Bind<UIBlockHandler>().FromInstance(_uiBlockHandler);
             Container.Bind<ObjectsPoolHandler>().FromInstance(_objectsPoolHandler);
             Container.Bind<LevelsParamsStorage>().FromNewScriptableObject(levelsParamsStorage).AsTransient().NonLazy();
             Container.Bind<FiguresStorage>().FromScriptableObject(_figuresStorage).AsSingle().NonLazy();
