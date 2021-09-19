@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using JetBrains.Annotations;
 using Storage.Levels.Params;
 using UnityEngine;
 
 namespace Services
 {
+    [UsedImplicitly]
     public class ProcessProgressDataService : IProcessProgressDataService
     {
-        private const string SaveFilePath = "/Saves/LevelsProgress.txt";
+        private const string SaveFileName = "/LevelsProgress.txt";
 
         public void SaveProgress(List<LevelParams> levelsParams)
         {
@@ -23,17 +25,18 @@ namespace Services
                     jsonLevelsProgressData += "\n";
                 }
             });
-            File.WriteAllText (Application.dataPath + SaveFilePath, jsonLevelsProgressData);
+            File.WriteAllText (Application.streamingAssetsPath + SaveFileName, jsonLevelsProgressData);
         }
 
         public List<LevelParams> LoadProgress()
         {
-            if (!File.Exists(Application.dataPath + SaveFilePath))
+            
+            if (!File.Exists(Application.streamingAssetsPath + SaveFileName))
             {
                 return null;
             }
 
-            var rawTotalProgressData = File.ReadAllText(Application.dataPath + SaveFilePath);
+            var rawTotalProgressData = File.ReadAllText(Application.streamingAssetsPath + SaveFileName);
 
             if (rawTotalProgressData == "")
             {
