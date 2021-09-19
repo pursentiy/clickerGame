@@ -6,9 +6,9 @@ namespace Handlers
 {
     public interface IScreenHandler
     {
-        void ShowChooseLevelScreen();
-        void ShowWelcomeScreen();
+        void ShowChooseLevelScreen(bool fast = false);
+        void ShowWelcomeScreen(bool fast = false);
         void PopupAllScreenHandlers();
-        void ShowLevelCompleteScreen(int currentLevel, Camera sourceCamera, Action onFinishAction);
+        void ShowLevelCompleteScreen(int currentLevel, Camera sourceCamera, Action onFinishAction, bool fast = false);
     }
 }

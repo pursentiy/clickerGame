@@ -47,7 +47,7 @@ namespace Screen
 
         private void InitializeLevelsButton()
         {
-            _backButton.onClick.AddListener(_screenHandler.ShowChooseLevelScreen);
+            _backButton.onClick.AddListener(()=> _screenHandler.ShowChooseLevelScreen());
             _tryAgainButton.onClick.AddListener(TryAgainLevel);
         }
 

@@ -24,7 +24,7 @@ namespace GameState
 
         private void Start()
         {
-            _screenHandler.ShowWelcomeScreen();
+            _screenHandler.ShowWelcomeScreen(true);
         }
 
         private List<LevelParams> StartNewGameProgress()
