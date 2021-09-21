@@ -53,14 +53,14 @@ namespace Screen
 
         private void TryAgainLevel()
         {
-            if (_currentLevel == -1)
+            if (_progressHandler.CurrentLevelNumber == -1)
             {
-                Debug.LogWarning($"Current Level is {_currentLevel}. Cannot continue. Warning in {this}");
+                Debug.LogWarning($"Current Level is {_progressHandler.CurrentLevelNumber}. Cannot continue. Warning in {this}");
                 _screenHandler.ShowChooseLevelScreen();
             }
             
-            _progressHandler.ResetLevelProgress(_currentLevel);
-            var levelParams = _progressHandler.GetLevelByNumber(_currentLevel);
+            _progressHandler.ResetLevelProgress(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber);
+            var levelParams = _progressHandler.GetLevelByNumber(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber);
 
             TryInvokeFinishLevelSessionAction();
             

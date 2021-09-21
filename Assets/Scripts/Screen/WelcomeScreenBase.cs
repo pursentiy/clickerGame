@@ -18,7 +18,7 @@ namespace Screen
 
         private void PushNextScreen()
         {
-            _screenHandler.ShowChooseLevelScreen();
+            _screenHandler.ShowChoosePackScreen();
         }
 
         private void OnDestroy()

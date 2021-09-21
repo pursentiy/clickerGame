@@ -6,11 +6,13 @@ namespace Handlers
 {
     public interface IProgressHandler
     {
-        void InitializeHandler(List<LevelParams> levelsParams);
-        void UpdateProgress(int levelNumber, FigureType figureType);
-        bool CheckForLevelCompletion(int levelNumber);
-        List<LevelParams> GetAllLevelsParams();
-        LevelParams GetLevelByNumber(int levelNumber);
-        void ResetLevelProgress(int levelNumber);
+        void InitializeHandler(List<PackParams> levelsParams);
+        void UpdateProgress(int packNumber, int levelNumber, FigureType figureType);
+        bool CheckForLevelCompletion(int packNumber, int levelNumber);
+        List<PackParams> GetCurrentProgress();
+        PackParams GetPackPackByNumber(int packNumber);
+        LevelParams GetLevelByNumber(int packNumber, int levelNumber);
+        List<LevelParams> GetLevelsByPack(int packNumber);
+        void ResetLevelProgress(int packNumber, int levelNumber);
     }
 }

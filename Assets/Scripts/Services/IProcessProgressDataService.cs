@@ -5,7 +5,7 @@ namespace Services
 {
     public interface IProcessProgressDataService
     {
-        void SaveProgress(List<LevelParams> levelsParams);
-        List<LevelParams> LoadProgress();
+        void SaveProgress(List<PackParams> packParams);
+        List<PackParams> LoadProgress();
     }
 }

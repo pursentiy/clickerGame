@@ -1,5 +1,4 @@
-﻿using System;
-using DG.Tweening;
+﻿using DG.Tweening;
 using Figures;
 using Figures.Animals;
 using Installers;
@@ -27,30 +26,27 @@ namespace Handlers
         private FigureAnimalsMenu _draggingFigure;
         private FigureAnimalsMenu _menuFigure;
         private bool _isDraggable;
-        private int _currentLevel;
 
         private Sequence _resetDraggingAnimationSequence;
         private Sequence _completeDraggingAnimationSequence;
 
-        public void StartLevel(LevelParams levelParams, LevelHudHandler levelHudHandler, Color defaultColor)
+        public void StartLevel(LevelParams packParams, LevelHudHandler levelHudHandler, Color defaultColor)
         {
-            _currentLevel = levelParams.LevelNumber;
-            
             SetupClickHandler();
-            SetupHud(levelParams, levelHudHandler);
-            SetupFigures(levelParams, defaultColor);
+            SetupHud(packParams, levelHudHandler);
+            SetupFigures(packParams, defaultColor);
             
             TryHandleLevelCompletion();
         }
 
         private void TryHandleLevelCompletion()
         {
-            if (!_progressHandler.CheckForLevelCompletion(_currentLevel))
+            if (!_progressHandler.CheckForLevelCompletion(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber))
             {
                 return;
             }
             
-            _screenHandler.ShowLevelCompleteScreen(_currentLevel, _levelVisualHandler.TextureCamera, ResetLevel);
+            _screenHandler.ShowLevelCompleteScreen(_levelVisualHandler.TextureCamera, ResetLevel);
         }
 
         private void SetupClickHandler()
@@ -58,16 +54,16 @@ namespace Handlers
             _clickHandler.enabled = true;
         }
 
-        private void SetupFigures(LevelParams levelParam, Color defaultColor)
+        private void SetupFigures(LevelParams packParam, Color defaultColor)
         {
-            _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(levelParam.LevelVisualHandler);
-            _levelVisualHandler.SetupLevel(levelParam.LevelFiguresParamsList, defaultColor);
+            _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(packParam.LevelVisualHandler);
+            _levelVisualHandler.SetupLevel(packParam.LevelFiguresParamsList, defaultColor);
         }
 
-        private void SetupHud(LevelParams levelParam, LevelHudHandler levelHudHandler)
+        private void SetupHud(LevelParams packParam, LevelHudHandler levelHudHandler)
         {
             _levelHudHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelHudHandler>(levelHudHandler, _gameMainCanvasTransform);
-            _levelHudHandler.SetupScrollMenu(levelParam.LevelFiguresParamsList);
+            _levelHudHandler.SetupScrollMenu(packParam.LevelFiguresParamsList);
             
             _levelHudHandler.BackToMenuClickSignal.AddListener(ResetLevel);
             _levelHudHandler.GetOnBeginDragFiguresSignal().ForEach(signal => { signal.AddListener(StartElementDragging); });
@@ -113,7 +109,7 @@ namespace Handlers
 
             if (_draggingFigure.FigureType == releasedOnFigure.FigureType)
             {
-                _progressHandler.UpdateProgress(_currentLevel, releasedOnFigure.FigureType);
+                _progressHandler.UpdateProgress(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber, releasedOnFigure.FigureType);
                 _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigure.transform.DOScale(0, 0.4f)).AppendCallback(() =>
                 {
                     ClearDraggingFigure(true);
