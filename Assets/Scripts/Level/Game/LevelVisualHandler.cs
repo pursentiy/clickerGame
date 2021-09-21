@@ -17,6 +17,17 @@ namespace Level.Game
 
         [SerializeField] private Transform _figuresParentTransform;
         [SerializeField] private Camera _textureCamera;
+        [SerializeField] private SpriteRenderer _backgroundTexture;
+        
+        [SerializeField] private Gradient _gradient;
+        [SerializeField] private float colorChangingDuration;
+        float t = 0f;
+        void Update() {
+            float value = Mathf.Lerp(0f, 1f, t);
+            t += Time.deltaTime / colorChangingDuration;
+            Color color = _gradient.Evaluate(value);
+            _backgroundTexture.color = color;
+        }
         
         private List<FigureAnimalTarget> _figureAnimalsTargetList;
         
