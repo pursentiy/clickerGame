@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Figures.Animals;
+using Handlers;
 using Installers;
 using Pooling;
 using Storage;
@@ -12,13 +13,24 @@ namespace Level.Game
 {
     public class LevelVisualHandler : InjectableMonoBehaviour, ILevelVisualHandler
     {
-        [Inject] private FiguresStorage _figuresStorage;
-        [Inject] private ObjectsPoolHandler _objectsPoolHandler;
+        [Inject] private FiguresStorageData _figuresStorageData;
+        [Inject] private ProgressHandler _progressHandler;
 
         [SerializeField] private Transform _figuresParentTransform;
         [SerializeField] private Camera _textureCamera;
+        [SerializeField] private SpriteRenderer _backgroundTexture;
         
-        private List<FigureAnimalTarget> _figureAnimalsTargetList;
+        [SerializeField] private Gradient _gradient;
+        [SerializeField] private float colorChangingDuration;
+        float t = 0f;
+        void Update() {
+            float value = Mathf.Lerp(0f, 1f, t);
+            t += Time.deltaTime / colorChangingDuration;
+            Color color = _gradient.Evaluate(value);
+            _backgroundTexture.color = color;
+        }
+        
+        private List<FigureTarget> _figureAnimalsTargetList;
         
         public Camera TextureCamera => _textureCamera;
 
@@ -26,7 +38,7 @@ namespace Level.Game
         {
             base.Awake();
             
-            _figureAnimalsTargetList = new List<FigureAnimalTarget>();
+            _figureAnimalsTargetList = new List<FigureTarget>();
         }
 
         public void SetupLevel(List<LevelFigureParams> levelFiguresParams, Color defaultColor)
@@ -36,32 +48,19 @@ namespace Level.Game
 
         private void SetFigure(LevelFigureParams figureParams, Color defaultColor)
         {
-            var figureObj = _objectsPoolHandler.GetPoolPrefab(PoolType.Game);
+            var figurePrefab = _figuresStorageData.GetTargetFigure(_progressHandler.CurrentPackNumber,
+                _progressHandler.CurrentLevelNumber, figureParams.FigureId);
 
-            if (figureObj == null)
+            if (figurePrefab == null)
             {
-                Debug.LogWarning($"Could not find figure with type {figureParams.FigureType} in {this}");
+                Debug.LogWarning($"Could not find figure with type {figureParams.FigureId} in {this}");
                 return;
             }
 
-            figureObj.AddComponent(typeof(SpriteRenderer));
-            var figure = figureObj.AddComponent<FigureAnimalTarget>();
-            
-            figure.transform.SetParent(_figuresParentTransform);
-            figure.SetUpFigure(_figuresStorage.GetSpriteByType(figureParams.FigureType), figureParams.Completed ? figureParams.Color : defaultColor, figureParams.Scale, figureParams.Position);
-            figure.SetUpDefaultParamsFigure(figureParams.Color, figureParams.FigureType);
-            figure.GetPoolObjectComponent();
+            var figure = Instantiate(figurePrefab, _figuresParentTransform);
+            figure.SetUpFigure(figureParams.Completed);
+            figure.SetUpDefaultParamsFigure(figureParams.FigureId);
             _figureAnimalsTargetList.Add(figure);
-        }
-
-        private void OnDestroy()
-        {
-            ResetPoolObjects();
-        }
-
-        public void ResetPoolObjects()
-        {
-            _figureAnimalsTargetList.ForEach(figure => { figure.PoolObject.ResetObject(); });
         }
     }
 }

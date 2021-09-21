@@ -20,7 +20,7 @@ namespace Handlers
         [SerializeField] private ParticleSystem[] _changeScreenParticles;
         
         private Screen.ScreenBase _currentScreenBase;
-        private const float _awaitChangeScreenTime = 1f;
+        private const float _awaitChangeScreenTime = 0.7f;
 
         public void ShowChooseLevelScreen(bool fast = false)
         {

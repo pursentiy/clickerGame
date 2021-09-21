@@ -1,0 +1,15 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Storage.Levels
+{
+    [Serializable]
+    public class PackParamsData
+    {
+        public int PackNumber;
+        public string PackName;
+        public Sprite PackImage;
+        public List<LevelParamsData> LevelsParams;
+    }
+}

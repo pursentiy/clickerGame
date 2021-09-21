@@ -12,20 +12,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 449397316b884707b25b1929805b4430, type: 3}
   m_Name: FiguresStorage
   m_EditorClassIdentifier: 
-  _figuresByTypeList:
-  - FigureType: 0
-    Sprite: {fileID: 21300000, guid: 73bfbc9d1eabab64f8f487b79bd0e9a5, type: 3}
-  - FigureType: 1
-    Sprite: {fileID: 21300000, guid: 45398974a50f47c46b9e6a8e0a4e9134, type: 3}
-  - FigureType: 7
-    Sprite: {fileID: 21300000, guid: e367ad9e92d761143ad27165893bbeb2, type: 3}
-  - FigureType: 2
-    Sprite: {fileID: 21300000, guid: b6a93b7080ca8904fb02f0161a05fac2, type: 3}
-  - FigureType: 3
-    Sprite: {fileID: 21300000, guid: 1945b794c5a610540987e60d753675b5, type: 3}
-  - FigureType: 4
-    Sprite: {fileID: 21300000, guid: b5a5b07140dc007468f74118cf21ac99, type: 3}
-  - FigureType: 5
-    Sprite: {fileID: 21300000, guid: 8454fc0273be431408b9558dfa3b8a8c, type: 3}
-  - FigureType: 6
-    Sprite: {fileID: 21300000, guid: 8a81881a17e52894794ced49f9211db8, type: 3}
+  _packParamsList:
+  - PackNumber: 1
+    PackName: Animals
+    PackImage: {fileID: 21300000, guid: 3ab1c246600a83a4eb83ab68a8fb37c1, type: 3}
+    LevelsParams:
+    - LevelNumber: 1
+      LevelName: Deer
+      LevelDifficulty: 1
+      LevelVisualHandler: {fileID: 7712832656842174280, guid: 302aabbee082d1b4ea6391ba0a09f95b,
+        type: 3}
+      LevelImage: {fileID: 21300000, guid: ab0ef69e772f8db4aad9763700885590, type: 3}
+      LevelsFiguresParams:
+      - FigureId: 1
+        FigureTarget: {fileID: 2213291782804061812, guid: 4e207dfbc306e604ba9d9ffb0b2d0422,
+          type: 3}
+        FigureMenu: {fileID: 5597174999575911964, guid: 1b802f7d85e8b7442b4c18c5187f540d,
+          type: 3}
+      - FigureId: 2
+        FigureTarget: {fileID: 2213291782804061812, guid: 8b98dd429ea232a40895df40a77b6c11,
+          type: 3}
+        FigureMenu: {fileID: 5597174999575911964, guid: 9de7fa90e9c44234db22386b98d4a185,
+          type: 3}
+      - FigureId: 3
+        FigureTarget: {fileID: 2213291782804061812, guid: 3147086b65d2b8f4991b980b0596f0c0,
+          type: 3}
+        FigureMenu: {fileID: 5597174999575911964, guid: f06924f91b155fe4995aeca6c4168dc4,
+          type: 3}
+    - LevelNumber: 2
+      LevelName: Duck
+      LevelDifficulty: 1
+      LevelVisualHandler: {fileID: 8184327403451196623, guid: 41b0d5401817f704e9637865397c2487,
+        type: 3}
+      LevelImage: {fileID: 21300000, guid: ad5708f27a5c9ad41a72fc53ba33df89, type: 3}
+      LevelsFiguresParams:
+      - FigureId: 1
+        FigureTarget: {fileID: 2213291782804061812, guid: 85eb5fdeb54c6754cac8ce8d8a0975cb,
+          type: 3}
+        FigureMenu: {fileID: 5597174999575911964, guid: 2e2259d45900d5e4a9db51df41b5e191,
+          type: 3}
+      - FigureId: 2
+        FigureTarget: {fileID: 2213291782804061812, guid: 5206dd7c5316f384e86beac246ae1bb3,
+          type: 3}
+        FigureMenu: {fileID: 5597174999575911964, guid: e8ab72a380c1a384eb0dec9f14b67ef5,
+          type: 3}
+      - FigureId: 3
+        FigureTarget: {fileID: 2213291782804061812, guid: 1415a5bd68761424cb1c5783bf4983b9,
+          type: 3}
+        FigureMenu: {fileID: 5597174999575911964, guid: a65771e647f9bd94193eca4e75389fc2,
+          type: 3}

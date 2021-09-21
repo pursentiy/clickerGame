@@ -6,6 +6,6 @@ namespace Level.Click
 {
     public interface IClickHandler
     {
-        FigureAnimalTarget TryGetFigureAnimalTargetOnDragEnd(PointerEventData eventData);
+        FigureTarget TryGetFigureAnimalTargetOnDragEnd(PointerEventData eventData);
     }
 }

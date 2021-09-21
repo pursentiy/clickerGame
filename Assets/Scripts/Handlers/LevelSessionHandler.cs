@@ -5,6 +5,7 @@ using Installers;
 using Level.Click;
 using Level.Game;
 using Level.Hud;
+using Storage;
 using Storage.Levels.Params;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -15,6 +16,7 @@ namespace Handlers
     public class LevelSessionHandler : InjectableMonoBehaviour, ILevelSessionHandler
     {
         [Inject] private ProgressHandler _progressHandler;
+        [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private ScreenHandler _screenHandler;
 
         [SerializeField] private RectTransform _gameMainCanvasTransform;
@@ -23,18 +25,18 @@ namespace Handlers
 
         private LevelVisualHandler _levelVisualHandler;
         private LevelHudHandler _levelHudHandler;
-        private FigureAnimalsMenu _draggingFigure;
-        private FigureAnimalsMenu _menuFigure;
+        private FigureMenu _draggingFigure;
+        private FigureMenu _menuFigure;
         private bool _isDraggable;
 
         private Sequence _resetDraggingAnimationSequence;
         private Sequence _completeDraggingAnimationSequence;
 
-        public void StartLevel(LevelParams packParams, LevelHudHandler levelHudHandler, Color defaultColor)
+        public void StartLevel(LevelParams levelParams, LevelHudHandler levelHudHandler, Color defaultColor)
         {
             SetupClickHandler();
-            SetupHud(packParams, levelHudHandler);
-            SetupFigures(packParams, defaultColor);
+            SetupHud(levelParams, levelHudHandler);
+            SetupFigures(levelParams, defaultColor);
             
             TryHandleLevelCompletion();
         }
@@ -56,7 +58,7 @@ namespace Handlers
 
         private void SetupFigures(LevelParams packParam, Color defaultColor)
         {
-            _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(packParam.LevelVisualHandler);
+            _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(_figuresStorageData.GetLevelVisualHandler(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber));
             _levelVisualHandler.SetupLevel(packParam.LevelFiguresParamsList, defaultColor);
         }
 
@@ -70,7 +72,7 @@ namespace Handlers
             _levelHudHandler.GetOnDragEndFiguresSignal().ForEach(signal => { signal.AddListener(EndElementDragging); });
         }
 
-        private void StartElementDragging(FigureAnimalsMenu figure)
+        private void StartElementDragging(FigureMenu figure)
         {
             if (_isDraggable || figure == null || figure.IsCompleted)
             {
@@ -81,12 +83,12 @@ namespace Handlers
             _menuFigure = figure;
             _levelHudHandler.LockScroll(true);
             
-            SetupDraggingFigure(figure.FigureType);
+            SetupDraggingFigure(figure.FigureId);
         }
 
-        private void SetupDraggingFigure(FigureType figureType)
+        private void SetupDraggingFigure(int figureId)
         {
-            _draggingFigure = _levelHudHandler.GetFigureByType(figureType);
+            _draggingFigure = _levelHudHandler.GetFigureById(figureId);
             _draggingFigure.InitialPosition = _draggingFigure.transform.position;
             _draggingFigure.SiblingPosition = _draggingFigure.transform.GetSiblingIndex();
             _draggingFigure.transform.SetParent(_draggingTransform);
@@ -107,10 +109,10 @@ namespace Handlers
                 return;
             }
 
-            if (_draggingFigure.FigureType == releasedOnFigure.FigureType)
+            if (_draggingFigure.FigureId == releasedOnFigure.FigureId)
             {
-                _progressHandler.UpdateProgress(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber, releasedOnFigure.FigureType);
-                _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigure.transform.DOScale(0, 0.4f)).AppendCallback(() =>
+                _progressHandler.UpdateProgress(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber, releasedOnFigure.FigureId);
+                _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigure.transform.DOScale(0, 0.4f)).OnComplete(() =>
                 {
                     ClearDraggingFigure(true);
                     releasedOnFigure.SetConnected();
@@ -129,7 +131,7 @@ namespace Handlers
             _resetDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigure.transform.DOMove(_menuFigure.InitialPosition, 0.4f))
                 .OnComplete(() =>
                 {
-                    _levelHudHandler.ReturnFigureBackToScroll(_draggingFigure.FigureType);
+                    _levelHudHandler.ReturnFigureBackToScroll(_draggingFigure.FigureId);
                     ClearDraggingFigure(false);
                 });
         }
@@ -138,12 +140,6 @@ namespace Handlers
         {
             _isDraggable = false;
             _levelHudHandler.LockScroll(false);
-            
-            if (removeFigure)
-            {
-                _draggingFigure.PoolObject.ResetObject();
-            }
-            
             _draggingFigure = null;
         }
 

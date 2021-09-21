@@ -14,7 +14,7 @@ namespace Level.Click
             _camera = Camera.main;
         }
 
-        public FigureAnimalTarget TryGetFigureAnimalTargetOnDragEnd(PointerEventData eventData)
+        public FigureTarget TryGetFigureAnimalTargetOnDragEnd(PointerEventData eventData)
         {
             var resultsData =  Physics2D.Raycast(_camera.ScreenToWorldPoint(eventData.position), Vector2.zero);
             
@@ -23,8 +23,8 @@ namespace Level.Click
                 return null;
             }
             
-            var raycastResult = resultsData.transform.gameObject.GetComponent<FigureAnimalTarget>();
-            return raycastResult.gameObject == null ? null : raycastResult.gameObject.GetComponent<FigureAnimalTarget>();
+            var raycastResult = resultsData.transform.gameObject.GetComponent<FigureTarget>();
+            return raycastResult.gameObject == null ? null : raycastResult.gameObject.GetComponent<FigureTarget>();
         }
     }
 }

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Figures;
 using Figures.Animals;
 using Handlers;
 using Installers;
 using Plugins.FSignal;
-using Pooling;
 using Storage;
 using Storage.Levels.Params;
 using UnityEngine;
@@ -18,19 +15,19 @@ namespace Level.Hud
 {
     public class LevelHudHandler : InjectableMonoBehaviour, ILevelHudHandler
     {
-        [Inject] private FiguresStorage _figuresStorage;
+        [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private ScreenHandler _screenHandler;
-        [Inject] private ObjectsPoolHandler _objectsPoolHandler;
+        [Inject] private ProgressHandler _progressHandler;
 
         [SerializeField] private RectTransform _figuresParentTransform;
         [SerializeField] private ScrollRect _scrollRect;
         [SerializeField] private Button _backButton;
         
-        private List<FigureAnimalsMenu> _figureAnimalsMenuList;
+        private List<FigureMenu> _figureAnimalsMenuList;
 
         protected override void Awake()
         {
-            _figureAnimalsMenuList = new List<FigureAnimalsMenu>();
+            _figureAnimalsMenuList = new List<FigureMenu>();
             
             _backButton.onClick.AddListener(GoToMainMenuScreen);
         }
@@ -44,11 +41,12 @@ namespace Level.Hud
 
         private void SetFigure(LevelFigureParams figureParams)
         {
-            var figureObj = _objectsPoolHandler.GetPoolPrefab(PoolType.Canvas);
+            var figurePrefab = _figuresStorageData.GetMenuFigure(_progressHandler.CurrentPackNumber,
+                _progressHandler.CurrentLevelNumber, figureParams.FigureId);
 
-            if (figureObj == null)
+            if (figurePrefab == null)
             {
-                Debug.LogWarning($"Could not find figure with type {figureParams.FigureType} in {this}");
+                Debug.LogWarning($"Could not find figure with type {figureParams.FigureId} in {this}");
                 return;
             }
 
@@ -56,21 +54,16 @@ namespace Level.Hud
             {
                 return;
             }
-
-            figureObj.AddComponent<Image>();
-            var figure = figureObj.AddComponent<FigureAnimalsMenu>();
-
-            figure.transform.SetParent(_figuresParentTransform);
-            figure.SetUpDefaultParamsFigure(figureParams.Color, figureParams.FigureType);
-            figure.SetUpFigure(_figuresStorage.GetSpriteByType(figureParams.FigureType), figure.FigureColor);
+            
+            var figure = Instantiate(figurePrefab, _figuresParentTransform);
+            figure.SetUpDefaultParamsFigure(figureParams.FigureId);
             figure.SetScale(1);
-            figure.GetPoolObjectComponent();
             _figureAnimalsMenuList.Add(figure);
             
             SetupDraggingSignalsHandlers(figure);
         }
 
-        private void SetupDraggingSignalsHandlers(FigureAnimalsMenu figure)
+        private void SetupDraggingSignalsHandlers(FigureMenu figure)
         {
             figure.OnBeginDragSignal.AddListener(OnBeginDragSignalHandler);
             figure.OnDraggingSignal.AddListener(OnDraggingSignalHandler);
@@ -103,12 +96,12 @@ namespace Level.Hud
             _scrollRect.horizontal = !value;
         }
 
-        public FigureAnimalsMenu GetFigureByType(FigureType type)
+        public FigureMenu GetFigureById(int figureId)
         {
-            return _figureAnimalsMenuList.FirstOrDefault(figure => figure.FigureType == type);
+            return _figureAnimalsMenuList.FirstOrDefault(figure => figure.FigureId == figureId);
         }
 
-        public List<FSignal<FigureAnimalsMenu>> GetOnBeginDragFiguresSignal()
+        public List<FSignal<FigureMenu>> GetOnBeginDragFiguresSignal()
         {
             return _figureAnimalsMenuList.Select(figure => figure.OnBeginDragFigureSignal).ToList();
         }
@@ -118,22 +111,15 @@ namespace Level.Hud
             return _figureAnimalsMenuList.Select(figure => figure.OnEndDragSignal).ToList();
         }
 
-        public void ReturnFigureBackToScroll(FigureType type)
+        public void ReturnFigureBackToScroll(int figureId)
         {
-            var figure = GetFigureByType(type);
+            var figure = GetFigureById(figureId);
             figure.transform.SetParent(_figuresParentTransform);
             figure.transform.SetSiblingIndex(figure.SiblingPosition);
-        }
-        
-        public void ResetPoolObjects()
-        {
-            _figureAnimalsMenuList.ForEach(figure => { figure.PoolObject.ResetObject(); });
         }
 
         private void OnDestroy()
         {
-            ResetPoolObjects();
-            
             _backButton.onClick.RemoveAllListeners();
 
             UnsubscribeFromDraggingSignals();
