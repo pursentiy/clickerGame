@@ -6,6 +6,6 @@ namespace Handlers
 {
     public interface ILevelSessionHandler
     {
-        void StartLevel(LevelParams packParams, LevelHudHandler levelHudHandler, Color defaultColor);
+        void StartLevel(LevelParams levelParams, LevelHudHandler levelHudHandler, Color defaultColor);
     }
 }

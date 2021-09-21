@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Figures.Animals
 {
-    public class FigureAnimalsMenu : Figure, IFigureAnimalsMenu, IDragHandler, IBeginDragHandler, IEndDragHandler
+    public class FigureMenu : Figure, IFigureMenu, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         [SerializeField] protected Image _image;
         [SerializeField] protected RectTransform _transform;
@@ -16,32 +16,13 @@ namespace Figures.Animals
         private Sequence _fadeAnimationSequence;
         private bool _isScrolling;
 
-        public FSignal<FigureAnimalsMenu> OnBeginDragFigureSignal { get; } = new FSignal<FigureAnimalsMenu>();
+        public FSignal<FigureMenu> OnBeginDragFigureSignal { get; } = new FSignal<FigureMenu>();
         public FSignal<PointerEventData> OnBeginDragSignal { get; } = new FSignal<PointerEventData>();
         public FSignal<PointerEventData> OnDraggingSignal { get; } = new FSignal<PointerEventData>();
         public FSignal<PointerEventData> OnEndDragSignal { get; } = new FSignal<PointerEventData>();
 
         public int SiblingPosition { get; set; }
         public Vector3 InitialPosition { get; set; }
-
-        public void SetUpFigure(Sprite sprite, Color color)
-        {
-            _image = GetComponent<Image>();
-            if (_image == null)
-            {
-                Debug.LogWarning($"No {nameof(Image)} Component found on object with type {FigureType}");
-                return;
-            }
-
-            _image.sprite = sprite;
-            _image.color = color;
-            
-            _transform = GetComponent<RectTransform>();
-            if (_transform == null)
-            {
-                Debug.LogWarning($"No {nameof(RectTransform)} Component found on object with type {FigureType}");
-            }
-        }
 
         public void SetScale(float scale)
         {

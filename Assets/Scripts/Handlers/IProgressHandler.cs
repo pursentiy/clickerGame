@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Figures;
 using Storage.Levels.Params;
 
 namespace Handlers
@@ -7,7 +6,7 @@ namespace Handlers
     public interface IProgressHandler
     {
         void InitializeHandler(List<PackParams> levelsParams);
-        void UpdateProgress(int packNumber, int levelNumber, FigureType figureType);
+        void UpdateProgress(int packNumber, int levelNumber, int figureId);
         bool CheckForLevelCompletion(int packNumber, int levelNumber);
         List<PackParams> GetCurrentProgress();
         PackParams GetPackPackByNumber(int packNumber);

@@ -11,7 +11,7 @@ namespace Installers
     public class MainInstaller : MonoInstaller
     {
         [SerializeField] private LevelsParamsStorage levelsParamsStorage;
-        [SerializeField] private FiguresStorage _figuresStorage;
+        [SerializeField] private FiguresStorageData figuresStorageData;
         
         [SerializeField] private ProgressHandler _progressHandler;
         [SerializeField] private ScreenHandler _screenHandler;
@@ -31,7 +31,7 @@ namespace Installers
             Container.Bind<UIBlockHandler>().FromInstance(_uiBlockHandler);
             Container.Bind<ObjectsPoolHandler>().FromInstance(_objectsPoolHandler);
             Container.Bind<LevelsParamsStorage>().FromNewScriptableObject(levelsParamsStorage).AsTransient().NonLazy();
-            Container.Bind<FiguresStorage>().FromScriptableObject(_figuresStorage).AsSingle().NonLazy();
+            Container.Bind<FiguresStorageData>().FromScriptableObject(figuresStorageData).AsSingle().NonLazy();
             Container.Bind<IProcessProgressDataService>().To<ProcessProgressDataService>().AsSingle().NonLazy();
         }
     }

@@ -11,9 +11,8 @@ namespace Level.Hud
     {
         void SetupScrollMenu(List<LevelFigureParams> levelFiguresParams);
         void LockScroll(bool value);
-        FigureAnimalsMenu GetFigureByType(FigureType type);
-        List<FSignal<FigureAnimalsMenu>> GetOnBeginDragFiguresSignal();
+        FigureMenu GetFigureById(int figureId);
+        List<FSignal<FigureMenu>> GetOnBeginDragFiguresSignal();
         List<FSignal<PointerEventData>> GetOnDragEndFiguresSignal();
-        void ResetPoolObjects();
     }
 }

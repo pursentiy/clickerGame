@@ -7,10 +7,7 @@ namespace Storage.Levels.Params
     [Serializable]
     public class LevelFigureParams
     {
-        public FigureType FigureType;
-        public float Scale;
-        public Color Color;
-        public Vector3 Position;
+        public int FigureId;
         public bool Completed;
     }
 }

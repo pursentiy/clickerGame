@@ -14,7 +14,6 @@ namespace Storage.Levels.Params
         public int LevelDifficulty;
         public bool LevelCompleted;
         public bool LevelPlayable;
-        public LevelVisualHandler LevelVisualHandler;
         public List<LevelFigureParams> LevelFiguresParamsList;
     }
 }
