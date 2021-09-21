@@ -60,13 +60,24 @@ namespace Handlers
 
         private void TryUpdateNextLevelPlayableStatus(int packNumber, int levelNumber, bool value)
         {
-            if (levelNumber + 1 > _gameProgress.Count)
+            if (levelNumber + 1 > GetPackPackByNumber(packNumber).LevelsParams[_gameProgress.Count - 1].LevelNumber)
             {
-                return;
+                GetPackPackByNumber(packNumber).PackCompleted = true;
+                TryUpdateNextPackPlayableStatus(packNumber, value);
             }
             
-            var levelProgress = GetLevelByNumber(packNumber, levelNumber + 1);
-            levelProgress.LevelPlayable = value;
+            var level = GetLevelByNumber(packNumber, levelNumber + 1);
+            if(level != null)
+                level.LevelPlayable = value;
+        }
+
+        private void TryUpdateNextPackPlayableStatus(int packNumber,  bool value)
+        {
+            if(packNumber + 1 > _gameProgress[_gameProgress.Count - 1].PackNumber)
+                return;
+
+            GetPackPackByNumber(packNumber + 1).PackPlayable = true;
+            GetLevelByNumber(packNumber + 1, 0).LevelPlayable = value;
         }
 
         public bool CheckForLevelCompletion(int packNumber, int levelNumber)

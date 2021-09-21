@@ -1,5 +1,6 @@
 ﻿using Handlers;
 using Screen.SubElements;
+using Storage;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +14,7 @@ namespace Screen
         [Inject] private LevelSessionHandler _levelSessionHandler;
         [Inject] private LevelParamsHandler _levelParamsHandler;
         [Inject] private ProgressHandler _progressHandler;
+        [Inject] private FiguresStorageData _figuresStorageData;
         
         [SerializeField] private LevelEnterWidgetHandler levelEnterWidgetPrefab;
         [SerializeField] private RectTransform _levelEnterPopupsParentTransform;
@@ -27,7 +29,7 @@ namespace Screen
         {
             InitializeLevelsButton();
 
-            _packName.text = _progressHandler.GetPackPackByNumber(_progressHandler.CurrentPackNumber).PackName + " Pack";
+            _packName.text = _figuresStorageData.GetPackParamsData(_progressHandler.CurrentPackNumber).PackName + " Pack";
             
             _goToChoosePackScreenButton.onClick.AddListener(()=> _screenHandler.ShowChoosePackScreen());
         }
@@ -40,9 +42,10 @@ namespace Screen
             {
                 if(_horizontalGroup == null || index % 2 == 0)
                     _horizontalGroup = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
-                
+
+                var levelParamsData = _figuresStorageData.GetLevelParamsData(_progressHandler.CurrentPackNumber, levelParams.LevelNumber);
                 var enterButton = Instantiate(levelEnterWidgetPrefab, _horizontalGroup.transform);
-                enterButton.Initialize(levelParams.LevelName, levelParams.LevelDifficulty, levelParams.LevelPlayable,
+                enterButton.Initialize(levelParamsData.LevelName, levelParamsData.LevelImage, levelParamsData.LevelDifficulty, levelParams.LevelPlayable,
                     () =>
                     {
                         _progressHandler.CurrentLevelNumber = levelParams.LevelNumber;
@@ -51,7 +54,6 @@ namespace Screen
                             _levelParamsHandler.LevelHudHandlerPrefab,
                             _levelParamsHandler.TargetFigureDefaultColor);
                     });
-                
                 index++;
             });
         }

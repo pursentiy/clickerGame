@@ -43,8 +43,12 @@ namespace Storage
 
         public LevelParamsData GetLevelParamsData(int packNumber, int levelNumber)
         {
-            return _packParamsList.FirstOrDefault(figuresParams => figuresParams.PackNumber == packNumber)?
-                .LevelsParams.FirstOrDefault(levelParams => levelParams.LevelNumber == levelNumber);
+            return GetPackParamsData(packNumber)?.LevelsParams.FirstOrDefault(levelParams => levelParams.LevelNumber == levelNumber);
+        }
+
+        public PackParamsData GetPackParamsData(int packNumber)
+        {
+            return _packParamsList.FirstOrDefault(figuresParams => figuresParams.PackNumber == packNumber);
         }
     }
 }

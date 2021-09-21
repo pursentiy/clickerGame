@@ -183,6 +183,7 @@ MonoBehaviour:
   _lockImage: {fileID: 1803877356123055892}
   _levelText: {fileID: 1803877355841150641}
   _fadeImage: {fileID: 488405301101980088}
+  _levelImage: {fileID: 8324443963710728762}
   _levelEnterButton: {fileID: 1803877355706238532}
   _starsImages:
   - {fileID: 4620876636875049140}

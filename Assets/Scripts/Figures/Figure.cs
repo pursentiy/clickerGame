@@ -7,7 +7,6 @@ namespace Figures
     {
         public int FigureId { get; private set; }
         public bool IsCompleted { get; private set; }
-        public PoolObject PoolObject { get; private set; }
 
         public void SetFigureCompleted(bool value)
         {

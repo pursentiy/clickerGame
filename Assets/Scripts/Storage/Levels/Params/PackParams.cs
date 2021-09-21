@@ -8,8 +8,6 @@ namespace Storage.Levels.Params
     public class PackParams
     {
         public int PackNumber;
-        public Sprite PackImage;
-        public string PackName;
         public bool PackCompleted;
         public bool PackPlayable;
         public List<LevelParams> LevelsParams;

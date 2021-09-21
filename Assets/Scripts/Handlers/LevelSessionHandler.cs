@@ -112,7 +112,7 @@ namespace Handlers
             if (_draggingFigure.FigureId == releasedOnFigure.FigureId)
             {
                 _progressHandler.UpdateProgress(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber, releasedOnFigure.FigureId);
-                _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigure.transform.DOScale(0, 0.4f)).AppendCallback(() =>
+                _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigure.transform.DOScale(0, 0.4f)).OnComplete(() =>
                 {
                     ClearDraggingFigure(true);
                     releasedOnFigure.SetConnected();
@@ -140,12 +140,6 @@ namespace Handlers
         {
             _isDraggable = false;
             _levelHudHandler.LockScroll(false);
-            
-            if (removeFigure)
-            {
-                _draggingFigure.PoolObject.ResetObject();
-            }
-            
             _draggingFigure = null;
         }
 
