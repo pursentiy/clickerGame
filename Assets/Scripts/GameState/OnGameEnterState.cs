@@ -27,16 +27,16 @@ namespace GameState
             _screenHandler.ShowWelcomeScreen(true);
         }
 
-        private List<LevelParams> StartNewGameProgress()
+        private List<PackParams> StartNewGameProgress()
         {
-            var levelsParams = _levelsParamsStorage.DefaultLevelsParamsList;
+            var levelsParams = _levelsParamsStorage.DefaultPacksParamsList;
             _processProgressDataService.SaveProgress(levelsParams);
             return levelsParams;
         }
 
         private void OnDestroy()
         {
-            _processProgressDataService.SaveProgress(_progressHandler.GetAllLevelsParams());
+            _processProgressDataService.SaveProgress(_progressHandler.GetCurrentProgress());
         }
     }
 }

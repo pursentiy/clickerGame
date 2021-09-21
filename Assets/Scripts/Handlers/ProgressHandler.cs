@@ -12,9 +12,12 @@ namespace Handlers
     {
         [Inject] private LevelsParamsStorage _levelsParamsStorage;
         
-        private List<LevelParams> _gameLevelsProgress;
+        private List<PackParams> _gameProgress;
 
-        public void InitializeHandler(List<LevelParams> levelsParams)
+        public int CurrentPackNumber { get; set; } = -1;
+        public int CurrentLevelNumber { get; set; } = -1;
+
+        public void InitializeHandler(List<PackParams> levelsParams)
         {
             if (levelsParams == null)
             {
@@ -22,22 +25,29 @@ namespace Handlers
                 return;
             }
             
-            _gameLevelsProgress = levelsParams;
+            _gameProgress = levelsParams;
             
             SetLevelsVisualHandler();
         }
 
         private void SetLevelsVisualHandler()
         {
-            _gameLevelsProgress.ForEach(levelProgress =>
+            _gameProgress.ForEach(packProgress =>
             {
-                levelProgress.LevelVisualHandler = _levelsParamsStorage.DefaultLevelsParamsList.FirstOrDefault(levelParams => levelParams.LevelNumber == levelProgress.LevelNumber)?.LevelVisualHandler;
+                packProgress.LevelsParams.ForEach(levelParam =>
+                {
+                    var defaultLevelHandler = _levelsParamsStorage.DefaultPacksParamsList.FirstOrDefault(packDefaultParams => packDefaultParams.PackNumber == packProgress.PackNumber)?
+                        .LevelsParams.FirstOrDefault(levelDefaultParams => levelDefaultParams.LevelNumber == levelParam.LevelNumber);
+
+                    if (defaultLevelHandler != null)
+                        levelParam.LevelVisualHandler = defaultLevelHandler.LevelVisualHandler;
+                });
             });
         }
         
-        public void UpdateProgress(int levelNumber, FigureType figureType)
+        public void UpdateProgress(int packNumber, int levelNumber, FigureType figureType)
         {
-            var levelProgress = GetLevelByNumber(levelNumber);
+            var levelProgress = GetLevelByNumber(packNumber, levelNumber);
 
             if (levelProgress == null)
             {
@@ -61,24 +71,24 @@ namespace Handlers
 
             if (levelCompleted)
             {
-                TryUpdateNextLevelPlayableStatus(levelNumber, true);
+                TryUpdateNextLevelPlayableStatus(packNumber, levelNumber, true);
             }
         }
 
-        private void TryUpdateNextLevelPlayableStatus(int levelNumber, bool value)
+        private void TryUpdateNextLevelPlayableStatus(int packNumber, int levelNumber, bool value)
         {
-            if (levelNumber + 1 > _gameLevelsProgress.Count)
+            if (levelNumber + 1 > _gameProgress.Count)
             {
                 return;
             }
             
-            var levelProgress = GetLevelByNumber(levelNumber + 1);
+            var levelProgress = GetLevelByNumber(packNumber, levelNumber + 1);
             levelProgress.LevelPlayable = value;
         }
 
-        public bool CheckForLevelCompletion(int levelNumber)
+        public bool CheckForLevelCompletion(int packNumber, int levelNumber)
         {
-            var levelProgress = GetLevelByNumber(levelNumber);
+            var levelProgress = GetLevelByNumber(packNumber, levelNumber);
             
             if (levelProgress == null)
             {
@@ -90,32 +100,60 @@ namespace Handlers
 
             return progress;
         }
-        
-        public LevelParams GetLevelByNumber(int levelNumber)
+
+        public PackParams GetPackPackByNumber(int packNumber)
         {
-            var levelProgress = _gameLevelsProgress.FirstOrDefault(levelParams => levelParams.LevelNumber == levelNumber);
+            var pack = _gameProgress.FirstOrDefault(levelParams => levelParams.PackNumber == packNumber);
+            
+            if (pack != null)
+            {
+                return pack;
+            }
+            
+            Debug.LogWarning($"Could not get pack by {packNumber} in {this}");
+            return null;
+            
+        }
+
+        public LevelParams GetLevelByNumber(int packNumber, int levelNumber)
+        {
+            var levelProgress = _gameProgress.FirstOrDefault(levelParams => levelParams.PackNumber == packNumber)?
+                .LevelsParams.FirstOrDefault(levelParams => levelParams.LevelNumber == levelNumber);
 
             if (levelProgress != null)
             {
                 return levelProgress;
             }
             
-            Debug.LogWarning($"Could not update progress in level {levelNumber} in {this}");
+            Debug.LogWarning($"Could not get level by number {levelNumber} in {this}");
             return null;
         }
 
-        public void ResetLevelProgress(int levelNumber)
+        public void ResetLevelProgress(int packNumber, int levelNumber)
         {
-            var currentLevel = GetLevelByNumber(levelNumber);
+            var currentLevel = GetLevelByNumber(packNumber, levelNumber);
             currentLevel.LevelFiguresParamsList.ForEach(levelParams =>
             {
                 levelParams.Completed = false;
             });
         }
-        
-        public List<LevelParams> GetAllLevelsParams()
+
+        public List<LevelParams> GetLevelsByPack(int packNumber)
         {
-            return _gameLevelsProgress;
+            var levelsParams = _gameProgress.FirstOrDefault(levelParams => levelParams.PackNumber == packNumber)?.LevelsParams;
+
+            if (levelsParams != null)
+            {
+                return levelsParams;
+            }
+            
+            Debug.LogWarning($"Could not update progress in level {packNumber} in {this}");
+            return null;
+        }
+        
+        public List<PackParams> GetCurrentProgress()
+        {
+            return _gameProgress;
         }
     }
 }

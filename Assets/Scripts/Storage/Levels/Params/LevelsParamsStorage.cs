@@ -9,13 +9,13 @@ namespace Storage.Levels.Params
     [CreateAssetMenu(fileName = "LevelsParamsStorage", menuName = "ScriptableObjects/LevelsParams")]
     public class LevelsParamsStorage : ScriptableObject
     {
-        [SerializeField] private List<LevelParams> defaultLevelParamsList;
+        [SerializeField] private List<PackParams> _defaultPackParamsList;
 
         public LevelParams GetDefaultLevelByNumber(int number)
         {
-            return defaultLevelParamsList.FirstOrDefault(levelParams => levelParams.LevelNumber == number);
+            return null;
         }
 
-        public List<LevelParams> DefaultLevelsParamsList => defaultLevelParamsList;
+        public List<PackParams> DefaultPacksParamsList => _defaultPackParamsList;
     }
 }

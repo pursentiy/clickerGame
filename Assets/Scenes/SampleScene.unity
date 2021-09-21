@@ -745,7 +745,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 600, y: 600}
+  m_ReferenceResolution: {x: 1244, y: 2688}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -834,9 +834,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _screenCanvasTransform: {fileID: 810554863}
-  _chooseLevelScreenBase: {fileID: 2254273223443519542, guid: 416351335fd4abc4aa3b923248ed164b,
+  _chooseLevelScreenBase: {fileID: 492916973026144707, guid: 91dba8c1c71211d4cb70bb91d6311c21,
     type: 3}
   _welcomeScreenBase: {fileID: 1496618069183132052, guid: e0a982ea61aaff3479e996a1e981d2c7,
+    type: 3}
+  _choosePackScreenBase: {fileID: 8154923252068788368, guid: fad908d6d8aff70438f16969ecc7cc58,
     type: 3}
   _levelCompleteScreenBase: {fileID: 4303779283134089381, guid: 9eb8d4d10e946b848b02cf732383e8bb,
     type: 3}

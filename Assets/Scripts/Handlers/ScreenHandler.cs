@@ -15,6 +15,7 @@ namespace Handlers
         [SerializeField] private RectTransform _screenCanvasTransform;
         [SerializeField] private ChooseLevelScreenBase _chooseLevelScreenBase;
         [SerializeField] private WelcomeScreenBase _welcomeScreenBase;
+        [SerializeField] private ChoosePackScreenBase _choosePackScreenBase;
         [SerializeField] private LevelCompleteScreenBase _levelCompleteScreenBase;
         [SerializeField] private ParticleSystem[] _changeScreenParticles;
         
@@ -23,18 +24,8 @@ namespace Handlers
 
         public void ShowChooseLevelScreen(bool fast = false)
         {
-            IPromise awaitPromise;
+            var awaitPromise = TryStartAwaitPromise(fast);
 
-            if (!fast)
-            {
-                awaitPromise = StartAwaitCoroutine();
-                PlayParticles();
-            }
-            else
-            {
-                awaitPromise = Promise.Resolved();
-            }    
-            
             awaitPromise.Then(() =>
             {
                 PopupAllScreenHandlers();
@@ -42,19 +33,20 @@ namespace Handlers
             });
         }
         
+        public void ShowChoosePackScreen(bool fast = false)
+        {
+            var awaitPromise = TryStartAwaitPromise(fast);
+
+            awaitPromise.Then(() =>
+            {
+                PopupAllScreenHandlers();
+                _currentScreenBase = Instantiate(_choosePackScreenBase, _screenCanvasTransform);
+            });
+        }
+
         public void ShowWelcomeScreen(bool fast = false)
         {
-            IPromise awaitPromise;
-
-            if (!fast)
-            {
-                awaitPromise = StartAwaitCoroutine();
-                PlayParticles();
-            }
-            else
-            {
-                awaitPromise = Promise.Resolved();
-            }  
+            var awaitPromise = TryStartAwaitPromise(fast);
             
             awaitPromise.Then(() =>
             {
@@ -63,20 +55,9 @@ namespace Handlers
             });
         }
         
-        public void ShowLevelCompleteScreen(int currentLevel, Camera sourceCamera, Action onFinishAction, bool fast = false)
+        public void ShowLevelCompleteScreen(Camera sourceCamera, Action onFinishAction, bool fast = false)
         {
-            IPromise awaitPromise;
-
-            if (!fast)
-            {
-                awaitPromise = StartAwaitCoroutine();
-                PlayParticles();
-            }
-            else
-            {
-                awaitPromise = Promise.Resolved();
-            }  
-            
+            var awaitPromise = TryStartAwaitPromise(fast);
             
             awaitPromise.Then(() =>
             {
@@ -87,7 +68,6 @@ namespace Handlers
                 screenHandler.SetupTextureCamera(sourceCamera);
             
                 _currentScreenBase = screenHandler;
-                _currentScreenBase.CurrentLevel = currentLevel;
             });
         }
 
@@ -100,6 +80,23 @@ namespace Handlers
             
             Destroy(_currentScreenBase.gameObject);
             _currentScreenBase = null;
+        }
+        
+        private IPromise TryStartAwaitPromise(bool fast)
+        {
+            IPromise awaitPromise;
+
+            if (!fast)
+            {
+                awaitPromise = StartAwaitCoroutine();
+                PlayParticles();
+            }
+            else
+            {
+                awaitPromise = Promise.Resolved();
+            }
+
+            return awaitPromise;
         }
         
         private IPromise StartAwaitCoroutine()
@@ -118,7 +115,7 @@ namespace Handlers
              if(awaitPromise.CurState == PromiseState.Pending)
                  awaitPromise.Resolve();
         }
-        
+
         private void PlayParticles()
         {
             foreach (var particles in _changeScreenParticles)

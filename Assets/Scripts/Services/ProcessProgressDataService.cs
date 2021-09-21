@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using JetBrains.Annotations;
-using ModestTree;
 using Storage.Levels.Params;
 using UnityEngine;
 
@@ -14,32 +13,32 @@ namespace Services
     {
         private const string SaveFileName = "/LevelsProgress.raw";
 
-        public void SaveProgress(List<LevelParams> levelsParams)
+        public void SaveProgress(List<PackParams> packsParams)
         {
             var filePath = Application.persistentDataPath + SaveFileName;
             
             var formatter = new BinaryFormatter();
             var stream = new FileStream(filePath, FileMode.Create);
             
-            var jsonLevelsProgressData = "";
+            var jsonPackProgressData = "";
             var index = 0;
-            levelsParams.ForEach(levelParams =>
+            packsParams.ForEach(packParams =>
             {
-                jsonLevelsProgressData += JsonUtility.ToJson(levelParams);
+                jsonPackProgressData += JsonUtility.ToJson(packParams);
                 
-                if (index < levelsParams.Count - 1)
+                if (index < packsParams.Count - 1)
                 {
-                    jsonLevelsProgressData += "\n";
+                    jsonPackProgressData += "\n";
                 }
 
                 index++;
             });
             
-            formatter.Serialize(stream, jsonLevelsProgressData);
+            formatter.Serialize(stream, jsonPackProgressData);
             stream.Close();
         }
 
-        public List<LevelParams> LoadProgress()
+        public List<PackParams> LoadProgress()
         {
             var filePath = Application.persistentDataPath + SaveFileName;
             
@@ -57,7 +56,7 @@ namespace Services
             }
             
             var rawProgressDataArray = rawTotalProgressData.Split('\n');
-            var levelParamsList = rawProgressDataArray.Select(JsonUtility.FromJson<LevelParams>).ToList();
+            var levelParamsList = rawProgressDataArray.Select(JsonUtility.FromJson<PackParams>).ToList();
             return levelParamsList.Where(level => level != null).ToList();
         }
     }
