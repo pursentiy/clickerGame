@@ -1,4 +1,5 @@
 ﻿using Plugins.FSignal;
+using RSG;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -13,7 +14,11 @@ namespace Figures.Animals
         FSignal<PointerEventData> OnEndDragSignal { get; }
         FSignal<PointerEventData> OnDraggingSignal { get; }
         FSignal<FigureMenu> OnBeginDragFigureSignal { get; }
-        void SetConnected();
+        RectTransform FigureTransform { get; }
+        float InitialWidth { get; }
+        float InitialHeight { get; }
+        RectTransform ContainerTransform { get; }
+        void SetConnected(Promise fadeFigurePromise);
         void Destroy();
     }
 }

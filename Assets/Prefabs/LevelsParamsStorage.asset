@@ -14,13 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _defaultPackParamsList:
   - PackNumber: 1
-    PackName: Animals
     PackCompleted: 0
     PackPlayable: 1
     LevelsParams:
     - LevelNumber: 1
-      LevelName: Deer
-      LevelDifficulty: 1
       LevelCompleted: 0
       LevelPlayable: 1
       LevelFiguresParamsList:
@@ -31,8 +28,16 @@ MonoBehaviour:
       - FigureId: 3
         Completed: 0
     - LevelNumber: 2
-      LevelName: Duck
-      LevelDifficulty: 1
+      LevelCompleted: 0
+      LevelPlayable: 0
+      LevelFiguresParamsList:
+      - FigureId: 1
+        Completed: 0
+      - FigureId: 2
+        Completed: 0
+      - FigureId: 3
+        Completed: 0
+    - LevelNumber: 3
       LevelCompleted: 0
       LevelPlayable: 0
       LevelFiguresParamsList:
