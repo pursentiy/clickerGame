@@ -27,6 +27,8 @@ MonoBehaviour:
         Completed: 0
       - FigureId: 3
         Completed: 0
+      - FigureId: 4
+        Completed: 0
     - LevelNumber: 2
       LevelCompleted: 0
       LevelPlayable: 0
@@ -46,4 +48,6 @@ MonoBehaviour:
       - FigureId: 2
         Completed: 0
       - FigureId: 3
+        Completed: 0
+      - FigureId: 4
         Completed: 0
