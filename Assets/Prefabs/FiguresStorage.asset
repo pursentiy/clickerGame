@@ -27,17 +27,17 @@ MonoBehaviour:
       - FigureId: 1
         FigureTarget: {fileID: 2213291782804061812, guid: 4e207dfbc306e604ba9d9ffb0b2d0422,
           type: 3}
-        FigureMenu: {fileID: 5597174999575911964, guid: 1b802f7d85e8b7442b4c18c5187f540d,
+        FigureMenu: {fileID: 9180308159367904065, guid: 48d7df20d04c3794d97653d83c0f1f29,
           type: 3}
       - FigureId: 2
         FigureTarget: {fileID: 2213291782804061812, guid: 8b98dd429ea232a40895df40a77b6c11,
           type: 3}
-        FigureMenu: {fileID: 5597174999575911964, guid: 9de7fa90e9c44234db22386b98d4a185,
+        FigureMenu: {fileID: 9180308159367904065, guid: f6cbaa558589d3f45af4c72581f89684,
           type: 3}
       - FigureId: 3
         FigureTarget: {fileID: 2213291782804061812, guid: 3147086b65d2b8f4991b980b0596f0c0,
           type: 3}
-        FigureMenu: {fileID: 5597174999575911964, guid: f06924f91b155fe4995aeca6c4168dc4,
+        FigureMenu: {fileID: 9180308159367904065, guid: 70d084cc3f2ec8d4da1387f3e2674038,
           type: 3}
     - LevelNumber: 2
       LevelName: Duck
@@ -60,4 +60,26 @@ MonoBehaviour:
         FigureTarget: {fileID: 2213291782804061812, guid: 1415a5bd68761424cb1c5783bf4983b9,
           type: 3}
         FigureMenu: {fileID: 5597174999575911964, guid: a65771e647f9bd94193eca4e75389fc2,
+          type: 3}
+    - LevelNumber: 3
+      LevelName: Pig
+      LevelDifficulty: 1
+      LevelVisualHandler: {fileID: 3138188244456962255, guid: 803f4f6d5b057784c90d1bb86e874f9d,
+        type: 3}
+      LevelImage: {fileID: 21300000, guid: a74249a5be4dc0b43ae69984ed8331df, type: 3}
+      LevelsFiguresParams:
+      - FigureId: 1
+        FigureTarget: {fileID: 2213291782804061812, guid: 1dc6cf871df78274ba76f66b4cb49fbc,
+          type: 3}
+        FigureMenu: {fileID: 5597174999575911964, guid: 94943d2aed6abc2449fd31f657bc4485,
+          type: 3}
+      - FigureId: 2
+        FigureTarget: {fileID: 2213291782804061812, guid: 1ddf771d5916dfa468b03cedec60eb9b,
+          type: 3}
+        FigureMenu: {fileID: 5597174999575911964, guid: 9f5d0d729565bd344a7bbb44483b1d79,
+          type: 3}
+      - FigureId: 3
+        FigureTarget: {fileID: 2213291782804061812, guid: 4416f387e509fce4299f4b423aca0494,
+          type: 3}
+        FigureMenu: {fileID: 5597174999575911964, guid: 14914c1d276b0f441b4b32f6f136f2b1,
           type: 3}

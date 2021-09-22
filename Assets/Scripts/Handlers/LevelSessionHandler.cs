@@ -5,6 +5,7 @@ using Installers;
 using Level.Click;
 using Level.Game;
 using Level.Hud;
+using RSG;
 using Storage;
 using Storage.Levels.Params;
 using UnityEngine;
@@ -25,7 +26,8 @@ namespace Handlers
 
         private LevelVisualHandler _levelVisualHandler;
         private LevelHudHandler _levelHudHandler;
-        private FigureMenu _draggingFigure;
+        private FigureMenu _draggingFigureContainer;
+        private GameObject _draggingFigureImage;
         private FigureMenu _menuFigure;
         private bool _isDraggable;
 
@@ -88,17 +90,21 @@ namespace Handlers
 
         private void SetupDraggingFigure(int figureId)
         {
-            _draggingFigure = _levelHudHandler.GetFigureById(figureId);
-            _draggingFigure.InitialPosition = _draggingFigure.transform.position;
-            _draggingFigure.SiblingPosition = _draggingFigure.transform.GetSiblingIndex();
-            _draggingFigure.transform.SetParent(_draggingTransform);
+            _draggingFigureContainer = _levelHudHandler.GetFigureById(figureId);
+            _draggingFigureImage = _draggingFigureContainer.FigureTransform.gameObject;
+            _draggingFigureContainer.InitialPosition = _draggingFigureContainer.transform.position;
+            _draggingFigureContainer.FigureTransform.SetParent(_draggingTransform);
+            
+            _levelHudHandler.ShiftAllElements(false, figureId, new Promise());
+            _draggingFigureContainer.transform.DOScale(0, 0.3f);
+            _draggingFigureContainer.ContainerTransform.DOSizeDelta(new Vector2(0, 0), 0.3f);
         }
 
         private void EndElementDragging(PointerEventData eventData)
         {
             var releasedOnFigure = _clickHandler.TryGetFigureAnimalTargetOnDragEnd(eventData);
 
-            if (_draggingFigure == null)
+            if (_draggingFigureContainer == null)
             {
                 return;
             }
@@ -109,15 +115,23 @@ namespace Handlers
                 return;
             }
 
-            if (_draggingFigure.FigureId == releasedOnFigure.FigureId)
+            if (_draggingFigureContainer.FigureId == releasedOnFigure.FigureId)
             {
+                var shiftingAnimationPromise = new Promise();
+                _levelHudHandler.TryShiftAllElementsAfterRemoving(_draggingFigureContainer.FigureId, shiftingAnimationPromise);
+                
                 _progressHandler.UpdateProgress(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber, releasedOnFigure.FigureId);
-                _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigure.transform.DOScale(0, 0.4f)).OnComplete(() =>
+                
+                _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigureImage.transform.DOScale(0, 0.4f));
+
+                shiftingAnimationPromise.Then(() =>
                 {
-                    ClearDraggingFigure(true);
-                    releasedOnFigure.SetConnected();
-                    _menuFigure.SetConnected();
-                    TryHandleLevelCompletion();
+                    _completeDraggingAnimationSequence.OnComplete(() =>
+                        {
+                            releasedOnFigure.SetConnected();
+                            SetMenuFigureConnected();
+                            TryHandleLevelCompletion();
+                        });
                 });
             }
             else
@@ -126,21 +140,45 @@ namespace Handlers
             }
         }
 
-        private void ResetDraggingFigure()
+        private void SetMenuFigureConnected()
         {
-            _resetDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigure.transform.DOMove(_menuFigure.InitialPosition, 0.4f))
-                .OnComplete(() =>
-                {
-                    _levelHudHandler.ReturnFigureBackToScroll(_draggingFigure.FigureId);
-                    ClearDraggingFigure(false);
-                });
+            var menuFigurePromise = new Promise();
+            _menuFigure.SetConnected(menuFigurePromise);
+            menuFigurePromise.Then(() =>
+            {
+                _levelHudHandler.DestroyFigure(_draggingFigureContainer.FigureId);
+                ClearDraggingFigure();
+            });
         }
 
-        private void ClearDraggingFigure(bool removeFigure)
+        private void ResetDraggingFigure()
+        {
+            var shiftingAnimationPromise = new Promise();
+            _levelHudHandler.ShiftAllElements(true, _draggingFigureContainer.FigureId, shiftingAnimationPromise);
+
+            _resetDraggingAnimationSequence = DOTween.Sequence()
+                .Append(_draggingFigureImage.transform.DOMove(_draggingFigureContainer.transform.position, 0.4f))
+                .Join(_draggingFigureContainer.transform.DOScale(1, 0.3f))
+                .Join(_draggingFigureContainer.ContainerTransform.DOSizeDelta
+                    (new Vector2(_draggingFigureContainer.InitialWidth, _draggingFigureContainer.InitialHeight), 0.3f));
+            
+            shiftingAnimationPromise.Then(() =>
+            {
+                _resetDraggingAnimationSequence.OnComplete(() =>
+                    {
+                        _levelHudHandler.ReturnFigureBackToScroll(_draggingFigureContainer.FigureId);
+                        _draggingFigureContainer.FigureTransform.transform.localPosition = Vector3.zero;
+                        ClearDraggingFigure();
+                    });
+            });
+        }
+
+        private void ClearDraggingFigure()
         {
             _isDraggable = false;
             _levelHudHandler.LockScroll(false);
-            _draggingFigure = null;
+            _draggingFigureContainer = null;
+            _draggingFigureImage = null;
         }
 
         private void Update()
@@ -150,12 +188,12 @@ namespace Handlers
 
         private void TryUpdateDraggingFigurePosition()
         {
-            if (_draggingFigure == null || !_isDraggable)
+            if (_draggingFigureContainer == null || _draggingFigureImage == null || !_isDraggable)
             {
                 return;
             }
 
-            _draggingFigure.transform.position = Input.mousePosition;
+            _draggingFigureImage.transform.position = Input.mousePosition;
         }
 
         private void ResetLevel()

@@ -62,5 +62,13 @@ namespace Level.Game
             figure.SetUpDefaultParamsFigure(figureParams.FigureId);
             _figureAnimalsTargetList.Add(figure);
         }
+
+        private void OnDestroy()
+        {
+            _figureAnimalsTargetList.ForEach(figure =>
+            {
+                Destroy(figure.gameObject);
+            });
+        }
     }
 }
