@@ -870,6 +870,57 @@ MonoBehaviour:
   - {fileID: 536753539}
   - {fileID: 569219643}
   - {fileID: 1151843881}
+  _popupAnimationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 5.3164415
+      outSlope: 5.3164415
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.041178044
+    - serializedVersion: 3
+      time: 0.24034292
+      value: 1.0292438
+      inSlope: 0.07727383
+      outSlope: 0.07727383
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.402903
+    - serializedVersion: 3
+      time: 0.37053585
+      value: 0.9897119
+      inSlope: -0.06667492
+      outSlope: -0.06667492
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.15934421
+    - serializedVersion: 3
+      time: 0.61480993
+      value: 1.0027548
+      inSlope: -0.02493488
+      outSlope: -0.02493488
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.15933892
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &534889506
 MonoBehaviour:
   m_ObjectHideFlags: 0

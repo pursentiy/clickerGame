@@ -18,18 +18,8 @@ namespace Level.Game
 
         [SerializeField] private Transform _figuresParentTransform;
         [SerializeField] private Camera _textureCamera;
-        [SerializeField] private SpriteRenderer _backgroundTexture;
-        
-        [SerializeField] private Gradient _gradient;
-        [SerializeField] private float colorChangingDuration;
-        float t = 0f;
-        void Update() {
-            float value = Mathf.Lerp(0f, 1f, t);
-            t += Time.deltaTime / colorChangingDuration;
-            Color color = _gradient.Evaluate(value);
-            _backgroundTexture.color = color;
-        }
-        
+        [SerializeField] private CanvasGroup _canvasGroup;
+
         private List<FigureTarget> _figureAnimalsTargetList;
         
         public Camera TextureCamera => _textureCamera;
@@ -39,6 +29,11 @@ namespace Level.Game
             base.Awake();
             
             _figureAnimalsTargetList = new List<FigureTarget>();
+        }
+
+        public void SetInteractivity(bool isInteractable)
+        {
+            _canvasGroup.interactable = isInteractable;
         }
 
         public void SetupLevel(List<LevelFigureParams> levelFiguresParams, Color defaultColor)

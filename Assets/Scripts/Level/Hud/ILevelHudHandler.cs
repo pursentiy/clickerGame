@@ -10,6 +10,7 @@ namespace Level.Hud
 {
     public interface ILevelHudHandler
     {
+        void SetInteractivity(bool isInteractable);
         void SetupScrollMenu(List<LevelFigureParams> levelFiguresParams);
         void LockScroll(bool value);
         FigureMenu GetFigureById(int figureId);

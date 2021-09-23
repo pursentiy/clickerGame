@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
+using DG.Tweening;
 using Installers;
 using RSG;
 using Screen;
+using Storage.Levels.Params;
 using UnityEngine;
 using Zenject;
 
@@ -11,6 +13,9 @@ namespace Handlers
     public class ScreenHandler : InjectableMonoBehaviour, IScreenHandler
     {
         [Inject] private UIBlockHandler _uiBlockHandler;
+        [Inject] private ProgressHandler _progressHandler;
+        [Inject] private LevelSessionHandler _levelSessionHandler;
+        [Inject] private LevelParamsHandler _levelParamsHandler;
         
         [SerializeField] private RectTransform _screenCanvasTransform;
         [SerializeField] private ChooseLevelScreenBase _chooseLevelScreenBase;
@@ -18,13 +23,16 @@ namespace Handlers
         [SerializeField] private ChoosePackScreenBase _choosePackScreenBase;
         [SerializeField] private LevelCompleteScreenBase _levelCompleteScreenBase;
         [SerializeField] private ParticleSystem[] _changeScreenParticles;
+        [SerializeField] private AnimationCurve _popupAnimationCurve;
         
         private Screen.ScreenBase _currentScreenBase;
         private const float _awaitChangeScreenTime = 0.7f;
 
+        public float AwaitChangeScreenTime => _awaitChangeScreenTime;
+
         public void ShowChooseLevelScreen(bool fast = false)
         {
-            var awaitPromise = TryStartAwaitPromise(fast);
+            var awaitPromise = TryStartParticlesAwaitPromiseTransition(fast);
 
             awaitPromise.Then(() =>
             {
@@ -35,7 +43,7 @@ namespace Handlers
         
         public void ShowChoosePackScreen(bool fast = false)
         {
-            var awaitPromise = TryStartAwaitPromise(fast);
+            var awaitPromise = TryStartParticlesAwaitPromiseTransition(fast);
 
             awaitPromise.Then(() =>
             {
@@ -46,7 +54,7 @@ namespace Handlers
 
         public void ShowWelcomeScreen(bool fast = false)
         {
-            var awaitPromise = TryStartAwaitPromise(fast);
+            var awaitPromise = TryStartParticlesAwaitPromiseTransition(fast);
             
             awaitPromise.Then(() =>
             {
@@ -55,18 +63,27 @@ namespace Handlers
             });
         }
         
-        public void ShowLevelCompleteScreen(Camera sourceCamera, Action onFinishAction, bool fast = false)
+        public void ShowLevelCompleteScreen(Camera sourceCamera, bool onLevelEnter, Action onFinishAction, bool fast = false)
         {
-            var awaitPromise = TryStartAwaitPromise(fast);
-            
-            awaitPromise.Then(() =>
-            {
-                PopupAllScreenHandlers();
+            _uiBlockHandler.BlockUserInput(true);
+            var screenHandler = Instantiate(_levelCompleteScreenBase, _screenCanvasTransform);
+            screenHandler.gameObject.SetActive(false);
 
-                var screenHandler = Instantiate(_levelCompleteScreenBase, _screenCanvasTransform);
+            var position = screenHandler.RectTransform.anchoredPosition;
+            DOTween.Sequence().Append(screenHandler.RectTransform.DOScale(new Vector3(0, 0, 0), 0.01f))
+                .AppendCallback(() =>
+                {
+                    screenHandler.gameObject.SetActive(true);
+                })
+                .Append(screenHandler.RectTransform.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(_popupAnimationCurve))
+                .OnComplete(() =>
+            {
                 screenHandler.SetOnFinishLevelSessionAction(onFinishAction);
-                screenHandler.SetupTextureCamera(sourceCamera);
-            
+                
+                if(!onLevelEnter)
+                    screenHandler.PlayFireworksParticles();
+                
+                _uiBlockHandler.BlockUserInput(false);
                 _currentScreenBase = screenHandler;
             });
         }
@@ -81,8 +98,34 @@ namespace Handlers
             Destroy(_currentScreenBase.gameObject);
             _currentScreenBase = null;
         }
+
+        public void ReplayCurrentLevel(int levelNumber, bool fast = false)
+        {
+            var awaitPromise = TryStartParticlesAwaitPromiseTransition(fast);
+
+            awaitPromise.Then(() =>
+            {
+                _progressHandler.ResetLevelProgress(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber);
+                var levelParams = _progressHandler.GetLevelByNumber(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber);
+                _progressHandler.CurrentLevelNumber = levelNumber;
+                PopupAllScreenHandlers();
+                _levelSessionHandler.StartLevel(levelParams, _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
+            });
+        }
+
+        public void StartNewLevel(int levelNumber, LevelParams levelParams, bool fast = false)
+        {
+            var awaitPromise = TryStartParticlesAwaitPromiseTransition(fast);
+
+            awaitPromise.Then(() =>
+            {
+                _progressHandler.CurrentLevelNumber = levelNumber;
+                PopupAllScreenHandlers();
+                _levelSessionHandler.StartLevel(levelParams, _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
+            });
+        }
         
-        private IPromise TryStartAwaitPromise(bool fast)
+        private IPromise TryStartParticlesAwaitPromiseTransition(bool fast)
         {
             IPromise awaitPromise;
 

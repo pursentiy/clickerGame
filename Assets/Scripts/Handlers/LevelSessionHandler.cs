@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using System.Collections;
+using DG.Tweening;
 using Figures;
 using Figures.Animals;
 using Installers;
@@ -40,17 +41,25 @@ namespace Handlers
             SetupHud(levelParams, levelHudHandler);
             SetupFigures(levelParams, defaultColor);
             
-            TryHandleLevelCompletion();
+            TryHandleLevelCompletion(true);
         }
 
-        private void TryHandleLevelCompletion()
+        private void TryHandleLevelCompletion(bool onEnter)
         {
             if (!_progressHandler.CheckForLevelCompletion(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber))
             {
                 return;
             }
-            
-            _screenHandler.ShowLevelCompleteScreen(_levelVisualHandler.TextureCamera, ResetLevel);
+
+            _levelVisualHandler.SetInteractivity(false);
+            _levelHudHandler.SetInteractivity(false);
+            StartCoroutine(AwaitFinishLevel(onEnter));
+        }
+
+        private IEnumerator AwaitFinishLevel(bool onEnter)
+        {
+            yield return new WaitForSeconds(_screenHandler.AwaitChangeScreenTime);
+            _screenHandler.ShowLevelCompleteScreen(_levelVisualHandler.TextureCamera, onEnter, ResetLevel);
         }
 
         private void SetupClickHandler()
@@ -130,7 +139,7 @@ namespace Handlers
                         {
                             releasedOnFigure.SetConnected();
                             SetMenuFigureConnected();
-                            TryHandleLevelCompletion();
+                            TryHandleLevelCompletion(false);
                         });
                 });
             }

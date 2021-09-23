@@ -11,8 +11,6 @@ namespace Screen
     public class ChooseLevelScreenBase : ScreenBase
     {
         [Inject] private ScreenHandler _screenHandler;
-        [Inject] private LevelSessionHandler _levelSessionHandler;
-        [Inject] private LevelParamsHandler _levelParamsHandler;
         [Inject] private ProgressHandler _progressHandler;
         [Inject] private FiguresStorageData _figuresStorageData;
         
@@ -48,11 +46,7 @@ namespace Screen
                 enterButton.Initialize(levelParamsData.LevelName, levelParamsData.LevelImage, levelParamsData.LevelDifficulty, levelParams.LevelPlayable,
                     () =>
                     {
-                        _progressHandler.CurrentLevelNumber = levelParams.LevelNumber;
-                        _screenHandler.PopupAllScreenHandlers();
-                        _levelSessionHandler.StartLevel(levelParams,
-                            _levelParamsHandler.LevelHudHandlerPrefab,
-                            _levelParamsHandler.TargetFigureDefaultColor);
+                        _screenHandler.StartNewLevel(levelParams.LevelNumber, levelParams);
                     });
                 index++;
             });

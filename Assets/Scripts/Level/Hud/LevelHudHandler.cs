@@ -26,6 +26,7 @@ namespace Level.Hud
         [SerializeField] private ScrollRect _scrollRect;
         [SerializeField] private Button _backButton;
         [SerializeField] private HorizontalLayoutGroup _figuresGroup;
+        [SerializeField] private CanvasGroup _canvasGroup;
         
         private List<FigureMenu> _figureAnimalsMenuList;
         private float _figuresGroupSpacing;
@@ -44,6 +45,11 @@ namespace Level.Hud
         public void SetupScrollMenu(List<LevelFigureParams> levelFiguresParams)
         {
             levelFiguresParams.ForEach(SetFigure);
+        }
+        
+        public void SetInteractivity(bool isInteractable)
+        {
+            _canvasGroup.interactable = isInteractable;
         }
 
         private void SetFigure(LevelFigureParams figureParams)

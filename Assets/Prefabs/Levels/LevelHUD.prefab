@@ -304,6 +304,7 @@ GameObject:
   - component: {fileID: 4922581533627459722}
   - component: {fileID: 4922581533627459723}
   - component: {fileID: 4202509390955207686}
+  - component: {fileID: 6055261361001014442}
   m_Layer: 5
   m_Name: LevelHUD
   m_TagString: Untagged
@@ -356,6 +357,19 @@ MonoBehaviour:
   _scrollRect: {fileID: 4922581532116615206}
   _backButton: {fileID: 3699240113215671451}
   _figuresGroup: {fileID: 4922581533096915572}
+  _canvasGroup: {fileID: 6055261361001014442}
+--- !u!225 &6055261361001014442
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4922581533627459721}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5658348355855099232
 GameObject:
   m_ObjectHideFlags: 0

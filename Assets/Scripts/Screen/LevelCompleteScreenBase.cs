@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Collections;
 using Handlers;
+using Static;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
+using Random = UnityEngine.Random;
 
 namespace Screen
 {
@@ -15,40 +17,55 @@ namespace Screen
         [Inject] private ProgressHandler _progressHandler;
         
         [SerializeField] private Button _backButton;
-        [SerializeField] private Button _tryAgainButton;
-        [SerializeField] private RawImage _finalLevelImage;
-        [SerializeField] private int _levelTextureWidth;
-        [SerializeField] private int _levelTextureHeight;
-        
+        [SerializeField] private Button _replayButton;
+        [SerializeField] private Button _nextLevelButton;
+        [SerializeField] private Image _completeFigureImage;
+        [SerializeField] private RectTransform _rectTransform;
+        [SerializeField] private ParticleSystem[] _fireworksParticles;
+
         private Camera _textureCamera;
         private RenderTexture _renderTexture;
         private Action _onFinishLevelSessionAction;
+
+        public RectTransform RectTransform => _rectTransform;
 
         public void SetOnFinishLevelSessionAction(Action action)
         {
             _onFinishLevelSessionAction = action;
         }
 
-        public void SetupTextureCamera(Camera sourceCamera)
+        public void PlayFireworksParticles()
         {
-            _textureCamera = sourceCamera;
-            
-            _textureCamera.gameObject.SetActive(true);
-            _renderTexture = new RenderTexture(_levelTextureWidth, _levelTextureHeight, 16, RenderTextureFormat.ARGB32);
-            _renderTexture.Create();
-            _finalLevelImage.texture = _renderTexture;
-            _textureCamera.targetTexture = _renderTexture;
-        }
-        
-        private void Start()
-        {
-            InitializeLevelsButton();
+            var fireworksParticlesArray = new int[_fireworksParticles.Length];
+            for (var i = 0; i < _fireworksParticles.Length; i++)
+            {
+                fireworksParticlesArray[i] = i;
+            }
+
+            StartCoroutine(PlayParticles(Extensions.Shuffle(fireworksParticlesArray)));
         }
 
-        private void InitializeLevelsButton()
+        private IEnumerator PlayParticles(int[] shuffledPositions)
+        {
+            foreach (var fireworkPosition in shuffledPositions)
+            {
+                yield return new WaitForSeconds(0.1f);
+                _fireworksParticles[fireworkPosition].Play();
+            }
+            
+            yield return new WaitForSeconds(Random.Range(0.3f, 1f));
+            PlayFireworksParticles();
+        }
+
+        private void Start()
+        {
+            InitializeLevelsButtons();
+        }
+
+        private void InitializeLevelsButtons()
         {
             _backButton.onClick.AddListener(()=> _screenHandler.ShowChooseLevelScreen());
-            _tryAgainButton.onClick.AddListener(TryAgainLevel);
+            _replayButton.onClick.AddListener(TryAgainLevel);
         }
 
         private void TryAgainLevel()
@@ -59,19 +76,20 @@ namespace Screen
                 _screenHandler.ShowChooseLevelScreen();
             }
             
-            _progressHandler.ResetLevelProgress(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber);
-            var levelParams = _progressHandler.GetLevelByNumber(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber);
+            // _progressHandler.ResetLevelProgress(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber);
+            // var levelParams = _progressHandler.GetLevelByNumber(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber);
 
             TryInvokeFinishLevelSessionAction();
             
-            _screenHandler.PopupAllScreenHandlers();
-            _levelSessionHandler.StartLevel(levelParams, _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
+            _screenHandler.ReplayCurrentLevel(_progressHandler.CurrentLevelNumber);
+            // _screenHandler.PopupAllScreenHandlers();
+            // _levelSessionHandler.StartLevel(levelParams, _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
         }
         
         private void OnDestroy()
         {
             _backButton.onClick.RemoveAllListeners();
-            _tryAgainButton.onClick.RemoveAllListeners();
+            _replayButton.onClick.RemoveAllListeners();
             
             TryInvokeFinishLevelSessionAction();
         }
