@@ -71,14 +71,12 @@ namespace Handlers
             screenHandler.SetupFigureImage(figureSprite);
             screenHandler.SetBackgroundFigure();
             
-            DOTween.Sequence().Append(screenHandler.PopupTransform.DOScale(new Vector3(0, 0, 0), 0.01f))
-                .Join(screenHandler.ScreenTransform.DOScale(new Vector3(0, 0, 0), 0.01f))
+            DOTween.Sequence().Append(screenHandler.ScreenTransform.DOScale(new Vector3(0, 0, 0), 0.01f))
                 .AppendCallback(() =>
                 {
                     screenHandler.gameObject.SetActive(true);
                 })
                 .Append(screenHandler.ScreenTransform.DOScale(new Vector3(1f, 1f, 1f), 0.75f).SetEase(_popupAnimationCurve))
-                .Insert(0.1f,screenHandler.PopupTransform.DOScale(new Vector3(1f, 1f, 1f), 0.8f).SetEase(_popupAnimationCurve))
                 .OnComplete(() =>
             {
                 screenHandler.SetOnFinishLevelSessionAction(onFinishAction);
