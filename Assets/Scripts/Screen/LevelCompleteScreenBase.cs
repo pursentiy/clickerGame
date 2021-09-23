@@ -12,26 +12,37 @@ namespace Screen
     public class LevelCompleteScreenBase : ScreenBase
     {
         [Inject] private ScreenHandler _screenHandler;
-        [Inject] private LevelSessionHandler _levelSessionHandler;
-        [Inject] private LevelParamsHandler _levelParamsHandler;
         [Inject] private ProgressHandler _progressHandler;
         
         [SerializeField] private Button _backButton;
         [SerializeField] private Button _replayButton;
-        [SerializeField] private Button _nextLevelButton;
         [SerializeField] private Image _completeFigureImage;
-        [SerializeField] private RectTransform _rectTransform;
+        [SerializeField] private Image _backgroundImage;
+        [SerializeField] private RectTransform _popupTransform;
+        [SerializeField] private RectTransform _screenTransform;
         [SerializeField] private ParticleSystem[] _fireworksParticles;
+        [SerializeField] private Sprite[] _backgroundSprites;
 
         private Camera _textureCamera;
         private RenderTexture _renderTexture;
         private Action _onFinishLevelSessionAction;
 
-        public RectTransform RectTransform => _rectTransform;
+        public RectTransform PopupTransform => _popupTransform;
+        public RectTransform ScreenTransform => _screenTransform;
 
         public void SetOnFinishLevelSessionAction(Action action)
         {
             _onFinishLevelSessionAction = action;
+        }
+
+        public void SetBackgroundFigure()
+        {
+            _backgroundImage.sprite = _backgroundSprites[Random.Range(0, _backgroundSprites.Length)];
+        }
+
+        public void SetupFigureImage(Sprite completedFigureSprite)
+        {
+            _completeFigureImage.sprite = completedFigureSprite;
         }
 
         public void PlayFireworksParticles()
@@ -78,10 +89,9 @@ namespace Screen
             
             // _progressHandler.ResetLevelProgress(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber);
             // var levelParams = _progressHandler.GetLevelByNumber(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber);
-
-            TryInvokeFinishLevelSessionAction();
             
             _screenHandler.ReplayCurrentLevel(_progressHandler.CurrentLevelNumber);
+            TryInvokeFinishLevelSessionAction();
             // _screenHandler.PopupAllScreenHandlers();
             // _levelSessionHandler.StartLevel(levelParams, _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
         }

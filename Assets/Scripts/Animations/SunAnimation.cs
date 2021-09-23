@@ -1,7 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 
-namespace Level.Game
+namespace Animations
 {
     public class SunAnimation : MonoBehaviour
     {

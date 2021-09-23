@@ -14,6 +14,6 @@ namespace Handlers
         void StartNewLevel(int levelNumber, LevelParams levelParams, bool fast = false);
         void ReplayCurrentLevel(int levelNumber, bool fast = false);
         void PopupAllScreenHandlers();
-        void ShowLevelCompleteScreen(Camera sourceCamera, bool onLevelEnter, Action onFinishAction, bool fast = false);
+        void ShowLevelCompleteScreen(Camera sourceCamera, bool onLevelEnter, Action onFinishAction, Sprite figureSprite, bool fast = false);
     }
 }

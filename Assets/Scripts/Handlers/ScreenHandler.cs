@@ -63,23 +63,26 @@ namespace Handlers
             });
         }
         
-        public void ShowLevelCompleteScreen(Camera sourceCamera, bool onLevelEnter, Action onFinishAction, bool fast = false)
+        public void ShowLevelCompleteScreen(Camera sourceCamera, bool onLevelEnter, Action onFinishAction, Sprite figureSprite, bool fast = false)
         {
             _uiBlockHandler.BlockUserInput(true);
             var screenHandler = Instantiate(_levelCompleteScreenBase, _screenCanvasTransform);
             screenHandler.gameObject.SetActive(false);
-
-            var position = screenHandler.RectTransform.anchoredPosition;
-            DOTween.Sequence().Append(screenHandler.RectTransform.DOScale(new Vector3(0, 0, 0), 0.01f))
+            screenHandler.SetupFigureImage(figureSprite);
+            screenHandler.SetBackgroundFigure();
+            
+            DOTween.Sequence().Append(screenHandler.PopupTransform.DOScale(new Vector3(0, 0, 0), 0.01f))
+                .Join(screenHandler.ScreenTransform.DOScale(new Vector3(0, 0, 0), 0.01f))
                 .AppendCallback(() =>
                 {
                     screenHandler.gameObject.SetActive(true);
                 })
-                .Append(screenHandler.RectTransform.DOScale(new Vector3(1f, 1f, 1f), 0.5f).SetEase(_popupAnimationCurve))
+                .Append(screenHandler.ScreenTransform.DOScale(new Vector3(1f, 1f, 1f), 0.75f).SetEase(_popupAnimationCurve))
+                .Insert(0.1f,screenHandler.PopupTransform.DOScale(new Vector3(1f, 1f, 1f), 0.8f).SetEase(_popupAnimationCurve))
                 .OnComplete(() =>
             {
                 screenHandler.SetOnFinishLevelSessionAction(onFinishAction);
-                
+
                 if(!onLevelEnter)
                     screenHandler.PlayFireworksParticles();
                 

@@ -59,7 +59,8 @@ namespace Handlers
         private IEnumerator AwaitFinishLevel(bool onEnter)
         {
             yield return new WaitForSeconds(_screenHandler.AwaitChangeScreenTime);
-            _screenHandler.ShowLevelCompleteScreen(_levelVisualHandler.TextureCamera, onEnter, ResetLevel);
+            _screenHandler.ShowLevelCompleteScreen(_levelVisualHandler.TextureCamera, onEnter, ResetLevel, 
+                _figuresStorageData.GetLevelParamsData(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber).LevelImage);
         }
 
         private void SetupClickHandler()
