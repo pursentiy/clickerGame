@@ -34,7 +34,7 @@ namespace GameState
             var diff = _levelsParamsStorage.DefaultPacksParamsList.Count - savedDataProgress.Count;
             var newPacks = new List<PackParams>();
             
-            for (var index = savedDataProgress.Count; index < diff; index++)
+            for (var index = savedDataProgress.Count; index <= diff; index++)
             {
                 newPacks.Add(_levelsParamsStorage.DefaultPacksParamsList[index]);
             }

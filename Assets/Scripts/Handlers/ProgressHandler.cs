@@ -85,7 +85,7 @@ namespace Handlers
                 return;
 
             GetPackPackByNumber(currentPackNumber + 1).PackPlayable = true;
-            GetLevelByNumber(currentPackNumber + 1, 0).LevelPlayable = value;
+            GetLevelByNumber(currentPackNumber + 1, 1).LevelPlayable = value;
         }
 
         public bool CheckForLevelCompletion(int packNumber, int levelNumber)
