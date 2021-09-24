@@ -9,7 +9,6 @@ namespace Animations
         [SerializeField] private Transform _targetTransform;
         [SerializeField] private float _animationScaleDuration = 0.05f;
         [SerializeField] private float _pointerDownScale = 0.93f;
-        [SerializeField] private float _pointerClickEnterScale = 1.07f;
         [SerializeField] private AnimationCurve _bounceAnimation;
 
         private Transform _transform;
@@ -30,16 +29,6 @@ namespace Animations
         {
             SetScaleAnimated(_pointerDownScale);
         }
-
-        // public void OnPointerExit(PointerEventData eventData)
-        // {
-        //     SetScaleAnimated(1);
-        // }
-        //
-        // public void OnPointerEnter(PointerEventData eventData)
-        // {
-        //     SetScaleAnimated(_pointerClickEnterScale);
-        // }
 
         public void OnPointerUp(PointerEventData eventData)
         {

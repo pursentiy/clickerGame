@@ -5,7 +5,7 @@ namespace Handlers
 {
     public interface IProgressHandler
     {
-        void InitializeHandler(List<PackParams> levelsParams);
+        void InitializeHandler(List<PackParams> levelsParams, List<PackParams> newLevelsParams = null);
         void UpdateProgress(int packNumber, int levelNumber, int figureId);
         bool CheckForLevelCompletion(int packNumber, int levelNumber);
         List<PackParams> GetCurrentProgress();

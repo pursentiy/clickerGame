@@ -18,13 +18,38 @@ namespace GameState
         protected override void Awake()
         {
             var savedDataProgress = _processProgressDataService.LoadProgress();
+
+            if (savedDataProgress == null)
+            {
+                _progressHandler.InitializeHandler(StartNewGameProgress());
+            }
+            else
+            {
+                _progressHandler.InitializeHandler(savedDataProgress, IsNewPacksAdded(savedDataProgress) ? GetNewPacks(savedDataProgress) : null);
+            }
+        }
+        
+        private List<PackParams> GetNewPacks(List<PackParams> savedDataProgress)
+        {
+            var diff = _levelsParamsStorage.DefaultPacksParamsList.Count - savedDataProgress.Count;
+            var newPacks = new List<PackParams>();
             
-            _progressHandler.InitializeHandler(savedDataProgress ?? StartNewGameProgress());
+            for (var index = savedDataProgress.Count; index < diff; index++)
+            {
+                newPacks.Add(_levelsParamsStorage.DefaultPacksParamsList[index]);
+            }
+
+            return newPacks;
         }
 
         private void Start()
         {
             _screenHandler.ShowWelcomeScreen(true);
+        }
+
+        private bool IsNewPacksAdded(List<PackParams> savedDataProgress)
+        {
+            return _levelsParamsStorage.DefaultPacksParamsList.Count > savedDataProgress.Count;
         }
 
         private List<PackParams> StartNewGameProgress()
