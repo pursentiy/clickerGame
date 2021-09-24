@@ -30,6 +30,7 @@ namespace Level.Hud
         
         private List<FigureMenu> _figureAnimalsMenuList;
         private float _figuresGroupSpacing;
+        private Sequence _shiftingSequence;
 
         protected override void Awake()
         {
@@ -111,9 +112,11 @@ namespace Level.Hud
                 animationPromise.Resolve();
                 return;
             }
-                
             
-            var shiftingSequence = DOTween.Sequence();
+            if(_shiftingSequence != null && _shiftingSequence.IsActive())
+                _shiftingSequence.Complete();
+
+            _shiftingSequence = DOTween.Sequence();
             _figuresGroup.enabled = false;
 
             _figureAnimalsMenuList.ForEach(figure =>
@@ -122,12 +125,12 @@ namespace Level.Hud
                     return;
 
                 var position = figure.ContainerTransform.localPosition;
-                shiftingSequence.Join(isInserting
+                _shiftingSequence.Join(isInserting
                     ? figure.ContainerTransform.DOLocalMove(new Vector2(position.x + figure.InitialWidth, position.y), 0.25f)
                     : figure.ContainerTransform.DOLocalMove(new Vector2(position.x - figure.InitialWidth, position.y), 0.25f));
             });
 
-            shiftingSequence.OnComplete(animationPromise.Resolve);
+            _shiftingSequence.OnComplete(animationPromise.Resolve);
         }
 
         public void TryShiftAllElementsAfterRemoving(int figureId, Promise animationPromise)
