@@ -24,6 +24,7 @@ namespace Handlers
         [SerializeField] private RectTransform _gameMainCanvasTransform;
         [SerializeField] private RectTransform _draggingTransform;
         [SerializeField] private ClickHandler _clickHandler;
+        [SerializeField] private ParticleSystem _finishedFigureParticles;
 
         private LevelVisualHandler _levelVisualHandler;
         private LevelHudHandler _levelHudHandler;
@@ -131,7 +132,13 @@ namespace Handlers
                 
                 _progressHandler.UpdateProgress(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber, releasedOnFigure.FigureId);
                 
-                _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigureImage.transform.DOScale(0, 0.4f));
+                _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigureImage.transform.DOScale(0, 0.4f)).InsertCallback(0.25f,
+                    () =>
+                    {
+                        _finishedFigureParticles.transform.position = _draggingFigureImage.transform.position;
+                        _finishedFigureParticles.Simulate(0);
+                        _finishedFigureParticles.Play();
+                    });
 
                 shiftingAnimationPromise.Then(() =>
                 {
