@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Animations;
 using Handlers;
 using Static;
 using UnityEngine;
@@ -17,11 +18,10 @@ namespace Screen
         [SerializeField] private Button _backButton;
         [SerializeField] private Button _replayButton;
         [SerializeField] private Image _completeFigureImage;
-        [SerializeField] private Image _backgroundImage;
         [SerializeField] private RectTransform _popupTransform;
         [SerializeField] private RectTransform _screenTransform;
         [SerializeField] private ParticleSystem[] _fireworksParticles;
-        [SerializeField] private Sprite[] _backgroundSprites;
+        [SerializeField] private ScreenColorAnimation _screenColorAnimation;
 
         private Camera _textureCamera;
         private RenderTexture _renderTexture;
@@ -30,14 +30,14 @@ namespace Screen
         public RectTransform PopupTransform => _popupTransform;
         public RectTransform ScreenTransform => _screenTransform;
 
+        public void StartColorAnimationLoop(Gradient colorGradient)
+        {
+            _screenColorAnimation.StartColorLoop(colorGradient);
+        }
+
         public void SetOnFinishLevelSessionAction(Action action)
         {
             _onFinishLevelSessionAction = action;
-        }
-
-        public void SetBackgroundFigure()
-        {
-            _backgroundImage.sprite = _backgroundSprites[Random.Range(0, _backgroundSprites.Length)];
         }
 
         public void SetupFigureImage(Sprite completedFigureSprite)

@@ -44,3 +44,6 @@ TagManager:
   - name: Front
     uniqueID: 2250614607
     locked: 0
+  - name: Figure
+    uniqueID: 3483689035
+    locked: 0

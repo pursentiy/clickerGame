@@ -63,14 +63,14 @@ namespace Handlers
             });
         }
         
-        public void ShowLevelCompleteScreen(Camera sourceCamera, bool onLevelEnter, Action onFinishAction, Sprite figureSprite, bool fast = false)
+        public void ShowLevelCompleteScreen(bool onLevelEnter, Action onFinishAction, Sprite figureSprite, Gradient colorGradient, bool fast = false)
         {
             _uiBlockHandler.BlockUserInput(true);
             var screenHandler = Instantiate(_levelCompleteScreenBase, _screenCanvasTransform);
             screenHandler.gameObject.SetActive(false);
             screenHandler.SetupFigureImage(figureSprite);
-            screenHandler.SetBackgroundFigure();
-            
+            screenHandler.StartColorAnimationLoop(colorGradient);
+
             DOTween.Sequence().Append(screenHandler.ScreenTransform.DOScale(new Vector3(0, 0, 0), 0.01f))
                 .AppendCallback(() =>
                 {

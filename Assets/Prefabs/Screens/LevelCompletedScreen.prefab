@@ -35,8 +35,8 @@ RectTransform:
   m_Father: {fileID: 4303779283134089369}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.118377864}
-  m_AnchorMax: {x: 1, y: 0.89038134}
+  m_AnchorMin: {x: 0.066776514, y: 0.1866426}
+  m_AnchorMax: {x: 0.9383098, y: 0.8153187}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -4686,7 +4686,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.061371326, y: 0.07016006}
   m_AnchorMax: {x: 0.9364637, y: 0.2797829}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 71.99396}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7606077636798864347
@@ -4799,6 +4799,7 @@ GameObject:
   - component: {fileID: 4303779283134089369}
   - component: {fileID: 4303779283134089371}
   - component: {fileID: 4303779283134089381}
+  - component: {fileID: 7688697358630989343}
   m_Layer: 5
   m_Name: LevelCompletedScreen
   m_TagString: Untagged
@@ -4857,7 +4858,6 @@ MonoBehaviour:
   _backButton: {fileID: 4995292288417103503}
   _replayButton: {fileID: 5249087258751482634}
   _completeFigureImage: {fileID: 7224523845739261313}
-  _backgroundImage: {fileID: 1295115738758257519}
   _popupTransform: {fileID: 7505053122958690425}
   _screenTransform: {fileID: 4303779283134089369}
   _fireworksParticles:
@@ -4868,12 +4868,52 @@ MonoBehaviour:
   - {fileID: 7467274264576005533}
   - {fileID: 4138932087970721870}
   - {fileID: 2822367878057236699}
-  _backgroundSprites:
-  - {fileID: 21300000, guid: 2a75f20d62713b64cbc7344bd1df4f49, type: 3}
-  - {fileID: 21300000, guid: 95ff4b1961b4187449005014cc257f13, type: 3}
-  - {fileID: 21300000, guid: 331e0ebbc094640408c982ba0990abe1, type: 3}
-  - {fileID: 21300000, guid: 2fd592e376d49834099c8889fd775e5a, type: 3}
-  - {fileID: 21300000, guid: 272cb8d25f78ee74da31e26bd3a5af5b, type: 3}
+  _screenColorAnimation: {fileID: 7688697358630989343}
+--- !u!114 &7688697358630989343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4303779283134089368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c785e987d7d72a4181d3a40bc6f2da3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _backgroundTexture: {fileID: 0}
+  _backgroundImage: {fileID: 1295115738758257519}
+  _gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  _colorChangingDuration: 15
+  _canBeAnimated: 0
 --- !u!1 &4303779283167890084
 GameObject:
   m_ObjectHideFlags: 0
@@ -4908,8 +4948,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.07642603, y: 0.76004297}
   m_AnchorMax: {x: 0.9364637, y: 0.9149359}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -10.755, y: 0}
+  m_SizeDelta: {x: -88.97046, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4303779283167890087
 CanvasRenderer:
@@ -4967,7 +5007,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 120.7
+  m_fontSize: 95.15
   m_fontSizeBase: 140
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -18789,14 +18829,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9245283, g: 0.9226368, b: 0.9114454, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2fd592e376d49834099c8889fd775e5a, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
@@ -32691,6 +32731,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7de7d7e290e81941935851059680180, type: 3}
+--- !u!224 &5249087258751482633 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4596499802515451074, guid: e7de7d7e290e81941935851059680180,
+    type: 3}
+  m_PrefabInstance: {fileID: 8580075523026130891}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5249087258751482634 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4596499802515451073, guid: e7de7d7e290e81941935851059680180,
@@ -32703,12 +32749,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &5249087258751482633 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4596499802515451074, guid: e7de7d7e290e81941935851059680180,
-    type: 3}
-  m_PrefabInstance: {fileID: 8580075523026130891}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8834052464258798158
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32873,6 +32913,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7de7d7e290e81941935851059680180, type: 3}
+--- !u!224 &4995292288417103500 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4596499802515451074, guid: e7de7d7e290e81941935851059680180,
+    type: 3}
+  m_PrefabInstance: {fileID: 8834052464258798158}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &4995292288417103503 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4596499802515451073, guid: e7de7d7e290e81941935851059680180,
@@ -32885,9 +32931,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &4995292288417103500 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4596499802515451074, guid: e7de7d7e290e81941935851059680180,
-    type: 3}
-  m_PrefabInstance: {fileID: 8834052464258798158}
-  m_PrefabAsset: {fileID: 0}

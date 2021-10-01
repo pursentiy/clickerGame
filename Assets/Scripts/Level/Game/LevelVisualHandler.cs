@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Animations;
 using Figures.Animals;
 using Handlers;
 using Installers;
@@ -17,23 +18,17 @@ namespace Level.Game
         [Inject] private ProgressHandler _progressHandler;
 
         [SerializeField] private Transform _figuresParentTransform;
-        [SerializeField] private Camera _textureCamera;
-        [SerializeField] private CanvasGroup _canvasGroup;
+        [SerializeField] private ScreenColorAnimation screenColorAnimation;
 
         private List<FigureTarget> _figureAnimalsTargetList;
-        
-        public Camera TextureCamera => _textureCamera;
+
+        public ScreenColorAnimation ScreenColorAnimation => screenColorAnimation;
 
         protected override void Awake()
         {
             base.Awake();
             
             _figureAnimalsTargetList = new List<FigureTarget>();
-        }
-
-        public void SetInteractivity(bool isInteractable)
-        {
-            _canvasGroup.interactable = isInteractable;
         }
 
         public void SetupLevel(List<LevelFigureParams> levelFiguresParams, Color defaultColor)

@@ -50,8 +50,7 @@ namespace Handlers
             {
                 return;
             }
-
-            _levelVisualHandler.SetInteractivity(false);
+            
             _levelHudHandler.SetInteractivity(false);
             StartCoroutine(AwaitFinishLevel(onEnter));
         }
@@ -59,8 +58,8 @@ namespace Handlers
         private IEnumerator AwaitFinishLevel(bool onEnter)
         {
             yield return new WaitForSeconds(_screenHandler.AwaitChangeScreenTime);
-            _screenHandler.ShowLevelCompleteScreen(_levelVisualHandler.TextureCamera, onEnter, ResetLevel, 
-                _figuresStorageData.GetLevelParamsData(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber).LevelImage);
+            _screenHandler.ShowLevelCompleteScreen(onEnter, ResetLevel, 
+                _figuresStorageData.GetLevelParamsData(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber).LevelImage, _levelVisualHandler.ScreenColorAnimation.Gradient);
         }
 
         private void SetupClickHandler()
