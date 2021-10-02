@@ -13,6 +13,7 @@ namespace Figures.Animals
         [SerializeField] protected Image _image;
         [SerializeField] protected RectTransform _transformFigure;
         [SerializeField] protected RectTransform _transformContainer;
+        [SerializeField] private ParticleSystem _particleSystem;
         
         private const float YDeltaDispersion = 2f;
         public const float InitialWidthParam = 250f;
@@ -82,16 +83,21 @@ namespace Figures.Animals
         {
             if (!(eventData.delta.y < YDeltaDispersion) )
             {
+                _particleSystem.Simulate(0);
+                _particleSystem.Play();
+                
                 OnBeginDragFigureSignal.Dispatch(this);
                 return;
             }
-            
+
             OnBeginDragSignal.Dispatch(eventData);
             _isScrolling = true;
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            _particleSystem.Stop();
+            
             OnEndDragSignal.Dispatch(eventData);
             
             _isScrolling = false;
