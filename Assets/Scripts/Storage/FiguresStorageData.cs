@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Figures;
 using Figures.Animals;
 using Level.Game;
 using Storage.Levels;
