@@ -2,6 +2,7 @@
 using System.Collections;
 using DG.Tweening;
 using Installers;
+using Plugins.FSignal;
 using RSG;
 using Screen;
 using Storage.Levels.Params;
@@ -30,12 +31,13 @@ namespace Handlers
 
         public float AwaitChangeScreenTime => _awaitChangeScreenTime;
 
-        public void ShowChooseLevelScreen(bool fast = false)
+        public void ShowChooseLevelScreen(FSignal levelResetSignal = null, bool fast = false)
         {
             var awaitPromise = TryStartParticlesAwaitPromiseTransition(fast);
 
             awaitPromise.Then(() =>
             {
+                levelResetSignal?.Dispatch();
                 PopupAllScreenHandlers();
                 _currentScreenBase = Instantiate(_chooseLevelScreenBase, _screenCanvasTransform);
             });

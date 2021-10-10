@@ -101,8 +101,7 @@ namespace Level.Hud
 
         private void GoToMainMenuScreen()
         {
-            BackToMenuClickSignal.Dispatch();
-            _screenHandler.ShowChooseLevelScreen();
+            _screenHandler.ShowChooseLevelScreen(BackToMenuClickSignal);
         }
 
         public void ShiftAllElements(bool isInserting, int figureId, Promise animationPromise)

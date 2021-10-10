@@ -132,13 +132,8 @@ namespace Handlers
                 
                 _progressHandler.UpdateProgress(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber, releasedOnFigure.FigureId);
                 
-                _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigureImage.transform.DOScale(0, 0.4f)).InsertCallback(0.25f,
-                    () =>
-                    {
-                        _finishedFigureParticles.transform.position = _draggingFigureImage.transform.position;
-                        _finishedFigureParticles.Simulate(0);
-                        _finishedFigureParticles.Play();
-                    });
+                _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigureImage.transform.DOScale(0, 0.4f))
+                    .InsertCallback(0.25f, PlayFinishParticles);
 
                 shiftingAnimationPromise.Then(() =>
                 {
@@ -154,6 +149,13 @@ namespace Handlers
             {
                 ResetDraggingFigure();
             }
+        }
+
+        private void PlayFinishParticles()
+        {
+            _finishedFigureParticles.transform.position = _draggingFigureImage.transform.position;
+            _finishedFigureParticles.Simulate(0);
+            _finishedFigureParticles.Play();
         }
 
         private void SetMenuFigureConnected()
