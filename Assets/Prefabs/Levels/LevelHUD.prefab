@@ -691,6 +691,7 @@ MonoBehaviour:
   _figuresParentTransform: {fileID: 4922581533096915531}
   _scrollRect: {fileID: 4922581532116615206}
   _backButton: {fileID: 525965091121619029}
+  _settingsButton: {fileID: 7231004922079957945}
   _figuresGroup: {fileID: 4922581533096915572}
   _canvasGroup: {fileID: 6055261361001014442}
 --- !u!225 &6055261361001014442

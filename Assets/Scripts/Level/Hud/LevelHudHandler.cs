@@ -20,11 +20,13 @@ namespace Level.Hud
     {
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private ScreenHandler _screenHandler;
+        [Inject] private PopupHandler _popupHandler;
         [Inject] private ProgressHandler _progressHandler;
 
         [SerializeField] private RectTransform _figuresParentTransform;
         [SerializeField] private ScrollRect _scrollRect;
         [SerializeField] private Button _backButton;
+        [SerializeField] private Button _settingsButton;
         [SerializeField] private HorizontalLayoutGroup _figuresGroup;
         [SerializeField] private CanvasGroup _canvasGroup;
         
@@ -37,6 +39,7 @@ namespace Level.Hud
             _figureAnimalsMenuList = new List<FigureMenu>();
             
             _backButton.onClick.AddListener(GoToMainMenuScreen);
+            _settingsButton.onClick.AddListener(_popupHandler.ShowSettings);
 
             _figuresGroupSpacing = _figuresGroup.spacing;
         }
@@ -183,12 +186,12 @@ namespace Level.Hud
         {
             var figure = GetFigureById(figureId);
             figure.FigureTransform.SetParent(figure.ContainerTransform);
-            //figure.FigureTransform.SetSiblingIndex(figure.SiblingPosition);
         }
 
         private void OnDestroy()
         {
             _backButton.onClick.RemoveAllListeners();
+            _settingsButton.onClick.RemoveAllListeners();
 
             UnsubscribeFromDraggingSignals();
         }

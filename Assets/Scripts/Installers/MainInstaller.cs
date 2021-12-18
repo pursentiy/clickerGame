@@ -15,6 +15,7 @@ namespace Installers
         
         [SerializeField] private ProgressHandler _progressHandler;
         [SerializeField] private ScreenHandler _screenHandler;
+        [SerializeField] private PopupHandler _popupHandler;
         [SerializeField] private LevelSessionHandler _levelSessionHandler;
         [SerializeField] private LevelParamsHandler _levelParamsHandler;
         [SerializeField] private ObjectsPoolHandler _objectsPoolHandler;
@@ -25,6 +26,7 @@ namespace Installers
             ContainerHolder.OnProjectInstall(Container);
 
             Container.Bind<ProgressHandler>().FromInstance(_progressHandler);
+            Container.Bind<PopupHandler>().FromInstance(_popupHandler);
             Container.Bind<ScreenHandler>().FromInstance(_screenHandler);
             Container.Bind<LevelSessionHandler>().FromInstance(_levelSessionHandler);
             Container.Bind<LevelParamsHandler>().FromInstance(_levelParamsHandler);

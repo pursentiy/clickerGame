@@ -11,6 +11,7 @@ namespace Screen
     public class ChooseLevelScreenBase : ScreenBase
     {
         [Inject] private ScreenHandler _screenHandler;
+        [Inject] private PopupHandler _popupHandler;
         [Inject] private ProgressHandler _progressHandler;
         [Inject] private FiguresStorageData _figuresStorageData;
         
@@ -30,6 +31,7 @@ namespace Screen
             _packName.text = _figuresStorageData.GetPackParamsData(_progressHandler.CurrentPackNumber).PackName + " Pack";
             
             _goToChoosePackScreenButton.onClick.AddListener(()=> _screenHandler.ShowChoosePackScreen());
+            _settingsButton.onClick.AddListener(_popupHandler.ShowSettings);
         }
 
         private void InitializeLevelsButton()
@@ -55,6 +57,7 @@ namespace Screen
         private void OnDestroy()
         {
             _goToChoosePackScreenButton.onClick.RemoveAllListeners();
+            _settingsButton.onClick.RemoveAllListeners();
         }
     }
 }

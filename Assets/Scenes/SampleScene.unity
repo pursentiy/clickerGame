@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -207,6 +207,7 @@ MonoBehaviour:
   figuresStorageData: {fileID: 11400000, guid: ee10b72902a1ab94db068e4883dc8e28, type: 2}
   _progressHandler: {fileID: 534889506}
   _screenHandler: {fileID: 534889505}
+  _popupHandler: {fileID: 534889512}
   _levelSessionHandler: {fileID: 534889509}
   _levelParamsHandler: {fileID: 534889510}
   _objectsPoolHandler: {fileID: 0}
@@ -786,6 +787,7 @@ GameObject:
   - component: {fileID: 534889508}
   - component: {fileID: 534889510}
   - component: {fileID: 534889511}
+  - component: {fileID: 534889512}
   m_Layer: 0
   m_Name: Handlers
   m_TagString: Untagged
@@ -955,6 +957,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _blockImage: {fileID: 414328837}
+--- !u!114 &534889512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 534889504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51dd19e292c3414b8027b941bf3d24cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _popupCanvasTransform: {fileID: 1481870794}
+  _settingsPopup: {fileID: 6152355104619887165, guid: cbe26117b81913b448132e8054a3d78d,
+    type: 3}
 --- !u!198 &536753539 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,

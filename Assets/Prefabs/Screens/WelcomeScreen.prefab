@@ -199,6 +199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playButton: {fileID: 1496618069684825166}
+  _settingsButton: {fileID: 5706495573748306573}
 --- !u!114 &1496618069183132050
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -375,7 +376,7 @@ GameObject:
   - component: {fileID: 1496618069684825166}
   - component: {fileID: 6218174673114799550}
   m_Layer: 5
-  m_Name: Button
+  m_Name: StartButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -496,7 +497,6 @@ MonoBehaviour:
   _targetTransform: {fileID: 1496618069684825165}
   _animationScaleDuration: 0.4
   _pointerDownScale: 0.93
-  _pointerClickEnterScale: 1.07
   _bounceAnimation:
     serializedVersion: 2
     m_Curve:
@@ -766,7 +766,7 @@ GameObject:
   - component: {fileID: 5706495573748306573}
   - component: {fileID: 1825410960759432326}
   m_Layer: 5
-  m_Name: Button
+  m_Name: SettingsButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -887,7 +887,6 @@ MonoBehaviour:
   _targetTransform: {fileID: 1296088602343897620}
   _animationScaleDuration: 0.4
   _pointerDownScale: 0.93
-  _pointerClickEnterScale: 1.07
   _bounceAnimation:
     serializedVersion: 2
     m_Curve:

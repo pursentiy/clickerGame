@@ -86,14 +86,9 @@ namespace Screen
                 Debug.LogWarning($"Current Level is {_progressHandler.CurrentLevelNumber}. Cannot continue. Warning in {this}");
                 _screenHandler.ShowChooseLevelScreen();
             }
-            
-            // _progressHandler.ResetLevelProgress(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber);
-            // var levelParams = _progressHandler.GetLevelByNumber(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber);
-            
+
             _screenHandler.ReplayCurrentLevel(_progressHandler.CurrentLevelNumber);
             TryInvokeFinishLevelSessionAction();
-            // _screenHandler.PopupAllScreenHandlers();
-            // _levelSessionHandler.StartLevel(levelParams, _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
         }
         
         private void OnDestroy()
