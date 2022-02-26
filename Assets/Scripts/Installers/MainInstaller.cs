@@ -2,6 +2,7 @@ using Handlers;
 using Pooling;
 using Services;
 using Storage;
+using Storage.Audio;
 using Storage.Levels.Params;
 using UnityEngine;
 using Zenject;
@@ -12,6 +13,7 @@ namespace Installers
     {
         [SerializeField] private LevelsParamsStorage levelsParamsStorage;
         [SerializeField] private FiguresStorageData figuresStorageData;
+        [SerializeField] private AudioStorageData audioStorageData;
         
         [SerializeField] private ProgressHandler _progressHandler;
         [SerializeField] private ScreenHandler _screenHandler;
@@ -20,6 +22,7 @@ namespace Installers
         [SerializeField] private LevelParamsHandler _levelParamsHandler;
         [SerializeField] private ObjectsPoolHandler _objectsPoolHandler;
         [SerializeField] private UIBlockHandler _uiBlockHandler;
+        [SerializeField] private SoundHandler _soundHandler;
 
         public override void InstallBindings()
         {
@@ -32,8 +35,10 @@ namespace Installers
             Container.Bind<LevelParamsHandler>().FromInstance(_levelParamsHandler);
             Container.Bind<UIBlockHandler>().FromInstance(_uiBlockHandler);
             Container.Bind<ObjectsPoolHandler>().FromInstance(_objectsPoolHandler);
+            Container.Bind<SoundHandler>().FromInstance(_soundHandler);
             Container.Bind<LevelsParamsStorage>().FromNewScriptableObject(levelsParamsStorage).AsTransient().NonLazy();
             Container.Bind<FiguresStorageData>().FromScriptableObject(figuresStorageData).AsSingle().NonLazy();
+            Container.Bind<AudioStorageData>().FromScriptableObject(audioStorageData).AsSingle().NonLazy();
             Container.Bind<IProcessProgressDataService>().To<ProcessProgressDataService>().AsSingle().NonLazy();
         }
     }

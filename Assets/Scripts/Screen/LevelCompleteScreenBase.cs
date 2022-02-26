@@ -14,6 +14,7 @@ namespace Screen
     {
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private ProgressHandler _progressHandler;
+        [Inject] private SoundHandler _soundHandler;
         
         [SerializeField] private Button _backButton;
         [SerializeField] private Button _replayButton;
@@ -75,8 +76,16 @@ namespace Screen
 
         private void InitializeLevelsButtons()
         {
-            _backButton.onClick.AddListener(()=> _screenHandler.ShowChooseLevelScreen());
-            _replayButton.onClick.AddListener(TryAgainLevel);
+            _backButton.onClick.AddListener(()=>
+            {
+                _soundHandler.PlayButtonSound();
+                _screenHandler.ShowChooseLevelScreen();
+            });
+            _replayButton.onClick.AddListener(()=>
+            {
+                _soundHandler.PlayButtonSound();
+                TryAgainLevel();
+            });
         }
 
         private void TryAgainLevel()
