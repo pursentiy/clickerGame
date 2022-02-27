@@ -20,6 +20,7 @@ namespace Handlers
         [Inject] private ProgressHandler _progressHandler;
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private ScreenHandler _screenHandler;
+        [Inject] private SoundHandler _soundHandler;
 
         [SerializeField] private RectTransform _gameMainCanvasTransform;
         [SerializeField] private RectTransform _draggingTransform;
@@ -43,6 +44,7 @@ namespace Handlers
             SetupFigures(levelParams, defaultColor);
             
             TryHandleLevelCompletion(true);
+            _soundHandler.PlaySound("start");
         }
 
         private void TryHandleLevelCompletion(bool onEnter)
@@ -59,6 +61,7 @@ namespace Handlers
         private IEnumerator AwaitFinishLevel(bool onEnter)
         {
             yield return new WaitForSeconds(_screenHandler.AwaitChangeScreenTime);
+            _soundHandler.PlaySound("finished");
             _screenHandler.ShowLevelCompleteScreen(onEnter, ResetLevel, 
                 _figuresStorageData.GetLevelParamsData(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber).LevelImage, _levelVisualHandler.ScreenColorAnimation.Gradient);
         }
@@ -127,6 +130,7 @@ namespace Handlers
 
             if (_draggingFigureContainer.FigureId == releasedOnFigure.FigureId)
             {
+                _soundHandler.PlaySound("success");
                 var shiftingAnimationPromise = new Promise();
                 _levelHudHandler.TryShiftAllElementsAfterRemoving(_draggingFigureContainer.FigureId, shiftingAnimationPromise);
                 
@@ -171,6 +175,7 @@ namespace Handlers
 
         private void ResetDraggingFigure()
         {
+            _soundHandler.PlaySound("fail");
             var shiftingAnimationPromise = new Promise();
             _levelHudHandler.ShiftAllElements(true, _draggingFigureContainer.FigureId, shiftingAnimationPromise);
 

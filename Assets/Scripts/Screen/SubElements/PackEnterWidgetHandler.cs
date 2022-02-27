@@ -1,13 +1,19 @@
 using System;
+using Handlers;
+using Installers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 using Random = UnityEngine.Random;
 
 namespace Screen.SubElements
 {
-    public class PackEnterWidgetHandler : MonoBehaviour
+    public class PackEnterWidgetHandler : InjectableMonoBehaviour
     {
+        
+        [Inject] private SoundHandler _soundHandler;
+        
         [SerializeField] private Image _lockImage;
         [SerializeField] private Image _fadeImage;
         [SerializeField] private Image _backgroundImage;
@@ -31,7 +37,11 @@ namespace Screen.SubElements
 
             _backgroundImage.sprite = _backgroundSpritesArray[Random.Range(0, _backgroundSpritesArray.Length - 1)];
 
-            _packEnterButton.onClick.AddListener(action.Invoke);
+            _packEnterButton.onClick.AddListener(()=>
+            {
+                _soundHandler.PlayButtonSound();
+                action.Invoke();
+            });
         }
 
         private void OnDestroy()

@@ -1,13 +1,18 @@
 ﻿using System;
+using Handlers;
+using Installers;
 using Plugins.FSignal;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace Screen.SubElements
 {
-    public class LevelEnterWidgetHandler : MonoBehaviour
+    public class LevelEnterWidgetHandler : InjectableMonoBehaviour
     {
+        [Inject] private SoundHandler _soundHandler;
+        
         [SerializeField] private Image _lockImage;
         [SerializeField] private TMP_Text _levelText;
         [SerializeField] private Image _fadeImage;
@@ -30,7 +35,11 @@ namespace Screen.SubElements
                 _starsImages[i].gameObject.SetActive(i < difficulty);
             }
 
-            _levelEnterButton.onClick.AddListener(action.Invoke);
+            _levelEnterButton.onClick.AddListener(()=>
+            {
+                _soundHandler.PlayButtonSound();
+                action.Invoke();
+            });
         }
 
         private void OnDestroy()

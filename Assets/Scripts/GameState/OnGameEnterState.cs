@@ -14,21 +14,30 @@ namespace GameState
         [Inject] private IProcessProgressDataService _processProgressDataService;
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private ProgressHandler _progressHandler;
+        [Inject] private SoundHandler _soundHandler;
 
         protected override void Awake()
         {
             var savedDataProgress = _processProgressDataService.LoadProgress();
 
+            LaunchSession(savedDataProgress);
+        }
+
+        private void LaunchSession(List<PackParams> savedDataProgress)
+        {
+            _progressHandler.InitializeProfileSettings();
+            
             if (savedDataProgress == null)
             {
                 _progressHandler.InitializeHandler(StartNewGameProgress());
             }
             else
             {
-                _progressHandler.InitializeHandler(savedDataProgress, IsNewPacksAdded(savedDataProgress) ? GetNewPacks(savedDataProgress) : null);
+                _progressHandler.InitializeHandler(savedDataProgress,
+                    IsNewPacksAdded(savedDataProgress) ? GetNewPacks(savedDataProgress) : null);
             }
         }
-        
+
         private List<PackParams> GetNewPacks(List<PackParams> savedDataProgress)
         {
             var diff = _levelsParamsStorage.DefaultPacksParamsList.Count - savedDataProgress.Count;
@@ -45,6 +54,15 @@ namespace GameState
         private void Start()
         {
             _screenHandler.ShowWelcomeScreen(true);
+
+            SetupSounds();
+        }
+
+        private void SetupSounds()
+        {
+            _soundHandler.SetMusicVolume(_progressHandler.ProfileSettingsMusic);
+            _soundHandler.SetSoundVolume(_progressHandler.ProfileSettingsSound);
+            _soundHandler.StartAmbience();
         }
 
         private bool IsNewPacksAdded(List<PackParams> savedDataProgress)

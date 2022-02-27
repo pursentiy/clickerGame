@@ -17,7 +17,7 @@ namespace Handlers
         [Inject] private ProgressHandler _progressHandler;
         [Inject] private LevelSessionHandler _levelSessionHandler;
         [Inject] private LevelParamsHandler _levelParamsHandler;
-        
+
         [SerializeField] private RectTransform _screenCanvasTransform;
         [SerializeField] private ChooseLevelScreenBase _chooseLevelScreenBase;
         [SerializeField] private WelcomeScreenBase _welcomeScreenBase;

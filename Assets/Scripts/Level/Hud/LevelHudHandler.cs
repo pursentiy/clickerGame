@@ -22,6 +22,7 @@ namespace Level.Hud
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private PopupHandler _popupHandler;
         [Inject] private ProgressHandler _progressHandler;
+        [Inject] private SoundHandler _soundHandler;
 
         [SerializeField] private RectTransform _figuresParentTransform;
         [SerializeField] private ScrollRect _scrollRect;
@@ -38,8 +39,16 @@ namespace Level.Hud
         {
             _figureAnimalsMenuList = new List<FigureMenu>();
             
-            _backButton.onClick.AddListener(GoToMainMenuScreen);
-            _settingsButton.onClick.AddListener(_popupHandler.ShowSettings);
+            _backButton.onClick.AddListener(()=>
+            {
+                _soundHandler.PlayButtonSound();
+                GoToMainMenuScreen();
+            });
+            _settingsButton.onClick.AddListener(()=>
+            {
+                _soundHandler.PlayButtonSound();
+                _popupHandler.ShowSettings();
+            });
 
             _figuresGroupSpacing = _figuresGroup.spacing;
         }
