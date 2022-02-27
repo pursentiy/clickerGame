@@ -5,5 +5,7 @@ namespace Handlers
        void PlaySound(string clipName);
        void PlayButtonSound();
        void StartAmbience(string exceptClipName = "");
+       void SetSoundVolume(bool isOn);
+       void SetMusicVolume(bool isOn);
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Installers;
 using Storage.Audio;
@@ -13,6 +12,10 @@ namespace Handlers
 
         [SerializeField] private AudioSource _effectsSource;
         [SerializeField] private AudioSource _musicSource;
+        [Range(0, 1)] 
+        [SerializeField] private float _effectsVolume = 1f;
+        [Range(0, 1)] 
+        [SerializeField] private float _musicVolume = 0.25f;
 
         public void StartAmbience(string exceptClipName = "")
         {
@@ -45,6 +48,28 @@ namespace Handlers
             
             if (clip != null)
                 _effectsSource.PlayOneShot(clip);
+        }
+
+        public void SetMusicVolume(bool isOn)
+        {
+            if (!isOn)
+            {
+                _musicSource.volume = 0;
+                return;
+            }
+
+            _musicSource.volume = _musicVolume;
+        }
+        
+        public void SetSoundVolume(bool isOn)
+        {
+            if (!isOn)
+            {
+                _effectsSource.volume = 0;
+                return;
+            }
+
+            _effectsSource.volume = _effectsVolume;
         }
     }
 }

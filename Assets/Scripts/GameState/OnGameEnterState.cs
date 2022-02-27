@@ -25,6 +25,8 @@ namespace GameState
 
         private void LaunchSession(List<PackParams> savedDataProgress)
         {
+            _progressHandler.InitializeProfileSettings();
+            
             if (savedDataProgress == null)
             {
                 _progressHandler.InitializeHandler(StartNewGameProgress());
@@ -52,6 +54,14 @@ namespace GameState
         private void Start()
         {
             _screenHandler.ShowWelcomeScreen(true);
+
+            SetupSounds();
+        }
+
+        private void SetupSounds()
+        {
+            _soundHandler.SetMusicVolume(_progressHandler.ProfileSettingsMusic);
+            _soundHandler.SetSoundVolume(_progressHandler.ProfileSettingsSound);
             _soundHandler.StartAmbience();
         }
 
