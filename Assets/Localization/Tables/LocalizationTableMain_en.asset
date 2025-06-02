@@ -18,12 +18,24 @@ MonoBehaviour:
   m_Metadata:
     m_Items: []
   m_TableData:
-  - m_Id: 8003301376
-    m_Localized: SETTINGS
+  - m_Id: 9892589514752
+    m_Localized: LANGUAGES
     m_Metadata:
       m_Items: []
   - m_Id: 4588187463680
     m_Localized: SETTINGS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10404516900864
+    m_Localized: English
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19807051755520
+    m_Localized: music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19809790636032
+    m_Localized: sounds
     m_Metadata:
       m_Items: []
   references:

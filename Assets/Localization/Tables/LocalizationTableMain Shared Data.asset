@@ -15,12 +15,24 @@ MonoBehaviour:
   m_TableCollectionName: LocalizationTableMain
   m_TableCollectionNameGuidString: 7fcfd1c1436c14d4c9d556fb66f42b92
   m_Entries:
-  - m_Id: 8003301376
-    m_Key: settings_name
-    m_Metadata:
-      m_Items: []
   - m_Id: 4588187463680
     m_Key: settings_main
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9892589514752
+    m_Key: settings_languages
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10404516900864
+    m_Key: selected_language_name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19807051755520
+    m_Key: setting_music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19809790636032
+    m_Key: setting_sound
     m_Metadata:
       m_Items: []
   m_Metadata:
