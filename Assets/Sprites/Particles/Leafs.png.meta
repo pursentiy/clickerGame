@@ -1,0 +1,482 @@
+fileFormatVersion: 2
+guid: db06f262a35e44df28679fb34739e669
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Leaf_1
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 2146
+        width: 443
+        height: 474
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1595ff2e0c93f4cd985dc04c00d2e76a
+      internalID: 1582469104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Leaf_2
+      rect:
+        serializedVersion: 2
+        x: 702
+        y: 2305
+        width: 282
+        height: 307
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 784c78300aeb74a9da5302157ea071bc
+      internalID: 631969165
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Leaf_3
+      rect:
+        serializedVersion: 2
+        x: 1072
+        y: 2032
+        width: 347
+        height: 572
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a549f256d96947fb893791303e4658d
+      internalID: -1988715077
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Leaf_5
+      rect:
+        serializedVersion: 2
+        x: 573
+        y: 1701
+        width: 459
+        height: 532
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7763412dd046b4b30ac94d8df7a2a4a3
+      internalID: -1692458519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Leaf_4
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 1451
+        width: 395
+        height: 516
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 813afbab4e1be4e3493d1924696a6f76
+      internalID: -1170018098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Leaf_6
+      rect:
+        serializedVersion: 2
+        x: 1064
+        y: 1496
+        width: 371
+        height: 424
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 116b1cfe04a564e34b17a4159f51b880
+      internalID: 1645008784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Leaf_8
+      rect:
+        serializedVersion: 2
+        x: 621
+        y: 1153
+        width: 355
+        height: 419
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f24e650a36ba04d35af2b5fed4762966
+      internalID: -1948452820
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Leaf_9
+      rect:
+        serializedVersion: 2
+        x: 1032
+        y: 826
+        width: 395
+        height: 465
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 03e34b72adb3e4e51b850c191230d692
+      internalID: -976367530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Leaf_7
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 855
+        width: 403
+        height: 404
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84e8e13e5cb8b453e81b6e85cbf02185
+      internalID: 1484376295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Leaf_11
+      rect:
+        serializedVersion: 2
+        x: 605
+        y: 626
+        width: 242
+        height: 374
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1afe8c38579b14b13b45bdbf013e9865
+      internalID: 624513119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Leaf_10
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 177
+        width: 403
+        height: 452
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3628bcd97ca414ba491186387aef69fd
+      internalID: -1648168093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Leaf_12
+      rect:
+        serializedVersion: 2
+        x: 1040
+        y: 161
+        width: 403
+        height: 492
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8251be2dbd3ea4ef492497a12d36562c
+      internalID: -231069163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Leaf_13
+      rect:
+        serializedVersion: 2
+        x: 693
+        y: 153
+        width: 242
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d58044d398765437db4df4308dcf5319
+      internalID: 1127349937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_10: -246753048
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_11: -1683748054
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_12: -317302713
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_13: -624615227
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_14: -1177619268
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_15: 1708308125
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_16: -1369623889
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_18: -190201370
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_19: 2053211882
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_2: 2011146335
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_22: 1451841504
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_23: 1143150469
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_25: 1128978347
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_26: -359647841
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_27: 920623917
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_28: 912594183
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_29: -1013506354
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_3: 1522713539
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_32: -734905623
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_33: -1691969435
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_34: 625967287
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_35: -1084435056
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_36: 1006117582
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_37: -1422442303
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_38: 353033716
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_40: -190355390
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_41: -2081823172
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_42: 1533174769
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_43: -1346820778
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_44: -761357812
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_45: -1841170278
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_46: 1619858046
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_47: 544952187
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_48: -1377300383
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_49: 1884206809
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_5: 959837492
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_51: 1701722341
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_52: -978515792
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_53: -1945469713
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_55: 1428488313
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_56: -1588575740
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_57: 229996353
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_58: 923039606
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_6: 1025235838
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_60: -1531233094
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_61: 1841651092
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_62: 745543208
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_63: 243934486
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_64: -1321462210
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_65: -35089759
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_66: 1210198355
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_67: 43879200
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_68: -155570389
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_7: 1673844203
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_8: -695680737
+      Gemini_Generated_Image_d3ptw6d3ptw6d3pt-Picsart-BackgroundRemover_9: -1042590542
+      Leaf_1: 1582469104
+      Leaf_10: -1648168093
+      Leaf_11: 624513119
+      Leaf_12: -231069163
+      Leaf_13: 1127349937
+      Leaf_2: 631969165
+      Leaf_3: -1988715077
+      Leaf_4: -1170018098
+      Leaf_5: -1692458519
+      Leaf_6: 1645008784
+      Leaf_7: 1484376295
+      Leaf_8: -1948452820
+      Leaf_9: -976367530
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
