@@ -28,6 +28,8 @@ namespace Installers
         {
             ContainerHolder.OnProjectInstall(Container);
 
+            Container.BindInterfacesAndSelfTo<PersistentCoroutinesService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<CoroutineService>().AsSingle().NonLazy();
             Container.Bind<ProgressHandler>().FromInstance(_progressHandler);
             Container.Bind<PopupHandler>().FromInstance(_popupHandler);
             Container.Bind<ScreenHandler>().FromInstance(_screenHandler);
@@ -40,7 +42,7 @@ namespace Installers
             Container.Bind<FiguresStorageData>().FromScriptableObject(figuresStorageData).AsSingle().NonLazy();
             Container.Bind<AudioStorageData>().FromScriptableObject(audioStorageData).AsSingle().NonLazy();
             Container.Bind<IProcessProgressDataService>().To<ProcessProgressDataService>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<TimerService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<TimeService>().AsSingle().NonLazy();
         }
     }
 }

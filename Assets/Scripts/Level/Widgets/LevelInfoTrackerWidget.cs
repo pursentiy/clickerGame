@@ -7,7 +7,7 @@ namespace Level.Widgets
 {
     public class LevelInfoTrackerWidget : InjectableMonoBehaviour
     {
-        [Inject] private TimerService _timerService;
+        [Inject] private TimeService _timeService;
 
         public float _currentLevelPlayingTime;
         public int GetTotalLevelCollectedStars => 1;
@@ -19,12 +19,12 @@ namespace Level.Widgets
         {
             _levelId =  levelNumber.ToString();
             
-            _timerService.StartTimer(_levelId, levelBeatingTimeInfo.MinimumTime, onUpdate: OnTimerUpdate);
+            _timeService.StartTimer(_levelId, levelBeatingTimeInfo.MinimumTime, onUpdate: OnTimerUpdate);
         }
 
         public void StopLevelTracking()
         {
-            _timerService.DeregisterTimer(_levelId);
+            _timeService.DeregisterTimer(_levelId);
         }
 
         private void OnTimerUpdate(float time)

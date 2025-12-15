@@ -1,0 +1,142 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Zenject;
+
+namespace Services
+{
+    public class TimeService
+    {
+        [Inject] private CoroutineService _coroutineService;
+        
+        private Dictionary<string, Timer> _activeTimers = new Dictionary<string, Timer>();
+        
+        // --- 1. Standard Countdown Timer ---
+        public Timer StartTimer(string id, float duration, Action onComplete = null, Action<float> onUpdate = null)
+        {
+            return CreateTimerInternal(id, duration, false, onComplete, onUpdate);
+        }
+
+        // --- 2. Stopwatch (Counts Up) ---
+        public Timer StartStopwatch(string id, Action<float> onUpdate = null)
+        {
+            // Stopwatches have no fixed duration, so we pass 0 or ignored value
+            return CreateTimerInternal(id, 0f, true, null, onUpdate);
+        }
+
+        private Timer CreateTimerInternal(string id, float duration, bool isStopwatch, Action onComplete,
+            Action<float> onUpdate)
+        {
+            if (_activeTimers.ContainsKey(id))
+            {
+                Debug.LogWarning($"Timer '{id}' exists. Overwriting.");
+                _activeTimers[id].Dispose();
+            }
+
+            Timer newTimer = new Timer(id, duration, isStopwatch, onComplete, onUpdate, this);
+            _activeTimers.Add(id, newTimer);
+
+            newTimer.Coroutine = _coroutineService.StartCoroutine(RunTimerRoutine(newTimer));
+            return newTimer;
+        }
+
+        public Timer GetTimer(string id)
+        {
+            return _activeTimers.GetValueOrDefault(id);
+        }
+
+        public void DeregisterTimer(string id)
+        {
+            if (_activeTimers.ContainsKey(id)) 
+                _activeTimers.Remove(id);
+        }
+
+        private IEnumerator RunTimerRoutine(Timer timer)
+        {
+            // Stopwatch loop (infinite until disposed)
+            if (timer.IsStopwatch)
+            {
+                while (!timer.IsDisposed)
+                {
+                    if (!timer.IsPaused)
+                    {
+                        timer.Elapsed += Time.deltaTime;
+                        timer.OnUpdate?.Invoke(timer.Elapsed); // Pass Elapsed Time
+                    }
+
+                    yield return null;
+                }
+            }
+            // Countdown loop (runs until duration reached)
+            else
+            {
+                while (timer.Elapsed < timer.Duration && !timer.IsDisposed)
+                {
+                    if (!timer.IsPaused)
+                    {
+                        timer.Elapsed += Time.deltaTime;
+                        float remaining = Mathf.Max(0, timer.Duration - timer.Elapsed);
+                        timer.OnUpdate?.Invoke(remaining); // Pass Remaining Time
+                    }
+
+                    yield return null;
+                }
+
+                if (!timer.IsDisposed)
+                {
+                    _coroutineService.StopCoroutine(timer.Coroutine);
+                    DeregisterTimer(timer.Id);
+                    timer.Complete();
+                }
+            }
+        }
+    }
+
+    public class Timer : IDisposable
+    {
+        public string Id { get; private set; }
+        public float Duration { get; private set; }
+        public bool IsStopwatch { get; private set; }
+        public float Elapsed { get; set; } // Tracks time passed for both modes
+        public bool IsPaused { get; set; }
+        public bool IsDisposed { get; private set; }
+
+        public Action OnComplete;
+        public Action<float> OnUpdate; // Timer = Remaining, Stopwatch = Elapsed
+
+        public Coroutine Coroutine;
+
+        public Timer(string id, float duration, bool isStopwatch, Action onComplete, Action<float> onUpdate,
+            TimeService owner)
+        {
+            Id = id;
+            Duration = duration;
+            IsStopwatch = isStopwatch;
+            OnComplete = onComplete;
+            OnUpdate = onUpdate;
+            Elapsed = 0f;
+        }
+
+        public void Pause() => IsPaused = true;
+        public void Resume() => IsPaused = false;
+        public void Reset() => Elapsed = 0f;
+
+        public void Complete()
+        {
+            if (IsDisposed) return;
+            OnComplete?.Invoke();
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (IsDisposed) 
+                return;
+            
+            IsDisposed = true;
+            OnComplete = null;
+            OnUpdate = null;
+        }
+    }
+}
