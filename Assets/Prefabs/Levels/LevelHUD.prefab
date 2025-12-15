@@ -686,12 +686,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   starImages:
-  - {fileID: 8152101905013641389}
-  - {fileID: 2600418492505207617}
   - {fileID: 4791312775537929854}
+  - {fileID: 2600418492505207617}
+  - {fileID: 8152101905013641389}
   _fadeDuration: 0.5
   _bumpDuration: 0.2
-  _bumpScaleAmount: 1.2
+  _bumpScaleAmount: 1.5
 --- !u!1 &4922581532116615225
 GameObject:
   m_ObjectHideFlags: 0

@@ -42,9 +42,10 @@ namespace Installers
             Container.Bind<LevelsParamsStorage>().FromNewScriptableObject(levelsParamsStorage).AsTransient().NonLazy();
             Container.Bind<FiguresStorageData>().FromScriptableObject(figuresStorageData).AsSingle().NonLazy();
             Container.Bind<AudioStorageData>().FromScriptableObject(audioStorageData).AsSingle().NonLazy();
-            Container.Bind<IProcessProgressDataService>().To<ProcessProgressDataService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<ProcessProgressDataService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<TimeService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<LevelInfoTrackerService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<PlayerService>().AsSingle().NonLazy();
         }
     }
 }

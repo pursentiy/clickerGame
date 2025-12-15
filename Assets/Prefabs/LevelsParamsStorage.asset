@@ -21,9 +21,9 @@ MonoBehaviour:
       LevelCompleted: 0
       LevelPlayable: 1
       LevelBeatingTimeInfo:
-        FastestTime: 20
-        MediumTime: 40
-        MinimumTime: 60
+        FastestTime: 5
+        MediumTime: 8
+        MinimumTime: 12
       LevelFiguresParamsList:
       - FigureId: 1
         Completed: 0

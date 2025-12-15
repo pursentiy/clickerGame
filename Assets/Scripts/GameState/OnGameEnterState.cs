@@ -11,7 +11,7 @@ namespace GameState
     public class OnGameEnterState : InjectableMonoBehaviour
     {
         [Inject] private LevelsParamsStorage _levelsParamsStorage;
-        [Inject] private IProcessProgressDataService _processProgressDataService;
+        [Inject] private ProcessProgressDataService _processProgressDataService;
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private ProgressHandler _progressHandler;
         [Inject] private SoundHandler _soundHandler;

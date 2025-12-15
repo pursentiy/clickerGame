@@ -100,7 +100,7 @@ namespace Handlers
 
         private void TryUpdateNextPackPlayableStatus(int currentPackNumber, bool value)
         {
-            if(currentPackNumber + 1 > _gameProgress[_gameProgress.Count - 1].PackNumber || !GetPackPackByNumber(currentPackNumber).PackPlayable)
+            if(currentPackNumber + 1 > _gameProgress[^1].PackNumber || !GetPackPackByNumber(currentPackNumber).PackPlayable)
                 return;
 
             GetPackPackByNumber(currentPackNumber + 1).PackPlayable = true;

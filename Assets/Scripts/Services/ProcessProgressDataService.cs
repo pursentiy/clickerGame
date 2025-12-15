@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Services
 {
     [UsedImplicitly]
-    public class ProcessProgressDataService : IProcessProgressDataService
+    public class ProcessProgressDataService
     {
         private const string SaveFileName = "/LevelsProgress.raw";
 
@@ -58,6 +58,17 @@ namespace Services
             var rawProgressDataArray = rawTotalProgressData.Split('\n');
             var levelParamsList = rawProgressDataArray.Select(JsonUtility.FromJson<PackParams>).ToList();
             return levelParamsList.Where(level => level != null).ToList();
+        }
+
+        public void CheatResetProgress()
+        {
+            var filePath = Application.persistentDataPath + SaveFileName;
+            
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+                Application.Quit();
+            }
         }
     }
 }

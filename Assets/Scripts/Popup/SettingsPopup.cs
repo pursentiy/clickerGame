@@ -1,4 +1,5 @@
 using Handlers;
+using Services;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
@@ -10,6 +11,7 @@ namespace Popup
     {
         [Inject] private SoundHandler _soundHandler;
         [Inject] private ProgressHandler _progressHandler;
+        [Inject] private ProcessProgressDataService _processProgressDataService;
         
         [SerializeField] private Button _closeButton;
         [SerializeField] private Toggle _musicToggle;
@@ -17,6 +19,7 @@ namespace Popup
 
         [SerializeField] private Button _leftLanguageButton;
         [SerializeField] private Button _rightLanguageButton;
+        [SerializeField] private Button _resetProgressButton;
         [SerializeField] private Image _countryFlagImage;
         [SerializeField] private TMPro.TextMeshProUGUI _languageLabel;
         
@@ -61,6 +64,12 @@ namespace Popup
                 ChangeLanguage(1);
             });
 
+            //TODO CHEAT REMOVE
+            _resetProgressButton.onClick.AddListener(() =>
+            {
+                CheatResetProgress();
+            });
+
             UpdateLanguagePopup();
         }
 
@@ -89,10 +98,17 @@ namespace Popup
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[_currentLanguageIndex];
         }
 
+        private void CheatResetProgress()
+        {
+            _processProgressDataService.CheatResetProgress();
+        }
+
         private void OnDestroy()
         {
             _closeButton.onClick.RemoveAllListeners();
+            _resetProgressButton.onClick.RemoveAllListeners();
             _musicToggle.onValueChanged.RemoveAllListeners();
+            _soundToggle.onValueChanged.RemoveAllListeners();
             _soundToggle.onValueChanged.RemoveAllListeners();
         }
     }

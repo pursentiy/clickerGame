@@ -17,6 +17,7 @@ namespace Level.Widgets
 
         private float[] _timeThresholds;
         private bool[] _isStarActive;
+        private float _maxTime;
 
         public void Initialize(LevelBeatingTimeInfo levelBeatingTime)
         {
@@ -28,7 +29,8 @@ namespace Level.Widgets
             
             _timeThresholds = new [] {levelBeatingTime.FastestTime, levelBeatingTime.MediumTime, levelBeatingTime.MinimumTime};
             _isStarActive = new [] { true, true, true };
-
+            _maxTime =  levelBeatingTime.MinimumTime;
+            
             // Reset visual state safely
             foreach (var img in starImages)
             {
@@ -46,9 +48,9 @@ namespace Level.Widgets
             if (_isStarActive == null) return;
 
             // Check from hardest star (3) down to easiest (1)
-            for (int i = 2; i >= 0; i--)
+            for (var i = 0; i < starImages.Length; i++)
             {
-                if (_isStarActive[i] && currentTime < _timeThresholds[i])
+                if (_isStarActive[i] && currentTime > _timeThresholds[i])
                 {
                     LoseStar(i);
                 }
