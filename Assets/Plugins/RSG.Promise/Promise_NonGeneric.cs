@@ -2,6 +2,7 @@ using RSG.Promises;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Plugins.RSG.Promise;
 using RSG.Exceptions;
 
 namespace RSG
@@ -10,7 +11,7 @@ namespace RSG
     /// Implements a non-generic C# promise, this is a promise that simply resolves without delivering a value.
     /// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise
     /// </summary>
-    public interface IPromise
+    public interface IPromise : ICancellablePromise
     {
         /// <summary>
         /// ID of the promise, useful for debugging.
@@ -158,6 +159,7 @@ namespace RSG
         /// of the promise.
         /// </summary>
         IPromise Progress(Action<float> onProgress);
+        
     }
 
     /// <summary>

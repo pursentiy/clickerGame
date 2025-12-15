@@ -1,0 +1,48 @@
+using System;
+using UnityEngine;
+
+namespace Extensions
+{
+    public static class ActionExtensions
+    {
+        public static void SafeInvoke(this Action e)
+        {
+            try
+            {
+                e?.Invoke();
+            }
+            catch (Exception exception)
+            {
+                Debug.LogError($"Error invoking Action {TryGetDebugInfo(e)}: {exception}");
+            }
+        }
+        
+        public static string TryGetDebugInfo(this Delegate e)
+        {
+            var result = string.Empty;
+            
+            try
+            {
+                result += e.Method.Name;
+
+                if (e.Method.DeclaringType != null)
+                {
+                    result.AddIfNonEmpty("/");
+                    result += $"{e.Method.DeclaringType.Name}";
+                }
+                
+                if (e.Target != null)
+                {
+                    result.AddIfNonEmpty("/");
+                    result += $"{e.Target.GetType().Name}";
+                }
+            }
+            catch (Exception)
+            {
+                // ignore
+            }
+
+            return result;
+        }
+    }
+}
