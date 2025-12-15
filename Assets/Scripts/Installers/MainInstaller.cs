@@ -40,6 +40,7 @@ namespace Installers
             Container.Bind<FiguresStorageData>().FromScriptableObject(figuresStorageData).AsSingle().NonLazy();
             Container.Bind<AudioStorageData>().FromScriptableObject(audioStorageData).AsSingle().NonLazy();
             Container.Bind<IProcessProgressDataService>().To<ProcessProgressDataService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<TimerService>().AsSingle().NonLazy();
         }
     }
 }

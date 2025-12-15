@@ -9,6 +9,15 @@ namespace Storage.Levels.Params
         public int LevelNumber;
         public bool LevelCompleted;
         public bool LevelPlayable;
+        public LevelBeatingTimeInfo LevelBeatingTimeInfo;
         public List<LevelFigureParams> LevelFiguresParamsList;
+    }
+    
+    [Serializable]
+    public class LevelBeatingTimeInfo
+    {
+        public float FastestTime;
+        public float MediumTime;
+        public float MinimumTime;
     }
 }

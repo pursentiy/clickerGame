@@ -6,6 +6,7 @@ using Installers;
 using Level.Click;
 using Level.Game;
 using Level.Hud;
+using Level.Widgets;
 using RSG;
 using Storage;
 using Storage.Levels.Params;
@@ -26,6 +27,7 @@ namespace Handlers
         [SerializeField] private RectTransform _draggingTransform;
         [SerializeField] private ClickHandler _clickHandler;
         [SerializeField] private ParticleSystem _finishedFigureParticles;
+        [SerializeField] private StarsProgressWidget _starsProgressWidget;
 
         private LevelVisualHandler _levelVisualHandler;
         private LevelHudHandler _levelHudHandler;
