@@ -18,5 +18,10 @@ namespace Extensions
             var component = go.GetComponent<TComponent>();
             return component ? component : go.gameObject.AddComponent<TComponent>();
         }
+        
+        public static bool IsDestroyed(this Component component)
+        {
+            return component == null || component.gameObject == null;
+        }
     }
 }

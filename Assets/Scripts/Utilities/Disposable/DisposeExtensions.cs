@@ -10,9 +10,8 @@ using RSG;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using Utilities.Disposable;
 
-namespace Utilities
+namespace Utilities.Disposable
 {
     public static class DisposeExtensions
     {
@@ -183,6 +182,18 @@ namespace Utilities
             where T : IDisposable
         {
             return DisposeResultWith(promise, provider.gameObject.GetDisposeProvider());
+        }
+
+        public static IPromise<T> DisposeResultWith<T>(this IPromise<T> promise, IPromise provider)
+            where T : IDisposable
+        {
+            return promise.Then(d => provider.OnCancel(() => d?.Dispose()));
+        }
+        
+        public static IPromise<T> DisposeResultWith<T, TPromise>(this IPromise<T> promise, IPromise<TPromise> provider)
+            where T : IDisposable
+        {
+            return promise.Then(d => provider.OnCancel(() => d?.Dispose()));
         }
     }
 }

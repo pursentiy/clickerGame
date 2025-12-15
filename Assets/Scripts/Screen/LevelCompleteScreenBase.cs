@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
 using Animations;
+using Extensions;
 using Handlers;
-using Static;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -54,7 +54,7 @@ namespace Screen
                 fireworksParticlesArray[i] = i;
             }
 
-            StartCoroutine(PlayParticles(Extensions.Shuffle(fireworksParticlesArray)));
+            StartCoroutine(PlayParticles(CollectionExtensions.ShuffleCopy(fireworksParticlesArray)));
         }
 
         private IEnumerator PlayParticles(int[] shuffledPositions)

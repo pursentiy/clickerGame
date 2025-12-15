@@ -57,6 +57,8 @@ namespace Services
                 yield return null;
             }
             
+            StopCoroutine(timer.Coroutine);
+            DeregisterTimer(timer.Id);
             timer.Complete();
         }
     }
@@ -71,7 +73,6 @@ namespace Services
         public Action<float> OnUpdate;
         public Coroutine Coroutine;
         
-        private TimerService _owner;
         private bool _isDisposed;
         private Action _onComplete;
 
@@ -100,12 +101,6 @@ namespace Services
         public void Dispose()
         {
             if (_isDisposed) return;
-            
-            if (_owner != null && Coroutine != null)
-            {
-                _owner.StopCoroutine(Coroutine);
-                _owner.DeregisterTimer(Id);
-            }
 
             _onComplete = null;
             OnUpdate = null;
