@@ -1,4 +1,5 @@
 using Handlers;
+using Level.Widgets;
 using Pooling;
 using Services;
 using Storage;
@@ -43,6 +44,7 @@ namespace Installers
             Container.Bind<AudioStorageData>().FromScriptableObject(audioStorageData).AsSingle().NonLazy();
             Container.Bind<IProcessProgressDataService>().To<ProcessProgressDataService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<TimeService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<LevelInfoTrackerService>().AsSingle().NonLazy();
         }
     }
 }

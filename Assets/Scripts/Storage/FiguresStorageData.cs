@@ -37,7 +37,7 @@ namespace Storage
         {
             var levelParams = GetLevelParamsData(packNumber, levelNumber);
 
-            return levelParams?.LevelVisualHandler;
+            return levelParams?.levelVisualHandler;
         }
 
         public LevelParamsData GetLevelParamsData(int packNumber, int levelNumber)

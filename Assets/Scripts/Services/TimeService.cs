@@ -34,7 +34,7 @@ namespace Services
                 _activeTimers[id].Dispose();
             }
 
-            Timer newTimer = new Timer(id, duration, isStopwatch, onComplete, onUpdate, this);
+            Timer newTimer = new Timer(id, duration, isStopwatch, onComplete, onUpdate);
             _activeTimers.Add(id, newTimer);
 
             newTimer.Coroutine = _coroutineService.StartCoroutine(RunTimerRoutine(newTimer));
@@ -107,8 +107,7 @@ namespace Services
 
         public Coroutine Coroutine;
 
-        public Timer(string id, float duration, bool isStopwatch, Action onComplete, Action<float> onUpdate,
-            TimeService owner)
+        public Timer(string id, float duration, bool isStopwatch, Action onComplete, Action<float> onUpdate)
         {
             Id = id;
             Duration = duration;

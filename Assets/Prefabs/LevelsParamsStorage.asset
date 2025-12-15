@@ -20,6 +20,10 @@ MonoBehaviour:
     - LevelNumber: 1
       LevelCompleted: 0
       LevelPlayable: 1
+      LevelBeatingTimeInfo:
+        FastestTime: 20
+        MediumTime: 40
+        MinimumTime: 60
       LevelFiguresParamsList:
       - FigureId: 1
         Completed: 0
@@ -32,6 +36,10 @@ MonoBehaviour:
     - LevelNumber: 2
       LevelCompleted: 0
       LevelPlayable: 0
+      LevelBeatingTimeInfo:
+        FastestTime: 15
+        MediumTime: 30
+        MinimumTime: 45
       LevelFiguresParamsList:
       - FigureId: 1
         Completed: 0
@@ -42,6 +50,10 @@ MonoBehaviour:
     - LevelNumber: 3
       LevelCompleted: 0
       LevelPlayable: 0
+      LevelBeatingTimeInfo:
+        FastestTime: 10
+        MediumTime: 19
+        MinimumTime: 25
       LevelFiguresParamsList:
       - FigureId: 1
         Completed: 0

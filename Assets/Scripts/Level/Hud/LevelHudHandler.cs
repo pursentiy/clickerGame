@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using Extensions;
 using Figures.Animals;
 using Handlers;
 using Installers;
+using Level.Widgets;
 using Plugins.FSignal;
 using RSG;
 using Storage;
@@ -11,6 +13,7 @@ using Storage.Levels.Params;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Utilities.Disposable;
 using Zenject;
 using ProgressHandler = Handlers.ProgressHandler;
 
@@ -23,6 +26,7 @@ namespace Level.Hud
         [Inject] private PopupHandler _popupHandler;
         [Inject] private ProgressHandler _progressHandler;
         [Inject] private SoundHandler _soundHandler;
+        [Inject] private LevelInfoTrackerService _levelInfoTrackerService;
 
         [SerializeField] private RectTransform _figuresParentTransform;
         [SerializeField] private ScrollRect _scrollRect;
@@ -30,10 +34,14 @@ namespace Level.Hud
         [SerializeField] private Button _settingsButton;
         [SerializeField] private HorizontalLayoutGroup _figuresGroup;
         [SerializeField] private CanvasGroup _canvasGroup;
+        [SerializeField] private StarsProgressWidget _starsProgressWidget;
+        [SerializeField] private LevelTimerWidget _levelTimerWidget;
         
         private List<FigureMenu> _figureAnimalsMenuList;
         private float _figuresGroupSpacing;
         private Sequence _shiftingSequence;
+        
+        public FSignal BackToMenuClickSignal { get; } = new FSignal();
 
         protected override void Awake()
         {
@@ -53,7 +61,12 @@ namespace Level.Hud
             _figuresGroupSpacing = _figuresGroup.spacing;
         }
 
-        public FSignal BackToMenuClickSignal { get; } = new FSignal();
+        public void Initialize(LevelBeatingTimeInfo levelBeatingTime)
+        {
+            _levelInfoTrackerService.CurrentLevelPlayingTimeChangedSignal.MapListener(OnTimerChanged).DisposeWith(this);
+            _starsProgressWidget.Initialize(levelBeatingTime);
+            OnTimerChanged(_levelInfoTrackerService.CurrentLevelPlayingTime);
+        }
 
         public void SetupScrollMenu(List<LevelFigureParams> levelFiguresParams)
         {
@@ -63,6 +76,12 @@ namespace Level.Hud
         public void SetInteractivity(bool isInteractable)
         {
             _canvasGroup.interactable = isInteractable;
+        }
+        
+        private void OnTimerChanged(float seconds)
+        {
+            _starsProgressWidget.OnTimeUpdate(seconds);
+            _levelTimerWidget.UpdateTime(seconds);
         }
 
         private void SetFigure(LevelFigureParams figureParams)

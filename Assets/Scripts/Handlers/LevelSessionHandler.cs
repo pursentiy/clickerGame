@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using DG.Tweening;
+using Extensions;
 using Figures;
 using Figures.Animals;
 using Installers;
@@ -12,6 +13,7 @@ using Storage;
 using Storage.Levels.Params;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Utilities.Disposable;
 using Zenject;
 
 namespace Handlers
@@ -22,12 +24,12 @@ namespace Handlers
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private SoundHandler _soundHandler;
+        [Inject] private LevelInfoTrackerService _levelInfoTrackerService;
 
         [SerializeField] private RectTransform _gameMainCanvasTransform;
         [SerializeField] private RectTransform _draggingTransform;
         [SerializeField] private ClickHandler _clickHandler;
         [SerializeField] private ParticleSystem _finishedFigureParticles;
-        [SerializeField] private StarsProgressWidget _starsProgressWidget;
 
         private LevelVisualHandler _levelVisualHandler;
         private LevelHudHandler _levelHudHandler;
@@ -41,9 +43,12 @@ namespace Handlers
 
         public void StartLevel(LevelParams levelParams, LevelHudHandler levelHudHandler, Color defaultColor)
         {
+            var levelId = $"{_progressHandler.CurrentPackNumber}-{_progressHandler.CurrentLevelNumber}";
+            _levelInfoTrackerService.StartLevelTracking(levelId);
+            
             SetupClickHandler();
             SetupHud(levelParams, levelHudHandler);
-            SetupFigures(levelParams, defaultColor);
+            SetupLevelScreenHandler(levelParams, defaultColor);
             
             TryHandleLevelCompletion(true);
             _soundHandler.PlaySound("start");
@@ -56,6 +61,7 @@ namespace Handlers
                 return;
             }
             
+            _levelInfoTrackerService.StopLevelTracking();
             _levelHudHandler.SetInteractivity(false);
             StartCoroutine(AwaitFinishLevel(onEnter));
         }
@@ -73,7 +79,7 @@ namespace Handlers
             _clickHandler.enabled = true;
         }
 
-        private void SetupFigures(LevelParams packParam, Color defaultColor)
+        private void SetupLevelScreenHandler(LevelParams packParam, Color defaultColor)
         {
             _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(_figuresStorageData.GetLevelVisualHandler(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber));
             _levelVisualHandler.SetupLevel(packParam.LevelFiguresParamsList, defaultColor);
@@ -85,6 +91,7 @@ namespace Handlers
             _levelHudHandler.SetupScrollMenu(packParam.LevelFiguresParamsList);
             
             _levelHudHandler.BackToMenuClickSignal.AddListener(ResetLevel);
+            _levelHudHandler.Initialize(packParam.LevelBeatingTimeInfo);
             _levelHudHandler.GetOnBeginDragFiguresSignal().ForEach(signal => { signal.AddListener(StartElementDragging); });
             _levelHudHandler.GetOnDragEndFiguresSignal().ForEach(signal => { signal.AddListener(EndElementDragging); });
         }

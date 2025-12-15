@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Installers;
+using Storage.Levels.Params;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,16 +18,16 @@ namespace Level.Widgets
         private float[] _timeThresholds;
         private bool[] _isStarActive;
 
-        public void Initialize(float[] thresholds)
+        public void Initialize(LevelBeatingTimeInfo levelBeatingTime)
         {
-            if (starImages.Length != 3 || thresholds.Length != 3)
+            if (starImages.Length != 3 || levelBeatingTime == null)
             {
                 Debug.LogError("StarWidget: Ensure you have exactly 3 images and 3 time values.");
                 return;
             }
-
-            _timeThresholds = thresholds;
-            _isStarActive = new bool[] { true, true, true };
+            
+            _timeThresholds = new [] {levelBeatingTime.FastestTime, levelBeatingTime.MediumTime, levelBeatingTime.MinimumTime};
+            _isStarActive = new [] { true, true, true };
 
             // Reset visual state safely
             foreach (var img in starImages)

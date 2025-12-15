@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Animations;
 using Figures.Animals;
 using Handlers;
 using Installers;
-using Pooling;
 using Storage;
 using Storage.Levels.Params;
 using UnityEngine;
