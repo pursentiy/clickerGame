@@ -29,11 +29,12 @@ namespace Installers
             ContainerHolder.OnProjectInstall(Container);
             
             //PLAYER SERVICES
-            Container.BindInterfacesAndSelfTo<PlayerService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<PlayerSnapshotService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<ProfileBuilderService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerRepositoryService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<ProfileSerializerService>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<ProgressService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<PlayerProgressService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<PlayerCurrencyService>().AsSingle().NonLazy();
 
             Container.BindInterfacesAndSelfTo<CheatService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PersistentCoroutinesService>().AsSingle().NonLazy();

@@ -14,7 +14,7 @@ namespace Level.Game
     public class LevelVisualHandler : InjectableMonoBehaviour, ILevelVisualHandler
     {
         [Inject] private FiguresStorageData _figuresStorageData;
-        [Inject] private ProgressService _progressService;
+        [Inject] private PlayerProgressService _playerProgressService;
 
         [SerializeField] private Transform _figuresParentTransform;
         [SerializeField] private ScreenColorAnimation screenColorAnimation;
@@ -37,8 +37,8 @@ namespace Level.Game
 
         private void SetFigure(LevelFigureParams figureParams, Color defaultColor)
         {
-            var figurePrefab = _figuresStorageData.GetTargetFigure(_progressService.CurrentPackNumber,
-                _progressService.CurrentLevelNumber, figureParams.FigureId);
+            var figurePrefab = _figuresStorageData.GetTargetFigure(_playerProgressService.CurrentPackNumber,
+                _playerProgressService.CurrentLevelNumber, figureParams.FigureId);
 
             if (figurePrefab == null)
             {

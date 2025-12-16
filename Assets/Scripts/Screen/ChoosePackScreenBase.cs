@@ -11,7 +11,7 @@ namespace Screen
     public class ChoosePackScreenBase : ScreenBase
     {
         [Inject] private ScreenHandler _screenHandler;
-        [Inject] private ProgressService _progressService;
+        [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private FiguresStorageData _figuresStorageData;
         
         [SerializeField] private PackEnterWidgetHandler _packEnterWidgetPrefab;
@@ -21,12 +21,12 @@ namespace Screen
         private HorizontalLayoutGroup _horizontalGroup;
         private void Start()
         {
-            InitializeLevelsButton();
+            InitializePackButtons();
         }
 
-        private void InitializeLevelsButton()
+        private void InitializePackButtons()
         {
-            var currentPackParams = _progressService.GetCurrentProgress();
+            var currentPackParams = _playerProgressService.GetPackParams();
             var index = 0;
             currentPackParams.ForEach(packParams =>
             {
@@ -34,10 +34,10 @@ namespace Screen
                     _horizontalGroup = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
                 
                 var enterButton = Instantiate(_packEnterWidgetPrefab, _horizontalGroup.transform);
-                enterButton.Initialize(_figuresStorageData.GetPackParamsData(packParams.PackNumber).PackName, _figuresStorageData.GetPackParamsData(packParams.PackNumber).PackImage, packParams.PackNumber, packParams.PackPlayable,
+                enterButton.Initialize(_figuresStorageData.GetPackParamsData(packParams.PackNumber).PackName, _figuresStorageData.GetPackParamsData(packParams.PackNumber).PackImage, packParams.PackNumber, _playerProgressService.IsPackAvailable(packParams.PackNumber),
                     () =>
                     {
-                        _progressService.CurrentPackNumber = packParams.PackNumber;
+                        _playerProgressService.CurrentPackNumber = packParams.PackNumber;
                         _screenHandler.ShowChooseLevelScreen();
                     });
                 index++;

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
+using System.Linq;
 using DG.Tweening;
-using Extensions;
-using Figures;
 using Figures.Animals;
 using Installers;
 using Level.Click;
@@ -21,7 +20,7 @@ namespace Handlers
 {
     public class LevelSessionHandler : InjectableMonoBehaviour, ILevelSessionHandler
     {
-        [Inject] private ProgressService _progressService;
+        [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private SoundHandler _soundHandler;
@@ -38,13 +37,23 @@ namespace Handlers
         private GameObject _draggingFigureImage;
         private FigureMenu _menuFigure;
         private bool _isDraggable;
+        private LevelParams _currentLevelParams;
 
         private Sequence _resetDraggingAnimationSequence;
         private Sequence _completeDraggingAnimationSequence;
+        
+        private bool IsLevelComplete => _currentLevelParams != null && 
+                                        _currentLevelParams.LevelFiguresParamsList.TrueForAll(levelFigureParams => levelFigureParams.Completed);
 
         public void StartLevel(LevelParams levelParams, LevelHudHandler levelHudHandler, Color defaultColor)
         {
-            var levelId = $"{_progressService.CurrentPackNumber}-{_progressService.CurrentLevelNumber}";
+            if (levelParams == null)
+            {
+                Debug.LogError("LevelParams cannot be null");
+                return;
+            }
+            _currentLevelParams =  levelParams;
+            var levelId = $"{_playerProgressService.CurrentPackNumber}-{_playerProgressService.CurrentLevelNumber}";
             _levelInfoTrackerService.StartLevelTracking(levelId);
             
             SetupClickHandler();
@@ -57,7 +66,7 @@ namespace Handlers
 
         private void TryHandleLevelCompletion(bool onEnter)
         {
-            if (!_progressService.CheckForLevelCompletion(_progressService.CurrentPackNumber, _progressService.CurrentLevelNumber))
+            if (!_playerProgressService.CheckForLevelCompletion(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber))
             {
                 return;
             }
@@ -72,7 +81,7 @@ namespace Handlers
             yield return new WaitForSeconds(_screenHandler.AwaitChangeScreenTime);
             _soundHandler.PlaySound("finished");
             _screenHandler.ShowLevelCompleteScreen(onEnter, ResetLevel, 
-                _figuresStorageData.GetLevelParamsData(_progressService.CurrentPackNumber, _progressService.CurrentLevelNumber).LevelImage, _levelVisualHandler.ScreenColorAnimation.Gradient);
+                _figuresStorageData.GetLevelParamsData(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber).LevelImage, _levelVisualHandler.ScreenColorAnimation.Gradient);
         }
 
         private void SetupClickHandler()
@@ -82,7 +91,7 @@ namespace Handlers
 
         private void SetupLevelScreenHandler(LevelParams packParam, Color defaultColor)
         {
-            _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(_figuresStorageData.GetLevelVisualHandler(_progressService.CurrentPackNumber, _progressService.CurrentLevelNumber));
+            _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(_figuresStorageData.GetLevelVisualHandler(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber));
             _levelVisualHandler.SetupLevel(packParam.LevelFiguresParamsList, defaultColor);
         }
 
@@ -144,10 +153,10 @@ namespace Handlers
                 var shiftingAnimationPromise = new Promise();
                 _levelHudHandler.TryShiftAllElementsAfterRemoving(_draggingFigureContainer.FigureId, shiftingAnimationPromise);
                 
-                _progressService.UpdateProgress(_progressService.CurrentPackNumber, _progressService.CurrentLevelNumber, releasedOnFigure.FigureId);
+                TrySetFigureInserted(releasedOnFigure.FigureId);
                 
                 _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigureImage.transform.DOScale(0, 0.4f))
-                    .InsertCallback(0.25f, PlayFinishParticles);
+                    .InsertCallback(0.25f, PlayFinishParticles).KillWith(this);
 
                 shiftingAnimationPromise.Then(() =>
                 {
@@ -266,6 +275,24 @@ namespace Handlers
         {
             _resetDraggingAnimationSequence?.Kill();
             _completeDraggingAnimationSequence?.Kill();
+        }
+        
+        private void TrySetFigureInserted(int figureId)
+        {
+            if (_currentLevelParams == null)
+            {
+                return;
+            }
+
+            var levelFigure = _currentLevelParams.LevelFiguresParamsList.FirstOrDefault(level => level.FigureId == figureId);
+            
+            if (levelFigure == null)
+            {
+                Debug.LogWarning($"Could not update progress with figure id {figureId} in {this}");
+                return;
+            }
+            
+            levelFigure.Completed = true;
         }
     }
 }

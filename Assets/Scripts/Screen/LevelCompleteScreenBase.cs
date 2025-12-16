@@ -14,7 +14,7 @@ namespace Screen
     public class LevelCompleteScreenBase : ScreenBase
     {
         [Inject] private ScreenHandler _screenHandler;
-        [Inject] private ProgressService _progressService;
+        [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private SoundHandler _soundHandler;
         
         [SerializeField] private Button _backButton;
@@ -91,13 +91,13 @@ namespace Screen
 
         private void TryAgainLevel()
         {
-            if (_progressService.CurrentLevelNumber == -1)
+            if (_playerProgressService.CurrentLevelNumber == -1)
             {
-                Debug.LogWarning($"Current Level is {_progressService.CurrentLevelNumber}. Cannot continue. Warning in {this}");
+                Debug.LogWarning($"Current Level is {_playerProgressService.CurrentLevelNumber}. Cannot continue. Warning in {this}");
                 _screenHandler.ShowChooseLevelScreen();
             }
 
-            _screenHandler.ReplayCurrentLevel(_progressService.CurrentLevelNumber);
+            _screenHandler.ReplayCurrentLevel(_playerProgressService.CurrentLevelNumber);
             TryInvokeFinishLevelSessionAction();
         }
         

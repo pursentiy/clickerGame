@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Extensions;
 using GlobalParams;
 using Storage.Levels.Params;
+using Storage.Snapshots;
 using UnityEngine;
 using Zenject;
 
 namespace Services
 {
-    public class ProgressService
+    public class PlayerProgressService
     {
         [Inject] private LevelsParamsStorage _levelsParamsStorage;
+        [Inject] private PlayerSnapshotService _playerSnapshotService;
         
         private List<PackParams> _packParamsList;
         private ProfileSettingsParams _profileSettings;
@@ -45,7 +48,7 @@ namespace Services
             _packParamsList = levelsParams;
         }
 
-        public void UpdateProgress(int packNumber, int levelNumber, int figureId)
+        public void ResetProgress(int packNumber, int levelNumber)
         {
             var levelProgress = GetLevelByNumber(packNumber, levelNumber);
 
@@ -53,48 +56,63 @@ namespace Services
             {
                 return;
             }
-
-            var levelFigure = levelProgress.LevelFiguresParamsList.FirstOrDefault(level => level.FigureId == figureId);
             
-            if (levelFigure == null)
+            foreach (var levelFigureParam in levelProgress.LevelFiguresParamsList)
             {
-                Debug.LogWarning($"Could not update progress with figure id {figureId} in {this}");
-                return;
-            }
-            
-            levelFigure.Completed = true;
-            
-            var levelCompleted = levelProgress.LevelFiguresParamsList.TrueForAll(levelFigureParams =>
-                levelFigureParams.Completed);
-
-            levelProgress.LevelCompleted = levelCompleted;
-
-            if (levelCompleted)
-            {
-                TryUpdateNextLevelPlayableStatus(packNumber, levelNumber, true);
+                levelFigureParam.Completed = false;
             }
         }
 
-        private void TryUpdateNextLevelPlayableStatus(int currentPackNumber, int currentLevelNumber, bool value)
+        public bool IsPackAvailable(int packNumber)
         {
-            if (currentLevelNumber + 1 > GetPackPackByNumber(currentPackNumber).LevelsParams[_packParamsList.Count - 1].LevelNumber)
-            {
-                GetPackPackByNumber(currentPackNumber).PackCompleted = true;
-                TryUpdateNextPackPlayableStatus(currentPackNumber, value);
-            }
-            
-            var level = GetLevelByNumber(currentPackNumber, currentLevelNumber + 1);
-            if(level != null)
-                level.LevelPlayable = value;
+            if (_packParamsList.IsNullOrEmpty())
+                return false;
+
+            var pack = _packParamsList.FirstOrDefault(i => i.PackNumber == packNumber);
+            return pack != null;
         }
 
-        private void TryUpdateNextPackPlayableStatus(int currentPackNumber, bool value)
+        public bool IsLevelAvailable(int packNumber, int levelNumber)
         {
-            if(currentPackNumber + 1 > _packParamsList[^1].PackNumber || !GetPackPackByNumber(currentPackNumber).PackPlayable)
-                return;
+            if (levelNumber <= 0 || !IsPackAvailable(packNumber))
+                return false;
 
-            GetPackPackByNumber(currentPackNumber + 1).PackPlayable = true;
-            GetLevelByNumber(currentPackNumber + 1, 1).LevelPlayable = value;
+            if (levelNumber == 1)
+                return true;
+
+            var previousLevelIsCompleted = IsLevelCompleted(packNumber, levelNumber);
+            return previousLevelIsCompleted;
+        }
+
+        public bool IsLevelCompleted(int packNumber, int levelNumber)
+        {
+            return _playerSnapshotService.HasLevelInPack(packNumber, levelNumber);
+        }
+
+        public bool TrySetOrUpdateLevelCompletion(int packNumber, int levelNumber, int earnedStars, float completeTime)
+        {
+            var pack = _playerSnapshotService.GetOrCreatePack(packNumber);
+            if (pack == null)
+                return false;
+            
+            var level = pack.CompletedLevelsSnapshots.FirstOrDefault(x => x.LevelNumber == levelNumber);
+            if (level != null)
+            {
+                if (earnedStars > level.StarsEarned)
+                {
+                    level.StarsEarned = earnedStars;
+                }
+                
+                if (completeTime < level.LevelCompletedTime || level.LevelCompletedTime <= 0)
+                {
+                    level.LevelCompletedTime = completeTime;
+                }
+                
+                return true;
+            }
+            
+            pack.CompletedLevelsSnapshots.Add(new LevelSnapshot(levelNumber, completeTime, earnedStars));
+            return true;
         }
 
         public bool CheckForLevelCompletion(int packNumber, int levelNumber)
@@ -162,7 +180,7 @@ namespace Services
             return null;
         }
         
-        public List<PackParams> GetCurrentProgress()
+        public List<PackParams> GetPackParams()
         {
             return _packParamsList;
         }

@@ -8,8 +8,7 @@ namespace Storage.Levels.Params
     public class PackParams
     {
         public int PackNumber;
-        public bool PackCompleted;
-        public bool PackPlayable;
+        public int StarsToUnlock;
         public List<LevelParams> LevelsParams;
     }
 }
