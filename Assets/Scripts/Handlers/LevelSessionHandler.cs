@@ -25,6 +25,7 @@ namespace Handlers
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private LevelInfoTrackerService _levelInfoTrackerService;
+        [Inject] private LevelHelperService _levelHelperService;
 
         [SerializeField] private RectTransform _gameMainCanvasTransform;
         [SerializeField] private RectTransform _draggingTransform;
@@ -60,27 +61,34 @@ namespace Handlers
             SetupHud(levelParams, levelHudHandler);
             SetupLevelScreenHandler(levelParams, defaultColor);
             
-            TryHandleLevelCompletion(true);
             _soundHandler.PlaySound("start");
         }
 
-        private void TryHandleLevelCompletion(bool onEnter)
+        private void TryHandleLevelCompletion()
         {
-            if (!_playerProgressService.CheckForLevelCompletion(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber))
+            if (!_levelHelperService.IsLevelCompeted(_currentLevelParams))
             {
                 return;
             }
-            
+
+            var levelPlayedTime = _levelInfoTrackerService.CurrentLevelPlayingTime;
             _levelInfoTrackerService.StopLevelTracking();
+            _levelInfoTrackerService.ClearData();
+
+            var maybeOldEarnedStars = _playerProgressService.GetEarnedStarsForLevel(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber);
+            var earnedStars = _levelHelperService.EvaluateEarnedStars(_currentLevelParams, levelPlayedTime);
+            var starsForAccrual = _levelHelperService.EvaluateStarsForAccrual(earnedStars, maybeOldEarnedStars);
+            
             _levelHudHandler.SetInteractivity(false);
-            StartCoroutine(AwaitFinishLevel(onEnter));
+            _playerProgressService.TrySetOrUpdateLevelCompletion(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber, earnedStars, levelPlayedTime);
+            StartCoroutine(AwaitFinishLevel(starsForAccrual));
         }
 
-        private IEnumerator AwaitFinishLevel(bool onEnter)
+        private IEnumerator AwaitFinishLevel(int starsForAccrual)
         {
             yield return new WaitForSeconds(_screenHandler.AwaitChangeScreenTime);
             _soundHandler.PlaySound("finished");
-            _screenHandler.ShowLevelCompleteScreen(onEnter, ResetLevel, 
+            _screenHandler.ShowLevelCompleteScreen(false, ResetLevel, 
                 _figuresStorageData.GetLevelParamsData(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber).LevelImage, _levelVisualHandler.ScreenColorAnimation.Gradient);
         }
 
@@ -164,7 +172,7 @@ namespace Handlers
                         {
                             releasedOnFigure.SetConnected();
                             SetMenuFigureConnected();
-                            TryHandleLevelCompletion(false);
+                            TryHandleLevelCompletion();
                         });
                 });
             }

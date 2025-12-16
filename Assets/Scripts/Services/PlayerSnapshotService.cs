@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Extensions;
 using Storage.Snapshots;
 
 namespace Services
@@ -19,6 +20,14 @@ namespace Services
 
             var level = pack?.CompletedLevelsSnapshots.FirstOrDefault(x => x.LevelNumber == levelNumber);
             return level != null;
+        }
+
+        public PackSnapshot TryGetPack(int packNumber)
+        {
+            if (ProfileSnapshot == null || ProfileSnapshot.PackSnapshots.IsNullOrEmpty()) 
+                return null;
+            
+            return ProfileSnapshot.PackSnapshots.FirstOrDefault(p => p.PackNumber == packNumber);
         }
 
         public PackSnapshot GetOrCreatePack(int packNumber)

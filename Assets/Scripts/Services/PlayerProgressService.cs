@@ -89,6 +89,14 @@ namespace Services
             return _playerSnapshotService.HasLevelInPack(packNumber, levelNumber);
         }
 
+        public int? GetEarnedStarsForLevel(int packNumber, int levelNumber)
+        {
+            var pack = _playerSnapshotService.TryGetPack(packNumber);
+
+            var level = pack?.CompletedLevelsSnapshots.FirstOrDefault(x => x.LevelNumber == levelNumber);
+            return level?.StarsEarned;
+        }
+
         public bool TrySetOrUpdateLevelCompletion(int packNumber, int levelNumber, int earnedStars, float completeTime)
         {
             var pack = _playerSnapshotService.GetOrCreatePack(packNumber);
@@ -113,21 +121,6 @@ namespace Services
             
             pack.CompletedLevelsSnapshots.Add(new LevelSnapshot(levelNumber, completeTime, earnedStars));
             return true;
-        }
-
-        public bool CheckForLevelCompletion(int packNumber, int levelNumber)
-        {
-            var levelProgress = GetLevelByNumber(packNumber, levelNumber);
-            
-            if (levelProgress == null)
-            {
-                return false;
-            }
-
-            var progress = levelProgress.LevelFiguresParamsList.TrueForAll(levelFigureParams =>
-                levelFigureParams.Completed);
-
-            return progress;
         }
 
         public PackParams GetPackPackByNumber(int packNumber)
