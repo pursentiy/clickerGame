@@ -11,7 +11,7 @@ namespace Popup
     {
         [Inject] private SoundHandler _soundHandler;
         [Inject] private ProgressHandler _progressHandler;
-        [Inject] private ProcessProgressDataService _processProgressDataService;
+        [Inject] private CheatService _cheatService;
         
         [SerializeField] private Button _closeButton;
         [SerializeField] private Toggle _musicToggle;
@@ -100,7 +100,7 @@ namespace Popup
 
         private void CheatResetProgress()
         {
-            _processProgressDataService.CheatResetProgress();
+            _cheatService.CheatResetProgress();
         }
 
         private void OnDestroy()

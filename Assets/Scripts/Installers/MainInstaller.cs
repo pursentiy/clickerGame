@@ -28,9 +28,19 @@ namespace Installers
         public override void InstallBindings()
         {
             ContainerHolder.OnProjectInstall(Container);
+            
+            //PLAYER SERVICES
+            Container.BindInterfacesAndSelfTo<PlayerService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<ProfileBuilderService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<PlayerRepositoryService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<ProfileSerializerService>().AsSingle().NonLazy();
 
+            Container.BindInterfacesAndSelfTo<CheatService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PersistentCoroutinesService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<CoroutineService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<TimeService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<LevelInfoTrackerService>().AsSingle().NonLazy();
+            
             Container.Bind<ProgressHandler>().FromInstance(_progressHandler);
             Container.Bind<PopupHandler>().FromInstance(_popupHandler);
             Container.Bind<ScreenHandler>().FromInstance(_screenHandler);
@@ -42,10 +52,6 @@ namespace Installers
             Container.Bind<LevelsParamsStorage>().FromNewScriptableObject(levelsParamsStorage).AsTransient().NonLazy();
             Container.Bind<FiguresStorageData>().FromScriptableObject(figuresStorageData).AsSingle().NonLazy();
             Container.Bind<AudioStorageData>().FromScriptableObject(audioStorageData).AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<ProcessProgressDataService>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<TimeService>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<LevelInfoTrackerService>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<PlayerService>().AsSingle().NonLazy();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Handlers
     {
         [Inject] private LevelsParamsStorage _levelsParamsStorage;
         
-        private List<PackParams> _gameProgress;
+        private List<PackParams> _packParamsList;
         private ProfileSettingsParams _profileSettings;
 
         public int CurrentPackNumber { get; set; } = -1;
@@ -43,16 +43,7 @@ namespace Handlers
                 return;
             }
             
-            if (newLevelsParams != null)
-            {
-                var currentMaxPackIndex = levelsParams[levelsParams.Count - 1].PackNumber;
-                _gameProgress = levelsParams.Concat(newLevelsParams).ToList();
-                TryUpdateNextPackPlayableStatus(currentMaxPackIndex, true);
-            }
-            else
-            {
-                _gameProgress = levelsParams;
-            }
+            _packParamsList = levelsParams;
         }
 
         public void UpdateProgress(int packNumber, int levelNumber, int figureId)
@@ -87,7 +78,7 @@ namespace Handlers
 
         private void TryUpdateNextLevelPlayableStatus(int currentPackNumber, int currentLevelNumber, bool value)
         {
-            if (currentLevelNumber + 1 > GetPackPackByNumber(currentPackNumber).LevelsParams[_gameProgress.Count - 1].LevelNumber)
+            if (currentLevelNumber + 1 > GetPackPackByNumber(currentPackNumber).LevelsParams[_packParamsList.Count - 1].LevelNumber)
             {
                 GetPackPackByNumber(currentPackNumber).PackCompleted = true;
                 TryUpdateNextPackPlayableStatus(currentPackNumber, value);
@@ -100,7 +91,7 @@ namespace Handlers
 
         private void TryUpdateNextPackPlayableStatus(int currentPackNumber, bool value)
         {
-            if(currentPackNumber + 1 > _gameProgress[^1].PackNumber || !GetPackPackByNumber(currentPackNumber).PackPlayable)
+            if(currentPackNumber + 1 > _packParamsList[^1].PackNumber || !GetPackPackByNumber(currentPackNumber).PackPlayable)
                 return;
 
             GetPackPackByNumber(currentPackNumber + 1).PackPlayable = true;
@@ -124,7 +115,7 @@ namespace Handlers
 
         public PackParams GetPackPackByNumber(int packNumber)
         {
-            var pack = _gameProgress.FirstOrDefault(levelParams => levelParams.PackNumber == packNumber);
+            var pack = _packParamsList.FirstOrDefault(levelParams => levelParams.PackNumber == packNumber);
             
             if (pack != null)
             {
@@ -138,7 +129,7 @@ namespace Handlers
 
         public LevelParams GetLevelByNumber(int packNumber, int levelNumber)
         {
-            var levelProgress = _gameProgress.FirstOrDefault(levelParams => levelParams.PackNumber == packNumber)?
+            var levelProgress = _packParamsList.FirstOrDefault(levelParams => levelParams.PackNumber == packNumber)?
                 .LevelsParams.FirstOrDefault(levelParams => levelParams.LevelNumber == levelNumber);
 
             if (levelProgress != null)
@@ -161,7 +152,7 @@ namespace Handlers
 
         public List<LevelParams> GetLevelsByPack(int packNumber)
         {
-            var levelsParams = _gameProgress.FirstOrDefault(levelParams => levelParams.PackNumber == packNumber)?.LevelsParams;
+            var levelsParams = _packParamsList.FirstOrDefault(levelParams => levelParams.PackNumber == packNumber)?.LevelsParams;
 
             if (levelsParams != null)
             {
@@ -174,7 +165,7 @@ namespace Handlers
         
         public List<PackParams> GetCurrentProgress()
         {
-            return _gameProgress;
+            return _packParamsList;
         }
     }
 }

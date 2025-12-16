@@ -1,21 +1,29 @@
 using Plugins.FSignal;
+using Storage.Snapshots;
+using UnityEngine;
 
 namespace Services
 {
     public class PlayerService
     {
-        public int Stars {get; private set;}
+        public ProfileSnapshot ProfileSnapshot { get; private set; }
         public FSignal<int> StarsChangedSignal = new FSignal<int>();
 
-        public void Initialize(int stars)
+        public void Initialize(ProfileSnapshot profileSnapshot)
         {
-            Stars = stars;
+            ProfileSnapshot = profileSnapshot;
         }
 
         public void AddStars(int amount)
         {
-            Stars += amount;
-            StarsChangedSignal.Dispatch(Stars);
+            if (ProfileSnapshot == null)
+            {
+                Debug.LogError("ProfileSnapshot is null");
+                return;
+            }
+            
+            ProfileSnapshot.Stars += amount;
+            StarsChangedSignal.Dispatch(ProfileSnapshot.Stars);
         }
     }
 }

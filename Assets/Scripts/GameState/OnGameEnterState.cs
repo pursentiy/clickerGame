@@ -11,31 +11,38 @@ namespace GameState
     public class OnGameEnterState : InjectableMonoBehaviour
     {
         [Inject] private LevelsParamsStorage _levelsParamsStorage;
-        [Inject] private ProcessProgressDataService _processProgressDataService;
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private ProgressHandler _progressHandler;
         [Inject] private SoundHandler _soundHandler;
+        [Inject] private ProfileBuilderService _profileBuilderService;
+        [Inject] private PlayerRepositoryService _playerRepositoryService;
 
         protected override void Awake()
         {
-            var savedDataProgress = _processProgressDataService.LoadProgress();
-
-            LaunchSession(savedDataProgress);
-        }
-
-        private void LaunchSession(List<PackParams> savedDataProgress)
-        {
             _progressHandler.InitializeProfileSettings();
             
-            if (savedDataProgress == null)
+            if (_playerRepositoryService.HasProfile)
             {
-                _progressHandler.InitializeHandler(StartNewGameProgress());
+                StartOldProfileSession();
             }
             else
             {
-                _progressHandler.InitializeHandler(savedDataProgress,
-                    IsNewPacksAdded(savedDataProgress) ? GetNewPacks(savedDataProgress) : null);
+                StartNewProfileSession();
             }
+        }
+
+        private void StartNewProfileSession()
+        {
+            var playerSnapshot = _profileBuilderService.BuildNewProfileSnapshot();
+            _playerRepositoryService.SavePlayerSnapshot(playerSnapshot);
+                
+            _progressHandler.InitializeHandler(StartNewGameProgress());
+        }
+
+        private void StartOldProfileSession()
+        {
+            _progressHandler.InitializeHandler(savedDataProgress,
+                IsNewPacksAdded(savedDataProgress) ? GetNewPacks(savedDataProgress) : null);
         }
 
         private List<PackParams> GetNewPacks(List<PackParams> savedDataProgress)
@@ -73,13 +80,8 @@ namespace GameState
         private List<PackParams> StartNewGameProgress()
         {
             var levelsParams = _levelsParamsStorage.DefaultPacksParamsList;
-            _processProgressDataService.SaveProgress(levelsParams);
             return levelsParams;
         }
 
-        private void OnDestroy()
-        {
-            _processProgressDataService.SaveProgress(_progressHandler.GetCurrentProgress());
-        }
     }
 }
