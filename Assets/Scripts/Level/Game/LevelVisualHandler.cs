@@ -3,6 +3,7 @@ using Animations;
 using Figures.Animals;
 using Handlers;
 using Installers;
+using Services;
 using Storage;
 using Storage.Levels.Params;
 using UnityEngine;
@@ -13,7 +14,7 @@ namespace Level.Game
     public class LevelVisualHandler : InjectableMonoBehaviour, ILevelVisualHandler
     {
         [Inject] private FiguresStorageData _figuresStorageData;
-        [Inject] private ProgressHandler _progressHandler;
+        [Inject] private ProgressService _progressService;
 
         [SerializeField] private Transform _figuresParentTransform;
         [SerializeField] private ScreenColorAnimation screenColorAnimation;
@@ -36,8 +37,8 @@ namespace Level.Game
 
         private void SetFigure(LevelFigureParams figureParams, Color defaultColor)
         {
-            var figurePrefab = _figuresStorageData.GetTargetFigure(_progressHandler.CurrentPackNumber,
-                _progressHandler.CurrentLevelNumber, figureParams.FigureId);
+            var figurePrefab = _figuresStorageData.GetTargetFigure(_progressService.CurrentPackNumber,
+                _progressService.CurrentLevelNumber, figureParams.FigureId);
 
             if (figurePrefab == null)
             {

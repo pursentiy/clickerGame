@@ -1,5 +1,6 @@
 ﻿using Handlers;
 using Screen.SubElements;
+using Services;
 using Storage;
 using TMPro;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Screen
     {
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private PopupHandler _popupHandler;
-        [Inject] private ProgressHandler _progressHandler;
+        [Inject] private ProgressService _progressService;
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private SoundHandler _soundHandler;
         
@@ -29,7 +30,7 @@ namespace Screen
         {
             InitializeLevelsButton();
 
-            _packName.text = _figuresStorageData.GetPackParamsData(_progressHandler.CurrentPackNumber).PackName + " Pack";
+            _packName.text = _figuresStorageData.GetPackParamsData(_progressService.CurrentPackNumber).PackName + " Pack";
             
             _goToChoosePackScreenButton.onClick.AddListener(()=>
             {
@@ -45,14 +46,14 @@ namespace Screen
 
         private void InitializeLevelsButton()
         {
-            var levelsParams = _progressHandler.GetLevelsByPack(_progressHandler.CurrentPackNumber);
+            var levelsParams = _progressService.GetLevelsByPack(_progressService.CurrentPackNumber);
             var index = 0;
             levelsParams.ForEach(levelParams =>
             {
                 if(_horizontalGroup == null || index % 2 == 0)
                     _horizontalGroup = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
 
-                var levelParamsData = _figuresStorageData.GetLevelParamsData(_progressHandler.CurrentPackNumber, levelParams.LevelNumber);
+                var levelParamsData = _figuresStorageData.GetLevelParamsData(_progressService.CurrentPackNumber, levelParams.LevelNumber);
                 var enterButton = Instantiate(levelEnterWidgetPrefab, _horizontalGroup.transform);
                 enterButton.Initialize(levelParamsData.LevelName, levelParamsData.LevelImage, levelParamsData.LevelDifficulty, levelParams.LevelPlayable,
                     () =>

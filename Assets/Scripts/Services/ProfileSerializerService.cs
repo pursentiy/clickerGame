@@ -1,12 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using JetBrains.Annotations;
-using Storage.Extensions;
-using Storage.Levels.Params;
 using Storage.Records;
-using Storage.Snapshots;
 using UnityEngine;
 
 namespace Services
@@ -29,19 +24,6 @@ namespace Services
             var stream = new FileStream(filePath, FileMode.Create);
             
             var jsonPackProgressData = JsonUtility.ToJson(profileRecord);
-            //var jsonPackProgressData = "";
-            // var index = 0;
-            // packsParams.ForEach(packParams =>
-            // {
-            //     jsonPackProgressData += JsonUtility.ToJson(packParams);
-            //     
-            //     if (index < packsParams.Count - 1)
-            //     {
-            //         jsonPackProgressData += "\n";
-            //     }
-            //
-            //     index++;
-            // });
             
             formatter.Serialize(stream, jsonPackProgressData);
             stream.Close();
@@ -64,9 +46,7 @@ namespace Services
                 return null;
             }
             
-            var rawProgressDataArray = rawTotalProgressData.Split('\n');
             return JsonUtility.FromJson<ProfileRecord>(rawTotalProgressData);
-            //return levelParamsList.Where(level => level != null).ToList();
         }
     }
 }

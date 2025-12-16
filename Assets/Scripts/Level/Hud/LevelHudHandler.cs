@@ -8,6 +8,7 @@ using Installers;
 using Level.Widgets;
 using Plugins.FSignal;
 using RSG;
+using Services;
 using Storage;
 using Storage.Levels.Params;
 using UnityEngine;
@@ -15,7 +16,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Utilities.Disposable;
 using Zenject;
-using ProgressHandler = Handlers.ProgressHandler;
 
 namespace Level.Hud
 {
@@ -24,7 +24,7 @@ namespace Level.Hud
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private PopupHandler _popupHandler;
-        [Inject] private ProgressHandler _progressHandler;
+        [Inject] private ProgressService _progressService;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private LevelInfoTrackerService _levelInfoTrackerService;
 
@@ -86,8 +86,8 @@ namespace Level.Hud
 
         private void SetFigure(LevelFigureParams figureParams)
         {
-            var figurePrefab = _figuresStorageData.GetMenuFigure(_progressHandler.CurrentPackNumber,
-                _progressHandler.CurrentLevelNumber, figureParams.FigureId);
+            var figurePrefab = _figuresStorageData.GetMenuFigure(_progressService.CurrentPackNumber,
+                _progressService.CurrentLevelNumber, figureParams.FigureId);
 
             if (figurePrefab == null)
             {

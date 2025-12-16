@@ -16,7 +16,6 @@ namespace Installers
         [SerializeField] private FiguresStorageData figuresStorageData;
         [SerializeField] private AudioStorageData audioStorageData;
         
-        [SerializeField] private ProgressHandler _progressHandler;
         [SerializeField] private ScreenHandler _screenHandler;
         [SerializeField] private PopupHandler _popupHandler;
         [SerializeField] private LevelSessionHandler _levelSessionHandler;
@@ -34,6 +33,7 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<ProfileBuilderService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerRepositoryService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<ProfileSerializerService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<ProgressService>().AsSingle().NonLazy();
 
             Container.BindInterfacesAndSelfTo<CheatService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PersistentCoroutinesService>().AsSingle().NonLazy();
@@ -41,7 +41,6 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<TimeService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<LevelInfoTrackerService>().AsSingle().NonLazy();
             
-            Container.Bind<ProgressHandler>().FromInstance(_progressHandler);
             Container.Bind<PopupHandler>().FromInstance(_popupHandler);
             Container.Bind<ScreenHandler>().FromInstance(_screenHandler);
             Container.Bind<LevelSessionHandler>().FromInstance(_levelSessionHandler);

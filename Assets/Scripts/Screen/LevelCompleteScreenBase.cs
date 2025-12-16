@@ -3,6 +3,7 @@ using System.Collections;
 using Animations;
 using Extensions;
 using Handlers;
+using Services;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -13,7 +14,7 @@ namespace Screen
     public class LevelCompleteScreenBase : ScreenBase
     {
         [Inject] private ScreenHandler _screenHandler;
-        [Inject] private ProgressHandler _progressHandler;
+        [Inject] private ProgressService _progressService;
         [Inject] private SoundHandler _soundHandler;
         
         [SerializeField] private Button _backButton;
@@ -90,13 +91,13 @@ namespace Screen
 
         private void TryAgainLevel()
         {
-            if (_progressHandler.CurrentLevelNumber == -1)
+            if (_progressService.CurrentLevelNumber == -1)
             {
-                Debug.LogWarning($"Current Level is {_progressHandler.CurrentLevelNumber}. Cannot continue. Warning in {this}");
+                Debug.LogWarning($"Current Level is {_progressService.CurrentLevelNumber}. Cannot continue. Warning in {this}");
                 _screenHandler.ShowChooseLevelScreen();
             }
 
-            _screenHandler.ReplayCurrentLevel(_progressHandler.CurrentLevelNumber);
+            _screenHandler.ReplayCurrentLevel(_progressService.CurrentLevelNumber);
             TryInvokeFinishLevelSessionAction();
         }
         

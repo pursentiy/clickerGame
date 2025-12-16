@@ -10,7 +10,7 @@ namespace Popup
     public class SettingsPopup : PopupBase
     {
         [Inject] private SoundHandler _soundHandler;
-        [Inject] private ProgressHandler _progressHandler;
+        [Inject] private ProgressService _progressService;
         [Inject] private CheatService _cheatService;
         
         [SerializeField] private Button _closeButton;
@@ -35,14 +35,14 @@ namespace Popup
             _musicToggle.onValueChanged.AddListener(isOn =>
             {
                 _soundHandler.PlayButtonSound();
-                _progressHandler.ProfileSettingsMusic = isOn;
+                _progressService.ProfileSettingsMusic = isOn;
                 _soundHandler.SetMusicVolume(isOn);
             });
             
             _soundToggle.onValueChanged.AddListener(isOn =>
             {
                 _soundHandler.PlayButtonSound();
-                _progressHandler.ProfileSettingsSound = isOn;
+                _progressService.ProfileSettingsSound = isOn;
                 _soundHandler.SetSoundVolume(isOn);
             });
 
@@ -75,8 +75,8 @@ namespace Popup
 
         private void SetupMusicAndSoundToggles()
         {
-            _musicToggle.isOn = _progressHandler.ProfileSettingsMusic;
-            _soundToggle.isOn = _progressHandler.ProfileSettingsSound;
+            _musicToggle.isOn = _progressService.ProfileSettingsMusic;
+            _soundToggle.isOn = _progressService.ProfileSettingsSound;
         }
         
         private void ChangeLanguage(int direction)

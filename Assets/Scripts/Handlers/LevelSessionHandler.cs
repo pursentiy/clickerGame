@@ -9,6 +9,7 @@ using Level.Game;
 using Level.Hud;
 using Level.Widgets;
 using RSG;
+using Services;
 using Storage;
 using Storage.Levels.Params;
 using UnityEngine;
@@ -20,7 +21,7 @@ namespace Handlers
 {
     public class LevelSessionHandler : InjectableMonoBehaviour, ILevelSessionHandler
     {
-        [Inject] private ProgressHandler _progressHandler;
+        [Inject] private ProgressService _progressService;
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private SoundHandler _soundHandler;
@@ -43,7 +44,7 @@ namespace Handlers
 
         public void StartLevel(LevelParams levelParams, LevelHudHandler levelHudHandler, Color defaultColor)
         {
-            var levelId = $"{_progressHandler.CurrentPackNumber}-{_progressHandler.CurrentLevelNumber}";
+            var levelId = $"{_progressService.CurrentPackNumber}-{_progressService.CurrentLevelNumber}";
             _levelInfoTrackerService.StartLevelTracking(levelId);
             
             SetupClickHandler();
@@ -56,7 +57,7 @@ namespace Handlers
 
         private void TryHandleLevelCompletion(bool onEnter)
         {
-            if (!_progressHandler.CheckForLevelCompletion(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber))
+            if (!_progressService.CheckForLevelCompletion(_progressService.CurrentPackNumber, _progressService.CurrentLevelNumber))
             {
                 return;
             }
@@ -71,7 +72,7 @@ namespace Handlers
             yield return new WaitForSeconds(_screenHandler.AwaitChangeScreenTime);
             _soundHandler.PlaySound("finished");
             _screenHandler.ShowLevelCompleteScreen(onEnter, ResetLevel, 
-                _figuresStorageData.GetLevelParamsData(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber).LevelImage, _levelVisualHandler.ScreenColorAnimation.Gradient);
+                _figuresStorageData.GetLevelParamsData(_progressService.CurrentPackNumber, _progressService.CurrentLevelNumber).LevelImage, _levelVisualHandler.ScreenColorAnimation.Gradient);
         }
 
         private void SetupClickHandler()
@@ -81,7 +82,7 @@ namespace Handlers
 
         private void SetupLevelScreenHandler(LevelParams packParam, Color defaultColor)
         {
-            _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(_figuresStorageData.GetLevelVisualHandler(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber));
+            _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(_figuresStorageData.GetLevelVisualHandler(_progressService.CurrentPackNumber, _progressService.CurrentLevelNumber));
             _levelVisualHandler.SetupLevel(packParam.LevelFiguresParamsList, defaultColor);
         }
 
@@ -143,7 +144,7 @@ namespace Handlers
                 var shiftingAnimationPromise = new Promise();
                 _levelHudHandler.TryShiftAllElementsAfterRemoving(_draggingFigureContainer.FigureId, shiftingAnimationPromise);
                 
-                _progressHandler.UpdateProgress(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber, releasedOnFigure.FigureId);
+                _progressService.UpdateProgress(_progressService.CurrentPackNumber, _progressService.CurrentLevelNumber, releasedOnFigure.FigureId);
                 
                 _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigureImage.transform.DOScale(0, 0.4f))
                     .InsertCallback(0.25f, PlayFinishParticles);

@@ -12,14 +12,14 @@ namespace GameState
     {
         [Inject] private LevelsParamsStorage _levelsParamsStorage;
         [Inject] private ScreenHandler _screenHandler;
-        [Inject] private ProgressHandler _progressHandler;
+        [Inject] private ProgressService _progressService;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private ProfileBuilderService _profileBuilderService;
         [Inject] private PlayerRepositoryService _playerRepositoryService;
 
         protected override void Awake()
         {
-            _progressHandler.InitializeProfileSettings();
+            _progressService.InitializeProfileSettings();
             
             if (_playerRepositoryService.HasProfile)
             {
@@ -36,13 +36,12 @@ namespace GameState
             var playerSnapshot = _profileBuilderService.BuildNewProfileSnapshot();
             _playerRepositoryService.SavePlayerSnapshot(playerSnapshot);
                 
-            _progressHandler.InitializeHandler(StartNewGameProgress());
+            _progressService.InitializeHandler(_levelsParamsStorage.DefaultPacksParamsList);
         }
 
         private void StartOldProfileSession()
         {
-            _progressHandler.InitializeHandler(savedDataProgress,
-                IsNewPacksAdded(savedDataProgress) ? GetNewPacks(savedDataProgress) : null);
+            _progressService.InitializeHandler(_levelsParamsStorage.DefaultPacksParamsList);
         }
 
         private List<PackParams> GetNewPacks(List<PackParams> savedDataProgress)
@@ -67,8 +66,8 @@ namespace GameState
 
         private void SetupSounds()
         {
-            _soundHandler.SetMusicVolume(_progressHandler.ProfileSettingsMusic);
-            _soundHandler.SetSoundVolume(_progressHandler.ProfileSettingsSound);
+            _soundHandler.SetMusicVolume(_progressService.ProfileSettingsMusic);
+            _soundHandler.SetSoundVolume(_progressService.ProfileSettingsSound);
             _soundHandler.StartAmbience();
         }
 
@@ -76,12 +75,5 @@ namespace GameState
         {
             return _levelsParamsStorage.DefaultPacksParamsList.Count > savedDataProgress.Count;
         }
-
-        private List<PackParams> StartNewGameProgress()
-        {
-            var levelsParams = _levelsParamsStorage.DefaultPacksParamsList;
-            return levelsParams;
-        }
-
     }
 }

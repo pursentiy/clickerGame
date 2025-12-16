@@ -1,5 +1,6 @@
 using Handlers;
 using Screen.SubElements;
+using Services;
 using Storage;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,7 +11,7 @@ namespace Screen
     public class ChoosePackScreenBase : ScreenBase
     {
         [Inject] private ScreenHandler _screenHandler;
-        [Inject] private ProgressHandler _progressHandler;
+        [Inject] private ProgressService _progressService;
         [Inject] private FiguresStorageData _figuresStorageData;
         
         [SerializeField] private PackEnterWidgetHandler _packEnterWidgetPrefab;
@@ -25,7 +26,7 @@ namespace Screen
 
         private void InitializeLevelsButton()
         {
-            var currentPackParams = _progressHandler.GetCurrentProgress();
+            var currentPackParams = _progressService.GetCurrentProgress();
             var index = 0;
             currentPackParams.ForEach(packParams =>
             {
@@ -36,7 +37,7 @@ namespace Screen
                 enterButton.Initialize(_figuresStorageData.GetPackParamsData(packParams.PackNumber).PackName, _figuresStorageData.GetPackParamsData(packParams.PackNumber).PackImage, packParams.PackNumber, packParams.PackPlayable,
                     () =>
                     {
-                        _progressHandler.CurrentPackNumber = packParams.PackNumber;
+                        _progressService.CurrentPackNumber = packParams.PackNumber;
                         _screenHandler.ShowChooseLevelScreen();
                     });
                 index++;

@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GlobalParams;
-using Installers;
 using Storage.Levels.Params;
 using UnityEngine;
 using Zenject;
 
-namespace Handlers
+namespace Services
 {
-    public class ProgressHandler : InjectableMonoBehaviour, IProgressHandler
+    public class ProgressService
     {
         [Inject] private LevelsParamsStorage _levelsParamsStorage;
         

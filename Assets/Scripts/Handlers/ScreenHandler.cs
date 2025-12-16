@@ -5,6 +5,7 @@ using Installers;
 using Plugins.FSignal;
 using RSG;
 using Screen;
+using Services;
 using Storage.Levels.Params;
 using UnityEngine;
 using Zenject;
@@ -14,7 +15,7 @@ namespace Handlers
     public class ScreenHandler : InjectableMonoBehaviour, IScreenHandler
     {
         [Inject] private UIBlockHandler _uiBlockHandler;
-        [Inject] private ProgressHandler _progressHandler;
+        [Inject] private ProgressService _progressService;
         [Inject] private LevelSessionHandler _levelSessionHandler;
         [Inject] private LevelParamsHandler _levelParamsHandler;
 
@@ -108,9 +109,9 @@ namespace Handlers
 
             awaitPromise.Then(() =>
             {
-                _progressHandler.ResetLevelProgress(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber);
-                var levelParams = _progressHandler.GetLevelByNumber(_progressHandler.CurrentPackNumber, _progressHandler.CurrentLevelNumber);
-                _progressHandler.CurrentLevelNumber = levelNumber;
+                _progressService.ResetLevelProgress(_progressService.CurrentPackNumber, _progressService.CurrentLevelNumber);
+                var levelParams = _progressService.GetLevelByNumber(_progressService.CurrentPackNumber, _progressService.CurrentLevelNumber);
+                _progressService.CurrentLevelNumber = levelNumber;
                 PopupAllScreenHandlers();
                 _levelSessionHandler.StartLevel(levelParams, _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
             });
@@ -122,7 +123,7 @@ namespace Handlers
 
             awaitPromise.Then(() =>
             {
-                _progressHandler.CurrentLevelNumber = levelNumber;
+                _progressService.CurrentLevelNumber = levelNumber;
                 PopupAllScreenHandlers();
                 _levelSessionHandler.StartLevel(levelParams, _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
             });
