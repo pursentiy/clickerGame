@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Handlers.UISystem.Popups;
 using Installers;
 using Popup;
 using Popup.Base;
@@ -8,21 +9,12 @@ using UnityEngine;
 
 namespace Handlers
 {
-    public class PopupHandler : InjectableMonoBehaviour, IPopupHandler
+    public class PopupHandler : InjectableMonoBehaviour
     {
         [SerializeField] private RectTransform _popupCanvasTransform;
         [SerializeField] private SettingsPopupMediator _settingsPopupMediator;
         
         private PopupBase<IPopupContext> _currentPopupBase;
-        
-        public void ShowSettings()
-        {
-            TryHideOtherPopup().Then(() =>
-            {
-                _currentPopupBase = Instantiate(_settingsPopupMediator, _popupCanvasTransform);
-                ShowPopup();
-            });
-        }
 
         public IPromise TryHideOtherPopup()
         {

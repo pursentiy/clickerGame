@@ -1,4 +1,6 @@
 ﻿using Handlers;
+using Handlers.UISystem;
+using Popup.Settings;
 using Screen.SubElements;
 using Services;
 using Storage;
@@ -16,6 +18,7 @@ namespace Screen
         [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private SoundHandler _soundHandler;
+        [Inject] private UIManager _uiManager;
         
         [SerializeField] private LevelEnterWidgetHandler levelEnterWidgetPrefab;
         [SerializeField] private RectTransform _levelEnterPopupsParentTransform;
@@ -40,7 +43,7 @@ namespace Screen
             _settingsButton.onClick.AddListener(()=>
             {
                 _soundHandler.PlayButtonSound();
-                _popupHandler.ShowSettings();
+                _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null);
             });
         }
 

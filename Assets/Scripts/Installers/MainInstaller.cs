@@ -1,7 +1,9 @@
 using Handlers;
+using Handlers.UISystem;
 using Level.Widgets;
 using Pooling;
 using Services;
+using Services.ContentDeliveryService;
 using Storage;
 using Storage.Audio;
 using Storage.Levels.Params;
@@ -23,10 +25,20 @@ namespace Installers
         [SerializeField] private ObjectsPoolHandler _objectsPoolHandler;
         [SerializeField] private UIBlockHandler _uiBlockHandler;
         [SerializeField] private SoundHandler _soundHandler;
+        [SerializeField] private UISystemData _uiSystemData;
 
+        private GameObject _servicesRoot;
+        
         public override void InstallBindings()
         {
+            _servicesRoot = new GameObject("SceneServices");
             ContainerHolder.OnProjectInstall(Container);
+            
+            Container.BindInterfacesAndSelfTo<ApplicationService>().AsSingle();
+            
+            UIInstaller.DiInstall(Container, _servicesRoot.transform, _uiSystemData);
+            
+            Container.BindInterfacesAndSelfTo<AddressableContentDeliveryService>().AsSingle().NonLazy();
             
             //PLAYER SERVICES
             Container.BindInterfacesAndSelfTo<PlayerSnapshotService>().AsSingle().NonLazy();
@@ -49,7 +61,7 @@ namespace Installers
             Container.Bind<LevelParamsHandler>().FromInstance(_levelParamsHandler);
             Container.Bind<UIBlockHandler>().FromInstance(_uiBlockHandler);
             Container.Bind<ObjectsPoolHandler>().FromInstance(_objectsPoolHandler);
-            Container.Bind<SoundHandler>().FromInstance(_soundHandler);
+            Container.BindInterfacesAndSelfTo<SoundHandler>().FromInstance(_soundHandler);
             Container.Bind<LevelsParamsStorage>().FromNewScriptableObject(levelsParamsStorage).AsTransient().NonLazy();
             Container.Bind<FiguresStorageData>().FromScriptableObject(figuresStorageData).AsSingle().NonLazy();
             Container.Bind<AudioStorageData>().FromScriptableObject(audioStorageData).AsSingle().NonLazy();

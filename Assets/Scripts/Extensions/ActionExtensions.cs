@@ -1,4 +1,5 @@
 using System;
+using Services;
 using UnityEngine;
 
 namespace Extensions
@@ -43,6 +44,18 @@ namespace Extensions
             }
 
             return result;
+        }
+        
+        public static void SafeInvoke<T>(this Action<T> e, T arg)
+        {
+            try
+            {
+                e?.Invoke(arg);
+            }
+            catch (Exception exception)
+            {
+                LoggerService.LogError($"Error invoking Action {TryGetDebugInfo(e)}: {exception}");
+            }
         }
     }
 }

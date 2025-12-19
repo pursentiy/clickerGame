@@ -6,7 +6,7 @@ using Zenject;
 
 namespace Handlers
 {
-    public class SoundHandler : InjectableMonoBehaviour, ISoundHandler
+    public class SoundHandler : InjectableMonoBehaviour
     {
         [Inject] private AudioStorageData _audioStorageData;
 
@@ -34,7 +34,7 @@ namespace Handlers
             StartAmbience(soundParams.name);
         }
 
-        public void PlaySound(string clipName)
+        public void PlaySound(string clipName, float volume = 1)
         {
             var clip = _audioStorageData.EffectsPack.GetClipByName(clipName);
             

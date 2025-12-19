@@ -1,83 +1,61 @@
+using Attributes;
+using Extensions;
 using Handlers;
-using Popup.Base;
+using Handlers.UISystem;
+using Popup.Common;
 using Services;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
-using UnityEngine.UI;
 using Zenject;
 
 namespace Popup.Settings
 {
-    public class SettingsPopupMediator : PopupBase<SettingsPopupContext>
+    [AssetKey("UI Popups/SettingsPopupMediator")]
+    public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
     {
         [Inject] private SoundHandler _soundHandler;
         [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private CheatService _cheatService;
         
-        [SerializeField] private Button _closeButton;
-        [SerializeField] private Toggle _musicToggle;
-        [SerializeField] private Toggle _soundToggle;
-
-        [SerializeField] private Button _leftLanguageButton;
-        [SerializeField] private Button _rightLanguageButton;
-        [SerializeField] private Button _resetProgressButton;
-        [SerializeField] private Image _countryFlagImage;
-        [SerializeField] private TMPro.TextMeshProUGUI _languageLabel;
-        
         [SerializeField] private Sprite[] _languageFlags;
         private int _currentLanguageIndex = 0;
+        
+        public override IUIPopupAnimation Animation => new ScalePopupAnimation(View.MainTransform);
 
-        protected override void OnCreated()
+        public override void OnCreated()
         {
             base.OnCreated();
 
             SetupMusicAndSoundToggles();
             
-            _musicToggle.onValueChanged.AddListener(isOn =>
+            View.MusicToggle.onValueChanged.AddListener(isOn =>
             {
                 _soundHandler.PlayButtonSound();
                 _playerProgressService.ProfileSettingsMusic = isOn;
                 _soundHandler.SetMusicVolume(isOn);
             });
             
-            _soundToggle.onValueChanged.AddListener(isOn =>
+            View.SoundToggle.onValueChanged.AddListener(isOn =>
             {
                 _soundHandler.PlayButtonSound();
                 _playerProgressService.ProfileSettingsSound = isOn;
                 _soundHandler.SetSoundVolume(isOn);
             });
 
-            _closeButton.onClick.AddListener(() =>
-            {
-                _soundHandler.PlayButtonSound();
-                _popupHandler.HideCurrentPopup();
-            });
-            
-            _leftLanguageButton.onClick.AddListener(() =>
-            {
-                _soundHandler.PlayButtonSound();
-                ChangeLanguage(-1);
-            });
-
-            _rightLanguageButton.onClick.AddListener(() =>
-            {
-                _soundHandler.PlayButtonSound();
-                ChangeLanguage(1);
-            });
+            View.CloseButton.onClick.MapListenerWithSound(Hide);
+            View.LeftLanguageButton.onClick.MapListenerWithSound(() => ChangeLanguage(-1));
+            View.RightLanguageButton.onClick.MapListenerWithSound(() => ChangeLanguage(1));
 
             //TODO CHEAT REMOVE
-            _resetProgressButton.onClick.AddListener(() =>
-            {
-                CheatResetProgress();
-            });
+            View.ResetProgressButton.onClick.MapListenerWithSound(CheatResetProgress);
 
             UpdateLanguagePopup();
         }
 
         private void SetupMusicAndSoundToggles()
         {
-            _musicToggle.isOn = _playerProgressService.ProfileSettingsMusic;
-            _soundToggle.isOn = _playerProgressService.ProfileSettingsSound;
+            View.MusicToggle.isOn = _playerProgressService.ProfileSettingsMusic;
+            View.SoundToggle.isOn = _playerProgressService.ProfileSettingsSound;
         }
         
         private void ChangeLanguage(int direction)
@@ -95,7 +73,7 @@ namespace Popup.Settings
 
         private void UpdateLanguagePopup()
         {
-            _countryFlagImage.sprite = _languageFlags[_currentLanguageIndex];
+            View.CountryFlagImage.sprite = _languageFlags[_currentLanguageIndex];
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[_currentLanguageIndex];
         }
 
@@ -106,11 +84,8 @@ namespace Popup.Settings
 
         private void OnDestroy()
         {
-            _closeButton.onClick.RemoveAllListeners();
-            _resetProgressButton.onClick.RemoveAllListeners();
-            _musicToggle.onValueChanged.RemoveAllListeners();
-            _soundToggle.onValueChanged.RemoveAllListeners();
-            _soundToggle.onValueChanged.RemoveAllListeners();
+            View.MusicToggle.onValueChanged.RemoveAllListeners();
+            View.SoundToggle.onValueChanged.RemoveAllListeners();
         }
     }
 }

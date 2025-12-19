@@ -9,5 +9,10 @@ namespace Extensions
 
             return s + toAdd;
         }
+        
+        public static bool IsNullOrEmpty(this string s)
+        {
+            return string.IsNullOrEmpty(s);
+        }
     }
 }

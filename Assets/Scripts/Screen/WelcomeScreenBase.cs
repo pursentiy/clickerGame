@@ -1,4 +1,6 @@
 ﻿using Handlers;
+using Handlers.UISystem;
+using Popup.Settings;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -10,6 +12,7 @@ namespace Screen
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private PopupHandler _popupHandler;
         [Inject] private SoundHandler _soundHandler;
+        [Inject] private UIManager _uiManager;
         
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _settingsButton;
@@ -23,8 +26,9 @@ namespace Screen
             });
             _settingsButton.onClick.AddListener(()=>
             {
+                _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null);
                 _soundHandler.PlayButtonSound();
-                _popupHandler.ShowSettings();
+                //_popupHandler.ShowSettings();
             });
         }
 

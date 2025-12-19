@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Extensions
@@ -41,6 +42,16 @@ namespace Extensions
                 return false;
             
             return i >= 0 && i < list.Count;
+        }
+        
+        public static void Foreach<T>(this List<T> list, Action<T> action)
+        {
+            if (list == null) return;
+
+            for (var i = 0; i < list.Count; i++)
+            {
+                action.SafeInvoke(list[i]);
+            }
         }
     }
 }

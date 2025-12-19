@@ -4,9 +4,11 @@ using DG.Tweening;
 using Extensions;
 using Figures.Animals;
 using Handlers;
+using Handlers.UISystem;
 using Installers;
 using Level.Widgets;
 using Plugins.FSignal;
+using Popup.Settings;
 using RSG;
 using Services;
 using Storage;
@@ -27,6 +29,7 @@ namespace Level.Hud
         [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private LevelInfoTrackerService _levelInfoTrackerService;
+        [Inject] private UIManager _uiManager;
 
         [SerializeField] private RectTransform _figuresParentTransform;
         [SerializeField] private ScrollRect _scrollRect;
@@ -55,7 +58,7 @@ namespace Level.Hud
             _settingsButton.onClick.AddListener(()=>
             {
                 _soundHandler.PlayButtonSound();
-                _popupHandler.ShowSettings();
+                _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null);
             });
 
             _figuresGroupSpacing = _figuresGroup.spacing;

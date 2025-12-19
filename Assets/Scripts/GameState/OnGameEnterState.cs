@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Handlers;
+using Handlers.UISystem;
 using Installers;
 using Services;
 using Storage.Levels.Params;
@@ -16,9 +17,15 @@ namespace GameState
         [Inject] private SoundHandler _soundHandler;
         [Inject] private ProfileBuilderService _profileBuilderService;
         [Inject] private PlayerRepositoryService _playerRepositoryService;
+        [Inject] private readonly ApplicationService _applicationService;
+        [Inject] private readonly UIManager _uiManager;
 
         protected override void Awake()
         {
+            _applicationService.RegisterDisposableService(_uiManager);
+            
+            _uiManager.ShowScreensUI();
+            _uiManager.SetupHandlers();
             _playerProgressService.InitializeProfileSettings();
             
             if (_playerRepositoryService.HasProfile)
