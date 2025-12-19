@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2293461391399184790}
   - component: {fileID: 5345486718950545964}
   - component: {fileID: 6152355104619887165}
+  - component: {fileID: 5565620079642774832}
   m_Layer: 5
   m_Name: SettingsPopup
   m_TagString: Untagged
@@ -61,95 +62,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19f2480bd7a24a4f8a24a236463280c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _popupShowAnimationCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 5.3164415
-      outSlope: 5.3164415
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.041178044
-    - serializedVersion: 3
-      time: 0.39592388
-      value: 1.0562996
-      inSlope: 0.07727383
-      outSlope: 0.07727383
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.402903
-    - serializedVersion: 3
-      time: 0.61324215
-      value: 0.96551144
-      inSlope: -0.06667492
-      outSlope: -0.06667492
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.15934421
-    - serializedVersion: 3
-      time: 0.7862132
-      value: 1.0199901
-      inSlope: -0.02493488
-      outSlope: -0.02493488
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.15933892
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _popupHideAnimationCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _popupBaseTransform: {fileID: 4026353201496321117}
-  _popupOriginTransform: {fileID: 2293461391399184790}
-  _popupBackgroundTransform: {fileID: 2026880575713693838}
-  _popupBackgroundImage: {fileID: 5022603149653409644}
-  _backgroundButton: {fileID: 1191960606697129371}
-  _closeButton: {fileID: 4668242859011562761}
-  _musicToggle: {fileID: 3891906476523560522}
-  _soundToggle: {fileID: 93114686910157494}
-  _leftLanguageButton: {fileID: 1084128628634102248}
-  _rightLanguageButton: {fileID: 7551688346833172103}
-  _resetProgressButton: {fileID: 2991900296884197077}
-  _countryFlagImage: {fileID: 2765926835223142497}
-  _languageLabel: {fileID: 3250268827611505529}
   _languageFlags:
+  - {fileID: 21300000, guid: 70f95989f35428543aa813038e654622, type: 3}
+  - {fileID: 21300000, guid: cd2c570b78c872c489967e816dea2362, type: 3}
+  - {fileID: 21300000, guid: c5c06b46a51e1cb4b9539b19ee2a9cd8, type: 3}
+--- !u!114 &5565620079642774832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 614424371113341915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0296ea1c369f4f82bc689364359fed6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CloseButton: {fileID: 4668242859011562761}
+  MusicToggle: {fileID: 3891906476523560522}
+  SoundToggle: {fileID: 93114686910157494}
+  MainTransform: {fileID: 2293461391399184790}
+  LeftLanguageButton: {fileID: 1084128628634102248}
+  RightLanguageButton: {fileID: 7551688346833172103}
+  ResetProgressButton: {fileID: 2991900296884197077}
+  CountryFlagImage: {fileID: 2765926835223142497}
+  LanguageLabel: {fileID: 5218487432103527776}
+  LanguageFlags:
   - {fileID: 21300000, guid: 70f95989f35428543aa813038e654622, type: 3}
   - {fileID: 21300000, guid: cd2c570b78c872c489967e816dea2362, type: 3}
   - {fileID: 21300000, guid: c5c06b46a51e1cb4b9539b19ee2a9cd8, type: 3}

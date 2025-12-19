@@ -16,10 +16,15 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 5312c8e0b3bed534c9c20bb87b565825
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: cbe26117b81913b448132e8054a3d78d
+    m_Address: UI Popups/SettingsPopupMediator
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: e24ffa8b9424ddd438d6f352cb603ea5, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 62f7bb29eab802a42baf7f12e32e33cc, type: 2}
     - {fileID: 11400000, guid: e6d3356bcf8040a43bd894140bbd7436, type: 2}
+    - {fileID: 11400000, guid: 62f7bb29eab802a42baf7f12e32e33cc, type: 2}

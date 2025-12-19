@@ -12,7 +12,6 @@ namespace Handlers
     public class PopupHandler : InjectableMonoBehaviour
     {
         [SerializeField] private RectTransform _popupCanvasTransform;
-        [SerializeField] private SettingsPopupMediator _settingsPopupMediator;
         
         private PopupBase<IPopupContext> _currentPopupBase;
 
