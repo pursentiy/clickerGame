@@ -23,5 +23,14 @@ namespace Extensions
         {
             return component == null || component.gameObject == null;
         }
+        
+        public static void TrySetActive(this Component component, bool active)
+        {
+            if (component == null || component.gameObject == null)
+                return;
+            
+            component.gameObject.SetActive(active);
+        }
+        
     }
 }

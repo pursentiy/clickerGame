@@ -11,5 +11,17 @@ namespace Extensions
             signal.AddListener(action);
             return new DeferredDisposable(() => signal.RemoveListener(action));
         }
+
+        public static IDisposable MapListener<T0, T1>(this FSignal<T0, T1> signal, Action<T0, T1> action)
+        {
+            signal.AddListener(action);
+            return new DeferredDisposable(() => signal.RemoveListener(action));
+        }
+		
+        public static IDisposable MapListener<T0, T1, T2>(this FSignal<T0, T1, T2> signal, Action<T0, T1, T2> action)
+        {
+            signal.AddListener(action);
+            return new DeferredDisposable(() => signal.RemoveListener(action));
+        }
     }
 }

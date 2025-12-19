@@ -1,13 +1,14 @@
 using Handlers;
+using Popup.Base;
 using Services;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 using Zenject;
 
-namespace Popup
+namespace Popup.Settings
 {
-    public class SettingsPopup : PopupBase
+    public class SettingsPopupMediator : PopupBase<SettingsPopupContext>
     {
         [Inject] private SoundHandler _soundHandler;
         [Inject] private PlayerProgressService _playerProgressService;

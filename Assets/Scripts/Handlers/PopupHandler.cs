@@ -1,6 +1,8 @@
 using DG.Tweening;
 using Installers;
 using Popup;
+using Popup.Base;
+using Popup.Settings;
 using RSG;
 using UnityEngine;
 
@@ -9,15 +11,15 @@ namespace Handlers
     public class PopupHandler : InjectableMonoBehaviour, IPopupHandler
     {
         [SerializeField] private RectTransform _popupCanvasTransform;
-        [SerializeField] private SettingsPopup _settingsPopup;
+        [SerializeField] private SettingsPopupMediator _settingsPopupMediator;
         
-        private PopupBase _currentPopupBase;
+        private PopupBase<IPopupContext> _currentPopupBase;
         
         public void ShowSettings()
         {
             TryHideOtherPopup().Then(() =>
             {
-                _currentPopupBase = Instantiate(_settingsPopup, _popupCanvasTransform);
+                _currentPopupBase = Instantiate(_settingsPopupMediator, _popupCanvasTransform);
                 ShowPopup();
             });
         }

@@ -19,6 +19,11 @@ namespace Services
                 Debug.LogError("ProfileSnapshot is null");
                 return;
             }
+
+            if (amount == 0)
+            {
+                return;
+            }
             
             _playerSnapshotService.ProfileSnapshot.Stars += amount;
             StarsChangedSignal.Dispatch( _playerSnapshotService.ProfileSnapshot.Stars);

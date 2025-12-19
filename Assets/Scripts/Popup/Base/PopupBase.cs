@@ -1,13 +1,14 @@
 using System;
 using Handlers;
 using Installers;
+using RSG;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-namespace Popup
+namespace Popup.Base
 {
-    public class PopupBase : InjectableMonoBehaviour
+    public abstract class PopupBase<TContext> : InjectableMonoBehaviour where TContext : IPopupContext
     {
         [Inject] protected PopupHandler _popupHandler;
         
@@ -18,6 +19,10 @@ namespace Popup
         [SerializeField] private RectTransform _popupBackgroundTransform;
         [SerializeField] private Image _popupBackgroundImage;
         [SerializeField] private Button _backgroundButton;
+        
+        private IPopupContext _context;
+        
+        protected TContext Context => (TContext) _context;
 
         public AnimationCurve PopupShowAnimationCurve => _popupShowAnimationCurve;
         public AnimationCurve PopupHideAnimationCurve => _popupHideAnimationCurve;
@@ -30,6 +35,11 @@ namespace Popup
         private void Start()
         {
             OnCreated();
+        }
+        
+        public virtual void OnCreated(IPopupContext context)
+        {
+            _context =  context;
         }
 
         protected virtual void OnCreated()
