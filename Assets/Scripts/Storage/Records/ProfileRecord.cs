@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 
 namespace Storage.Records
 {
+    [Serializable]
     public class ProfileRecord
     {
         public ProfileRecord(int stars, List<PackRecord> packRecords)
@@ -10,7 +12,7 @@ namespace Storage.Records
             PackRecords = packRecords;
         }
 
-        public int Stars {get; set;}
-        public List<PackRecord> PackRecords {get; set;}
+        public int Stars;
+        public List<PackRecord> PackRecords;
     }
 }

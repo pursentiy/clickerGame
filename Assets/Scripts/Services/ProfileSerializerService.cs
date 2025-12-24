@@ -10,7 +10,9 @@ namespace Services
     [UsedImplicitly]
     public class ProfileSerializerService
     {
-        private const string SaveFileName = "/ProfileRecord.raw";
+        private const string SaveFileName = "/ProfileRecord.json";
+
+        private string FilePath => Application.persistentDataPath + SaveFileName;
 
         public void SaveProfileRecord(ProfileRecord profileRecord)
         {
@@ -19,43 +21,38 @@ namespace Services
                 return;
             }
 
-            var filePath = Application.persistentDataPath + SaveFileName;
-            
-            var formatter = new BinaryFormatter();
-            
-            using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+            try
             {
-                var jsonPackProgressData = JsonUtility.ToJson(profileRecord);
-                formatter.Serialize(stream, jsonPackProgressData);
+                var json = JsonUtility.ToJson(profileRecord, true);
+                File.WriteAllText(FilePath, json);
+            }
+            catch (Exception e)
+            {
+                LoggerService.LogError($"[ProfileSerializer] Saving error: {e.Message}");
             }
         }
 
         public ProfileRecord LoadProfileRecord()
         {
-            var filePath = Application.persistentDataPath + SaveFileName;
-            
-            if (!File.Exists(filePath))
+            if (!File.Exists(FilePath))
             {
                 return null;
             }
 
-            var formatter = new BinaryFormatter();
-            
-            try 
+            try
             {
-                using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                var json = File.ReadAllText(FilePath);
+            
+                if (string.IsNullOrEmpty(json))
                 {
-                    var rawTotalProgressData = formatter.Deserialize(stream) as string;
-                    if (string.IsNullOrEmpty(rawTotalProgressData))
-                    {
-                        return null;
-                    }
-                    return JsonUtility.FromJson<ProfileRecord>(rawTotalProgressData);
+                    return null;
                 }
+
+                return JsonUtility.FromJson<ProfileRecord>(json);
             }
             catch (Exception e)
             {
-                LoggerService.LogError($"Failed to load profile: {e.Message}");
+                LoggerService.LogError($"[ProfileSerializer] Loading error: {e.Message}");
                 return null;
             }
         }

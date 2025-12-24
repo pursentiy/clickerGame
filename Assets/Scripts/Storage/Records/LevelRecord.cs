@@ -1,5 +1,8 @@
+using System;
+
 namespace Storage.Records
 {
+    [Serializable]
     public class LevelRecord
     {
         public LevelRecord(int levelNumber, float levelCompletedTime, int starsEarned)
@@ -9,8 +12,8 @@ namespace Storage.Records
             StarsEarned = starsEarned;
         }
 
-        public int LevelNumber {get; set;}
-        public float LevelCompletedTime {get; set;}
-        public int StarsEarned {get; set;}
+        public int LevelNumber;
+        public float LevelCompletedTime;
+        public int StarsEarned;
     }
 }
