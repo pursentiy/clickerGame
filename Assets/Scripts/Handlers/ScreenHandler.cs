@@ -23,7 +23,6 @@ namespace Handlers
         [SerializeField] private ChooseLevelScreenBase _chooseLevelScreenBase;
         [SerializeField] private WelcomeScreenBase _welcomeScreenBase;
         [SerializeField] private ChoosePackScreenBase _choosePackScreenBase;
-        [SerializeField] private LevelCompleteScreenBase _levelCompleteScreenBase;
         [SerializeField] private ParticleSystem[] _changeScreenParticles;
         [SerializeField] private AnimationCurve _popupAnimationCurve;
         
@@ -63,32 +62,6 @@ namespace Handlers
             {
                 PopupAllScreenHandlers();
                 _currentScreenBase = Instantiate(_welcomeScreenBase, _screenCanvasTransform);
-            });
-        }
-        
-        public void ShowLevelCompleteScreen(bool onLevelEnter, Action onFinishAction, Sprite figureSprite, Gradient colorGradient, bool fast = false)
-        {
-            _uiBlockHandler.BlockUserInput(true);
-            var screenHandler = Instantiate(_levelCompleteScreenBase, _screenCanvasTransform);
-            screenHandler.gameObject.SetActive(false);
-            screenHandler.SetupFigureImage(figureSprite);
-            screenHandler.StartColorAnimationLoop(colorGradient);
-
-            DOTween.Sequence().Append(screenHandler.ScreenTransform.DOScale(new Vector3(0, 0, 0), 0.01f))
-                .AppendCallback(() =>
-                {
-                    screenHandler.gameObject.SetActive(true);
-                })
-                .Append(screenHandler.ScreenTransform.DOScale(new Vector3(1f, 1f, 1f), 0.75f).SetEase(_popupAnimationCurve))
-                .OnComplete(() =>
-            {
-                screenHandler.SetOnFinishLevelSessionAction(onFinishAction);
-
-                if(!onLevelEnter)
-                    screenHandler.PlayFireworksParticles();
-                
-                _uiBlockHandler.BlockUserInput(false);
-                _currentScreenBase = screenHandler;
             });
         }
 

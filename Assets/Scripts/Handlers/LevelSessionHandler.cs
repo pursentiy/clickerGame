@@ -1,12 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
 using DG.Tweening;
+using Extensions;
 using Figures.Animals;
+using Handlers.UISystem;
 using Installers;
 using Level.Click;
 using Level.Game;
 using Level.Hud;
 using Level.Widgets;
+using Popup.CompleteLevelInfoPopup;
+using Popup.Settings;
 using RSG;
 using Services;
 using Storage;
@@ -26,6 +31,7 @@ namespace Handlers
         [Inject] private SoundHandler _soundHandler;
         [Inject] private LevelInfoTrackerService _levelInfoTrackerService;
         [Inject] private LevelHelperService _levelHelperService;
+        [Inject] private UIManager _uiManager;
 
         [SerializeField] private RectTransform _gameMainCanvasTransform;
         [SerializeField] private RectTransform _draggingTransform;
@@ -42,6 +48,7 @@ namespace Handlers
 
         private Sequence _resetDraggingAnimationSequence;
         private Sequence _completeDraggingAnimationSequence;
+        private Coroutine _finishCoroutine;
         
         private bool IsLevelComplete => _currentLevelParams != null && 
                                         _currentLevelParams.LevelFiguresParamsList.TrueForAll(levelFigureParams => levelFigureParams.Completed);
@@ -50,7 +57,7 @@ namespace Handlers
         {
             if (levelParams == null)
             {
-                Debug.LogError("LevelParams cannot be null");
+                LoggerService.LogError("LevelParams cannot be null");
                 return;
             }
             _currentLevelParams =  levelParams;
@@ -62,6 +69,11 @@ namespace Handlers
             SetupLevelScreenHandler(levelParams, defaultColor);
             
             _soundHandler.PlaySound("start");
+        }
+
+        private void OnDestroy()
+        {
+            TryTerminateCoroutine();
         }
 
         private void TryHandleLevelCompletion()
@@ -81,15 +93,15 @@ namespace Handlers
             
             _levelHudHandler.SetInteractivity(false);
             _playerProgressService.TrySetOrUpdateLevelCompletion(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber, earnedStars, levelPlayedTime);
-            StartCoroutine(AwaitFinishLevel(starsForAccrual));
+            _finishCoroutine = StartCoroutine(AwaitFinishLevel(earnedStars, starsForAccrual, levelPlayedTime));
         }
 
-        private IEnumerator AwaitFinishLevel(int starsForAccrual)
+        private IEnumerator AwaitFinishLevel(int totalStars, int starsForAccrual, float levelPlayedTime)
         {
             yield return new WaitForSeconds(_screenHandler.AwaitChangeScreenTime);
             _soundHandler.PlaySound("finished");
-            _screenHandler.ShowLevelCompleteScreen(false, ResetLevel, 
-                _figuresStorageData.GetLevelParamsData(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber).LevelImage, _levelVisualHandler.ScreenColorAnimation.Gradient);
+            var context = new CompleteLevelInfoPopupContext(totalStars, starsForAccrual, levelPlayedTime, RestartLevel);
+            _uiManager.PopupsHandler.ShowPopupImmediately<CompleteLevelInfoPopupMediator>(context);
         }
 
         private void SetupClickHandler()
@@ -108,10 +120,10 @@ namespace Handlers
             _levelHudHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelHudHandler>(levelHudHandler, _gameMainCanvasTransform);
             _levelHudHandler.SetupScrollMenu(packParam.LevelFiguresParamsList);
             
-            _levelHudHandler.BackToMenuClickSignal.AddListener(ResetLevel);
+            _levelHudHandler.BackToMenuClickSignal.AddListener(RestartLevel);
             _levelHudHandler.Initialize(packParam.LevelBeatingTimeInfo);
-            _levelHudHandler.GetOnBeginDragFiguresSignal().ForEach(signal => { signal.AddListener(StartElementDragging); });
-            _levelHudHandler.GetOnDragEndFiguresSignal().ForEach(signal => { signal.AddListener(EndElementDragging); });
+            _levelHudHandler.GetOnBeginDragFiguresSignal().ForEach(signal => signal.MapListener(StartElementDragging).DisposeWith(this));
+            _levelHudHandler.GetOnDragEndFiguresSignal().ForEach(signal => signal.MapListener(EndElementDragging).DisposeWith(this));
         }
 
         private void StartElementDragging(FigureMenu figure)
@@ -246,14 +258,9 @@ namespace Handlers
             _draggingFigureImage.transform.position = Input.mousePosition;
         }
 
-        private void ResetLevel()
+        private void RestartLevel()
         {
-            if (_levelHudHandler != null)
-            {
-                _levelHudHandler.GetOnBeginDragFiguresSignal().ForEach(signal => { signal.RemoveListener(StartElementDragging); });
-                _levelHudHandler.GetOnDragEndFiguresSignal().ForEach(signal => { signal.RemoveListener(EndElementDragging); });
-            }
-
+            TryTerminateCoroutine();
             ResetAnimationSequences();
             DestroyHandlers();
 
@@ -267,7 +274,7 @@ namespace Handlers
         {
             if (_levelHudHandler != null)
             {
-                _levelHudHandler.BackToMenuClickSignal.RemoveListener(ResetLevel);
+                _levelHudHandler.BackToMenuClickSignal.RemoveListener(RestartLevel);
                 Destroy(_levelHudHandler.gameObject);
                 _levelHudHandler = null;
             }
@@ -296,11 +303,17 @@ namespace Handlers
             
             if (levelFigure == null)
             {
-                Debug.LogWarning($"Could not update progress with figure id {figureId} in {this}");
+                LoggerService.LogWarning($"Could not update progress with figure id {figureId} in {this}");
                 return;
             }
             
             levelFigure.Completed = true;
+        }
+        
+        private void TryTerminateCoroutine()
+        {
+            if (_finishCoroutine != null)
+                StopCoroutine(_finishCoroutine);
         }
     }
 }

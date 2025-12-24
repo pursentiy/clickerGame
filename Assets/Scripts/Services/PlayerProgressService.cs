@@ -41,7 +41,7 @@ namespace Services
         {
             if (levelsParams == null)
             {
-                Debug.LogWarning($"Levels Params is null in {this}");
+                LoggerService.LogWarning($"Levels Params is null in {this}");
                 return;
             }
             
@@ -132,7 +132,7 @@ namespace Services
                 return pack;
             }
             
-            Debug.LogWarning($"Could not get pack by {packNumber} in {this}");
+            LoggerService.LogWarning($"Could not get pack by {packNumber} in {this}");
             return null;
             
         }
@@ -147,7 +147,7 @@ namespace Services
                 return levelProgress;
             }
             
-            Debug.LogWarning($"Could not get level by number {levelNumber} in {this}");
+            LoggerService.LogWarning($"Could not get level by number {levelNumber} in {this}");
             return null;
         }
 
@@ -169,7 +169,7 @@ namespace Services
                 return levelsParams;
             }
             
-            Debug.LogWarning($"Could not update progress in level {packNumber} in {this}");
+            LoggerService.LogWarning($"Could not update progress in level {packNumber} in {this}");
             return null;
         }
         

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Services;
 using UnityEngine;
 
 namespace Utilities.Disposable
@@ -37,7 +38,7 @@ namespace Utilities.Disposable
             catch (Exception e)
             {
                 var type = x != null ? x.GetType().Name : string.Empty;
-                Debug.LogError($"Error when disposing {type}: {e}");
+                LoggerService.LogError($"Error when disposing {type}: {e}");
             }
         }
     }

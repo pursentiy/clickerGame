@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Installers;
+using Services;
 using Storage.Levels.Params;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,7 +24,7 @@ namespace Level.Widgets
         {
             if (starImages.Length != 3 || levelBeatingTime == null)
             {
-                Debug.LogError("StarWidget: Ensure you have exactly 3 images and 3 time values.");
+                LoggerService.LogError("StarWidget: Ensure you have exactly 3 images and 3 time values.");
                 return;
             }
             

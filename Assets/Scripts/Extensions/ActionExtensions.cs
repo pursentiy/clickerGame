@@ -14,7 +14,7 @@ namespace Extensions
             }
             catch (Exception exception)
             {
-                Debug.LogError($"Error invoking Action {TryGetDebugInfo(e)}: {exception}");
+                LoggerService.LogError($"Error invoking Action {TryGetDebugInfo(e)}: {exception}");
             }
         }
         

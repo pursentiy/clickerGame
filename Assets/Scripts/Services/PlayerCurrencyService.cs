@@ -16,7 +16,7 @@ namespace Services
         {
             if (_playerSnapshotService == null)
             {
-                Debug.LogError("ProfileSnapshot is null");
+                LoggerService.LogError("ProfileSnapshot is null");
                 return;
             }
 

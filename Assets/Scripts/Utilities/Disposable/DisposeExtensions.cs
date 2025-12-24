@@ -7,6 +7,7 @@ using DG.Tweening.Plugins.Options;
 using Extensions;
 using Platform.Common.Utilities.StateMachine;
 using RSG;
+using Services;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -73,7 +74,7 @@ namespace Utilities.Disposable
             if (monoBehaviour != null)
                 monoBehaviour.GetDisposeProvider().ChildDisposables.Add(disposable);
             else
-                Debug.LogError("monoBehaviour is null upon calling DisposeWith");
+                LoggerService.LogError("monoBehaviour is null upon calling DisposeWith");
             return disposable;
         }
 

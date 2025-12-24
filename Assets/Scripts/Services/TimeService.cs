@@ -30,7 +30,7 @@ namespace Services
         {
             if (_activeTimers.ContainsKey(id))
             {
-                Debug.LogWarning($"Timer '{id}' exists. Overwriting.");
+                LoggerService.LogWarning($"Timer '{id}' exists. Overwriting.");
                 _activeTimers[id].Dispose();
             }
 

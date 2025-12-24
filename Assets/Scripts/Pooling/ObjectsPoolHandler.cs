@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Services;
 using UnityEngine;
 
 namespace Pooling
@@ -44,7 +45,7 @@ namespace Pooling
         {
             if (!_poolDictionary.ContainsKey(poolType))
             {
-                Debug.LogWarning($"Pool does not contain key {poolType}");
+                LoggerService.LogWarning($"Pool does not contain key {poolType}");
                 return null;
             }
 

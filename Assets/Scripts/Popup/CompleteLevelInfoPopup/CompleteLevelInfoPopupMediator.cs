@@ -1,42 +1,34 @@
 using System;
 using System.Collections;
-using Animations;
+using Attributes;
 using Extensions;
 using Handlers;
-using Popup.Base;
+using Handlers.UISystem;
+using Popup.Common;
 using Services;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Utilities.Disposable;
 using Zenject;
 using Random = UnityEngine.Random;
 
-namespace Popup.CompleteLevelPopup
+namespace Popup.CompleteLevelInfoPopup
 {
-    public class CompleteLevelPopupMediator : PopupBase<CompleteLevelPopupContext>
+    [AssetKey("UI Popups/CompleteLevelInfoPopupMediator")]
+    public class CompleteLevelInfoPopupMediator : UIPopupBase<CompleteLevelInfoPopupView, CompleteLevelInfoPopupContext>
     {
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private PlayerCurrencyService _playerCurrencyService;
-        
-        [SerializeField] private Button _backButton;
-        [SerializeField] private Button _restartLevelButton;
-        [SerializeField] private Button _nextLevelButton;
-        [SerializeField] private Image[] _stars;
-        [SerializeField] private Material _grayScaleMaterial;
-        [SerializeField] private RectTransform _screenTransform;
-        [SerializeField] private ParticleSystem[] _fireworksParticles;
-        [SerializeField] private TMP_Text _timeText;
-        [SerializeField] private ScreenColorAnimation _screenColorAnimation;
 
         private Camera _textureCamera;
         private RenderTexture _renderTexture;
         private Action _onFinishLevelSessionAction;
         private Coroutine _particlesCoroutine;
 
-        protected override void OnCreated()
+        public override IUIPopupAnimation Animation => new ScalePopupAnimation(View.MainTransform);
+
+        public override void OnCreated()
         {
             base.OnCreated();
 
@@ -44,14 +36,10 @@ namespace Popup.CompleteLevelPopup
             SetupStars(Context.TotalStars);
             AcquireEarnedStars(Context.EarnedStars);
             
-            _backButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
-            _restartLevelButton.onClick.MapListenerWithSound(TryAgainLevel).DisposeWith(this);
-            _nextLevelButton.onClick.MapListenerWithSound(TryStartNextLevel).DisposeWith(this);
-        }
-
-        public void StartColorAnimationLoop(Gradient colorGradient)
-        {
-            _screenColorAnimation.StartColorLoop(colorGradient);
+            View.BackgronudButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
+            View.CloseButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
+            View.RestartLevelButton.onClick.MapListenerWithSound(TryAgainLevel).DisposeWith(this);
+            View.NextLevelButton.onClick.MapListenerWithSound(TryStartNextLevel).DisposeWith(this);
         }
 
         public void SetOnFinishLevelSessionAction(Action action)
@@ -62,22 +50,22 @@ namespace Popup.CompleteLevelPopup
         private void SetLevelTimeText(float time)
         {
             //TODO LOCALIZATION
-            _timeText.text = $"Time: {time}";
+            View.TimeText.text = $"Time: {time}";
         }
 
         private void SetupStars(int totalStarsForLevel)
         {
-            foreach (var star in _stars)
+            foreach (var star in View.Stars)
             {
                 star.TrySetActive(false);
             }
 
-            for (var i = 0; i < _stars.Length; i++)
+            for (var i = 0; i < View.Stars.Length; i++)
             {
                 if (i >= totalStarsForLevel)
-                    _stars[i].material = _grayScaleMaterial;
+                    View.Stars[i].material = View.GrayScaleMaterial;
                 
-                _stars[i].TrySetActive(true);
+                View.Stars[i].TrySetActive(true);
             }
         }
 
@@ -91,7 +79,7 @@ namespace Popup.CompleteLevelPopup
             foreach (var fireworkPosition in shuffledPositions)
             {
                 yield return new WaitForSeconds(0.1f);
-                _fireworksParticles[fireworkPosition].Play();
+                View.FireworksParticles[fireworkPosition].Play();
             }
             
             yield return new WaitForSeconds(Random.Range(0.3f, 1f));
@@ -102,7 +90,7 @@ namespace Popup.CompleteLevelPopup
         {
             if (_playerProgressService.CurrentLevelNumber == -1)
             {
-                Debug.LogWarning($"Current Level is {_playerProgressService.CurrentLevelNumber}. Cannot continue. Warning in {this}");
+                LoggerService.LogWarning($"Current Level is {_playerProgressService.CurrentLevelNumber}. Cannot continue. Warning in {this}");
                 _screenHandler.ShowChooseLevelScreen();
             }
 
@@ -136,8 +124,8 @@ namespace Popup.CompleteLevelPopup
         
         private void PlayFireworksParticles()
         {
-            var fireworksParticlesArray = new int[_fireworksParticles.Length];
-            for (var i = 0; i < _fireworksParticles.Length; i++)
+            var fireworksParticlesArray = new int[View.FireworksParticles.Length];
+            for (var i = 0; i < View.FireworksParticles.Length; i++)
             {
                 fireworksParticlesArray[i] = i;
             }

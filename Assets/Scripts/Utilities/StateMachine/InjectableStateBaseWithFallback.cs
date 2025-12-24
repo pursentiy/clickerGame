@@ -1,6 +1,7 @@
 using System;
 using Installers;
 using Platform.Common.Utilities.StateMachine;
+using Services;
 using UnityEngine;
 
 namespace Utilities.StateMachine
@@ -26,7 +27,7 @@ namespace Utilities.StateMachine
             }
             catch (Exception e)
             {
-                Debug.LogError(e);
+                LoggerService.LogError(e);
                 Sequence.ActivateState<TFallbackState>(e);
             }
         }

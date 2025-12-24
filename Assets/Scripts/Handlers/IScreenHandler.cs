@@ -15,6 +15,5 @@ namespace Handlers
         void StartNewLevel(int levelNumber, LevelParams levelParams, bool fast = false);
         void ReplayCurrentLevel(int levelNumber, bool fast = false);
         void PopupAllScreenHandlers();
-        void ShowLevelCompleteScreen(bool onLevelEnter, Action onFinishAction, Sprite figureSprite, Gradient colorGradient, bool fast = false);
     }
 }

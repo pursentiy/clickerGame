@@ -17,6 +17,7 @@ namespace GameState
         [Inject] private SoundHandler _soundHandler;
         [Inject] private ProfileBuilderService _profileBuilderService;
         [Inject] private PlayerRepositoryService _playerRepositoryService;
+        [Inject] private PlayerSnapshotService _playerSnapshotService;
         [Inject] private readonly ApplicationService _applicationService;
         [Inject] private readonly UIManager _uiManager;
 
@@ -48,6 +49,7 @@ namespace GameState
 
         private void StartOldProfileSession()
         {
+            _playerSnapshotService.Initialize(_playerRepositoryService.LoadPlayerSnapshot());
             _playerProgressService.InitializeHandler(_levelsParamsStorage.DefaultPacksParamsList);
         }
 

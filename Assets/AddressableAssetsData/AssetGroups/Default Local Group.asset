@@ -17,6 +17,11 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 5312c8e0b3bed534c9c20bb87b565825
   m_SerializeEntries:
+  - m_GUID: 9eb8d4d10e946b848b02cf732383e8bb
+    m_Address: UI Popups/CompleteLevelInfoPopupMediator
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cbe26117b81913b448132e8054a3d78d
     m_Address: UI Popups/SettingsPopupMediator
     m_ReadOnly: 0

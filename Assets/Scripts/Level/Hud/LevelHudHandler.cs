@@ -94,7 +94,7 @@ namespace Level.Hud
 
             if (figurePrefab == null)
             {
-                Debug.LogWarning($"Could not find figure with type {figureParams.FigureId} in {this}");
+                LoggerService.LogWarning($"Could not find figure with type {figureParams.FigureId} in {this}");
                 return;
             }
 

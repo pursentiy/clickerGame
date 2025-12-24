@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Extensions;
 using Platform.Common.Utilities.StateMachine;
+using Services;
 using UnityEngine;
 
 namespace Utilities.StateMachine
@@ -194,7 +195,7 @@ namespace Utilities.StateMachine
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError($"Error in Expression.New: {e}");
+                    LoggerService.LogError($"Error in Expression.New: {e}");
                     StateMachineFactoryUseExpressionNew = false;
                 }
             }

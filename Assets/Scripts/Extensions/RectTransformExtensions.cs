@@ -18,5 +18,26 @@ namespace Extensions
         {
             return component.transform as RectTransform;
         }
+        
+        public static void AdjustScale(this RectTransform self, RectTransform target)
+        {
+            var selfSize = self.GetCornersSize();
+            var targetSize = target.GetCornersSize();
+            target.SetLocalScaleXY(Mathf.Min(selfSize.x / targetSize.x, selfSize.y / targetSize.y));
+        }
+        
+        public static void AdjustScaleMax(this RectTransform self, RectTransform target)
+        {
+            var selfSize = self.GetCornersSize();
+            var targetSize = target.GetCornersSize();
+            target.SetLocalScaleXY(Mathf.Max(selfSize.x / targetSize.x, selfSize.y / targetSize.y));
+        }
+        
+        public static Vector2 GetCornersSize(this RectTransform rectTransform)
+        {
+            var corners = new Vector3[4];
+            rectTransform.GetLocalCorners(corners);
+            return corners[2] - corners[0];
+        }
     }
 }
