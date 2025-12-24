@@ -18,7 +18,6 @@ namespace Level.Widgets
 
         private float[] _timeThresholds;
         private bool[] _isStarActive;
-        private float _maxTime;
 
         public void Initialize(LevelBeatingTimeInfo levelBeatingTime)
         {
@@ -29,26 +28,20 @@ namespace Level.Widgets
             }
             
             _timeThresholds = new [] {levelBeatingTime.FastestTime, levelBeatingTime.MediumTime, levelBeatingTime.MinimumTime};
-            _isStarActive = new [] { true, true, true };
-            _maxTime =  levelBeatingTime.MinimumTime;
-            
-            // Reset visual state safely
-            foreach (var img in starImages)
-            {
-                // Kill any old tweens running on this object to prevent conflicts
-                img.DOKill();
-                img.transform.DOKill();
-
-                img.color = new Color(img.color.r, img.color.g, img.color.b, 1f);
-                img.transform.localScale = Vector3.one;
-            }
+            SetupStarsInitialState();
+        }
+        
+        public void ResetWidget()
+        {
+            ResetStarsAnimations(true);
+            SetupStarsInitialState();
         }
 
         public void OnTimeUpdate(float currentTime)
         {
-            if (_isStarActive == null) return;
+            if (_isStarActive == null) 
+                return;
 
-            // Check from hardest star (3) down to easiest (1)
             for (var i = 0; i < starImages.Length; i++)
             {
                 if (_isStarActive[i] && currentTime > _timeThresholds[i])
@@ -57,17 +50,27 @@ namespace Level.Widgets
                 }
             }
         }
+        
+        private void SetupStarsInitialState()
+        {
+            _isStarActive = new [] { true, true, true };
+            
+            foreach (var img in starImages)
+            {
+                img.DOKill();
+                img.transform.DOKill();
+
+                img.color = new Color(img.color.r, img.color.g, img.color.b, 1f);
+                img.transform.localScale = Vector3.one;
+            }
+        }
 
         private void LoseStar(int index)
         {
             _isStarActive[index] = false;
-
-            // 1. Fade out the lost star
-            // DOFade handles the alpha interpolation automatically
             starImages[index].DOFade(0f, _fadeDuration);
 
-            // 2. Bump remaining active stars
-            for (int i = 0; i < _isStarActive.Length; i++)
+            for (var i = 0; i < _isStarActive.Length; i++)
             {
                 if (_isStarActive[i])
                 {
@@ -78,27 +81,28 @@ namespace Level.Widgets
 
         private void BumpStar(Transform target)
         {
-            // Stop any current scaling to prevent "double scaling" glitches
             target.DOKill(complete: true);
-            // Ensure scale is reset to 1 before starting (in case the kill happened mid-animation)
             target.localScale = Vector3.one;
-
-            // Scale up to bumpAmount, then go back to 1 (Yoyo)
+            
             target.DOScale(_bumpScaleAmount, _bumpDuration / 2)
                 .SetLoops(2, LoopType.Yoyo)
                 .SetEase(Ease.OutQuad);
         }
-
-        // Cleanup if the widget is destroyed while animating
+        
         private void OnDestroy()
+        {
+            ResetStarsAnimations();
+        }
+
+        private void ResetStarsAnimations(bool completeAnimation = false)
         {
             foreach (var img in starImages)
             {
-                if (img != null)
-                {
-                    img.DOKill();
-                    img.transform.DOKill();
-                }
+                if (img == null) 
+                    continue;
+                
+                img.DOKill(completeAnimation);
+                img.transform.DOKill(completeAnimation);
             }
         }
     }

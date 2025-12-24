@@ -16,14 +16,12 @@ namespace Popup.CompleteLevelInfoPopup
     [AssetKey("UI Popups/CompleteLevelInfoPopupMediator")]
     public class CompleteLevelInfoPopupMediator : UIPopupBase<CompleteLevelInfoPopupView, CompleteLevelInfoPopupContext>
     {
-        [Inject] private ScreenHandler _screenHandler;
         [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private PlayerCurrencyService _playerCurrencyService;
 
         private Camera _textureCamera;
         private RenderTexture _renderTexture;
-        private Action _onFinishLevelSessionAction;
         private Coroutine _particlesCoroutine;
 
         public override IUIPopupAnimation Animation => new ScalePopupAnimation(View.MainTransform);
@@ -38,13 +36,7 @@ namespace Popup.CompleteLevelInfoPopup
             
             View.BackgronudButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
             View.CloseButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
-            View.RestartLevelButton.onClick.MapListenerWithSound(TryAgainLevel).DisposeWith(this);
-            View.NextLevelButton.onClick.MapListenerWithSound(TryStartNextLevel).DisposeWith(this);
-        }
-
-        public void SetOnFinishLevelSessionAction(Action action)
-        {
-            _onFinishLevelSessionAction = action;
+            View.NextLevelButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
         }
 
         private void SetLevelTimeText(float time)
@@ -86,18 +78,6 @@ namespace Popup.CompleteLevelInfoPopup
             PlayFireworksParticles();
         }
 
-        private void TryAgainLevel()
-        {
-            if (_playerProgressService.CurrentLevelNumber == -1)
-            {
-                LoggerService.LogWarning($"Current Level is {_playerProgressService.CurrentLevelNumber}. Cannot continue. Warning in {this}");
-                _screenHandler.ShowChooseLevelScreen();
-            }
-
-            _screenHandler.ReplayCurrentLevel(_playerProgressService.CurrentLevelNumber);
-            TryInvokeFinishLevelSessionAction();
-        }
-
         private void TryStartNextLevel()
         {
             //TODO NEXT LEVEL LOGIC HERE
@@ -105,21 +85,14 @@ namespace Popup.CompleteLevelInfoPopup
 
         private void GoToLevelsMenuScreen()
         {
-            _screenHandler.ShowChooseLevelScreen();
+            Context.GoToMenuAction?.SafeInvoke();
+            Hide();
         }
         
         private void OnDestroy()
         {
-            TryInvokeFinishLevelSessionAction();
-            
             if (_particlesCoroutine != null)
                 StopCoroutine(_particlesCoroutine);
-        }
-
-        private void TryInvokeFinishLevelSessionAction()
-        {
-            _onFinishLevelSessionAction?.Invoke();
-            _onFinishLevelSessionAction = null;
         }
         
         private void PlayFireworksParticles()

@@ -1,9 +1,9 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-namespace Figures.Animals
+namespace Components.Levels.Figures
 {
-    public class FigureTarget : Figure, IFigureTarget
+    public class FigureTarget : Figure
     {
         [SerializeField] protected Transform _transform;
         [SerializeField] protected SpriteRenderer _fullImageSpriteRenderer;

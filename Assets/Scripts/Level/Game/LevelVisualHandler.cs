@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Animations;
-using Figures.Animals;
-using Handlers;
+using Components.Levels.Figures;
 using Installers;
 using Services;
 using Storage;

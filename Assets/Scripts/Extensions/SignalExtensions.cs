@@ -6,6 +6,12 @@ namespace Extensions
 {
     public static class SignalExtensions
     {
+        public static IDisposable MapListener(this FSignal signal, Action action)
+        {
+            signal.AddListener(action);
+            return new DeferredDisposable(() => signal.RemoveListener(action));
+        }
+        
         public static IDisposable MapListener<T>(this FSignal<T> signal, Action<T> action)
         {
             signal.AddListener(action);

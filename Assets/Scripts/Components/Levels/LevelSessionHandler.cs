@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
+using Components.Levels.Figures;
 using DG.Tweening;
 using Extensions;
-using Figures.Animals;
 using Handlers.UISystem;
 using Installers;
 using Level.Click;
@@ -100,7 +100,7 @@ namespace Handlers
         {
             yield return new WaitForSeconds(_screenHandler.AwaitChangeScreenTime);
             _soundHandler.PlaySound("finished");
-            var context = new CompleteLevelInfoPopupContext(totalStars, starsForAccrual, levelPlayedTime, RestartLevel);
+            var context = new CompleteLevelInfoPopupContext(totalStars, starsForAccrual, levelPlayedTime, GoToLevelsMenu);
             _uiManager.PopupsHandler.ShowPopupImmediately<CompleteLevelInfoPopupMediator>(context);
         }
 
@@ -120,8 +120,9 @@ namespace Handlers
             _levelHudHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelHudHandler>(levelHudHandler, _gameMainCanvasTransform);
             _levelHudHandler.SetupScrollMenu(packParam.LevelFiguresParamsList);
             
-            _levelHudHandler.BackToMenuClickSignal.AddListener(RestartLevel);
+            _levelHudHandler.BackToMenuClickSignal.MapListener(GoToLevelsMenu).DisposeWith(this);
             _levelHudHandler.Initialize(packParam.LevelBeatingTimeInfo);
+            
             _levelHudHandler.GetOnBeginDragFiguresSignal().ForEach(signal => signal.MapListener(StartElementDragging).DisposeWith(this));
             _levelHudHandler.GetOnDragEndFiguresSignal().ForEach(signal => signal.MapListener(EndElementDragging).DisposeWith(this));
         }
@@ -258,32 +259,23 @@ namespace Handlers
             _draggingFigureImage.transform.position = Input.mousePosition;
         }
 
-        private void RestartLevel()
+        private void GoToLevelsMenu()
         {
-            TryTerminateCoroutine();
-            ResetAnimationSequences();
-            DestroyHandlers();
-
-            if (_clickHandler != null)
-            {
-                _clickHandler.enabled = false;
-            }
+            _screenHandler.ShowChooseLevelScreen();
         }
 
-        private void DestroyHandlers()
+        //TODO ADD RESTART LEVEL FUNCTIONALITY
+        private void RestartLevel()
         {
-            if (_levelHudHandler != null)
-            {
-                _levelHudHandler.BackToMenuClickSignal.RemoveListener(RestartLevel);
-                Destroy(_levelHudHandler.gameObject);
-                _levelHudHandler = null;
-            }
-            
-            if (_levelVisualHandler != null)
-            {
-                Destroy(_levelVisualHandler.gameObject);
-                _levelVisualHandler = null;
-            }
+            // _levelHudHandler.ResetHandler();
+            //
+            // TryTerminateCoroutine();
+            // ResetAnimationSequences();
+            //
+            // if (_clickHandler != null)
+            // {
+            //     _clickHandler.enabled = false;
+            // }
         }
 
         private void ResetAnimationSequences()

@@ -1,9 +1,8 @@
-﻿using Pooling;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Figures
+namespace Components.Levels.Figures
 {
-    public abstract class Figure : MonoBehaviour, IFigure
+    public abstract class Figure : MonoBehaviour
     {
         public int FigureId { get; private set; }
         public bool IsCompleted { get; private set; }

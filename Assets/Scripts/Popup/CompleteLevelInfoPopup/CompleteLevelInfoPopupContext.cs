@@ -5,17 +5,21 @@ namespace Popup.CompleteLevelInfoPopup
 {
     public class CompleteLevelInfoPopupContext : IPopupContext
     {
-        public CompleteLevelInfoPopupContext(int totalStars, int earnedStars, float totalTime, Action restartLevelAction)
+        public CompleteLevelInfoPopupContext(
+            int totalStars,
+            int earnedStars,
+            float totalTime,
+            Action goToMenuAction)
         {
             TotalStars = totalStars;
             EarnedStars = earnedStars;
             TotalTime = totalTime;
-            RestartLevelAction = restartLevelAction;
+            GoToMenuAction = goToMenuAction;
         }
 
         public int TotalStars { get; }
         public int EarnedStars { get; }
         public float TotalTime { get; }
-        public Action RestartLevelAction { get; }
+        public Action GoToMenuAction { get; }
     }
 }

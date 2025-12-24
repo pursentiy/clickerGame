@@ -1,5 +1,4 @@
-﻿using Figures.Animals;
-using Plugins.FSignal;
+﻿using Components.Levels.Figures;
 using UnityEngine;
 using UnityEngine.EventSystems;
 

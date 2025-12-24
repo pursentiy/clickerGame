@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Figures.Animals;
+using Components.Levels.Figures;
 using Level.Game;
 using Storage.Levels;
 using UnityEngine;

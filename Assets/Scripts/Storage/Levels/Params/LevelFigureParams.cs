@@ -1,6 +1,4 @@
 ﻿using System;
-using Figures;
-using UnityEngine;
 
 namespace Storage.Levels.Params
 {

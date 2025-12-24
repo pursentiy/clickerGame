@@ -1,5 +1,5 @@
 using System;
-using Figures.Animals;
+using Components.Levels.Figures;
 
 namespace Storage.Levels
 {

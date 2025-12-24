@@ -1,14 +1,13 @@
-﻿using System;
-using DG.Tweening;
+﻿using DG.Tweening;
 using Plugins.FSignal;
 using RSG;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Figures.Animals
+namespace Components.Levels.Figures
 {
-    public class FigureMenu : Figure, IFigureMenu, IDragHandler, IBeginDragHandler, IEndDragHandler
+    public class FigureMenu : Figure, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         [SerializeField] protected Image _image;
         [SerializeField] protected RectTransform _transformFigure;

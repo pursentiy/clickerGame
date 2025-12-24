@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using Figures;
-using Figures.Animals;
+using Components.Levels.Figures;
 using Plugins.FSignal;
 using RSG;
 using Storage.Levels.Params;

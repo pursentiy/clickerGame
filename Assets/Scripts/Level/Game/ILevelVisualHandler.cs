@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Animations;
-using Figures.Animals;
 using Storage.Levels.Params;
 using UnityEngine;
 

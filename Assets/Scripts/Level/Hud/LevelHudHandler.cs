@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Components.Levels.Figures;
 using DG.Tweening;
 using Extensions;
-using Figures.Animals;
 using Handlers;
 using Handlers.UISystem;
 using Installers;
@@ -46,6 +46,24 @@ namespace Level.Hud
         
         public FSignal BackToMenuClickSignal { get; } = new FSignal();
 
+        public void ResetHandler()
+        {
+            _starsProgressWidget.ResetWidget();
+            OnTimerChanged(_levelInfoTrackerService.CurrentLevelPlayingTime);
+        }
+
+        public void Initialize(LevelBeatingTimeInfo levelBeatingTime)
+        {
+            _levelInfoTrackerService.CurrentLevelPlayingTimeChangedSignal.MapListener(OnTimerChanged).DisposeWith(this);
+            _starsProgressWidget.Initialize(levelBeatingTime);
+            OnTimerChanged(_levelInfoTrackerService.CurrentLevelPlayingTime);
+        }
+
+        public void SetupScrollMenu(List<LevelFigureParams> levelFiguresParams)
+        {
+            levelFiguresParams.ForEach(SetFigure);
+        }
+        
         protected override void Awake()
         {
             _figureAnimalsMenuList = new List<FigureMenu>();
@@ -62,18 +80,6 @@ namespace Level.Hud
             });
 
             _figuresGroupSpacing = _figuresGroup.spacing;
-        }
-
-        public void Initialize(LevelBeatingTimeInfo levelBeatingTime)
-        {
-            _levelInfoTrackerService.CurrentLevelPlayingTimeChangedSignal.MapListener(OnTimerChanged).DisposeWith(this);
-            _starsProgressWidget.Initialize(levelBeatingTime);
-            OnTimerChanged(_levelInfoTrackerService.CurrentLevelPlayingTime);
-        }
-
-        public void SetupScrollMenu(List<LevelFigureParams> levelFiguresParams)
-        {
-            levelFiguresParams.ForEach(SetFigure);
         }
         
         public void SetInteractivity(bool isInteractable)
