@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using JetBrains.Annotations;
 using Storage.Records;
@@ -21,12 +22,12 @@ namespace Services
             var filePath = Application.persistentDataPath + SaveFileName;
             
             var formatter = new BinaryFormatter();
-            var stream = new FileStream(filePath, FileMode.Create);
             
-            var jsonPackProgressData = JsonUtility.ToJson(profileRecord);
-            
-            formatter.Serialize(stream, jsonPackProgressData);
-            stream.Close();
+            using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                var jsonPackProgressData = JsonUtility.ToJson(profileRecord);
+                formatter.Serialize(stream, jsonPackProgressData);
+            }
         }
 
         public ProfileRecord LoadProfileRecord()
@@ -39,14 +40,24 @@ namespace Services
             }
 
             var formatter = new BinaryFormatter();
-            var stream = new FileStream(filePath, FileMode.Open);
-            var rawTotalProgressData = formatter.Deserialize(stream) as string;
-            if (string.IsNullOrEmpty(rawTotalProgressData))
+            
+            try 
             {
+                using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    var rawTotalProgressData = formatter.Deserialize(stream) as string;
+                    if (string.IsNullOrEmpty(rawTotalProgressData))
+                    {
+                        return null;
+                    }
+                    return JsonUtility.FromJson<ProfileRecord>(rawTotalProgressData);
+                }
+            }
+            catch (Exception e)
+            {
+                LoggerService.LogError($"Failed to load profile: {e.Message}");
                 return null;
             }
-            
-            return JsonUtility.FromJson<ProfileRecord>(rawTotalProgressData);
         }
     }
 }
