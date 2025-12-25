@@ -1,10 +1,11 @@
 using Storage.Levels.Params;
+using Storage.Snapshots.LevelParams;
 
 namespace Services
 {
     public class LevelHelperService
     {
-        public bool IsLevelCompeted(LevelParams levelParams)
+        public bool IsLevelCompeted(LevelParamsSnapshot levelParams)
         {
             if (levelParams == null)
             {
@@ -31,7 +32,7 @@ namespace Services
             return newEarnedStars - maybeOldEarnedStars.Value;
         }
 
-        public int EvaluateEarnedStars(LevelParams levelParams, float levelCompletionTime)
+        public int EvaluateEarnedStars(LevelParamsSnapshot levelParams, float levelCompletionTime)
         {
             if (levelCompletionTime <= 0)
                 return 0;

@@ -6,6 +6,5 @@ namespace Storage.Levels.Params
     public class LevelFigureParams
     {
         public int FigureId;
-        public bool Completed;
     }
 }

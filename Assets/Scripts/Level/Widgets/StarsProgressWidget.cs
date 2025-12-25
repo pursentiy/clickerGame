@@ -2,6 +2,7 @@ using DG.Tweening;
 using Installers;
 using Services;
 using Storage.Levels.Params;
+using Storage.Snapshots.LevelParams;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,7 +20,7 @@ namespace Level.Widgets
         private float[] _timeThresholds;
         private bool[] _isStarActive;
 
-        public void Initialize(LevelBeatingTimeInfo levelBeatingTime)
+        public void Initialize(LevelBeatingTimeInfoSnapshot levelBeatingTime)
         {
             if (starImages.Length != 3 || levelBeatingTime == null)
             {

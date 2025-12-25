@@ -13,6 +13,7 @@ using RSG;
 using Services;
 using Storage;
 using Storage.Levels.Params;
+using Storage.Snapshots.LevelParams;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -21,7 +22,7 @@ using Zenject;
 
 namespace Level.Hud
 {
-    public class LevelHudHandler : InjectableMonoBehaviour, ILevelHudHandler
+    public class LevelHudHandler : InjectableMonoBehaviour
     {
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private ScreenHandler _screenHandler;
@@ -52,14 +53,14 @@ namespace Level.Hud
             OnTimerChanged(_levelInfoTrackerService.CurrentLevelPlayingTime);
         }
 
-        public void Initialize(LevelBeatingTimeInfo levelBeatingTime)
+        public void Initialize(LevelBeatingTimeInfoSnapshot levelBeatingTime)
         {
             _levelInfoTrackerService.CurrentLevelPlayingTimeChangedSignal.MapListener(OnTimerChanged).DisposeWith(this);
             _starsProgressWidget.Initialize(levelBeatingTime);
             OnTimerChanged(_levelInfoTrackerService.CurrentLevelPlayingTime);
         }
 
-        public void SetupScrollMenu(List<LevelFigureParams> levelFiguresParams)
+        public void SetupScrollMenu(List<LevelFigureParamsSnapshot> levelFiguresParams)
         {
             levelFiguresParams.ForEach(SetFigure);
         }
@@ -93,7 +94,7 @@ namespace Level.Hud
             _levelTimerWidget.UpdateTime(seconds);
         }
 
-        private void SetFigure(LevelFigureParams figureParams)
+        private void SetFigure(LevelFigureParamsSnapshot figureParams)
         {
             var figurePrefab = _figuresStorageData.GetMenuFigure(_playerProgressService.CurrentPackNumber,
                 _playerProgressService.CurrentLevelNumber, figureParams.FigureId);

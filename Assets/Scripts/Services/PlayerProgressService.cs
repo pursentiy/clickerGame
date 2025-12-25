@@ -48,21 +48,6 @@ namespace Services
             _packParamsList = levelsParams;
         }
 
-        public void ResetProgress(int packNumber, int levelNumber)
-        {
-            var levelProgress = GetLevelByNumber(packNumber, levelNumber);
-
-            if (levelProgress == null)
-            {
-                return;
-            }
-            
-            foreach (var levelFigureParam in levelProgress.LevelFiguresParamsList)
-            {
-                levelFigureParam.Completed = false;
-            }
-        }
-
         public bool IsPackAvailable(int packNumber)
         {
             if (_packParamsList.IsNullOrEmpty())
@@ -149,15 +134,6 @@ namespace Services
             
             LoggerService.LogWarning($"Could not get level by number {levelNumber} in {this}");
             return null;
-        }
-
-        public void ResetLevelProgress(int packNumber, int levelNumber)
-        {
-            var currentLevel = GetLevelByNumber(packNumber, levelNumber);
-            currentLevel.LevelFiguresParamsList.ForEach(levelParams =>
-            {
-                levelParams.Completed = false;
-            });
         }
 
         public List<LevelParams> GetLevelsByPack(int packNumber)

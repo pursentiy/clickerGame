@@ -6,13 +6,14 @@ using Plugins.FSignal;
 using RSG;
 using Screen;
 using Services;
+using Storage.Extensions;
 using Storage.Levels.Params;
 using UnityEngine;
 using Zenject;
 
 namespace Handlers
 {
-    public class ScreenHandler : InjectableMonoBehaviour, IScreenHandler
+    public class ScreenHandler : InjectableMonoBehaviour
     {
         [Inject] private UIBlockHandler _uiBlockHandler;
         [Inject] private PlayerProgressService _playerProgressService;
@@ -76,19 +77,20 @@ namespace Handlers
             _currentScreenBase = null;
         }
 
-        public void ReplayCurrentLevel(int levelNumber, bool fast = false)
-        {
-            var awaitPromise = TryStartParticlesAwaitPromiseTransition(fast);
-
-            awaitPromise.Then(() =>
-            {
-                _playerProgressService.ResetLevelProgress(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber);
-                var levelParams = _playerProgressService.GetLevelByNumber(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber);
-                _playerProgressService.CurrentLevelNumber = levelNumber;
-                PopupAllScreenHandlers();
-                _levelSessionHandler.StartLevel(levelParams, _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
-            });
-        }
+        //TODO ADD REPLAY LEVEL LOGIC
+        // public void ReplayCurrentLevel(int levelNumber, bool fast = false)
+        // {
+        //     var awaitPromise = TryStartParticlesAwaitPromiseTransition(fast);
+        //
+        //     awaitPromise.Then(() =>
+        //     {
+        //         _playerProgressService.ResetLevelProgress(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber);
+        //         var levelParams = _playerProgressService.GetLevelByNumber(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber);
+        //         _playerProgressService.CurrentLevelNumber = levelNumber;
+        //         PopupAllScreenHandlers();
+        //         _levelSessionHandler.StartLevel(levelParams, _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
+        //     });
+        //}
 
         public void StartNewLevel(int levelNumber, LevelParams levelParams, bool fast = false)
         {
@@ -98,7 +100,7 @@ namespace Handlers
             {
                 _playerProgressService.CurrentLevelNumber = levelNumber;
                 PopupAllScreenHandlers();
-                _levelSessionHandler.StartLevel(levelParams, _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
+                _levelSessionHandler.StartLevel(levelParams.ToSnapshot(), _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
             });
         }
         

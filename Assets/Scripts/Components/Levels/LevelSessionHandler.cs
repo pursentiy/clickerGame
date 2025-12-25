@@ -16,6 +16,7 @@ using RSG;
 using Services;
 using Storage;
 using Storage.Levels.Params;
+using Storage.Snapshots.LevelParams;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Utilities.Disposable;
@@ -23,7 +24,7 @@ using Zenject;
 
 namespace Handlers
 {
-    public class LevelSessionHandler : InjectableMonoBehaviour, ILevelSessionHandler
+    public class LevelSessionHandler : InjectableMonoBehaviour
     {
         [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private FiguresStorageData _figuresStorageData;
@@ -44,7 +45,7 @@ namespace Handlers
         private GameObject _draggingFigureImage;
         private FigureMenu _menuFigure;
         private bool _isDraggable;
-        private LevelParams _currentLevelParams;
+        private LevelParamsSnapshot _currentLevelParams;
 
         private Sequence _resetDraggingAnimationSequence;
         private Sequence _completeDraggingAnimationSequence;
@@ -53,20 +54,20 @@ namespace Handlers
         private bool IsLevelComplete => _currentLevelParams != null && 
                                         _currentLevelParams.LevelFiguresParamsList.TrueForAll(levelFigureParams => levelFigureParams.Completed);
 
-        public void StartLevel(LevelParams levelParams, LevelHudHandler levelHudHandler, Color defaultColor)
+        public void StartLevel(LevelParamsSnapshot levelParamsSnapshot, LevelHudHandler levelHudHandler, Color defaultColor)
         {
-            if (levelParams == null)
+            if (levelParamsSnapshot == null)
             {
-                LoggerService.LogError("LevelParams cannot be null");
+                LoggerService.LogError($"{nameof(LevelParamsSnapshot)} cannot be null");
                 return;
             }
-            _currentLevelParams =  levelParams;
+            _currentLevelParams =  levelParamsSnapshot;
             var levelId = $"{_playerProgressService.CurrentPackNumber}-{_playerProgressService.CurrentLevelNumber}";
             _levelInfoTrackerService.StartLevelTracking(levelId);
             
             SetupClickHandler();
-            SetupHud(levelParams, levelHudHandler);
-            SetupLevelScreenHandler(levelParams, defaultColor);
+            SetupHud(levelParamsSnapshot, levelHudHandler);
+            SetupLevelScreenHandler(levelParamsSnapshot, defaultColor);
             
             _soundHandler.PlaySound("start");
         }
@@ -109,13 +110,13 @@ namespace Handlers
             _clickHandler.enabled = true;
         }
 
-        private void SetupLevelScreenHandler(LevelParams packParam, Color defaultColor)
+        private void SetupLevelScreenHandler(LevelParamsSnapshot packParam, Color defaultColor)
         {
             _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(_figuresStorageData.GetLevelVisualHandler(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber));
             _levelVisualHandler.SetupLevel(packParam.LevelFiguresParamsList, defaultColor);
         }
 
-        private void SetupHud(LevelParams packParam, LevelHudHandler levelHudHandler)
+        private void SetupHud(LevelParamsSnapshot packParam, LevelHudHandler levelHudHandler)
         {
             _levelHudHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelHudHandler>(levelHudHandler, _gameMainCanvasTransform);
             _levelHudHandler.SetupScrollMenu(packParam.LevelFiguresParamsList);
@@ -299,7 +300,7 @@ namespace Handlers
                 return;
             }
             
-            levelFigure.Completed = true;
+            levelFigure.SetLevelCompleted(true);
         }
         
         private void TryTerminateCoroutine()

@@ -4,13 +4,13 @@ using Components.Levels.Figures;
 using Installers;
 using Services;
 using Storage;
-using Storage.Levels.Params;
+using Storage.Snapshots.LevelParams;
 using UnityEngine;
 using Zenject;
 
 namespace Level.Game
 {
-    public class LevelVisualHandler : InjectableMonoBehaviour, ILevelVisualHandler
+    public class LevelVisualHandler : InjectableMonoBehaviour
     {
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private PlayerProgressService _playerProgressService;
@@ -29,12 +29,12 @@ namespace Level.Game
             _figureAnimalsTargetList = new List<FigureTarget>();
         }
 
-        public void SetupLevel(List<LevelFigureParams> levelFiguresParams, Color defaultColor)
+        public void SetupLevel(List<LevelFigureParamsSnapshot> levelFiguresParams, Color defaultColor)
         {
             levelFiguresParams.ForEach(figure => SetFigure(figure, defaultColor));
         }
 
-        private void SetFigure(LevelFigureParams figureParams, Color defaultColor)
+        private void SetFigure(LevelFigureParamsSnapshot figureParams, Color defaultColor)
         {
             var figurePrefab = _figuresStorageData.GetTargetFigure(_playerProgressService.CurrentPackNumber,
                 _playerProgressService.CurrentLevelNumber, figureParams.FigureId);
