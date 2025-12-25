@@ -14,7 +14,7 @@ namespace Popup.Settings
     public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
     {
         [Inject] private SoundHandler _soundHandler;
-        [Inject] private PlayerProgressService _playerProgressService;
+        [Inject] private PlayerLevelService _playerLevelService;
         [Inject] private CheatService _cheatService;
         
         [SerializeField] private Sprite[] _languageFlags;
@@ -31,14 +31,14 @@ namespace Popup.Settings
             View.MusicToggle.onValueChanged.AddListener(isOn =>
             {
                 _soundHandler.PlayButtonSound();
-                _playerProgressService.ProfileSettingsMusic = isOn;
+                _playerLevelService.ProfileSettingsMusic = isOn;
                 _soundHandler.SetMusicVolume(isOn);
             });
             
             View.SoundToggle.onValueChanged.AddListener(isOn =>
             {
                 _soundHandler.PlayButtonSound();
-                _playerProgressService.ProfileSettingsSound = isOn;
+                _playerLevelService.ProfileSettingsSound = isOn;
                 _soundHandler.SetSoundVolume(isOn);
             });
 
@@ -54,8 +54,8 @@ namespace Popup.Settings
 
         private void SetupMusicAndSoundToggles()
         {
-            View.MusicToggle.isOn = _playerProgressService.ProfileSettingsMusic;
-            View.SoundToggle.isOn = _playerProgressService.ProfileSettingsSound;
+            View.MusicToggle.isOn = _playerLevelService.ProfileSettingsMusic;
+            View.SoundToggle.isOn = _playerLevelService.ProfileSettingsSound;
         }
         
         private void ChangeLanguage(int direction)

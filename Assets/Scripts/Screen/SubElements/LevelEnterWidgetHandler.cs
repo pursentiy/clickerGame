@@ -1,10 +1,12 @@
 ﻿using System;
+using Extensions;
 using Handlers;
 using Installers;
 using Plugins.FSignal;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities.Disposable;
 using Zenject;
 
 namespace Screen.SubElements
@@ -35,16 +37,7 @@ namespace Screen.SubElements
                 _starsImages[i].gameObject.SetActive(i < difficulty);
             }
 
-            _levelEnterButton.onClick.AddListener(()=>
-            {
-                _soundHandler.PlayButtonSound();
-                action.Invoke();
-            });
-        }
-
-        private void OnDestroy()
-        {
-            _levelEnterButton.onClick.RemoveAllListeners();
+            _levelEnterButton.onClick.MapListenerWithSound(action.SafeInvoke).DisposeWith(this);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Screen
     public class ChoosePackScreenBase : ScreenBase
     {
         [Inject] private ScreenHandler _screenHandler;
-        [Inject] private PlayerProgressService _playerProgressService;
+        [Inject] private PlayerLevelService _playerLevelService;
         [Inject] private FiguresStorageData _figuresStorageData;
         
         [SerializeField] private PackEnterWidgetHandler _packEnterWidgetPrefab;
@@ -26,7 +26,7 @@ namespace Screen
 
         private void InitializePackButtons()
         {
-            var currentPackParams = _playerProgressService.GetPackParams();
+            var currentPackParams = _playerLevelService.GetPackParams();
             var index = 0;
             currentPackParams.ForEach(packParams =>
             {
@@ -34,10 +34,10 @@ namespace Screen
                     _horizontalGroup = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
                 
                 var enterButton = Instantiate(_packEnterWidgetPrefab, _horizontalGroup.transform);
-                enterButton.Initialize(_figuresStorageData.GetPackParamsData(packParams.PackNumber).PackName, _figuresStorageData.GetPackParamsData(packParams.PackNumber).PackImage, packParams.PackNumber, _playerProgressService.IsPackAvailable(packParams.PackNumber),
+                enterButton.Initialize(_figuresStorageData.GetPackParamsData(packParams.PackNumber).PackName, _figuresStorageData.GetPackParamsData(packParams.PackNumber).PackImage, packParams.PackNumber, _playerLevelService.IsPackAvailable(packParams.PackNumber),
                     () =>
                     {
-                        _playerProgressService.CurrentPackNumber = packParams.PackNumber;
+                        _playerLevelService.CurrentPackNumber = packParams.PackNumber;
                         _screenHandler.ShowChooseLevelScreen();
                     });
                 index++;

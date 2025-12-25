@@ -9,10 +9,10 @@ using Zenject;
 
 namespace Services
 {
-    public class PlayerProgressService
+    public class PlayerLevelService
     {
         [Inject] private LevelsParamsStorage _levelsParamsStorage;
-        [Inject] private PlayerSnapshotService _playerSnapshotService;
+        [Inject] private PlayerService _playerService;
         
         private List<PackParams> _packParamsList;
         private ProfileSettingsParams _profileSettings;
@@ -65,18 +65,13 @@ namespace Services
             if (levelNumber == 1)
                 return true;
 
-            var previousLevelIsCompleted = IsLevelCompleted(packNumber, levelNumber);
+            var previousLevelIsCompleted = _playerService.IsLevelCompleted(packNumber, levelNumber - 1);
             return previousLevelIsCompleted;
         }
-
-        public bool IsLevelCompleted(int packNumber, int levelNumber)
-        {
-            return _playerSnapshotService.HasLevelInPack(packNumber, levelNumber);
-        }
-
+        
         public int? GetEarnedStarsForLevel(int packNumber, int levelNumber)
         {
-            var pack = _playerSnapshotService.TryGetPack(packNumber);
+            var pack = _playerService.TryGetPack(packNumber);
 
             var level = pack?.CompletedLevelsSnapshots.FirstOrDefault(x => x.LevelNumber == levelNumber);
             return level?.StarsEarned;
@@ -84,7 +79,7 @@ namespace Services
 
         public bool TrySetOrUpdateLevelCompletion(int packNumber, int levelNumber, int earnedStars, float completeTime)
         {
-            var pack = _playerSnapshotService.GetOrCreatePack(packNumber);
+            var pack = _playerService.GetOrCreatePack(packNumber);
             if (pack == null)
                 return false;
             

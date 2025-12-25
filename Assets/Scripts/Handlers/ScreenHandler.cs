@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Components.Levels;
 using DG.Tweening;
 using Installers;
 using Plugins.FSignal;
@@ -16,7 +17,7 @@ namespace Handlers
     public class ScreenHandler : InjectableMonoBehaviour
     {
         [Inject] private UIBlockHandler _uiBlockHandler;
-        [Inject] private PlayerProgressService _playerProgressService;
+        [Inject] private PlayerLevelService _playerLevelService;
         [Inject] private LevelSessionHandler _levelSessionHandler;
         [Inject] private LevelParamsHandler _levelParamsHandler;
 
@@ -98,7 +99,7 @@ namespace Handlers
 
             awaitPromise.Then(() =>
             {
-                _playerProgressService.CurrentLevelNumber = levelNumber;
+                _playerLevelService.CurrentLevelNumber = levelNumber;
                 PopupAllScreenHandlers();
                 _levelSessionHandler.StartLevel(levelParams.ToSnapshot(), _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
             });

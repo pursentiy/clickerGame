@@ -13,11 +13,11 @@ namespace GameState
     {
         [Inject] private LevelsParamsStorage _levelsParamsStorage;
         [Inject] private ScreenHandler _screenHandler;
-        [Inject] private PlayerProgressService _playerProgressService;
+        [Inject] private PlayerLevelService _playerLevelService;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private ProfileBuilderService _profileBuilderService;
         [Inject] private PlayerRepositoryService _playerRepositoryService;
-        [Inject] private PlayerSnapshotService _playerSnapshotService;
+        [Inject] private PlayerService _playerService;
         [Inject] private readonly ApplicationService _applicationService;
         [Inject] private readonly UIManager _uiManager;
 
@@ -27,7 +27,7 @@ namespace GameState
             
             _uiManager.ShowScreensUI();
             _uiManager.SetupHandlers();
-            _playerProgressService.InitializeProfileSettings();
+            _playerLevelService.InitializeProfileSettings();
             
             if (_playerRepositoryService.HasProfile)
             {
@@ -44,13 +44,13 @@ namespace GameState
             var playerSnapshot = _profileBuilderService.BuildNewProfileSnapshot();
             _playerRepositoryService.SavePlayerSnapshot(playerSnapshot);
                 
-            _playerProgressService.InitializeHandler(_levelsParamsStorage.DefaultPacksParamsList);
+            _playerLevelService.InitializeHandler(_levelsParamsStorage.DefaultPacksParamsList);
         }
 
         private void StartOldProfileSession()
         {
-            _playerSnapshotService.Initialize(_playerRepositoryService.LoadPlayerSnapshot());
-            _playerProgressService.InitializeHandler(_levelsParamsStorage.DefaultPacksParamsList);
+            _playerService.Initialize(_playerRepositoryService.LoadPlayerSnapshot());
+            _playerLevelService.InitializeHandler(_levelsParamsStorage.DefaultPacksParamsList);
         }
 
         private List<PackParams> GetNewPacks(List<PackParams> savedDataProgress)
@@ -75,8 +75,8 @@ namespace GameState
 
         private void SetupSounds()
         {
-            _soundHandler.SetMusicVolume(_playerProgressService.ProfileSettingsMusic);
-            _soundHandler.SetSoundVolume(_playerProgressService.ProfileSettingsSound);
+            _soundHandler.SetMusicVolume(_playerLevelService.ProfileSettingsMusic);
+            _soundHandler.SetSoundVolume(_playerLevelService.ProfileSettingsSound);
             _soundHandler.StartAmbience();
         }
 

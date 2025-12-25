@@ -1,9 +1,11 @@
-﻿using Handlers;
+﻿using Extensions;
+using Handlers;
 using Handlers.UISystem;
 using Popup.Settings;
 using Screen.SubElements;
 using Services;
 using Storage;
+using Storage.Levels.Params;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,7 +17,7 @@ namespace Screen
     {
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private PopupHandler _popupHandler;
-        [Inject] private PlayerProgressService _playerProgressService;
+        [Inject] private PlayerLevelService _playerLevelService;
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private UIManager _uiManager;
@@ -33,44 +35,38 @@ namespace Screen
         {
             InitializeLevelsButton();
 
-            _packName.text = _figuresStorageData.GetPackParamsData(_playerProgressService.CurrentPackNumber).PackName + " Pack";
+            _packName.text = _figuresStorageData.GetPackParamsData(_playerLevelService.CurrentPackNumber).PackName + " Pack";
             
-            _goToChoosePackScreenButton.onClick.AddListener(()=>
-            {
-                _soundHandler.PlayButtonSound();
-                _screenHandler.ShowChoosePackScreen();
-            });
-            _settingsButton.onClick.AddListener(()=>
-            {
-                _soundHandler.PlayButtonSound();
-                _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null);
-            });
+            _goToChoosePackScreenButton.onClick.MapListenerWithSound(()=> _screenHandler.ShowChoosePackScreen());
+            _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null));
         }
 
         private void InitializeLevelsButton()
         {
-            var levelsParams = _playerProgressService.GetLevelsByPack(_playerProgressService.CurrentPackNumber);
+            var levelsParams = _playerLevelService.GetLevelsByPack(_playerLevelService.CurrentPackNumber);
             var index = 0;
             levelsParams.ForEach(levelParams =>
             {
                 if(_horizontalGroup == null || index % 2 == 0)
                     _horizontalGroup = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
 
-                var levelParamsData = _figuresStorageData.GetLevelParamsData(_playerProgressService.CurrentPackNumber, levelParams.LevelNumber);
+                var levelParamsData = _figuresStorageData.GetLevelParamsData(_playerLevelService.CurrentPackNumber, levelParams.LevelNumber);
                 var enterButton = Instantiate(levelEnterWidgetPrefab, _horizontalGroup.transform);
-                enterButton.Initialize(levelParamsData.LevelName, levelParamsData.LevelImage, levelParamsData.LevelDifficulty, _playerProgressService.IsLevelAvailable(_playerProgressService.CurrentPackNumber, levelParams.LevelNumber),
-                    () =>
-                    {
-                        _screenHandler.StartNewLevel(levelParams.LevelNumber, levelParams);
-                    });
+                enterButton.Initialize(levelParamsData.LevelName, levelParamsData.LevelImage, levelParamsData.LevelDifficulty, _playerLevelService.IsLevelAvailable(_playerLevelService.CurrentPackNumber, levelParams.LevelNumber),
+                    () => StartLevel(levelParams));
                 index++;
             });
         }
-        
-        private void OnDestroy()
+
+        private void StartLevel(LevelParams levelParams)
         {
-            _goToChoosePackScreenButton.onClick.RemoveAllListeners();
-            _settingsButton.onClick.RemoveAllListeners();
+            if (levelParams == null)
+            {
+                LoggerService.LogError($"{nameof(LevelParams)} is null");
+                return;
+            }
+
+            _screenHandler.StartNewLevel(levelParams.LevelNumber, levelParams);
         }
     }
 }

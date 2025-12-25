@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Linq;
 using Components.Levels.Figures;
 using DG.Tweening;
 using Extensions;
+using Handlers;
 using Handlers.UISystem;
 using Installers;
 using Level.Click;
@@ -11,28 +11,28 @@ using Level.Game;
 using Level.Hud;
 using Level.Widgets;
 using Popup.CompleteLevelInfoPopup;
-using Popup.Settings;
 using RSG;
 using Services;
 using Storage;
-using Storage.Levels.Params;
 using Storage.Snapshots.LevelParams;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Utilities.Disposable;
 using Zenject;
 
-namespace Handlers
+namespace Components.Levels
 {
     public class LevelSessionHandler : InjectableMonoBehaviour
     {
-        [Inject] private PlayerProgressService _playerProgressService;
+        [Inject] private PlayerLevelService _playerLevelService;
+        [Inject] private PlayerService _playerService;
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private LevelInfoTrackerService _levelInfoTrackerService;
         [Inject] private LevelHelperService _levelHelperService;
         [Inject] private UIManager _uiManager;
+        [Inject] private PlayerRepositoryService _playerRepositoryService;
 
         [SerializeField] private RectTransform _gameMainCanvasTransform;
         [SerializeField] private RectTransform _draggingTransform;
@@ -62,7 +62,7 @@ namespace Handlers
                 return;
             }
             _currentLevelParams =  levelParamsSnapshot;
-            var levelId = $"{_playerProgressService.CurrentPackNumber}-{_playerProgressService.CurrentLevelNumber}";
+            var levelId = $"{_playerLevelService.CurrentPackNumber}-{_playerLevelService.CurrentLevelNumber}";
             _levelInfoTrackerService.StartLevelTracking(levelId);
             
             SetupClickHandler();
@@ -88,12 +88,14 @@ namespace Handlers
             _levelInfoTrackerService.StopLevelTracking();
             _levelInfoTrackerService.ClearData();
 
-            var maybeOldEarnedStars = _playerProgressService.GetEarnedStarsForLevel(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber);
+            var maybeOldEarnedStars = _playerLevelService.GetEarnedStarsForLevel(_playerLevelService.CurrentPackNumber, _playerLevelService.CurrentLevelNumber);
             var earnedStars = _levelHelperService.EvaluateEarnedStars(_currentLevelParams, levelPlayedTime);
             var starsForAccrual = _levelHelperService.EvaluateStarsForAccrual(earnedStars, maybeOldEarnedStars);
+            _playerService.SetLevelCompleted(_playerLevelService.CurrentPackNumber, _playerLevelService.CurrentLevelNumber, levelPlayedTime, earnedStars);
+            _playerRepositoryService.SavePlayerSnapshot(_playerService.ProfileSnapshot);
             
             _levelHudHandler.SetInteractivity(false);
-            _playerProgressService.TrySetOrUpdateLevelCompletion(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber, earnedStars, levelPlayedTime);
+            _playerLevelService.TrySetOrUpdateLevelCompletion(_playerLevelService.CurrentPackNumber, _playerLevelService.CurrentLevelNumber, earnedStars, levelPlayedTime);
             _finishCoroutine = StartCoroutine(AwaitFinishLevel(earnedStars, starsForAccrual, levelPlayedTime));
         }
 
@@ -112,7 +114,7 @@ namespace Handlers
 
         private void SetupLevelScreenHandler(LevelParamsSnapshot packParam, Color defaultColor)
         {
-            _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(_figuresStorageData.GetLevelVisualHandler(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber));
+            _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(_figuresStorageData.GetLevelVisualHandler(_playerLevelService.CurrentPackNumber, _playerLevelService.CurrentLevelNumber));
             _levelVisualHandler.SetupLevel(packParam.LevelFiguresParamsList, defaultColor);
         }
 

@@ -27,7 +27,7 @@ namespace Level.Hud
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private PopupHandler _popupHandler;
-        [Inject] private PlayerProgressService _playerProgressService;
+        [Inject] private PlayerLevelService _playerLevelService;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private LevelInfoTrackerService _levelInfoTrackerService;
         [Inject] private UIManager _uiManager;
@@ -96,8 +96,8 @@ namespace Level.Hud
 
         private void SetFigure(LevelFigureParamsSnapshot figureParams)
         {
-            var figurePrefab = _figuresStorageData.GetMenuFigure(_playerProgressService.CurrentPackNumber,
-                _playerProgressService.CurrentLevelNumber, figureParams.FigureId);
+            var figurePrefab = _figuresStorageData.GetMenuFigure(_playerLevelService.CurrentPackNumber,
+                _playerLevelService.CurrentLevelNumber, figureParams.FigureId);
 
             if (figurePrefab == null)
             {
