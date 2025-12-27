@@ -42,6 +42,7 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<AddressableContentDeliveryService>().AsSingle().NonLazy();
             
             //PLAYER SERVICES
+            Container.BindInterfacesAndSelfTo<GlobalSettingsService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<ProfileBuilderService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerRepositoryService>().AsSingle().NonLazy();

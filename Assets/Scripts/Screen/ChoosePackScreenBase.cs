@@ -1,3 +1,4 @@
+using Components.UI;
 using Handlers;
 using Screen.SubElements;
 using Services;
@@ -12,16 +13,20 @@ namespace Screen
     {
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private PlayerLevelService _playerLevelService;
+        [Inject] private PlayerService _playerService;
         [Inject] private FiguresStorageData _figuresStorageData;
+        [Inject] private PlayerCurrencyService _playerCurrencyService;
         
         [SerializeField] private PackEnterWidgetHandler _packEnterWidgetPrefab;
         [SerializeField] private RectTransform _levelEnterPopupsParentTransform;
         [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroupPrefab;
+        [SerializeField] private CurrencyDisplayWidget _starsDisplayWidget;
 
         private HorizontalLayoutGroup _horizontalGroup;
         private void Start()
         {
             InitializePackButtons();
+            _starsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
         }
 
         private void InitializePackButtons()

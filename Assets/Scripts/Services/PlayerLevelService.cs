@@ -15,27 +15,9 @@ namespace Services
         [Inject] private PlayerService _playerService;
         
         private List<PackParams> _packParamsList;
-        private ProfileSettingsParams _profileSettings;
 
         public int CurrentPackNumber { get; set; } = -1;
         public int CurrentLevelNumber { get; set; } = -1;
-
-        public bool ProfileSettingsSound
-        {
-            get => _profileSettings.IsSoundOn;
-            set => _profileSettings.IsSoundOn = value;
-        }
-
-        public bool ProfileSettingsMusic
-        {
-            get => _profileSettings.IsMusicOn;
-            set => _profileSettings.IsMusicOn = value;
-        }
-
-        public void InitializeProfileSettings()
-        {
-            _profileSettings = new ProfileSettingsParams(true, true);
-        }
         
         public void InitializeHandler(List<PackParams> levelsParams, List<PackParams> newLevelsParams = null)
         {

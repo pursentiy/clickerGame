@@ -1,3 +1,4 @@
+using Components.UI;
 using Handlers.UISystem;
 using TMPro;
 using UnityEngine;
@@ -8,13 +9,12 @@ namespace Popup.CompleteLevelInfoPopup
     public class CompleteLevelInfoPopupView : MonoBehaviour, IUIView
     {
         public RectTransform MainTransform;
-        public Button CloseButton;
+        public Button GoToLevelsChooseScreenButton;
         public Button BackgronudButton;
-        public Button RestartLevelButton;
-        public Button NextLevelButton;
         public Image[] Stars;
         public Material GrayScaleMaterial;
         public ParticleSystem[] FireworksParticles;
         public TMP_Text TimeText;
+        public CurrencyDisplayWidget StarsDisplayWidget;
     }
 }

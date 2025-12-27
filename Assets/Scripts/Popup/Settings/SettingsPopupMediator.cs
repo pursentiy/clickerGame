@@ -16,6 +16,7 @@ namespace Popup.Settings
         [Inject] private SoundHandler _soundHandler;
         [Inject] private PlayerLevelService _playerLevelService;
         [Inject] private CheatService _cheatService;
+        [Inject] private GlobalSettingsService _globalSettingsService;
         
         [SerializeField] private Sprite[] _languageFlags;
         private int _currentLanguageIndex = 0;
@@ -31,14 +32,14 @@ namespace Popup.Settings
             View.MusicToggle.onValueChanged.AddListener(isOn =>
             {
                 _soundHandler.PlayButtonSound();
-                _playerLevelService.ProfileSettingsMusic = isOn;
+                _globalSettingsService.ProfileSettingsMusic = isOn;
                 _soundHandler.SetMusicVolume(isOn);
             });
             
             View.SoundToggle.onValueChanged.AddListener(isOn =>
             {
                 _soundHandler.PlayButtonSound();
-                _playerLevelService.ProfileSettingsSound = isOn;
+                _globalSettingsService.ProfileSettingsSound = isOn;
                 _soundHandler.SetSoundVolume(isOn);
             });
 
@@ -54,8 +55,8 @@ namespace Popup.Settings
 
         private void SetupMusicAndSoundToggles()
         {
-            View.MusicToggle.isOn = _playerLevelService.ProfileSettingsMusic;
-            View.SoundToggle.isOn = _playerLevelService.ProfileSettingsSound;
+            View.MusicToggle.isOn = _globalSettingsService.ProfileSettingsMusic;
+            View.SoundToggle.isOn = _globalSettingsService.ProfileSettingsSound;
         }
         
         private void ChangeLanguage(int direction)

@@ -20,6 +20,7 @@ namespace GameState
         [Inject] private PlayerService _playerService;
         [Inject] private readonly ApplicationService _applicationService;
         [Inject] private readonly UIManager _uiManager;
+        [Inject] private GlobalSettingsService _globalSettingsService;
 
         protected override void Awake()
         {
@@ -27,7 +28,7 @@ namespace GameState
             
             _uiManager.ShowScreensUI();
             _uiManager.SetupHandlers();
-            _playerLevelService.InitializeProfileSettings();
+            _globalSettingsService.InitializeProfileSettings();
             
             if (_playerRepositoryService.HasProfile)
             {
@@ -75,8 +76,8 @@ namespace GameState
 
         private void SetupSounds()
         {
-            _soundHandler.SetMusicVolume(_playerLevelService.ProfileSettingsMusic);
-            _soundHandler.SetSoundVolume(_playerLevelService.ProfileSettingsSound);
+            _soundHandler.SetMusicVolume(_globalSettingsService.ProfileSettingsMusic);
+            _soundHandler.SetSoundVolume(_globalSettingsService.ProfileSettingsSound);
             _soundHandler.StartAmbience();
         }
 

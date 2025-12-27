@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using Utilities.Disposable;
 
 namespace Components.UI
 {
@@ -26,16 +27,28 @@ namespace Components.UI
         private int _targetValue;
         private Tween _countTween;
 
-        public void AddCurrency(int amount)
+        public void AddCurrency(int amount, bool withAnimation = true)
         {
             _targetValue += amount;
-            TriggerUpdateEffects();
+            
+            if (withAnimation)
+                TriggerUpdateEffects();
+            else
+            {
+                UpdateText(_targetValue);
+            }
         }
 
         public void SetCurrency(int newValue)
         {
             _targetValue = newValue;
-            TriggerUpdateEffects();
+            UpdateText(_targetValue);
+        }
+
+        public void Bump()
+        {
+            bumpTransform.DOComplete();
+            bumpTransform.DOPunchScale(Vector3.one * punchStrength, animationDuration, vibrato, elasticity).KillWith(this);
         }
         
         // DEBUG
@@ -51,26 +64,19 @@ namespace Components.UI
                 confettiParticles.Play();
             }
 
-            // 2. DOTween Bump (PunchScale)
-            // Complete() ensures if it's already bumping, it resets first so it doesn't grow infinitely
-            bumpTransform.DOComplete();
-            bumpTransform.DOPunchScale(Vector3.one * punchStrength, animationDuration, vibrato, elasticity);
+            Bump(); 
 
-            // 3. DOTween Number Counter
-            // We kill the previous count tween so we don't have two tweens fighting over the variable
             _countTween?.Kill();
-
             _countTween = DOTween.To(
-                () => _currentDisplayValue, // Getter
+                () => _currentDisplayValue,
                 x =>
                 {
-                    // Setter
                     _currentDisplayValue = x;
                     UpdateText(_currentDisplayValue);
                 },
-                _targetValue, // Target
-                animationDuration // Duration
-            ).SetEase(Ease.OutQuad); // Optional: Add easing for nicer counting
+                _targetValue,
+                animationDuration
+            ).SetEase(Ease.OutQuad).KillWith(this);
         }
 
         private void UpdateText(int value)
@@ -79,12 +85,6 @@ namespace Components.UI
             {
                 currencyText.text = value.ToString(numberFormat);
             }
-        }
-        
-        private void OnDestroy()
-        {
-            bumpTransform.DOKill();
-            _countTween?.Kill();
         }
     }
 }

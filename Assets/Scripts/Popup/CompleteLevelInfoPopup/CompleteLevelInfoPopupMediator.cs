@@ -29,14 +29,15 @@ namespace Popup.CompleteLevelInfoPopup
         public override void OnCreated()
         {
             base.OnCreated();
+            
+            View.StarsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
 
             SetLevelTimeText(Context.TotalTime);
             SetupStars(Context.TotalStars);
             AcquireEarnedStars(Context.EarnedStars);
             
             View.BackgronudButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
-            View.CloseButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
-            View.NextLevelButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
+            View.GoToLevelsChooseScreenButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
         }
 
         private void SetLevelTimeText(float time)
@@ -64,6 +65,7 @@ namespace Popup.CompleteLevelInfoPopup
         private void AcquireEarnedStars(int earnedStarsForLevel)
         {
             _playerCurrencyService.AddStars(earnedStarsForLevel);
+            View.StarsDisplayWidget.AddCurrency(earnedStarsForLevel);
         }
 
         private IEnumerator PlayParticles(int[] shuffledPositions)

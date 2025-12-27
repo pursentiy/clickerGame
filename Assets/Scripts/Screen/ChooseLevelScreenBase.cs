@@ -1,4 +1,5 @@
-﻿using Extensions;
+﻿using Components.UI;
+using Extensions;
 using Handlers;
 using Handlers.UISystem;
 using Popup.Settings;
@@ -21,6 +22,7 @@ namespace Screen
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private UIManager _uiManager;
+        [Inject] private PlayerCurrencyService _playerCurrencyService;
         
         [SerializeField] private LevelEnterWidgetHandler levelEnterWidgetPrefab;
         [SerializeField] private RectTransform _levelEnterPopupsParentTransform;
@@ -28,6 +30,7 @@ namespace Screen
         [SerializeField] private Button _goToChoosePackScreenButton;
         [SerializeField] private Button _settingsButton;
         [SerializeField] private TMP_Text _packName;
+        [SerializeField] private CurrencyDisplayWidget _starsDisplayWidget;
         
         private HorizontalLayoutGroup _horizontalGroup;
 
@@ -35,6 +38,8 @@ namespace Screen
         {
             InitializeLevelsButton();
 
+            _starsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
+            
             _packName.text = _figuresStorageData.GetPackParamsData(_playerLevelService.CurrentPackNumber).PackName + " Pack";
             
             _goToChoosePackScreenButton.onClick.MapListenerWithSound(()=> _screenHandler.ShowChoosePackScreen());
