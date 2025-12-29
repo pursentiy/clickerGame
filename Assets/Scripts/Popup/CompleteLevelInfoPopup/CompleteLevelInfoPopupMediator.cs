@@ -1,6 +1,6 @@
-using System;
 using System.Collections;
 using Attributes;
+using DG.Tweening;
 using Extensions;
 using Handlers;
 using Handlers.UISystem;
@@ -31,58 +31,135 @@ namespace Popup.CompleteLevelInfoPopup
             base.OnCreated();
             
             View.StarsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
-
-            SetLevelTimeText(Context.TotalTime);
-            SetupStars(Context.TotalStars);
+            
+            AnimateTime(Context.TotalTime);
+            AnimateStarsSequence(Context.TotalStars)
+                .OnComplete(() => StartStarsFloating(Context.TotalStars))
+                .KillWith(this);
             AcquireEarnedStars(Context.EarnedStars);
+            TryPlayFireworksParticles(Context.TotalStars);
             
             View.BackgronudButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
             View.GoToLevelsChooseScreenButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
         }
-
-        private void SetLevelTimeText(float time)
+    
+        private void AnimateTime(float finalTime)
         {
             //TODO LOCALIZATION
-            View.TimeText.text = $"Time: {time}";
+            View.TimeText.text = "Time: 0.00";
+            float displayTime = 0;
+            
+            var seq = DOTween.Sequence();
+            
+            seq.Append(DOTween.To(() => displayTime, x => displayTime = x, finalTime, 1.5f)
+                .OnUpdate(() => View.TimeText.text = $"Time: {displayTime:F2}")
+                .SetEase(Ease.OutQuad)).KillWith(this);
+            
+            seq.Append(View.TimeText.transform.DOPunchScale(Vector3.one * 0.1f, 0.3f));
         }
-
-        private void SetupStars(int totalStarsForLevel)
+        
+        private Sequence AnimateStarsSequence(int totalStarsForLevel)
         {
-            foreach (var star in View.Stars)
+            foreach (var s in View.Stars) 
+                s.transform.localScale = Vector3.zero;
+
+            var seq = DOTween.Sequence().KillWith(this);
+
+            // --- ПЕРВАЯ ЗВЕЗДА (Слева, индекс 0) ---
+            if (View.Stars.Length > 0)
             {
-                star.TrySetActive(false);
+                var star = View.Stars[0];
+                var isStarEarned = totalStarsForLevel >= 1;
+                star.material = isStarEarned ? View.DefaultStareMaterial : View.GrayScaleStarMaterial;
+
+                if (isStarEarned)
+                {
+                    seq.Append(star.transform.DOScale(1f, 0.5f)
+                        .SetEase(Ease.OutBack));
+                }
+                else
+                {
+                    seq.Append(star.transform.DOScale(0.8f, 0.3f).SetEase(Ease.OutQuad));
+                }
             }
 
+            // --- ВТОРАЯ ЗВЕЗДА (Справа, индекс 2) ---
+            if (View.Stars.Length > 2)
+            {
+                var star = View.Stars[2];
+                var isStarEarned = totalStarsForLevel >= 3;
+                star.material = isStarEarned ? View.DefaultStareMaterial : View.GrayScaleStarMaterial;
+        
+                if (isStarEarned)
+                {
+                    seq.Append(star.transform.DOScale(1f, 0.5f)
+                        .SetEase(Ease.OutBack, 3.0f)); 
+                }
+                else
+                {
+                    seq.Append(star.transform.DOScale(0.8f, 0.3f).SetEase(Ease.OutQuad));
+                }
+            }
+
+            // --- ТРЕТЬЯ ЗВЕЗДА (Центр, индекс 1) ---
+            if (View.Stars.Length > 1)
+            {
+                var star = View.Stars[1];
+                var isStarEarned = totalStarsForLevel >= 2;
+                star.material = isStarEarned ? View.DefaultStareMaterial : View.GrayScaleStarMaterial;
+        
+                if (isStarEarned)
+                {
+                    seq.Append(star.transform.DOScale(1.3f, 0.6f)
+                        .SetEase(Ease.OutBack, 5.0f));
+                    seq.Join(star.transform.DOPunchRotation(new Vector3(0, 0, 15), 0.6f, 10, 1));
+                }
+                else
+                {
+                    seq.Append(star.transform.DOScale(0.8f, 0.3f).SetEase(Ease.OutQuad));
+                }
+            }
+
+            return seq;
+        }
+        
+        private void StartStarsFloating(int totalStarsForLevel)
+        {
             for (var i = 0; i < View.Stars.Length; i++)
             {
-                if (i >= totalStarsForLevel)
-                    View.Stars[i].material = View.GrayScaleMaterial;
+                var earned = i switch
+                {
+                    0 => totalStarsForLevel >= 1,
+                    1 => totalStarsForLevel >= 2,
+                    2 => totalStarsForLevel >= 3,
+                    _ => false
+                };
                 
-                View.Stars[i].TrySetActive(true);
+                if (earned) 
+                    StartFloating(View.Stars[i].transform, i);
             }
+        }
+        
+        private void StartFloating(Transform starTrm, int index)
+        {
+            // Небольшой разброс по времени и высоте, чтобы звезды летали вразнобой
+            float duration = 1.5f + (index * 0.2f);
+            float strength = 15f + (index * 5f); // Амплитуда движения вверх-вниз
+
+            starTrm.DOLocalMoveY(starTrm.localPosition.y + strength, duration)
+                .SetEase(Ease.InOutSine) // Плавный вход и выход
+                .SetLoops(-1, LoopType.Yoyo); // -1 значит бесконечно, Yoyo - туда-обратно
+
+            // Дополнительно можно добавить легкое покачивание
+            starTrm.DORotate(new Vector3(0, 0, 5f), duration * 1.2f)
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo);
         }
 
         private void AcquireEarnedStars(int earnedStarsForLevel)
         {
             _playerCurrencyService.AddStars(earnedStarsForLevel);
             View.StarsDisplayWidget.AddCurrency(earnedStarsForLevel);
-        }
-
-        private IEnumerator PlayParticles(int[] shuffledPositions)
-        {
-            foreach (var fireworkPosition in shuffledPositions)
-            {
-                yield return new WaitForSeconds(0.1f);
-                View.FireworksParticles[fireworkPosition].Play();
-            }
-            
-            yield return new WaitForSeconds(Random.Range(0.3f, 1f));
-            PlayFireworksParticles();
-        }
-
-        private void TryStartNextLevel()
-        {
-            //TODO NEXT LEVEL LOGIC HERE
         }
 
         private void GoToLevelsMenuScreen()
@@ -97,15 +174,37 @@ namespace Popup.CompleteLevelInfoPopup
                 StopCoroutine(_particlesCoroutine);
         }
         
-        private void PlayFireworksParticles()
+        private void TryPlayFireworksParticles(int totalStars)
         {
+            if (totalStars < 2) 
+                return;
+            
+            var countToPlay = View.FireworksParticles.Length;
+
+            if (totalStars == 2)
+            {
+                countToPlay = Mathf.CeilToInt(View.FireworksParticles.Length / 3f);
+            }
+            
             var fireworksParticlesArray = new int[View.FireworksParticles.Length];
             for (var i = 0; i < View.FireworksParticles.Length; i++)
             {
                 fireworksParticlesArray[i] = i;
             }
+            
+            _particlesCoroutine = StartCoroutine(PlayParticles(CollectionExtensions.ShuffleCopy(fireworksParticlesArray), countToPlay, totalStars));
+        }
 
-            _particlesCoroutine = StartCoroutine(PlayParticles(CollectionExtensions.ShuffleCopy(fireworksParticlesArray)));
+        private IEnumerator PlayParticles(int[] shuffledPositions, int countToPlay, int totalStars)
+        {
+            for (var i = 0; i < countToPlay; i++)
+            {
+                yield return new WaitForSeconds(0.1f);
+                var index = shuffledPositions[i];
+                View.FireworksParticles[index].Play();
+            }
+            yield return new WaitForSeconds(Random.Range(1.3f, 3f));
+            TryPlayFireworksParticles(totalStars);
         }
     }
 }

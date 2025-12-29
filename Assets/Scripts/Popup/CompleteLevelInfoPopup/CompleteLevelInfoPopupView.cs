@@ -12,7 +12,8 @@ namespace Popup.CompleteLevelInfoPopup
         public Button GoToLevelsChooseScreenButton;
         public Button BackgronudButton;
         public Image[] Stars;
-        public Material GrayScaleMaterial;
+        public Material GrayScaleStarMaterial;
+        public Material DefaultStareMaterial;
         public ParticleSystem[] FireworksParticles;
         public TMP_Text TimeText;
         public CurrencyDisplayWidget StarsDisplayWidget;
