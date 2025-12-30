@@ -24,7 +24,7 @@ namespace Screen
         [Inject] private UIManager _uiManager;
         [Inject] private PlayerCurrencyService _playerCurrencyService;
         
-        [SerializeField] private LevelEnterWidgetHandler levelEnterWidgetPrefab;
+        [SerializeField] private LevelItemWidget _levelItemWidgetPrefab;
         [SerializeField] private RectTransform _levelEnterPopupsParentTransform;
         [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroupPrefab;
         [SerializeField] private Button _goToChoosePackScreenButton;
@@ -56,8 +56,10 @@ namespace Screen
                     _horizontalGroup = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
 
                 var levelParamsData = _figuresStorageData.GetLevelParamsData(_playerLevelService.CurrentPackNumber, levelParams.LevelNumber);
-                var enterButton = Instantiate(levelEnterWidgetPrefab, _horizontalGroup.transform);
-                enterButton.Initialize(levelParamsData.LevelName, levelParamsData.LevelImage, levelParamsData.LevelDifficulty, _playerLevelService.IsLevelAvailable(_playerLevelService.CurrentPackNumber, levelParams.LevelNumber),
+                var enterButton = Instantiate(_levelItemWidgetPrefab, _horizontalGroup.transform);
+                
+                var earnedStarsForLevel = _playerLevelService.GetEarnedStarsForLevel(_playerLevelService.CurrentPackNumber, levelParams.LevelNumber) ?? 0;
+                enterButton.Initialize(levelParamsData.LevelName, levelParamsData.LevelImage, earnedStarsForLevel, levelParamsData.LevelDifficulty, _playerLevelService.IsLevelAvailable(_playerLevelService.CurrentPackNumber, levelParams.LevelNumber),
                     () => StartLevel(levelParams));
                 index++;
             });

@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 980463320655953494}
   - component: {fileID: 401770376168379129}
   m_Layer: 5
-  m_Name: LevelItemWidget
+  m_Name: LevelItemWidgetPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -186,6 +186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _lockImage: {fileID: 1803877356123055892}
   _levelText: {fileID: 1803877355841150641}
+  _levelDifficultyText: {fileID: 6733217696166253614}
   _fadeImage: {fileID: 488405301101980088}
   _levelImage: {fileID: 8324443963710728762}
   _levelEnterButton: {fileID: 1803877355706238532}
@@ -193,6 +194,10 @@ MonoBehaviour:
   - {fileID: 4620876636875049140}
   - {fileID: 444553577860970504}
   - {fileID: 3142337938822068957}
+  _grayScaleStarMaterial: {fileID: 2100000, guid: 610ecc4d165e343e2a016b00f91bffa3,
+    type: 2}
+  _defaultStareMaterial: {fileID: 2100000, guid: 2d0140163a5f5478fa0f687eaea10630,
+    type: 2}
 --- !u!114 &401770376168379129
 MonoBehaviour:
   m_ObjectHideFlags: 0

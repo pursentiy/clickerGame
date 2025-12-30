@@ -59,7 +59,7 @@ namespace Installers
             
             Container.Bind<PopupHandler>().FromInstance(_popupHandler);
             Container.Bind<ScreenHandler>().FromInstance(_screenHandler);
-            Container.Bind<LevelSessionHandler>().FromInstance(_levelSessionHandler);
+            Container.BindInterfacesAndSelfTo<LevelSessionHandler>().FromInstance(_levelSessionHandler);
             Container.Bind<LevelParamsHandler>().FromInstance(_levelParamsHandler);
             Container.Bind<UIBlockHandler>().FromInstance(_uiBlockHandler);
             Container.Bind<ObjectsPoolHandler>().FromInstance(_objectsPoolHandler);

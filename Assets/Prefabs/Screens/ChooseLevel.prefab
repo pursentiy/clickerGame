@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9a0711ed4c44238ba3a0b0dc63e1bf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelEnterWidgetPrefab: {fileID: 980463320655953494, guid: 471bb6fd7fdd82b40bbd80909ad66053,
+  _levelItemWidgetPrefab: {fileID: 980463320655953494, guid: 471bb6fd7fdd82b40bbd80909ad66053,
     type: 3}
   _levelEnterPopupsParentTransform: {fileID: 6808412473636373514}
   _horizontalLayoutGroupPrefab: {fileID: 8399391387326885449, guid: 038723734860dbc4aa9918f525815788,
@@ -826,8 +826,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: Animals Pack
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: cb9c16d4545f7774d90d3c21b9c5616e, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 0323e39103bbfb04190c58e59b7ace64, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5dfc3c7ef344b4ebb9c131ceee404273, type: 2}
+  m_sharedMaterial: {fileID: 3889692229710148776, guid: 5dfc3c7ef344b4ebb9c131ceee404273,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -857,7 +858,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 16
+  m_fontStyle: 17
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535

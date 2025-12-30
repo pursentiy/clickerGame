@@ -23,6 +23,7 @@ namespace Popup.CompleteLevelInfoPopup
         private Camera _textureCamera;
         private RenderTexture _renderTexture;
         private Coroutine _particlesCoroutine;
+        private bool _currencyAcquired;
 
         public override IUIPopupAnimation Animation => new ScalePopupAnimation(View.MainTransform);
 
@@ -34,13 +35,19 @@ namespace Popup.CompleteLevelInfoPopup
             
             AnimateTime(Context.TotalTime);
             AnimateStarsSequence(Context.TotalStars)
-                .OnComplete(() => StartStarsFloating(Context.TotalStars))
+                .OnComplete(OnStarsAnimated)
                 .KillWith(this);
-            AcquireEarnedStars(Context.EarnedStars);
+            
             TryPlayFireworksParticles(Context.TotalStars);
             
             View.BackgronudButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
             View.GoToLevelsChooseScreenButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
+        }
+
+        private void OnStarsAnimated()
+        {
+            StartStarsFloating(Context.TotalStars);
+            TryAcquireEarnedStars(Context.EarnedStars);
         }
     
         private void AnimateTime(float finalTime)
@@ -156,10 +163,15 @@ namespace Popup.CompleteLevelInfoPopup
                 .SetLoops(-1, LoopType.Yoyo);
         }
 
-        private void AcquireEarnedStars(int earnedStarsForLevel)
+        private void TryAcquireEarnedStars(int earnedStarsForLevel, bool fast = false)
         {
+            if (_currencyAcquired)
+                return;
+            
             _playerCurrencyService.AddStars(earnedStarsForLevel);
-            View.StarsDisplayWidget.AddCurrency(earnedStarsForLevel);
+            
+            if (!fast)
+                View.StarsDisplayWidget.AddCurrency(earnedStarsForLevel);
         }
 
         private void GoToLevelsMenuScreen()
@@ -170,6 +182,8 @@ namespace Popup.CompleteLevelInfoPopup
         
         private void OnDestroy()
         {
+            TryAcquireEarnedStars(Context.EarnedStars, true);
+            
             if (_particlesCoroutine != null)
                 StopCoroutine(_particlesCoroutine);
         }

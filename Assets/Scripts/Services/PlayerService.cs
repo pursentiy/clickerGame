@@ -11,7 +11,7 @@ namespace Services
 
         public void Initialize(ProfileSnapshot profileSnapshot)
         {
-            if (ProfileSnapshot == null)
+            if (profileSnapshot == null)
             {
                 LoggerService.LogError($"{nameof(PlayerService)}.{nameof(Initialize)}: ProfileSnapshot is null");
             }

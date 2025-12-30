@@ -2,6 +2,7 @@
 using System.Collections;
 using Components.Levels;
 using DG.Tweening;
+using Extensions;
 using Installers;
 using Plugins.FSignal;
 using RSG;
@@ -20,6 +21,7 @@ namespace Handlers
         [Inject] private PlayerLevelService _playerLevelService;
         [Inject] private LevelSessionHandler _levelSessionHandler;
         [Inject] private LevelParamsHandler _levelParamsHandler;
+        [Inject] private IDisposableHandlers[] _disposableHandlers;
 
         [SerializeField] private RectTransform _screenCanvasTransform;
         [SerializeField] private ChooseLevelScreenBase _chooseLevelScreenBase;
@@ -40,7 +42,7 @@ namespace Handlers
             awaitPromise.Then(() =>
             {
                 levelResetSignal?.Dispatch();
-                PopupAllScreenHandlers();
+                PopupCurrentScreenAndDisposeHandlers();
                 _currentScreenBase = Instantiate(_chooseLevelScreenBase, _screenCanvasTransform);
             });
         }
@@ -51,7 +53,7 @@ namespace Handlers
 
             awaitPromise.Then(() =>
             {
-                PopupAllScreenHandlers();
+                PopupCurrentScreenAndDisposeHandlers();
                 _currentScreenBase = Instantiate(_choosePackScreenBase, _screenCanvasTransform);
             });
         }
@@ -62,12 +64,18 @@ namespace Handlers
             
             awaitPromise.Then(() =>
             {
-                PopupAllScreenHandlers();
+                PopupCurrentScreenAndDisposeHandlers();
                 _currentScreenBase = Instantiate(_welcomeScreenBase, _screenCanvasTransform);
             });
         }
 
-        public void PopupAllScreenHandlers()
+        private void PopupCurrentScreenAndDisposeHandlers()
+        {
+            PopupAllScreenHandlers();
+            DisposeAllHandlers();
+        }
+
+        private void PopupAllScreenHandlers()
         {
             if (_currentScreenBase == null)
             {
@@ -76,6 +84,17 @@ namespace Handlers
             
             Destroy(_currentScreenBase.gameObject);
             _currentScreenBase = null;
+        }
+
+        private void DisposeAllHandlers()
+        {
+            if (_disposableHandlers.IsNullOrEmpty())
+                return;
+
+            foreach (var disposableHandler in _disposableHandlers)
+            {
+                disposableHandler.Dispose();
+            }
         }
 
         //TODO ADD REPLAY LEVEL LOGIC
@@ -88,7 +107,7 @@ namespace Handlers
         //         _playerProgressService.ResetLevelProgress(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber);
         //         var levelParams = _playerProgressService.GetLevelByNumber(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber);
         //         _playerProgressService.CurrentLevelNumber = levelNumber;
-        //         PopupAllScreenHandlers();
+        //         PopupCurrentScreenAndDisposeHandlers();
         //         _levelSessionHandler.StartLevel(levelParams, _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
         //     });
         //}
@@ -100,7 +119,7 @@ namespace Handlers
             awaitPromise.Then(() =>
             {
                 _playerLevelService.CurrentLevelNumber = levelNumber;
-                PopupAllScreenHandlers();
+                PopupCurrentScreenAndDisposeHandlers();
                 _levelSessionHandler.StartLevel(levelParams.ToSnapshot(), _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
             });
         }

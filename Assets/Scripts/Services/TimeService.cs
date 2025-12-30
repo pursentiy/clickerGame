@@ -31,7 +31,7 @@ namespace Services
             if (_activeTimers.ContainsKey(id))
             {
                 LoggerService.LogWarning($"Timer '{id}' exists. Overwriting.");
-                _activeTimers[id].Dispose();
+                StopTimer(id);
             }
 
             Timer newTimer = new Timer(id, duration, isStopwatch, onComplete, onUpdate);
@@ -46,10 +46,23 @@ namespace Services
             return _activeTimers.GetValueOrDefault(id);
         }
 
-        public void DeregisterTimer(string id)
+        public void StopTimer(string id)
         {
-            if (_activeTimers.ContainsKey(id)) 
+            if (!_activeTimers.TryGetValue(id, out var timer)) 
+                return;
+
+            if (timer == null)
+            {
+                LoggerService.LogWarning($"Timer '{id}' does not exist.");
                 _activeTimers.Remove(id);
+                return;
+            }
+            
+            if (timer.Coroutine != null)
+                _coroutineService.StopCoroutine(timer.Coroutine);
+                
+            timer.Dispose();
+            _activeTimers.Remove(id);
         }
 
         private IEnumerator RunTimerRoutine(Timer timer)
@@ -86,7 +99,7 @@ namespace Services
                 if (!timer.IsDisposed)
                 {
                     _coroutineService.StopCoroutine(timer.Coroutine);
-                    DeregisterTimer(timer.Id);
+                    StopTimer(timer.Id);
                     timer.Complete();
                 }
             }
@@ -132,7 +145,9 @@ namespace Services
         {
             if (IsDisposed) 
                 return;
-            
+
+            Reset();
+            Duration = 0;
             IsDisposed = true;
             OnComplete = null;
             OnUpdate = null;

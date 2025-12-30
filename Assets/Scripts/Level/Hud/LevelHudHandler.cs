@@ -12,7 +12,6 @@ using Popup.Settings;
 using RSG;
 using Services;
 using Storage;
-using Storage.Levels.Params;
 using Storage.Snapshots.LevelParams;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -22,7 +21,7 @@ using Zenject;
 
 namespace Level.Hud
 {
-    public class LevelHudHandler : InjectableMonoBehaviour
+    public class LevelHudHandler : InjectableMonoBehaviour, IDisposableHandlers
     {
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private ScreenHandler _screenHandler;
@@ -69,16 +68,8 @@ namespace Level.Hud
         {
             _figureAnimalsMenuList = new List<FigureMenu>();
             
-            _backButton.onClick.AddListener(()=>
-            {
-                _soundHandler.PlayButtonSound();
-                GoToMainMenuScreen();
-            });
-            _settingsButton.onClick.AddListener(()=>
-            {
-                _soundHandler.PlayButtonSound();
-                _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null);
-            });
+            _backButton.onClick.MapListenerWithSound(GoToMainMenuScreen).DisposeWith(this);
+            _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null)).DisposeWith(this);
 
             _figuresGroupSpacing = _figuresGroup.spacing;
         }
@@ -120,9 +111,9 @@ namespace Level.Hud
 
         private void SetupDraggingSignalsHandlers(FigureMenu figure)
         {
-            figure.OnBeginDragSignal.AddListener(OnBeginDragSignalHandler);
-            figure.OnDraggingSignal.AddListener(OnDraggingSignalHandler);
-            figure.OnEndDragSignal.AddListener(OnEndDragSignalHandler);
+            figure.OnBeginDragSignal.MapListener(OnBeginDragSignalHandler).DisposeWith(this);
+            figure.OnDraggingSignal.MapListener(OnDraggingSignalHandler).DisposeWith(this);
+            figure.OnEndDragSignal.MapListener(OnEndDragSignalHandler).DisposeWith(this);
         }
 
         private void OnBeginDragSignalHandler(PointerEventData eventData)
@@ -226,22 +217,9 @@ namespace Level.Hud
             figure.FigureTransform.SetParent(figure.ContainerTransform);
         }
 
-        private void OnDestroy()
+        public void Dispose()
         {
-            _backButton.onClick.RemoveAllListeners();
-            _settingsButton.onClick.RemoveAllListeners();
-
-            UnsubscribeFromDraggingSignals();
-        }
-
-        private void UnsubscribeFromDraggingSignals()
-        {
-            _figureAnimalsMenuList.ForEach(figure =>
-            {
-                figure.OnBeginDragSignal.RemoveListener(OnBeginDragSignalHandler);
-                figure.OnDraggingSignal.RemoveListener(OnDraggingSignalHandler);
-                figure.OnEndDragSignal.RemoveListener(OnEndDragSignalHandler);
-            });
+            _levelInfoTrackerService.CurrentLevelPlayingTimeChangedSignal.RemoveListener(OnTimerChanged);
         }
     }
 }

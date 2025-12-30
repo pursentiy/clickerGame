@@ -26,7 +26,7 @@ namespace Level.Widgets
 
         public void StopLevelTracking()
         {
-            _timeService.DeregisterTimer(_levelId);
+            _timeService.StopTimer(_levelId);
         }
 
         public void ClearData()

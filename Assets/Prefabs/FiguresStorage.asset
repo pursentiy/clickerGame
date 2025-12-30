@@ -19,7 +19,7 @@ MonoBehaviour:
     LevelsParams:
     - LevelNumber: 1
       LevelName: Deer
-      LevelDifficulty: 1
+      LevelDifficulty: 2
       levelVisualHandler: {fileID: 4779986294314402710, guid: 302aabbee082d1b4ea6391ba0a09f95b,
         type: 3}
       LevelImage: {fileID: 21300000, guid: ab0ef69e772f8db4aad9763700885590, type: 3}
@@ -46,7 +46,7 @@ MonoBehaviour:
           type: 3}
     - LevelNumber: 2
       LevelName: Duck
-      LevelDifficulty: 1
+      LevelDifficulty: 3
       levelVisualHandler: {fileID: 6397365690171426833, guid: 41b0d5401817f704e9637865397c2487,
         type: 3}
       LevelImage: {fileID: 21300000, guid: ad5708f27a5c9ad41a72fc53ba33df89, type: 3}

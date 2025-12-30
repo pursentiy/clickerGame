@@ -22,7 +22,7 @@ using Zenject;
 
 namespace Components.Levels
 {
-    public class LevelSessionHandler : InjectableMonoBehaviour
+    public class LevelSessionHandler : InjectableMonoBehaviour, IDisposableHandlers
     {
         [Inject] private PlayerLevelService _playerLevelService;
         [Inject] private PlayerService _playerService;
@@ -122,8 +122,6 @@ namespace Components.Levels
         {
             _levelHudHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelHudHandler>(levelHudHandler, _gameMainCanvasTransform);
             _levelHudHandler.SetupScrollMenu(packParam.LevelFiguresParamsList);
-            
-            _levelHudHandler.BackToMenuClickSignal.MapListener(GoToLevelsMenu).DisposeWith(this);
             _levelHudHandler.Initialize(packParam.LevelBeatingTimeInfo);
             
             _levelHudHandler.GetOnBeginDragFiguresSignal().ForEach(signal => signal.MapListener(StartElementDragging).DisposeWith(this));
@@ -309,6 +307,21 @@ namespace Components.Levels
         {
             if (_finishCoroutine != null)
                 StopCoroutine(_finishCoroutine);
+        }
+
+        public void Dispose()
+        {
+            if (_levelVisualHandler != null)
+            {
+                _levelVisualHandler.Dispose();
+                Destroy(_levelVisualHandler.gameObject);
+            }
+
+            if (_levelHudHandler != null)
+            {
+                _levelHudHandler.Dispose();
+                Destroy(_levelHudHandler.gameObject);
+            }
         }
     }
 }

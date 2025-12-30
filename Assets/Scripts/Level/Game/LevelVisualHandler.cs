@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Animations;
 using Components.Levels.Figures;
+using Handlers;
 using Installers;
 using Services;
 using Storage;
@@ -10,7 +11,7 @@ using Zenject;
 
 namespace Level.Game
 {
-    public class LevelVisualHandler : InjectableMonoBehaviour
+    public class LevelVisualHandler : InjectableMonoBehaviour, IDisposableHandlers
     {
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private PlayerLevelService _playerLevelService;
@@ -57,6 +58,11 @@ namespace Level.Game
             {
                 Destroy(figure.gameObject);
             });
+        }
+
+        public void Dispose()
+        {
+            
         }
     }
 }
