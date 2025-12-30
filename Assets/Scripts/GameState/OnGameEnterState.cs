@@ -43,6 +43,7 @@ namespace GameState
         private void StartNewProfileSession()
         {
             var playerSnapshot = _profileBuilderService.BuildNewProfileSnapshot();
+            _playerService.Initialize(playerSnapshot);
             _playerRepositoryService.SavePlayerSnapshot(playerSnapshot);
                 
             _playerLevelService.InitializeHandler(_levelsParamsStorage.DefaultPacksParamsList);

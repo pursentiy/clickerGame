@@ -19,6 +19,8 @@ namespace Popup.CompleteLevelInfoPopup
         [Inject] private PlayerLevelService _playerLevelService;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private PlayerCurrencyService _playerCurrencyService;
+        [Inject] private PlayerRepositoryService _playerRepositoryService;
+        [Inject] private PlayerService _playerService;
 
         private Camera _textureCamera;
         private RenderTexture _renderTexture;
@@ -165,10 +167,11 @@ namespace Popup.CompleteLevelInfoPopup
 
         private void TryAcquireEarnedStars(int earnedStarsForLevel, bool fast = false)
         {
-            if (_currencyAcquired)
+            if (_currencyAcquired || earnedStarsForLevel <= 0)
                 return;
             
             _playerCurrencyService.AddStars(earnedStarsForLevel);
+            _playerRepositoryService.SavePlayerSnapshot(_playerService.ProfileSnapshot);
             
             if (!fast)
                 View.StarsDisplayWidget.AddCurrency(earnedStarsForLevel);

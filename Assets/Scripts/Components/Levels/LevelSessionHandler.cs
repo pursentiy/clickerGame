@@ -92,7 +92,6 @@ namespace Components.Levels
             var earnedStars = _levelHelperService.EvaluateEarnedStars(_currentLevelParams, levelPlayedTime);
             var starsForAccrual = _levelHelperService.EvaluateStarsForAccrual(earnedStars, maybeOldEarnedStars);
             _playerService.SetLevelCompleted(_playerLevelService.CurrentPackNumber, _playerLevelService.CurrentLevelNumber, levelPlayedTime, earnedStars);
-            _playerRepositoryService.SavePlayerSnapshot(_playerService.ProfileSnapshot);
             
             _levelHudHandler.SetInteractivity(false);
             _playerLevelService.TrySetOrUpdateLevelCompletion(_playerLevelService.CurrentPackNumber, _playerLevelService.CurrentLevelNumber, earnedStars, levelPlayedTime);
