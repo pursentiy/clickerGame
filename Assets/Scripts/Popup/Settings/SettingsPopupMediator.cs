@@ -14,7 +14,7 @@ namespace Popup.Settings
     public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
     {
         [Inject] private SoundHandler _soundHandler;
-        [Inject] private PlayerLevelService _playerLevelService;
+        [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private CheatService _cheatService;
         [Inject] private GlobalSettingsService _globalSettingsService;
         

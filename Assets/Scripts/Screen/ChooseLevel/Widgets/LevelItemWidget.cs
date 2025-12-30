@@ -9,7 +9,7 @@ using UnityEngine.UI;
 using Utilities.Disposable;
 using Zenject;
 
-namespace Screen.SubElements
+namespace Screen.ChooseLevel.Widgets
 {
     public class LevelItemWidget : InjectableMonoBehaviour
     {

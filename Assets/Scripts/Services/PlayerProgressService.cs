@@ -9,10 +9,11 @@ using Zenject;
 
 namespace Services
 {
-    public class PlayerLevelService
+    public class PlayerProgressService
     {
         [Inject] private LevelsParamsStorage _levelsParamsStorage;
         [Inject] private PlayerService _playerService;
+        [Inject] private PlayerCurrencyService _playerCurrencyService;
         
         private List<PackParams> _packParamsList;
 
@@ -32,11 +33,29 @@ namespace Services
 
         public bool IsPackAvailable(int packNumber)
         {
-            if (_packParamsList.IsNullOrEmpty())
+            var starsToUnlock = GetPackStarsToUnlock(packNumber);
+            if (starsToUnlock < 0)
                 return false;
 
+            return _playerCurrencyService.Stars >= starsToUnlock;
+        }
+
+        public int GetPackStarsToUnlock(int packNumber)
+        {
+            if (_packParamsList.IsNullOrEmpty())
+            {
+                LoggerService.LogWarning($"Levels Params is null in {this}");
+                return -1;
+            }
+
             var pack = _packParamsList.FirstOrDefault(i => i.PackNumber == packNumber);
-            return pack != null;
+            if (pack == null)
+            {
+                LoggerService.LogWarning($"Pack Params is null in {this} for PackNumber {packNumber}");
+                return -1;
+            }
+            
+            return pack.StarsToUnlock;
         }
 
         public bool IsLevelAvailable(int packNumber, int levelNumber)

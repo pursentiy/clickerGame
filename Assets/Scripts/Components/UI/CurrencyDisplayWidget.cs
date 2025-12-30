@@ -41,7 +41,9 @@ namespace Components.UI
 
         public void SetCurrency(int newValue)
         {
+            _currentDisplayValue = newValue;
             _targetValue = newValue;
+            
             UpdateText(_targetValue);
         }
 

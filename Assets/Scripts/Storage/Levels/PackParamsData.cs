@@ -9,7 +9,7 @@ namespace Storage.Levels
     {
         public int PackNumber;
         public string PackName;
-        public Sprite PackImage;
+        public GameObject PackImagePrefab;
         public List<LevelParamsData> LevelsParams;
     }
 }

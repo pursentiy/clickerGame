@@ -5,9 +5,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-namespace Screen
+namespace Screen.WelcomeScreen
 {
-    public class WelcomeScreenBase : ScreenBase
+    public class WelcomeScreen : ScreenBase
     {
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private PopupHandler _popupHandler;

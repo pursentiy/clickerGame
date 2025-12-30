@@ -3,7 +3,7 @@ using Extensions;
 using Handlers;
 using Handlers.UISystem;
 using Popup.Settings;
-using Screen.SubElements;
+using Screen.ChooseLevel.Widgets;
 using Services;
 using Storage;
 using Storage.Levels.Params;
@@ -12,13 +12,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-namespace Screen
+namespace Screen.ChooseLevel
 {
-    public class ChooseLevelScreenBase : ScreenBase
+    public class ChooseLevelScreen : ScreenBase
     {
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private PopupHandler _popupHandler;
-        [Inject] private PlayerLevelService _playerLevelService;
+        [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private UIManager _uiManager;
@@ -40,7 +40,7 @@ namespace Screen
 
             _starsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
             
-            _packName.text = _figuresStorageData.GetPackParamsData(_playerLevelService.CurrentPackNumber).PackName + " Pack";
+            _packName.text = _figuresStorageData.GetPackParamsData(_playerProgressService.CurrentPackNumber).PackName + " Pack";
             
             _goToChoosePackScreenButton.onClick.MapListenerWithSound(()=> _screenHandler.ShowChoosePackScreen());
             _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null));
@@ -48,18 +48,18 @@ namespace Screen
 
         private void InitializeLevelsButton()
         {
-            var levelsParams = _playerLevelService.GetLevelsByPack(_playerLevelService.CurrentPackNumber);
+            var levelsParams = _playerProgressService.GetLevelsByPack(_playerProgressService.CurrentPackNumber);
             var index = 0;
             levelsParams.ForEach(levelParams =>
             {
                 if(_horizontalGroup == null || index % 2 == 0)
                     _horizontalGroup = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
 
-                var levelParamsData = _figuresStorageData.GetLevelParamsData(_playerLevelService.CurrentPackNumber, levelParams.LevelNumber);
+                var levelParamsData = _figuresStorageData.GetLevelParamsData(_playerProgressService.CurrentPackNumber, levelParams.LevelNumber);
                 var enterButton = Instantiate(_levelItemWidgetPrefab, _horizontalGroup.transform);
                 
-                var earnedStarsForLevel = _playerLevelService.GetEarnedStarsForLevel(_playerLevelService.CurrentPackNumber, levelParams.LevelNumber) ?? 0;
-                enterButton.Initialize(levelParamsData.LevelName, levelParamsData.LevelImage, earnedStarsForLevel, levelParamsData.LevelDifficulty, _playerLevelService.IsLevelAvailable(_playerLevelService.CurrentPackNumber, levelParams.LevelNumber),
+                var earnedStarsForLevel = _playerProgressService.GetEarnedStarsForLevel(_playerProgressService.CurrentPackNumber, levelParams.LevelNumber) ?? 0;
+                enterButton.Initialize(levelParamsData.LevelName, levelParamsData.LevelImage, earnedStarsForLevel, levelParamsData.LevelDifficulty, _playerProgressService.IsLevelAvailable(_playerProgressService.CurrentPackNumber, levelParams.LevelNumber),
                     () => StartLevel(levelParams));
                 index++;
             });

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Components.Levels;
-using DG.Tweening;
 using Extensions;
 using Installers;
 using Plugins.FSignal;
 using RSG;
-using Screen;
+using Screen.ChooseLevel;
+using Screen.ChoosePack;
+using Screen.WelcomeScreen;
 using Services;
 using Storage.Extensions;
 using Storage.Levels.Params;
@@ -18,15 +18,15 @@ namespace Handlers
     public class ScreenHandler : InjectableMonoBehaviour
     {
         [Inject] private UIBlockHandler _uiBlockHandler;
-        [Inject] private PlayerLevelService _playerLevelService;
+        [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private LevelSessionHandler _levelSessionHandler;
         [Inject] private LevelParamsHandler _levelParamsHandler;
         [Inject] private IDisposableHandlers[] _disposableHandlers;
 
         [SerializeField] private RectTransform _screenCanvasTransform;
-        [SerializeField] private ChooseLevelScreenBase _chooseLevelScreenBase;
-        [SerializeField] private WelcomeScreenBase _welcomeScreenBase;
-        [SerializeField] private ChoosePackScreenBase _choosePackScreenBase;
+        [SerializeField] private ChooseLevelScreen _chooseLevelScreen;
+        [SerializeField] private WelcomeScreen _welcomeScreen;
+        [SerializeField] private ChoosePackScreen _choosePackScreen;
         [SerializeField] private ParticleSystem[] _changeScreenParticles;
         [SerializeField] private AnimationCurve _popupAnimationCurve;
         
@@ -43,7 +43,7 @@ namespace Handlers
             {
                 levelResetSignal?.Dispatch();
                 PopupCurrentScreenAndDisposeHandlers();
-                _currentScreenBase = Instantiate(_chooseLevelScreenBase, _screenCanvasTransform);
+                _currentScreenBase = Instantiate(_chooseLevelScreen, _screenCanvasTransform);
             });
         }
         
@@ -54,7 +54,7 @@ namespace Handlers
             awaitPromise.Then(() =>
             {
                 PopupCurrentScreenAndDisposeHandlers();
-                _currentScreenBase = Instantiate(_choosePackScreenBase, _screenCanvasTransform);
+                _currentScreenBase = Instantiate(_choosePackScreen, _screenCanvasTransform);
             });
         }
 
@@ -65,7 +65,7 @@ namespace Handlers
             awaitPromise.Then(() =>
             {
                 PopupCurrentScreenAndDisposeHandlers();
-                _currentScreenBase = Instantiate(_welcomeScreenBase, _screenCanvasTransform);
+                _currentScreenBase = Instantiate(_welcomeScreen, _screenCanvasTransform);
             });
         }
 
@@ -118,7 +118,7 @@ namespace Handlers
 
             awaitPromise.Then(() =>
             {
-                _playerLevelService.CurrentLevelNumber = levelNumber;
+                _playerProgressService.CurrentLevelNumber = levelNumber;
                 PopupCurrentScreenAndDisposeHandlers();
                 _levelSessionHandler.StartLevel(levelParams.ToSnapshot(), _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
             });

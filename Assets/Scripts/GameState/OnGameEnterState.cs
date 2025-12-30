@@ -13,7 +13,7 @@ namespace GameState
     {
         [Inject] private LevelsParamsStorage _levelsParamsStorage;
         [Inject] private ScreenHandler _screenHandler;
-        [Inject] private PlayerLevelService _playerLevelService;
+        [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private ProfileBuilderService _profileBuilderService;
         [Inject] private PlayerRepositoryService _playerRepositoryService;
@@ -46,13 +46,13 @@ namespace GameState
             _playerService.Initialize(playerSnapshot);
             _playerRepositoryService.SavePlayerSnapshot(playerSnapshot);
                 
-            _playerLevelService.InitializeHandler(_levelsParamsStorage.DefaultPacksParamsList);
+            _playerProgressService.InitializeHandler(_levelsParamsStorage.DefaultPacksParamsList);
         }
 
         private void StartOldProfileSession()
         {
             _playerService.Initialize(_playerRepositoryService.LoadPlayerSnapshot());
-            _playerLevelService.InitializeHandler(_levelsParamsStorage.DefaultPacksParamsList);
+            _playerProgressService.InitializeHandler(_levelsParamsStorage.DefaultPacksParamsList);
         }
 
         private List<PackParams> GetNewPacks(List<PackParams> savedDataProgress)

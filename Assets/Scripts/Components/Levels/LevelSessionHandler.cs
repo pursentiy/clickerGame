@@ -24,7 +24,7 @@ namespace Components.Levels
 {
     public class LevelSessionHandler : InjectableMonoBehaviour, IDisposableHandlers
     {
-        [Inject] private PlayerLevelService _playerLevelService;
+        [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private PlayerService _playerService;
         [Inject] private FiguresStorageData _figuresStorageData;
         [Inject] private ScreenHandler _screenHandler;
@@ -62,7 +62,7 @@ namespace Components.Levels
                 return;
             }
             _currentLevelParams =  levelParamsSnapshot;
-            var levelId = $"{_playerLevelService.CurrentPackNumber}-{_playerLevelService.CurrentLevelNumber}";
+            var levelId = $"{_playerProgressService.CurrentPackNumber}-{_playerProgressService.CurrentLevelNumber}";
             _levelInfoTrackerService.StartLevelTracking(levelId);
             
             SetupClickHandler();
@@ -88,13 +88,13 @@ namespace Components.Levels
             _levelInfoTrackerService.StopLevelTracking();
             _levelInfoTrackerService.ClearData();
 
-            var maybeOldEarnedStars = _playerLevelService.GetEarnedStarsForLevel(_playerLevelService.CurrentPackNumber, _playerLevelService.CurrentLevelNumber);
+            var maybeOldEarnedStars = _playerProgressService.GetEarnedStarsForLevel(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber);
             var earnedStars = _levelHelperService.EvaluateEarnedStars(_currentLevelParams, levelPlayedTime);
             var starsForAccrual = _levelHelperService.EvaluateStarsForAccrual(earnedStars, maybeOldEarnedStars);
-            _playerService.SetLevelCompleted(_playerLevelService.CurrentPackNumber, _playerLevelService.CurrentLevelNumber, levelPlayedTime, earnedStars);
+            _playerService.SetLevelCompleted(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber, levelPlayedTime, earnedStars);
             
             _levelHudHandler.SetInteractivity(false);
-            _playerLevelService.TrySetOrUpdateLevelCompletion(_playerLevelService.CurrentPackNumber, _playerLevelService.CurrentLevelNumber, earnedStars, levelPlayedTime);
+            _playerProgressService.TrySetOrUpdateLevelCompletion(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber, earnedStars, levelPlayedTime);
             _finishCoroutine = StartCoroutine(AwaitFinishLevel(earnedStars, starsForAccrual, levelPlayedTime));
         }
 
@@ -113,7 +113,7 @@ namespace Components.Levels
 
         private void SetupLevelScreenHandler(LevelParamsSnapshot packParam, Color defaultColor)
         {
-            _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(_figuresStorageData.GetLevelVisualHandler(_playerLevelService.CurrentPackNumber, _playerLevelService.CurrentLevelNumber));
+            _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(_figuresStorageData.GetLevelVisualHandler(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber));
             _levelVisualHandler.SetupLevel(packParam.LevelFiguresParamsList, defaultColor);
         }
 

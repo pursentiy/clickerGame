@@ -841,11 +841,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _screenCanvasTransform: {fileID: 810554863}
-  _chooseLevelScreenBase: {fileID: 492916973026144707, guid: 91dba8c1c71211d4cb70bb91d6311c21,
+  _chooseLevelScreen: {fileID: 492916973026144707, guid: 91dba8c1c71211d4cb70bb91d6311c21,
     type: 3}
-  _welcomeScreenBase: {fileID: 1496618069183132052, guid: e0a982ea61aaff3479e996a1e981d2c7,
+  _welcomeScreen: {fileID: 1496618069183132052, guid: e0a982ea61aaff3479e996a1e981d2c7,
     type: 3}
-  _choosePackScreenBase: {fileID: 8154923252068788368, guid: fad908d6d8aff70438f16969ecc7cc58,
+  _choosePackScreen: {fileID: 8154923252068788368, guid: fad908d6d8aff70438f16969ecc7cc58,
     type: 3}
   _changeScreenParticles:
   - {fileID: 1680828883889717364}

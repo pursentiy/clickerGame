@@ -14,52 +14,66 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _defaultPackParamsList:
   - PackNumber: 1
-    PackCompleted: 0
-    PackPlayable: 1
+    StarsToUnlock: 0
     LevelsParams:
     - LevelNumber: 1
-      LevelCompleted: 0
-      LevelPlayable: 1
       LevelBeatingTimeInfo:
         FastestTime: 5
         MediumTime: 8
         MinimumTime: 12
       LevelFiguresParamsList:
       - FigureId: 1
-        Completed: 0
       - FigureId: 2
-        Completed: 0
       - FigureId: 3
-        Completed: 0
       - FigureId: 4
-        Completed: 0
     - LevelNumber: 2
-      LevelCompleted: 0
-      LevelPlayable: 0
       LevelBeatingTimeInfo:
         FastestTime: 15
         MediumTime: 30
         MinimumTime: 45
       LevelFiguresParamsList:
       - FigureId: 1
-        Completed: 0
       - FigureId: 2
-        Completed: 0
       - FigureId: 3
-        Completed: 0
     - LevelNumber: 3
-      LevelCompleted: 0
-      LevelPlayable: 0
       LevelBeatingTimeInfo:
         FastestTime: 10
         MediumTime: 19
         MinimumTime: 25
       LevelFiguresParamsList:
       - FigureId: 1
-        Completed: 0
       - FigureId: 2
-        Completed: 0
       - FigureId: 3
-        Completed: 0
       - FigureId: 4
-        Completed: 0
+  - PackNumber: 2
+    StarsToUnlock: 20
+    LevelsParams:
+    - LevelNumber: 1
+      LevelBeatingTimeInfo:
+        FastestTime: 5
+        MediumTime: 8
+        MinimumTime: 12
+      LevelFiguresParamsList:
+      - FigureId: 1
+      - FigureId: 2
+      - FigureId: 3
+      - FigureId: 4
+    - LevelNumber: 2
+      LevelBeatingTimeInfo:
+        FastestTime: 15
+        MediumTime: 30
+        MinimumTime: 45
+      LevelFiguresParamsList:
+      - FigureId: 1
+      - FigureId: 2
+      - FigureId: 3
+    - LevelNumber: 3
+      LevelBeatingTimeInfo:
+        FastestTime: 10
+        MediumTime: 19
+        MinimumTime: 25
+      LevelFiguresParamsList:
+      - FigureId: 1
+      - FigureId: 2
+      - FigureId: 3
+      - FigureId: 4

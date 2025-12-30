@@ -47,7 +47,7 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<ProfileBuilderService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerRepositoryService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<ProfileSerializerService>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<PlayerLevelService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<PlayerProgressService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerCurrencyService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<LevelHelperService>().AsSingle().NonLazy();
 
