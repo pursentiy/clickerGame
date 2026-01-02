@@ -5,6 +5,7 @@ using Installers;
 using Storage.Levels;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 using Utilities.Disposable;
 using Zenject;
@@ -42,8 +43,11 @@ namespace Screen.ChooseLevel.Widgets
 
         private void SetDifficultyText(LevelDifficulty difficulty)
         {
-            //TODO LOCALIZATION
-            _levelDifficultyText.text = $"Difficulty: {difficulty}";
+            var tableName = "LocalizationTableMain";
+            var label = LocalizationSettings.StringDatabase.GetLocalizedString(tableName, "difficulty_setup");
+            var difficultyKey = $"difficulty_{difficulty.ToString().ToLower()}";
+            var value = LocalizationSettings.StringDatabase.GetLocalizedString(tableName, difficultyKey);
+            _levelDifficultyText.text = $"{label}: {value}";
         }
         
         private void SetupStars(int totalEarnedStars)
