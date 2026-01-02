@@ -4,6 +4,7 @@ using Handlers;
 using Installers;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 using Utilities.Disposable;
 using Zenject;
@@ -26,7 +27,7 @@ namespace Screen.ChoosePack.Widgets
 
         private GameObject _packImageInstance;
         private int _currentPackNumber;
-        
+
         public void Initialize(string packName, GameObject packImagePrefab, int packNumber, bool isUnlocked, Action onClickAction, Action onLockedClickAction, int starsRequired)
         {
             _packText.text = packName;
@@ -34,16 +35,16 @@ namespace Screen.ChoosePack.Widgets
             _currentPackNumber = packNumber;
             _lockImage.gameObject.SetActive(!isUnlocked);
             _fadeImage.gameObject.SetActive(!isUnlocked);
-            
-            //TODO LOCALIZATION
-            _lockedBlockText.text = $"{starsRequired} stars required";
+
+            var tableName = "LocalizationTableMain";
+            var localizedPattern = LocalizationSettings.StringDatabase.GetLocalizedString(tableName, "pack_stars_required");
+            _lockedBlockText.text = string.Format(localizedPattern, starsRequired);
 
             _unlockedBlockHolder.gameObject.SetActive(isUnlocked);
             _lockedBlockHolder.gameObject.SetActive(!isUnlocked);
 
             if (isUnlocked)
             {
-                
                 _packEnterButton.onClick.MapListenerWithSound(onClickAction.SafeInvoke).DisposeWith(this);
             }
             else

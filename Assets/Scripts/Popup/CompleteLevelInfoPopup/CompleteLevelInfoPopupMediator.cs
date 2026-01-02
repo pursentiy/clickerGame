@@ -7,6 +7,7 @@ using Handlers.UISystem;
 using Popup.Common;
 using Services;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 using Utilities.Disposable;
 using Zenject;
 using Random = UnityEngine.Random;
@@ -54,16 +55,19 @@ namespace Popup.CompleteLevelInfoPopup
     
         private void AnimateTime(float finalTime)
         {
-            //TODO LOCALIZATION
-            View.TimeText.text = "Time: 0.00";
+            var tableName = "LocalizationTableMain";
+            var localizedFormat = LocalizationSettings.StringDatabase.GetLocalizedString(tableName, "result_time");
+            View.TimeText.text = string.Format(localizedFormat, 0f);
             float displayTime = 0;
-            
             var seq = DOTween.Sequence();
-            
+    
             seq.Append(DOTween.To(() => displayTime, x => displayTime = x, finalTime, 1.5f)
-                .OnUpdate(() => View.TimeText.text = $"Time: {displayTime:F2}")
+                .OnUpdate(() => 
+                {
+                    View.TimeText.text = string.Format(localizedFormat, displayTime);
+                })
                 .SetEase(Ease.OutQuad)).KillWith(this);
-            
+    
             seq.Append(View.TimeText.transform.DOPunchScale(Vector3.one * 0.1f, 0.3f));
         }
         
