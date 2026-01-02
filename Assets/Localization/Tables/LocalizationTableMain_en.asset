@@ -38,6 +38,30 @@ MonoBehaviour:
     m_Localized: sounds
     m_Metadata:
       m_Items: []
+  - m_Id: 77837471734292480
+    m_Localized: Difficulty
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77837475089735680
+    m_Localized: Easy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77837477602123776
+    m_Localized: Medium
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77838202818256896
+    m_Localized: Hard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77843398436839424
+    m_Localized: 'Time: {0:F2}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77843401150554112
+    m_Localized: '{0} stars required'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

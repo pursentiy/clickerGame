@@ -35,6 +35,30 @@ MonoBehaviour:
     m_Key: setting_sound
     m_Metadata:
       m_Items: []
+  - m_Id: 77837471734292480
+    m_Key: difficulty_setup
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77837475089735680
+    m_Key: difficulty_easy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77837477602123776
+    m_Key: difficulty_medium
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77838202818256896
+    m_Key: difficulty_hard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77843398436839424
+    m_Key: result_time
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77843401150554112
+    m_Key: pack_stars_required
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
