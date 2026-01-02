@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Components.UI;
+using Extensions;
 using Handlers;
 using Screen.ChoosePack.Widgets;
 using Services;
@@ -23,7 +25,7 @@ namespace Screen.ChoosePack
         [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroupPrefab;
         [SerializeField] private CurrencyDisplayWidget _starsDisplayWidget;
 
-        private HorizontalLayoutGroup _horizontalGroup;
+        private List<HorizontalLayoutGroup> _horizontalGroups = new();
         private void Start()
         {
             InitializePackButtons();
@@ -34,12 +36,17 @@ namespace Screen.ChoosePack
         {
             var currentPackParams = _playerProgressService.GetPackParams();
             var index = 0;
+            
+            HorizontalLayoutGroup horizontalLayoutGroup = null;
             currentPackParams.ForEach(packParams =>
             {
-                if(_horizontalGroup == null || index % 2 == 0)
-                    _horizontalGroup = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
+                if (horizontalLayoutGroup == null|| index % 2 == 0)
+                {
+                    horizontalLayoutGroup = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
+                    _horizontalGroups.Add(horizontalLayoutGroup);
+                }
                 
-                var enterButton = Instantiate(_packItemWidgetPrefab, _horizontalGroup.transform);
+                var enterButton = Instantiate(_packItemWidgetPrefab, horizontalLayoutGroup.transform);
                 var isUnlocked = _playerProgressService.IsPackAvailable(packParams.PackNumber);
                 var starsRequired = _playerProgressService.GetPackStarsToUnlock(packParams.PackNumber);
                 enterButton.Initialize(_figuresStorageData.GetPackParamsData(packParams.PackNumber).PackName, _figuresStorageData.GetPackParamsData(packParams.PackNumber).PackImagePrefab, packParams.PackNumber, isUnlocked,
