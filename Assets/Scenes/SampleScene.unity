@@ -841,7 +841,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _screenCanvasTransform: {fileID: 810554863}
-  _chooseLevelScreen: {fileID: 492916973026144707, guid: 91dba8c1c71211d4cb70bb91d6311c21,
+  _chooseLevelScreen: {fileID: 454104832983673469, guid: 288e42eb0119c420ea8989c4fee0362e,
     type: 3}
   _welcomeScreen: {fileID: 1496618069183132052, guid: e0a982ea61aaff3479e996a1e981d2c7,
     type: 3}
