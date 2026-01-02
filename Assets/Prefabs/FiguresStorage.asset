@@ -175,3 +175,84 @@ MonoBehaviour:
           type: 3}
         FigureMenu: {fileID: 9180308159367904065, guid: 64c4042442ab6324ca8422f279acd0f1,
           type: 3}
+  - PackNumber: 3
+    PackName: Plants
+    PackImagePrefab: {fileID: 19882884362880740, guid: a013d6e27e89544059c5d55fb36d9293,
+      type: 3}
+    LevelsParams:
+    - LevelNumber: 1
+      LevelName: Deer
+      LevelDifficulty: 2
+      levelVisualHandler: {fileID: 4779986294314402710, guid: 302aabbee082d1b4ea6391ba0a09f95b,
+        type: 3}
+      LevelImage: {fileID: 21300000, guid: ab0ef69e772f8db4aad9763700885590, type: 3}
+      LevelsFiguresParams:
+      - FigureId: 1
+        FigureTarget: {fileID: 8990938680374624279, guid: b7203a462bae05b4b8a7f196221af309,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: 48d7df20d04c3794d97653d83c0f1f29,
+          type: 3}
+      - FigureId: 2
+        FigureTarget: {fileID: 8990938680374624279, guid: 2aa1e5f71a1e6674aa1c1c47f1765e1a,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: f6cbaa558589d3f45af4c72581f89684,
+          type: 3}
+      - FigureId: 3
+        FigureTarget: {fileID: 8990938680374624279, guid: 47aeafb70ed33aa45bd8ac6dcb3480ec,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: 70d084cc3f2ec8d4da1387f3e2674038,
+          type: 3}
+      - FigureId: 4
+        FigureTarget: {fileID: 8990938680374624279, guid: 7fec7d52a85a4bd4cbccd8848e21bbc4,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: 1d3fbf2534ab77a43a8303c93da885b6,
+          type: 3}
+    - LevelNumber: 2
+      LevelName: Duck
+      LevelDifficulty: 3
+      levelVisualHandler: {fileID: 6397365690171426833, guid: 41b0d5401817f704e9637865397c2487,
+        type: 3}
+      LevelImage: {fileID: 21300000, guid: ad5708f27a5c9ad41a72fc53ba33df89, type: 3}
+      LevelsFiguresParams:
+      - FigureId: 1
+        FigureTarget: {fileID: 8990938680374624279, guid: 5c735e6d9996c11409d26833eb090b65,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: b5f220e20a5f2564a89c5b030cddd7d9,
+          type: 3}
+      - FigureId: 2
+        FigureTarget: {fileID: 8990938680374624279, guid: 5c27513e854a6cd4286d0a398af250c2,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: 4b5462ccdf2f4ad4cab1179795dd338a,
+          type: 3}
+      - FigureId: 3
+        FigureTarget: {fileID: 8990938680374624279, guid: 6a3beced5dd50c64aac59e5c3afd12f0,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: 0457751680129fc439ed214a497c25c6,
+          type: 3}
+    - LevelNumber: 3
+      LevelName: Pig
+      LevelDifficulty: 1
+      levelVisualHandler: {fileID: 203090581003260945, guid: 803f4f6d5b057784c90d1bb86e874f9d,
+        type: 3}
+      LevelImage: {fileID: 21300000, guid: a74249a5be4dc0b43ae69984ed8331df, type: 3}
+      LevelsFiguresParams:
+      - FigureId: 1
+        FigureTarget: {fileID: 8990938680374624279, guid: 8414b8e1b6bb19f43a91cac3ac0994a1,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: c4c3ccba7417d4745ae4c5494b87e726,
+          type: 3}
+      - FigureId: 2
+        FigureTarget: {fileID: 8990938680374624279, guid: 9927e89468d9388468c2b9da5c5219bc,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: f7d2f7885fde4874aa095e9754f997fe,
+          type: 3}
+      - FigureId: 3
+        FigureTarget: {fileID: 8990938680374624279, guid: 9c78b6d7020789548b451942fdc826e7,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: fd9ab4b7b85dca84b930261ffd058fe2,
+          type: 3}
+      - FigureId: 4
+        FigureTarget: {fileID: 8990938680374624279, guid: b80af2da62880f14eb7a9b4d1f34f535,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: 64c4042442ab6324ca8422f279acd0f1,
+          type: 3}
