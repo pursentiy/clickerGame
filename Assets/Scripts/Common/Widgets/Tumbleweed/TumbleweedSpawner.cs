@@ -9,6 +9,7 @@ namespace Common.Widgets.Tumbleweed
         [SerializeField] private int tumbleweedSortingOrder;
         [SerializeField] private float tumbleweedScale;
         [SerializeField] private float spawnYOffset = 0.1f;
+        [SerializeField] private Color tumbleweedColor;
 
         [Header("Spawn Offsets")]
         [Tooltip("Distance to the left of the screen edge (Negative values move it further left)")]
@@ -92,6 +93,7 @@ namespace Common.Widgets.Tumbleweed
             // Ensure your TumbleweedController has this public method
             tumbleweed.SetSpriteSortingOrder(tumbleweedSortingOrder);
             tumbleweed.SetScale(tumbleweedScale);
+            tumbleweed.SetColor(tumbleweedColor);
         }
     }
 }
