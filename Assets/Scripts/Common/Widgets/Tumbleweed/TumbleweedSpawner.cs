@@ -8,6 +8,7 @@ namespace Common.Widgets.Tumbleweed
         [SerializeField] private Transform tumbleweedContainer;
         [SerializeField] private int tumbleweedSortingOrder;
         [SerializeField] private float tumbleweedScale;
+        [SerializeField] private float spawnYOffset = 0.1f;
 
         [Header("Spawn Offsets")]
         [Tooltip("Distance to the left of the screen edge (Negative values move it further left)")]
@@ -74,7 +75,7 @@ namespace Common.Widgets.Tumbleweed
         {
             // 1. Get the world position of the left edge of the screen (Viewport X = 0)
             // ViewportToWorldPoint uses (x, y, z) where z is distance from camera
-            var spawnPos = new Vector3(floorCollider.transform.position.x, floorCollider.transform.position.y, 0);
+            var spawnPos = new Vector3(floorCollider.transform.position.x, floorCollider.transform.position.y + spawnYOffset, 0);
 
             // 2. Apply your custom offsets
             spawnPos.x += xOffset;

@@ -15,7 +15,8 @@ namespace Common.Widgets.Tumbleweed
         [Header("Movement Settings")]
         [SerializeField] private float windMinForce = 2f;
         [SerializeField] private float windMaxForce = 6f;
-        [SerializeField] private float initialJumpForce = 5f;
+        [SerializeField] private float initialMinJumpForce = 1f;
+        [SerializeField] private float initialMaxJumpForce = 4f;
         [SerializeField] private float maxSpeed = 10f;
     
         [Header("Animation Settings")]
@@ -40,7 +41,7 @@ namespace Common.Widgets.Tumbleweed
         private void Start()
         {
             // Initial chaotic kick
-            float randomJump = Random.Range(initialJumpForce * 0.8f, initialJumpForce * 1.2f);
+            float randomJump = Random.Range(initialMinJumpForce, initialMaxJumpForce);
             float randomForward = Random.Range(0.3f, 2f); // Slight forward variation
         
             var windForce = Random.Range(windMinForce, windMaxForce);

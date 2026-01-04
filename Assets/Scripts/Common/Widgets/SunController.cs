@@ -23,6 +23,8 @@ namespace Common.Widgets
         private Vector2 sunRotationDurationRange = new Vector2(8f, 12f);
 
         [SerializeField] private Vector2 rayRotationDurationRange = new Vector2(8f, 12f);
+        
+        public Vector3 SunPosition => sunTransform.position;
 
         private void Start()
         {

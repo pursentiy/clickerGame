@@ -118,9 +118,9 @@ MonoBehaviour:
   initialJumpForce: 5
   maxSpeed: 5
   rotationMultiplier: 50
-  squashScale: {x: 1.1, y: 0.7, z: 1}
+  squashScale: {x: 1.1, y: 0.9, z: 1}
   squashDuration: 0.2
-  squashIntensityRandomness: 0.2
+  squashIntensityRandomness: 0.1
   squashDurationRandomness: 0.1
 --- !u!1 &6097246835962145998
 GameObject:
