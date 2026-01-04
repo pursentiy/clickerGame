@@ -33,13 +33,6 @@ namespace Storage
             return levelParams?.LevelsFiguresParams.FirstOrDefault(levelFigureParams => levelFigureParams.FigureId == figureId);
         }
 
-        public LevelVisualHandler GetLevelVisualHandler(int packNumber, int levelNumber)
-        {
-            var levelParams = GetLevelParamsData(packNumber, levelNumber);
-
-            return levelParams?.levelVisualHandler;
-        }
-
         public LevelParamsData GetLevelParamsData(int packNumber, int levelNumber)
         {
             return GetPackParamsData(packNumber)?.LevelsParams.FirstOrDefault(levelParams => levelParams.LevelNumber == levelNumber);

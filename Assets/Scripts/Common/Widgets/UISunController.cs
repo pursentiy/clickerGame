@@ -8,7 +8,7 @@ namespace Common.Widgets
     {
         [Header("UI References")]
         [SerializeField] private RectTransform sunRect;    // The main Sun UI element
-        [SerializeField] private RectTransform rayRect;    // The nested Rays UI element
+        [SerializeField] private RectTransform maybeRayRect;    // The nested Rays UI element
 
         [Header("Movement Settings")]
         [SerializeField] private Vector2 arcHeightRange = new Vector2(400f, 700f); 
@@ -77,9 +77,9 @@ namespace Common.Widgets
                 .KillWith(this);
 
             // Nested Rays (Counter-rotation for visual depth)
-            if (rayRect != null)
+            if (maybeRayRect != null)
             {
-                rayRect.DORotate(new Vector3(0, 0, -360), rayRotationDuration, RotateMode.FastBeyond360)
+                maybeRayRect.DORotate(new Vector3(0, 0, -360), rayRotationDuration, RotateMode.FastBeyond360)
                     .SetEase(Ease.Linear)
                     .SetLoops(-1, LoopType.Restart)
                     .KillWith(this);

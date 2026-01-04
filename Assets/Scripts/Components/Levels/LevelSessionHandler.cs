@@ -38,6 +38,7 @@ namespace Components.Levels
         [SerializeField] private RectTransform _draggingTransform;
         [SerializeField] private ClickHandler _clickHandler;
         [SerializeField] private ParticleSystem _finishedFigureParticles;
+        [SerializeField] private LevelVisualHandler _levelVisualHandlerPrefab;
 
         private LevelVisualHandler _levelVisualHandler;
         private LevelHudHandler _levelHudHandler;
@@ -113,7 +114,7 @@ namespace Components.Levels
 
         private void SetupLevelScreenHandler(LevelParamsSnapshot packParam, Color defaultColor)
         {
-            _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(_figuresStorageData.GetLevelVisualHandler(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber));
+            _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(_levelVisualHandlerPrefab);
             _levelVisualHandler.SetupLevel(packParam.LevelFiguresParamsList, defaultColor);
         }
 

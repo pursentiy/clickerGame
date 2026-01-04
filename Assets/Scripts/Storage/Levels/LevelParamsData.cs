@@ -11,7 +11,6 @@ namespace Storage.Levels
         public int LevelNumber;
         public string LevelName;
         public LevelDifficulty LevelDifficulty;
-        public LevelVisualHandler levelVisualHandler;
         public Sprite LevelImage;
         public List<LevelFigureParamsData> LevelsFiguresParams;
     }

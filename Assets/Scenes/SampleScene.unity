@@ -949,6 +949,8 @@ MonoBehaviour:
   _draggingTransform: {fileID: 426540645}
   _clickHandler: {fileID: 534889508}
   _finishedFigureParticles: {fileID: 981916948}
+  _levelVisualHandlerPrefab: {fileID: 7161379702550670063, guid: 65c46781588fb4f4e813c0d92887f614,
+    type: 3}
 --- !u!114 &534889510
 MonoBehaviour:
   m_ObjectHideFlags: 0
