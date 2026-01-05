@@ -52,13 +52,6 @@ namespace Level.Game
             _figureAnimalsTargetList.Add(figure);
         }
 
-        private void OnDestroy()
-        {
-            _figureAnimalsTargetList.ForEach(figure =>
-            {
-                Destroy(figure.gameObject);
-            });
-        }
 
         public void Dispose()
         {

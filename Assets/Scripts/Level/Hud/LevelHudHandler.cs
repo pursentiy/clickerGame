@@ -31,7 +31,8 @@ namespace Level.Hud
         [Inject] private LevelInfoTrackerService _levelInfoTrackerService;
         [Inject] private UIManager _uiManager;
 
-        [SerializeField] private RectTransform _figuresParentTransform;
+        [SerializeField] private RectTransform _figuresPanelContainer;
+        [SerializeField] private RectTransform _figuresAssemblyContainer;
         [SerializeField] private ScrollRect _scrollRect;
         [SerializeField] private Button _backButton;
         [SerializeField] private Button _settingsButton;
@@ -40,7 +41,8 @@ namespace Level.Hud
         [SerializeField] private StarsProgressWidget _starsProgressWidget;
         [SerializeField] private LevelTimerWidget _levelTimerWidget;
         
-        private List<FigureMenu> _figureAnimalsMenuList;
+        private List<FigureMenu> _figureAnimalsForAssemblyList = new List<FigureMenu>();
+        private List<FigureTarget> _figureAnimalsTargetList = new List<FigureTarget>();
         private float _figuresGroupSpacing;
         private Sequence _shiftingSequence;
         
@@ -59,15 +61,14 @@ namespace Level.Hud
             OnTimerChanged(_levelInfoTrackerService.CurrentLevelPlayingTime);
         }
 
-        public void SetupScrollMenu(List<LevelFigureParamsSnapshot> levelFiguresParams)
+        public void SetupHUDFigures(List<LevelFigureParamsSnapshot> levelFiguresParams)
         {
-            levelFiguresParams.ForEach(SetFigure);
+            levelFiguresParams.ForEach(SetFigureForAssembly);
+            levelFiguresParams.ForEach(SetMainAssemblyContainerFigure);
         }
         
         protected override void Awake()
         {
-            _figureAnimalsMenuList = new List<FigureMenu>();
-            
             _backButton.onClick.MapListenerWithSound(GoToMainMenuScreen).DisposeWith(this);
             _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null)).DisposeWith(this);
 
@@ -85,7 +86,7 @@ namespace Level.Hud
             _levelTimerWidget.UpdateTime(seconds);
         }
 
-        private void SetFigure(LevelFigureParamsSnapshot figureParams)
+        private void SetFigureForAssembly(LevelFigureParamsSnapshot figureParams)
         {
             var figurePrefab = _figuresStorageData.GetMenuFigure(_playerProgressService.CurrentPackNumber,
                 _playerProgressService.CurrentLevelNumber, figureParams.FigureId);
@@ -101,12 +102,29 @@ namespace Level.Hud
                 return;
             }
             
-            var figure = Instantiate(figurePrefab, _figuresParentTransform);
+            var figure = Instantiate(figurePrefab, _figuresPanelContainer);
             figure.SetUpDefaultParamsFigure(figureParams.FigureId);
             figure.SetScale(1);
-            _figureAnimalsMenuList.Add(figure);
+            _figureAnimalsForAssemblyList.Add(figure);
             
             SetupDraggingSignalsHandlers(figure);
+        }
+        
+        private void SetMainAssemblyContainerFigure(LevelFigureParamsSnapshot figureParams)
+        {
+            var figurePrefab = _figuresStorageData.GetTargetFigure(_playerProgressService.CurrentPackNumber,
+                _playerProgressService.CurrentLevelNumber, figureParams.FigureId);
+
+            if (figurePrefab == null)
+            {
+                LoggerService.LogWarning($"Could not find figure with type {figureParams.FigureId} in {this}");
+                return;
+            }
+
+            var figure = Instantiate(figurePrefab, _figuresAssemblyContainer);
+            figure.SetUpFigure(figureParams.Completed);
+            figure.SetUpDefaultParamsFigure(figureParams.FigureId);
+            _figureAnimalsTargetList.Add(figure);
         }
 
         private void SetupDraggingSignalsHandlers(FigureMenu figure)
@@ -138,7 +156,7 @@ namespace Level.Hud
 
         public void ShiftAllElements(bool isInserting, int figureId, Promise animationPromise)
         {
-            if (_figureAnimalsMenuList.Count == 0)
+            if (_figureAnimalsForAssemblyList.Count == 0)
             {
                 animationPromise.Resolve();
                 return;
@@ -150,7 +168,7 @@ namespace Level.Hud
             _shiftingSequence = DOTween.Sequence();
             _figuresGroup.enabled = false;
 
-            _figureAnimalsMenuList.ForEach(figure =>
+            _figureAnimalsForAssemblyList.ForEach(figure =>
             {
                 if (figure.FigureId <= figureId || figure == null)
                     return;
@@ -166,14 +184,14 @@ namespace Level.Hud
 
         public void TryShiftAllElementsAfterRemoving(int figureId, Promise animationPromise)
         {
-            if (_figureAnimalsMenuList.Count <= 1)
+            if (_figureAnimalsForAssemblyList.Count <= 1)
             {
                 animationPromise.Resolve();
                 return;
             }
             
             var shiftingSequence = DOTween.Sequence();
-            _figureAnimalsMenuList.ForEach(figure =>
+            _figureAnimalsForAssemblyList.ForEach(figure =>
             {
                 if (figure.FigureId <= figureId)
                     return;
@@ -187,8 +205,8 @@ namespace Level.Hud
 
         public void DestroyFigure(int figureId)
         { 
-            _figureAnimalsMenuList.FirstOrDefault(figure => figure.FigureId == figureId)?.Destroy();
-            _figureAnimalsMenuList = _figureAnimalsMenuList.Where(figure => figure.FigureId != figureId).ToList();
+            _figureAnimalsForAssemblyList.FirstOrDefault(figure => figure.FigureId == figureId)?.Destroy();
+            _figureAnimalsForAssemblyList = _figureAnimalsForAssemblyList.Where(figure => figure.FigureId != figureId).ToList();
         }
 
         public void LockScroll(bool value)
@@ -198,17 +216,17 @@ namespace Level.Hud
 
         public FigureMenu GetFigureById(int figureId)
         {
-            return _figureAnimalsMenuList.FirstOrDefault(figure => figure.FigureId == figureId);
+            return _figureAnimalsForAssemblyList.FirstOrDefault(figure => figure.FigureId == figureId);
         }
 
         public List<FSignal<FigureMenu>> GetOnBeginDragFiguresSignal()
         {
-            return _figureAnimalsMenuList.Select(figure => figure.OnBeginDragFigureSignal).ToList();
+            return _figureAnimalsForAssemblyList.Select(figure => figure.OnBeginDragFigureSignal).ToList();
         }
 
         public List<FSignal<PointerEventData>> GetOnDragEndFiguresSignal()
         {
-            return _figureAnimalsMenuList.Select(figure => figure.OnEndDragSignal).ToList();
+            return _figureAnimalsForAssemblyList.Select(figure => figure.OnEndDragSignal).ToList();
         }
 
         public void ReturnFigureBackToScroll(int figureId)

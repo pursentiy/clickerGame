@@ -115,13 +115,13 @@ namespace Components.Levels
         private void SetupLevelScreenHandler(LevelParamsSnapshot packParam, Color defaultColor)
         {
             _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(_levelVisualHandlerPrefab);
-            _levelVisualHandler.SetupLevel(packParam.LevelFiguresParamsList, defaultColor);
+            //_levelVisualHandler.SetupLevel(packParam.LevelFiguresParamsList, defaultColor);
         }
 
         private void SetupHud(LevelParamsSnapshot packParam, LevelHudHandler levelHudHandler)
         {
             _levelHudHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelHudHandler>(levelHudHandler, _gameMainCanvasTransform);
-            _levelHudHandler.SetupScrollMenu(packParam.LevelFiguresParamsList);
+            _levelHudHandler.SetupHUDFigures(packParam.LevelFiguresParamsList);
             _levelHudHandler.Initialize(packParam.LevelBeatingTimeInfo);
             
             _levelHudHandler.GetOnBeginDragFiguresSignal().ForEach(signal => signal.MapListener(StartElementDragging).DisposeWith(this));
