@@ -36,7 +36,6 @@ namespace Components.Levels
 
         [SerializeField] private RectTransform _gameMainCanvasTransform;
         [SerializeField] private RectTransform _draggingTransform;
-        [SerializeField] private ParticleSystem _finishedFigureParticles;
 
         private LevelHudHandler _levelHudHandler;
         private FigureMenu _draggingFigureContainer;
@@ -160,7 +159,7 @@ namespace Components.Levels
                 TrySetFigureInserted(releasedOnFigure.FigureId);
                 
                 _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigureImage.transform.DOScale(0, 0.4f))
-                    .InsertCallback(0.25f, PlayFinishParticles).KillWith(this);
+                    .KillWith(this);
 
                 shiftingAnimationPromise.Then(() =>
                 {
@@ -176,13 +175,6 @@ namespace Components.Levels
             {
                 ResetDraggingFigure();
             }
-        }
-
-        private void PlayFinishParticles()
-        {
-            _finishedFigureParticles.transform.position = _draggingFigureImage.transform.position;
-            _finishedFigureParticles.Simulate(0);
-            _finishedFigureParticles.Play();
         }
 
         private void SetMenuFigureConnected()
