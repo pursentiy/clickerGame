@@ -1,26 +1,23 @@
-Shader "Custom/SpriteInnerShadow_Smooth"
+Shader "Custom/SpriteInnerShadow_Pro"
 {
     Properties
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
-        _Color ("Tint", Color) = (1,1,1,1)
-        _ShadowColor ("Inner Shadow Color", Color) = (0,0,0,1)
-        _ShadowWidth ("Shadow Width", Range(0, 20)) = 1
+        _ShadowColor ("Shadow Color", Color) = (0,0,0,1)
+        _ShadowWidth ("Shadow Width", Range(0, 30)) = 2
+        _Falloff ("Shadow Softness", Range(0.1, 4)) = 1.0
+        
+        [Header(Wave Animation)]
+        [Toggle] _UseWave ("Enable Wave", Float) = 0
+        _WaveSpeed ("Wave Speed", Range(0, 10)) = 3
+        _WaveFreq ("Wave Frequency", Range(0, 20)) = 10
+        _WaveStrength ("Wave Intensity", Range(0, 1)) = 0.5
     }
 
     SubShader
     {
-        Tags
-        {
-            "Queue"="Transparent"
-            "IgnoreProjector"="True"
-            "RenderType"="Transparent"
-            "PreviewType"="Plane"
-        }
-
-        Cull Off
-        Lighting Off
-        ZWrite Off
+        Tags { "Queue"="Transparent" "RenderType"="Transparent" "PreviewType"="Plane" }
+        Cull Off Lighting Off ZWrite Off
         Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
@@ -28,73 +25,68 @@ Shader "Custom/SpriteInnerShadow_Smooth"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma shader_feature _USEWAVE_ON
             #include "UnityCG.cginc"
-
-            struct appdata_t {
-                float4 vertex : POSITION;
-                float2 texcoord : TEXCOORD0;
-                fixed4 color : COLOR;
-            };
 
             struct v2f {
                 float4 vertex : SV_POSITION;
                 float2 uv : TEXCOORD0;
-                fixed4 color : COLOR;
             };
 
             sampler2D _MainTex;
             float4 _MainTex_TexelSize;
             fixed4 _ShadowColor;
             float _ShadowWidth;
+            float _Falloff;
+            
+            float _WaveSpeed;
+            float _WaveFreq;
+            float _WaveStrength;
 
-            v2f vert(appdata_t IN) {
-                v2f OUT;
-                OUT.vertex = UnityObjectToClipPos(IN.vertex);
-                OUT.uv = IN.texcoord;
-                OUT.color = IN.color;
-                return OUT;
+            v2f vert(appdata_base v) {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = v.texcoord;
+                return o;
             }
 
-            fixed4 frag(v2f IN) : SV_Target
+            fixed4 frag(v2f i) : SV_Target
             {
-                fixed4 mainCol = tex2D(_MainTex, IN.uv);
-                
-                // If current pixel is transparent, there's no "inner" to draw on
-                if (mainCol.a <= 0.05) discard;
+                fixed4 col = tex2D(_MainTex, i.uv);
+                if (col.a <= 0.05) discard;
 
-                float2 texelSize = _MainTex_TexelSize.xy;
+                // --- 1. RADIAL SAMPLING (Fixes the gaps) ---
+                // We use a polar coordinate approach for higher sample density
                 float totalAlpha = 0;
-                float samples = 0;
+                float sampleCount = 0;
+                float2 texelSize = _MainTex_TexelSize.xy * _ShadowWidth;
 
-                // Increase the 'step' density to remove gaps
-                // We sample in a small grid around the pixel
-                for (float x = -1; x <= 1; x += 0.5)
-                {
-                    for (float y = -1; y <= 1; y += 0.5)
-                    {
-                        // Skip the center pixel
-                        if (x == 0 && y == 0) continue;
-
-                        float2 offset = float2(x, y) * _ShadowWidth * texelSize;
-                        totalAlpha += tex2D(_MainTex, IN.uv + offset).a;
-                        samples++;
-                    }
+                // 16 samples in a circle provides much smoother coverage than a grid
+                for(float angle = 0; angle < 6.28; angle += 0.4) {
+                    float2 offset = float2(cos(angle), sin(angle)) * texelSize;
+                    totalAlpha += tex2D(_MainTex, i.uv + offset).a;
+                    sampleCount++;
                 }
 
-                // Calculate how much "emptiness" is around this opaque pixel
-                float averageAlpha = totalAlpha / samples;
+                float avgAlpha = totalAlpha / sampleCount;
+                float shadow = saturate(1.0 - avgAlpha);
                 
-                // Invert it: 1.0 means it's an edge (lots of transparency nearby)
-                // 0.0 means it's deep inside the shape
-                float innerShadow = saturate(1.0 - averageAlpha);
+                // Control falloff smoothness
+                shadow = pow(shadow, _Falloff);
 
-                // Make the falloff smoother
-                innerShadow = pow(innerShadow, 0.5); 
+                // --- 2. WAVE LOGIC ---
+                #ifdef _USEWAVE_ON
+                    // We use the UV coordinates and Time to create a moving wave
+                    float wave = sin((i.uv.y + i.uv.x) * _WaveFreq + (_Time.g * _WaveSpeed));
+                    // Map wave from (-1, 1) to (0.5, 1.0) so it pulsates rather than disappearing
+                    wave = lerp(1.0 - _WaveStrength, 1.0, (wave * 0.5 + 0.5));
+                    shadow *= wave;
+                #endif
 
-                fixed4 finalColor = _ShadowColor;
-                finalColor.a *= innerShadow * mainCol.a;
+                fixed4 finalCol = _ShadowColor;
+                finalCol.a *= shadow * col.a;
 
-                return finalColor;
+                return finalCol;
             }
             ENDCG
         }
