@@ -5,6 +5,7 @@ using Handlers;
 using Screen.ChoosePack.Widgets;
 using Services;
 using Storage;
+using Storage.Levels;
 using Storage.Levels.Params;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,7 +18,7 @@ namespace Screen.ChoosePack
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private PlayerService _playerService;
-        [Inject] private FiguresStorageData _figuresStorageData;
+        [Inject] private LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private PlayerCurrencyService _playerCurrencyService;
         
         [SerializeField] private PackItemWidget _packItemWidgetPrefab;
@@ -49,7 +50,7 @@ namespace Screen.ChoosePack
                 var enterButton = Instantiate(_packItemWidgetPrefab, horizontalLayoutGroup.transform);
                 var isUnlocked = _playerProgressService.IsPackAvailable(packParams.PackNumber);
                 var starsRequired = _playerProgressService.GetPackStarsToUnlock(packParams.PackNumber);
-                enterButton.Initialize(_figuresStorageData.GetPackParamsData(packParams.PackNumber).PackName, _figuresStorageData.GetPackParamsData(packParams.PackNumber).PackImagePrefab, packParams.PackNumber, isUnlocked,
+                enterButton.Initialize(_levelsParamsStorageData.GetPackParamsData(packParams.PackNumber).PackName, _levelsParamsStorageData.GetPackParamsData(packParams.PackNumber).PackImagePrefab, packParams.PackNumber, isUnlocked,
                     () => TryOpenPack(isUnlocked, packParams), OnUnavailablePackClicked, starsRequired);
                 index++;
             });
@@ -59,7 +60,7 @@ namespace Screen.ChoosePack
                 _starsDisplayWidget.Bump();
             }
 
-            void TryOpenPack(bool isUnlocked, PackParams packParams)
+            void TryOpenPack(bool isUnlocked, PackParamsData packParams)
             {
                 if (!isUnlocked)
                     return;

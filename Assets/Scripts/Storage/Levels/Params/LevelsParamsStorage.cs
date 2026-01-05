@@ -11,11 +11,11 @@ namespace Storage.Levels.Params
     {
         [SerializeField] private List<PackParams> _defaultPackParamsList;
 
-        public LevelParams GetDefaultLevelByNumber(int number)
-        {
-            return null;
-        }
-
-        public List<PackParams> DefaultPacksParamsList => _defaultPackParamsList;
+        // public LevelParams GetDefaultLevelByNumber(int number)
+        // {
+        //     return null;
+        // }
+        //
+        // public List<PackParams> DefaultPacksParamsList => _defaultPackParamsList;
     }
 }

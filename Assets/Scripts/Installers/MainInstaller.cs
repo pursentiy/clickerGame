@@ -15,8 +15,7 @@ namespace Installers
 {
     public class MainInstaller : MonoInstaller
     {
-        [SerializeField] private LevelsParamsStorage levelsParamsStorage;
-        [SerializeField] private FiguresStorageData figuresStorageData;
+        [SerializeField] private LevelsParamsStorageData _levelsParamsStorageData;
         [SerializeField] private AudioStorageData audioStorageData;
         
         [SerializeField] private ScreenHandler _screenHandler;
@@ -65,8 +64,7 @@ namespace Installers
             Container.Bind<UIBlockHandler>().FromInstance(_uiBlockHandler);
             Container.Bind<ObjectsPoolHandler>().FromInstance(_objectsPoolHandler);
             Container.BindInterfacesAndSelfTo<SoundHandler>().FromInstance(_soundHandler);
-            Container.Bind<LevelsParamsStorage>().FromNewScriptableObject(levelsParamsStorage).AsTransient().NonLazy();
-            Container.Bind<FiguresStorageData>().FromScriptableObject(figuresStorageData).AsSingle().NonLazy();
+            Container.Bind<LevelsParamsStorageData>().FromScriptableObject(_levelsParamsStorageData).AsSingle().NonLazy();
             Container.Bind<AudioStorageData>().FromScriptableObject(audioStorageData).AsSingle().NonLazy();
         }
     }

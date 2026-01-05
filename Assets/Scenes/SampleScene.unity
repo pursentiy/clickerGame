@@ -203,9 +203,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5fd4402f0321cb41994ca8aafc81fdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelsParamsStorage: {fileID: 11400000, guid: 923faedb36c5c974e8c07f9c24ad9f62,
+  _levelsParamsStorageData: {fileID: 11400000, guid: ee10b72902a1ab94db068e4883dc8e28,
     type: 2}
-  figuresStorageData: {fileID: 11400000, guid: ee10b72902a1ab94db068e4883dc8e28, type: 2}
   audioStorageData: {fileID: 11400000, guid: ec45e6d10e0bfff40beb768986062abb, type: 2}
   _screenHandler: {fileID: 534889505}
   _popupHandler: {fileID: 534889512}

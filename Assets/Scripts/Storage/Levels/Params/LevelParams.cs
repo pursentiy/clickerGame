@@ -10,12 +10,4 @@ namespace Storage.Levels.Params
         public LevelBeatingTimeInfo LevelBeatingTimeInfo;
         public List<LevelFigureParams> LevelFiguresParamsList;
     }
-    
-    [Serializable]
-    public class LevelBeatingTimeInfo
-    {
-        public float FastestTime;
-        public float MediumTime;
-        public float MinimumTime;
-    }
 }

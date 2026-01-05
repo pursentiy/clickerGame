@@ -1,4 +1,5 @@
 using System.Linq;
+using Storage.Levels;
 using Storage.Levels.Params;
 using Storage.Snapshots.LevelParams;
 
@@ -6,12 +7,12 @@ namespace Storage.Extensions
 {
     public static class LevelParamsConverterExtension
     {
-        public static LevelParamsSnapshot ToSnapshot(this LevelParams levelParams)
+        public static LevelParamsSnapshot ToSnapshot(this LevelParamsData levelParams)
         {
             if (levelParams.LevelBeatingTimeInfo == null) 
                 return null;
 
-            var figuresParams = levelParams.LevelFiguresParamsList
+            var figuresParams = levelParams.LevelsFiguresParams
                 .Select(i => i.ToSnapshot())
                 .Where(i => i != null)
                 .ToList();
@@ -30,7 +31,7 @@ namespace Storage.Extensions
                 levelBeatingTimeInfo.MinimumTime);
         }
 
-        private static LevelFigureParamsSnapshot ToSnapshot(this LevelFigureParams levelFigureParams)
+        private static LevelFigureParamsSnapshot ToSnapshot(this LevelFigureParamsData levelFigureParams)
         {
             if (levelFigureParams == null)
                 return null;

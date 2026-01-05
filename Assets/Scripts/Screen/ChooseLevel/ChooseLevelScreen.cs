@@ -6,6 +6,7 @@ using Popup.Settings;
 using Screen.ChooseLevel.Widgets;
 using Services;
 using Storage;
+using Storage.Levels;
 using Storage.Levels.Params;
 using TMPro;
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace Screen.ChooseLevel
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private PopupHandler _popupHandler;
         [Inject] private PlayerProgressService _playerProgressService;
-        [Inject] private FiguresStorageData _figuresStorageData;
+        [Inject] private LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private UIManager _uiManager;
         [Inject] private PlayerCurrencyService _playerCurrencyService;
@@ -40,7 +41,7 @@ namespace Screen.ChooseLevel
 
             _starsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
             
-            _packName.text = _figuresStorageData.GetPackParamsData(_playerProgressService.CurrentPackNumber).PackName + " Pack";
+            _packName.text = _levelsParamsStorageData.GetPackParamsData(_playerProgressService.CurrentPackNumber).PackName + " Pack";
             
             _goToChoosePackScreenButton.onClick.MapListenerWithSound(()=> _screenHandler.ShowChoosePackScreen());
             _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null));
@@ -55,7 +56,7 @@ namespace Screen.ChooseLevel
                 if(_horizontalGroup == null || index % 2 == 0)
                     _horizontalGroup = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
 
-                var levelParamsData = _figuresStorageData.GetLevelParamsData(_playerProgressService.CurrentPackNumber, levelParams.LevelNumber);
+                var levelParamsData = _levelsParamsStorageData.GetLevelParamsData(_playerProgressService.CurrentPackNumber, levelParams.LevelNumber);
                 var enterButton = Instantiate(_levelItemWidgetPrefab, _horizontalGroup.transform);
                 
                 var earnedStarsForLevel = _playerProgressService.GetEarnedStarsForLevel(_playerProgressService.CurrentPackNumber, levelParams.LevelNumber) ?? 0;
@@ -65,7 +66,7 @@ namespace Screen.ChooseLevel
             });
         }
 
-        private void StartLevel(LevelParams levelParams)
+        private void StartLevel(LevelParamsData levelParams)
         {
             if (levelParams == null)
             {

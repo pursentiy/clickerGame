@@ -25,7 +25,7 @@ namespace Components.Levels
     {
         [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private PlayerService _playerService;
-        [Inject] private FiguresStorageData _figuresStorageData;
+        [Inject] private LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private LevelInfoTrackerService _levelInfoTrackerService;

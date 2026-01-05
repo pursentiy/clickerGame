@@ -3,6 +3,8 @@ using Handlers;
 using Handlers.UISystem;
 using Installers;
 using Services;
+using Storage;
+using Storage.Levels;
 using Storage.Levels.Params;
 using Zenject;
 using ScreenHandler = Handlers.ScreenHandler;
@@ -11,7 +13,6 @@ namespace GameState
 {
     public class OnGameEnterState : InjectableMonoBehaviour
     {
-        [Inject] private LevelsParamsStorage _levelsParamsStorage;
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private SoundHandler _soundHandler;
@@ -21,6 +22,7 @@ namespace GameState
         [Inject] private readonly ApplicationService _applicationService;
         [Inject] private readonly UIManager _uiManager;
         [Inject] private GlobalSettingsService _globalSettingsService;
+        [Inject] private LevelsParamsStorageData _levelsParamsStorage;
 
         protected override void Awake()
         {
@@ -55,10 +57,10 @@ namespace GameState
             _playerProgressService.InitializeHandler(_levelsParamsStorage.DefaultPacksParamsList);
         }
 
-        private List<PackParams> GetNewPacks(List<PackParams> savedDataProgress)
+        private List<PackParamsData> GetNewPacks(List<PackParamsData> savedDataProgress)
         {
             var diff = _levelsParamsStorage.DefaultPacksParamsList.Count - savedDataProgress.Count;
-            var newPacks = new List<PackParams>();
+            var newPacks = new List<PackParamsData>();
             
             for (var index = savedDataProgress.Count; index <= diff; index++)
             {

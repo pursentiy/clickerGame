@@ -8,9 +8,11 @@ using UnityEngine;
 namespace Storage
 {
     [CreateAssetMenu(fileName = "FiguresStorage", menuName = "ScriptableObjects/FiguresStorage")]
-    public class FiguresStorageData : ScriptableObject
+    public class LevelsParamsStorageData : ScriptableObject
     {
         [SerializeField] private List<PackParamsData> _packParamsList;
+        
+        public List<PackParamsData> DefaultPacksParamsList => _packParamsList;
 
         public FigureTarget GetTargetFigure(int packNumber, int levelNumber, int figureId)
         {

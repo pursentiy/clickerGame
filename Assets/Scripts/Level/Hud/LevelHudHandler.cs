@@ -23,7 +23,7 @@ namespace Level.Hud
 {
     public class LevelHudHandler : InjectableMonoBehaviour, IDisposableHandlers
     {
-        [Inject] private FiguresStorageData _figuresStorageData;
+        [Inject] private LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private PopupHandler _popupHandler;
         [Inject] private PlayerProgressService _playerProgressService;
@@ -90,7 +90,7 @@ namespace Level.Hud
 
         private void SetDraggingFigure(LevelFigureParamsSnapshot figureParams)
         {
-            var figurePrefab = _figuresStorageData.GetMenuFigure(_playerProgressService.CurrentPackNumber,
+            var figurePrefab = _levelsParamsStorageData.GetMenuFigure(_playerProgressService.CurrentPackNumber,
                 _playerProgressService.CurrentLevelNumber, figureParams.FigureId);
 
             if (figurePrefab == null)
@@ -114,7 +114,7 @@ namespace Level.Hud
         
         private void SetAssemblyContainerFigure(LevelFigureParamsSnapshot figureParams)
         {
-            var figurePrefab = _figuresStorageData.GetTargetFigure(_playerProgressService.CurrentPackNumber,
+            var figurePrefab = _levelsParamsStorageData.GetTargetFigure(_playerProgressService.CurrentPackNumber,
                 _playerProgressService.CurrentLevelNumber, figureParams.FigureId);
 
             if (figurePrefab == null)

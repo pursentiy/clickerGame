@@ -2,6 +2,7 @@
 using System.Linq;
 using Extensions;
 using GlobalParams;
+using Storage.Levels;
 using Storage.Levels.Params;
 using Storage.Snapshots;
 using UnityEngine;
@@ -11,16 +12,15 @@ namespace Services
 {
     public class PlayerProgressService
     {
-        [Inject] private LevelsParamsStorage _levelsParamsStorage;
         [Inject] private PlayerService _playerService;
         [Inject] private PlayerCurrencyService _playerCurrencyService;
         
-        private List<PackParams> _packParamsList;
+        private List<PackParamsData> _packParamsList;
 
         public int CurrentPackNumber { get; set; } = -1;
         public int CurrentLevelNumber { get; set; } = -1;
         
-        public void InitializeHandler(List<PackParams> levelsParams, List<PackParams> newLevelsParams = null)
+        public void InitializeHandler(List<PackParamsData> levelsParams, List<PackParamsData> newLevelsParams = null)
         {
             if (levelsParams == null)
             {
@@ -104,7 +104,7 @@ namespace Services
             return true;
         }
 
-        public PackParams GetPackPackByNumber(int packNumber)
+        public PackParamsData GetPackPackByNumber(int packNumber)
         {
             var pack = _packParamsList.FirstOrDefault(levelParams => levelParams.PackNumber == packNumber);
             
@@ -118,7 +118,7 @@ namespace Services
             
         }
 
-        public LevelParams GetLevelByNumber(int packNumber, int levelNumber)
+        public LevelParamsData GetLevelByNumber(int packNumber, int levelNumber)
         {
             var levelProgress = _packParamsList.FirstOrDefault(levelParams => levelParams.PackNumber == packNumber)?
                 .LevelsParams.FirstOrDefault(levelParams => levelParams.LevelNumber == levelNumber);
@@ -132,7 +132,7 @@ namespace Services
             return null;
         }
 
-        public List<LevelParams> GetLevelsByPack(int packNumber)
+        public List<LevelParamsData> GetLevelsByPack(int packNumber)
         {
             var levelsParams = _packParamsList.FirstOrDefault(levelParams => levelParams.PackNumber == packNumber)?.LevelsParams;
 
@@ -145,7 +145,7 @@ namespace Services
             return null;
         }
         
-        public List<PackParams> GetPackParams()
+        public List<PackParamsData> GetPackParams()
         {
             return _packParamsList;
         }

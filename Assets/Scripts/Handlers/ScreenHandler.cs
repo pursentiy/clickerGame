@@ -9,6 +9,7 @@ using Screen.ChoosePack;
 using Screen.WelcomeScreen;
 using Services;
 using Storage.Extensions;
+using Storage.Levels;
 using Storage.Levels.Params;
 using UnityEngine;
 using Zenject;
@@ -112,7 +113,7 @@ namespace Handlers
         //     });
         //}
 
-        public void StartNewLevel(int levelNumber, LevelParams levelParams, bool fast = false)
+        public void StartNewLevel(int levelNumber, LevelParamsData levelParams, bool fast = false)
         {
             var awaitPromise = TryStartParticlesAwaitPromiseTransition(fast);
 
