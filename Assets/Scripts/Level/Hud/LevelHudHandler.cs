@@ -41,6 +41,7 @@ namespace Level.Hud
         [SerializeField] private StarsProgressWidget _starsProgressWidget;
         [SerializeField] private LevelTimerWidget _levelTimerWidget;
         [SerializeField] private GraphicRaycaster _figuresAssemblyCanvasRaycaster;
+        [SerializeField] private ParticleSystem _finishLevelParticles;
         
         private List<FigureMenu> _figureAnimalsForAssemblyList = new List<FigureMenu>();
         private List<FigureTarget> _figureAnimalsTargetList = new List<FigureTarget>();
@@ -223,6 +224,17 @@ namespace Level.Hud
         public void LockScroll(bool value)
         {
             _scrollRect.horizontal = !value;
+        }
+        
+        public void PlayFinishParticles()
+        {
+            if (_finishLevelParticles.isPlaying)
+            {
+                _finishLevelParticles.Stop();
+            }
+
+            _finishLevelParticles.Simulate(0);
+            _finishLevelParticles.Play();
         }
 
         public FigureMenu GetFigureById(int figureId)

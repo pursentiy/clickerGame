@@ -90,6 +90,7 @@ namespace Components.Levels
             _playerService.SetLevelCompleted(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber, levelPlayedTime, earnedStars);
             
             _levelHudHandler.SetInteractivity(false);
+            _levelHudHandler.PlayFinishParticles();
             _playerProgressService.TrySetOrUpdateLevelCompletion(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber, earnedStars, levelPlayedTime);
             _finishCoroutine = StartCoroutine(AwaitFinishLevel(earnedStars, starsForAccrual, levelPlayedTime));
         }
