@@ -31,7 +31,7 @@ namespace Level.Hud
         [Inject] private LevelInfoTrackerService _levelInfoTrackerService;
         [Inject] private UIManager _uiManager;
 
-        [SerializeField] private RectTransform _figuresPanelContainer;
+        [SerializeField] private RectTransform _figuresDraggingContainer;
         [SerializeField] private RectTransform _figuresAssemblyContainer;
         [SerializeField] private ScrollRect _scrollRect;
         [SerializeField] private Button _backButton;
@@ -63,8 +63,8 @@ namespace Level.Hud
 
         public void SetupHUDFigures(List<LevelFigureParamsSnapshot> levelFiguresParams)
         {
-            levelFiguresParams.ForEach(SetFigureForAssembly);
-            levelFiguresParams.ForEach(SetMainAssemblyContainerFigure);
+            levelFiguresParams.ForEach(SetDraggingFigure);
+            levelFiguresParams.ForEach(SetAssemblyContainerFigure);
         }
         
         protected override void Awake()
@@ -86,7 +86,7 @@ namespace Level.Hud
             _levelTimerWidget.UpdateTime(seconds);
         }
 
-        private void SetFigureForAssembly(LevelFigureParamsSnapshot figureParams)
+        private void SetDraggingFigure(LevelFigureParamsSnapshot figureParams)
         {
             var figurePrefab = _figuresStorageData.GetMenuFigure(_playerProgressService.CurrentPackNumber,
                 _playerProgressService.CurrentLevelNumber, figureParams.FigureId);
@@ -102,7 +102,7 @@ namespace Level.Hud
                 return;
             }
             
-            var figure = Instantiate(figurePrefab, _figuresPanelContainer);
+            var figure = Instantiate(figurePrefab, _figuresDraggingContainer);
             figure.SetUpDefaultParamsFigure(figureParams.FigureId);
             figure.SetScale(1);
             _figureAnimalsForAssemblyList.Add(figure);
@@ -110,7 +110,7 @@ namespace Level.Hud
             SetupDraggingSignalsHandlers(figure);
         }
         
-        private void SetMainAssemblyContainerFigure(LevelFigureParamsSnapshot figureParams)
+        private void SetAssemblyContainerFigure(LevelFigureParamsSnapshot figureParams)
         {
             var figurePrefab = _figuresStorageData.GetTargetFigure(_playerProgressService.CurrentPackNumber,
                 _playerProgressService.CurrentLevelNumber, figureParams.FigureId);

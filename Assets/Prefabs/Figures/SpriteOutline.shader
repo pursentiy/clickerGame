@@ -1,11 +1,11 @@
-Shader "Custom/SpriteOutline"
+Shader "Custom/SpriteInnerShadow_Smooth"
 {
     Properties
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
         _ShadowColor ("Inner Shadow Color", Color) = (0,0,0,1)
-        _ShadowWidth ("Shadow Width", Range(0, 10)) = 1
+        _ShadowWidth ("Shadow Width", Range(0, 20)) = 1
     }
 
     SubShader
@@ -57,40 +57,42 @@ Shader "Custom/SpriteOutline"
 
             fixed4 frag(v2f IN) : SV_Target
             {
-                // 1. Sample the center pixel alpha
                 fixed4 mainCol = tex2D(_MainTex, IN.uv);
-                float centerAlpha = mainCol.a;
-
-                // 2. If the pixel is already transparent, don't draw anything
-                if (centerAlpha <= 0.01) discard;
-
-                float2 unit = _MainTex_TexelSize.xy * _ShadowWidth;
                 
-                // 3. Multi-sampling neighbors
-                float avgAlpha = 0;
-                avgAlpha += tex2D(_MainTex, IN.uv + float2(0, unit.y)).a;
-                avgAlpha += tex2D(_MainTex, IN.uv - float2(0, unit.y)).a;
-                avgAlpha += tex2D(_MainTex, IN.uv + float2(unit.x, 0)).a;
-                avgAlpha += tex2D(_MainTex, IN.uv - float2(unit.x, 0)).a;
+                // If current pixel is transparent, there's no "inner" to draw on
+                if (mainCol.a <= 0.05) discard;
 
-                // Diagonals for smoothness
-                float diag = 0.707;
-                avgAlpha += tex2D(_MainTex, IN.uv + float2(unit.x, unit.y) * diag).a;
-                avgAlpha += tex2D(_MainTex, IN.uv + float2(-unit.x, unit.y) * diag).a;
-                avgAlpha += tex2D(_MainTex, IN.uv + float2(unit.x, -unit.y) * diag).a;
-                avgAlpha += tex2D(_MainTex, IN.uv + float2(-unit.x, -unit.y) * diag).a;
+                float2 texelSize = _MainTex_TexelSize.xy;
+                float totalAlpha = 0;
+                float samples = 0;
 
-                // 4. Calculate Inner Shadow
-                // If avgAlpha is 8, it's deep inside. If it's less than 8, it's near the edge.
-                float innerShadow = 1.0 - (avgAlpha / 8.0);
+                // Increase the 'step' density to remove gaps
+                // We sample in a small grid around the pixel
+                for (float x = -1; x <= 1; x += 0.5)
+                {
+                    for (float y = -1; y <= 1; y += 0.5)
+                    {
+                        // Skip the center pixel
+                        if (x == 0 && y == 0) continue;
+
+                        float2 offset = float2(x, y) * _ShadowWidth * texelSize;
+                        totalAlpha += tex2D(_MainTex, IN.uv + offset).a;
+                        samples++;
+                    }
+                }
+
+                // Calculate how much "emptiness" is around this opaque pixel
+                float averageAlpha = totalAlpha / samples;
                 
-                // Smooth out the shadow
-                innerShadow = smoothstep(0, 1, innerShadow);
+                // Invert it: 1.0 means it's an edge (lots of transparency nearby)
+                // 0.0 means it's deep inside the shape
+                float innerShadow = saturate(1.0 - averageAlpha);
 
-                // 5. Final Color
-                // We keep the shadow color, but mask it by the original shape's alpha
+                // Make the falloff smoother
+                innerShadow = pow(innerShadow, 0.5); 
+
                 fixed4 finalColor = _ShadowColor;
-                finalColor.a *= innerShadow * centerAlpha;
+                finalColor.a *= innerShadow * mainCol.a;
 
                 return finalColor;
             }
