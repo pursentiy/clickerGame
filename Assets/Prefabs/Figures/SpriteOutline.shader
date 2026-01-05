@@ -4,8 +4,8 @@ Shader "Custom/SpriteOutline"
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
-        _OutlineColor ("Outline Color", Color) = (1,1,1,1)
-        _OutlineWidth ("Outline Width", Range(0, 10)) = 1
+        _ShadowColor ("Inner Shadow Color", Color) = (0,0,0,1)
+        _ShadowWidth ("Shadow Width", Range(0, 10)) = 1
     }
 
     SubShader
@@ -16,13 +16,12 @@ Shader "Custom/SpriteOutline"
             "IgnoreProjector"="True"
             "RenderType"="Transparent"
             "PreviewType"="Plane"
-            "CanUseSpriteAtlas"="True"
         }
 
         Cull Off
         Lighting Off
         ZWrite Off
-        Blend One OneMinusSrcAlpha
+        Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
         {
@@ -31,74 +30,67 @@ Shader "Custom/SpriteOutline"
             #pragma fragment frag
             #include "UnityCG.cginc"
 
-            struct appdata_t
-            {
+            struct appdata_t {
                 float4 vertex : POSITION;
-                float4 color : COLOR;
                 float2 texcoord : TEXCOORD0;
+                fixed4 color : COLOR;
             };
 
-            struct v2f
-            {
+            struct v2f {
                 float4 vertex : SV_POSITION;
+                float2 uv : TEXCOORD0;
                 fixed4 color : COLOR;
-                float2 texcoord : TEXCOORD0;
             };
 
             sampler2D _MainTex;
-            float4 _MainTex_TexelSize; // Automatically filled by Unity: (1/width, 1/height, width, height)
-            fixed4 _Color;
-            fixed4 _OutlineColor;
-            float _OutlineWidth;
+            float4 _MainTex_TexelSize;
+            fixed4 _ShadowColor;
+            float _ShadowWidth;
 
-            v2f vert(appdata_t IN)
-            {
+            v2f vert(appdata_t IN) {
                 v2f OUT;
                 OUT.vertex = UnityObjectToClipPos(IN.vertex);
-                OUT.texcoord = IN.texcoord;
-                OUT.color = IN.color * _Color;
+                OUT.uv = IN.texcoord;
+                OUT.color = IN.color;
                 return OUT;
             }
 
             fixed4 frag(v2f IN) : SV_Target
             {
-                // 1. Sample the center pixel
-                fixed4 c = tex2D(_MainTex, IN.texcoord);
+                // 1. Sample the center pixel alpha
+                fixed4 mainCol = tex2D(_MainTex, IN.uv);
+                float centerAlpha = mainCol.a;
 
-                // 2. Clear the interior (like the first image)
-                // We use a smoothstep here to ensure the transition from inside to outside is clean
-                float mask = smoothstep(0.1, 0.2, c.a);
+                // 2. If the pixel is already transparent, don't draw anything
+                if (centerAlpha <= 0.01) discard;
 
-                float2 uv = IN.texcoord;
-                float2 unit = _MainTex_TexelSize.xy * _OutlineWidth;
+                float2 unit = _MainTex_TexelSize.xy * _ShadowWidth;
+                
+                // 3. Multi-sampling neighbors
+                float avgAlpha = 0;
+                avgAlpha += tex2D(_MainTex, IN.uv + float2(0, unit.y)).a;
+                avgAlpha += tex2D(_MainTex, IN.uv - float2(0, unit.y)).a;
+                avgAlpha += tex2D(_MainTex, IN.uv + float2(unit.x, 0)).a;
+                avgAlpha += tex2D(_MainTex, IN.uv - float2(unit.x, 0)).a;
 
-                // 3. Multi-sampling for smoothness (Gaussian-like Blur)
-                // We average the alpha of 8 surrounding points
-                fixed totalAlpha = 0;
-
-                // Cardinal directions
-                totalAlpha += tex2D(_MainTex, uv + float2(0, unit.y)).a;
-                totalAlpha += tex2D(_MainTex, uv - float2(0, unit.y)).a;
-                totalAlpha += tex2D(_MainTex, uv + float2(unit.x, 0)).a;
-                totalAlpha += tex2D(_MainTex, uv - float2(unit.x, 0)).a;
-
-                // Diagonals (multiplied by 0.707 for distance correction)
+                // Diagonals for smoothness
                 float diag = 0.707;
-                totalAlpha += tex2D(_MainTex, uv + float2(unit.x, unit.y) * diag).a;
-                totalAlpha += tex2D(_MainTex, uv + float2(-unit.x, unit.y) * diag).a;
-                totalAlpha += tex2D(_MainTex, uv + float2(unit.x, -unit.y) * diag).a;
-                totalAlpha += tex2D(_MainTex, uv + float2(-unit.x, -unit.y) * diag).a;
+                avgAlpha += tex2D(_MainTex, IN.uv + float2(unit.x, unit.y) * diag).a;
+                avgAlpha += tex2D(_MainTex, IN.uv + float2(-unit.x, unit.y) * diag).a;
+                avgAlpha += tex2D(_MainTex, IN.uv + float2(unit.x, -unit.y) * diag).a;
+                avgAlpha += tex2D(_MainTex, IN.uv + float2(-unit.x, -unit.y) * diag).a;
 
-                // 4. Calculate final alpha
-                // We divide by a value (like 4 or 8) to control thickness/softness
-                float outlineAlpha = saturate(totalAlpha / 4.0);
+                // 4. Calculate Inner Shadow
+                // If avgAlpha is 8, it's deep inside. If it's less than 8, it's near the edge.
+                float innerShadow = 1.0 - (avgAlpha / 8.0);
+                
+                // Smooth out the shadow
+                innerShadow = smoothstep(0, 1, innerShadow);
 
-                // 5. Subtract the original shape so only the outer blurred edge remains
-                outlineAlpha -= mask;
-
-                // Apply the outline color with the calculated smooth alpha
-                fixed4 finalColor = _OutlineColor;
-                finalColor.a *= saturate(outlineAlpha);
+                // 5. Final Color
+                // We keep the shadow color, but mask it by the original shape's alpha
+                fixed4 finalColor = _ShadowColor;
+                finalColor.a *= innerShadow * centerAlpha;
 
                 return finalColor;
             }
