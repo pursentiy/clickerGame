@@ -71,6 +71,7 @@ namespace GameState
 
         private void Start()
         {
+            _screenHandler.InitializeBackground();
             _screenHandler.ShowWelcomeScreen(true);
 
             SetupSounds();

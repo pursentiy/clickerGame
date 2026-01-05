@@ -1,6 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
-using Utilities.Disposable;
+using Extensions;
 
 namespace Common.Widgets
 {
@@ -18,6 +18,7 @@ namespace Common.Widgets
         [Header("Randomization Ranges")]
         [SerializeField] private Vector2 durationRange = new Vector2(10f, 20f);
         [SerializeField] private Vector2 delayRange = new Vector2(0f, 5f);
+        [SerializeField] private float _disablingChance = 0.3f;
 
         private float _leftEdge;
         private float _rightEdge;
@@ -25,9 +26,20 @@ namespace Common.Widgets
 
         private void Start()
         {
-            if (cloudTransform == null) cloudTransform = transform;
-            if (spriteRenderer == null) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            if (Random.Range(0f, 1f) < _disablingChance)
+            {
+                cloudTransform.TrySetActive(false);
+                return;
+            }
 
+            if (cloudTransform == null)
+                cloudTransform = transform;
+
+            if (spriteRenderer == null)
+                spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+            cloudTransform.TrySetActive(true);
+            
             // 1. Calculate World bounds using the Camera
             var cam = Camera.main;
             var leftWorldPoint = cam.ViewportToWorldPoint(new Vector3(0, 0, 0));
