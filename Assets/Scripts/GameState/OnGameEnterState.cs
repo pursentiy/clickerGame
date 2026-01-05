@@ -5,7 +5,6 @@ using Installers;
 using Services;
 using Storage;
 using Storage.Levels;
-using Storage.Levels.Params;
 using Zenject;
 using ScreenHandler = Handlers.ScreenHandler;
 
@@ -84,7 +83,7 @@ namespace GameState
             _soundHandler.StartAmbience();
         }
 
-        private bool IsNewPacksAdded(List<PackParams> savedDataProgress)
+        private bool IsNewPacksAdded(List<PackParamsData> savedDataProgress)
         {
             return _levelsParamsStorage.DefaultPacksParamsList.Count > savedDataProgress.Count;
         }

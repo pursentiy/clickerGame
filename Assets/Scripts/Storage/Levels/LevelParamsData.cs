@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Level.Game;
-using Storage.Levels.Params;
 using UnityEngine;
 
 namespace Storage.Levels
@@ -17,7 +15,6 @@ namespace Storage.Levels
         public float FigureScale = 1f;
         public List<LevelFigureParamsData> LevelsFiguresParams;
         public LevelBeatingTimeInfo LevelBeatingTimeInfo;
-        public List<LevelFigureParams> LevelFiguresParamsList;
     }
 
     [Serializable]

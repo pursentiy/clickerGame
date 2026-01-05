@@ -106,7 +106,7 @@ namespace Components.Levels
         {
             _levelHudHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelHudHandler>(levelHudHandler, _gameMainCanvasTransform);
             _levelHudHandler.SetupHUDFigures(packParam.LevelFiguresParamsList);
-            _levelHudHandler.Initialize(packParam.LevelBeatingTimeInfo);
+            _levelHudHandler.Initialize(packParam.LevelBeatingTimeInfo, packParam.FigureScale);
             
             _levelHudHandler.GetOnBeginDragFiguresSignal().ForEach(signal => signal.MapListener(StartElementDragging).DisposeWith(this));
             _levelHudHandler.GetOnDragEndFiguresSignal().ForEach(signal => signal.MapListener(EndElementDragging).DisposeWith(this));

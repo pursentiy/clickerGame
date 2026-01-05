@@ -1,6 +1,5 @@
 using System.Linq;
 using Storage.Levels;
-using Storage.Levels.Params;
 using Storage.Snapshots.LevelParams;
 
 namespace Storage.Extensions
@@ -17,7 +16,7 @@ namespace Storage.Extensions
                 .Where(i => i != null)
                 .ToList();
             
-            return new LevelParamsSnapshot(levelParams.LevelNumber,  levelParams.LevelBeatingTimeInfo.ToSnapshot(), figuresParams);
+            return new LevelParamsSnapshot(levelParams.LevelNumber, levelParams.FigureScale,  levelParams.LevelBeatingTimeInfo.ToSnapshot(), figuresParams);
         }
 
         private static LevelBeatingTimeInfoSnapshot ToSnapshot(this LevelBeatingTimeInfo levelBeatingTimeInfo)

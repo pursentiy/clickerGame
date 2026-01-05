@@ -56,10 +56,11 @@ namespace Level.Hud
             OnTimerChanged(_levelInfoTrackerService.CurrentLevelPlayingTime);
         }
 
-        public void Initialize(LevelBeatingTimeInfoSnapshot levelBeatingTime)
+        public void Initialize(LevelBeatingTimeInfoSnapshot levelBeatingTime, float assemblyContainerScale)
         {
             _levelInfoTrackerService.CurrentLevelPlayingTimeChangedSignal.MapListener(OnTimerChanged).DisposeWith(this);
             _starsProgressWidget.Initialize(levelBeatingTime);
+            SetAssemblyContainerScale(assemblyContainerScale);
             OnTimerChanged(_levelInfoTrackerService.CurrentLevelPlayingTime);
         }
 
@@ -67,6 +68,14 @@ namespace Level.Hud
         {
             levelFiguresParams.ForEach(SetDraggingFigure);
             levelFiguresParams.ForEach(SetAssemblyContainerFigure);
+        }
+
+        private void SetAssemblyContainerScale(float scale)
+        {
+            if (scale <= 0)
+                return;
+            
+            _figuresAssemblyContainer.localScale = new Vector3(scale, scale, scale);
         }
         
         protected override void Awake()

@@ -7,7 +7,6 @@ using Screen.ChooseLevel.Widgets;
 using Services;
 using Storage;
 using Storage.Levels;
-using Storage.Levels.Params;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -70,7 +69,7 @@ namespace Screen.ChooseLevel
         {
             if (levelParams == null)
             {
-                LoggerService.LogError($"{nameof(LevelParams)} is null");
+                LoggerService.LogError($"{nameof(LevelParamsData)} is null");
                 return;
             }
 
