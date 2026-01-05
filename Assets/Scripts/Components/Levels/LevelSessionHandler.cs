@@ -6,7 +6,6 @@ using Extensions;
 using Handlers;
 using Handlers.UISystem;
 using Installers;
-using Level.Click;
 using Level.Game;
 using Level.Hud;
 using Level.Widgets;
@@ -33,14 +32,12 @@ namespace Components.Levels
         [Inject] private LevelHelperService _levelHelperService;
         [Inject] private UIManager _uiManager;
         [Inject] private PlayerRepositoryService _playerRepositoryService;
+        [Inject] private ClickHandlerService _clickHandlerService;
 
         [SerializeField] private RectTransform _gameMainCanvasTransform;
         [SerializeField] private RectTransform _draggingTransform;
-        [SerializeField] private ClickHandler _clickHandler;
         [SerializeField] private ParticleSystem _finishedFigureParticles;
-        [SerializeField] private LevelVisualHandler _levelVisualHandlerPrefab;
 
-        private LevelVisualHandler _levelVisualHandler;
         private LevelHudHandler _levelHudHandler;
         private FigureMenu _draggingFigureContainer;
         private GameObject _draggingFigureImage;
@@ -66,9 +63,7 @@ namespace Components.Levels
             var levelId = $"{_playerProgressService.CurrentPackNumber}-{_playerProgressService.CurrentLevelNumber}";
             _levelInfoTrackerService.StartLevelTracking(levelId);
             
-            SetupClickHandler();
             SetupHud(levelParamsSnapshot, levelHudHandler);
-            SetupLevelScreenHandler(levelParamsSnapshot, defaultColor);
             
             _soundHandler.PlaySound("start");
         }
@@ -105,17 +100,6 @@ namespace Components.Levels
             _soundHandler.PlaySound("finished");
             var context = new CompleteLevelInfoPopupContext(totalStars, starsForAccrual, levelPlayedTime, GoToLevelsMenu);
             _uiManager.PopupsHandler.ShowPopupImmediately<CompleteLevelInfoPopupMediator>(context);
-        }
-
-        private void SetupClickHandler()
-        {
-            _clickHandler.enabled = true;
-        }
-
-        private void SetupLevelScreenHandler(LevelParamsSnapshot packParam, Color defaultColor)
-        {
-            _levelVisualHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelVisualHandler>(_levelVisualHandlerPrefab);
-            //_levelVisualHandler.SetupLevel(packParam.LevelFiguresParamsList, defaultColor);
         }
 
         private void SetupHud(LevelParamsSnapshot packParam, LevelHudHandler levelHudHandler)
@@ -156,13 +140,10 @@ namespace Components.Levels
 
         private void EndElementDragging(PointerEventData eventData)
         {
-            var releasedOnFigure = _clickHandler.TryGetFigureAnimalTargetOnDragEnd(eventData);
-
-            if (_draggingFigureContainer == null)
-            {
+            if (_levelHudHandler == null || _draggingFigureContainer == null)
                 return;
-            }
-
+            
+            var releasedOnFigure = _clickHandlerService.DetectFigureTarget(eventData, _levelHudHandler.FiguresAssemblyCanvasRaycaster);
             if (releasedOnFigure == null)
             {
                 ResetDraggingFigure();
@@ -311,12 +292,6 @@ namespace Components.Levels
 
         public void Dispose()
         {
-            if (_levelVisualHandler != null)
-            {
-                _levelVisualHandler.Dispose();
-                Destroy(_levelVisualHandler.gameObject);
-            }
-
             if (_levelHudHandler != null)
             {
                 _levelHudHandler.Dispose();

@@ -25,8 +25,9 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - ENABLE_LINEAR
+  m_InvalidKeywords:
   - _USEWAVE_ON
-  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -123,14 +124,18 @@ Material:
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
+    - _SpiralArms: 3
+    - _SpiralSpeed: 3
+    - _SpiralTightness: 5
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _Threshold: 0
+    - _UseSpiral: 0
     - _UseWave: 1
-    - _WaveFreq: 15.3
-    - _WaveSpeed: 5.2
-    - _WaveStrength: 0.5
+    - _WaveFreq: 11.5
+    - _WaveSpeed: 4.35
+    - _WaveStrength: 0.583
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
@@ -139,6 +144,6 @@ Material:
     - _Color: {r: 1, g: 0.92429775, b: 0.9103774, a: 0.03529412}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineColor: {r: 0.2627451, g: 0.45882353, b: 0.65882355, a: 1}
-    - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ShadowColor: {r: 0.14509805, g: 0.29423007, b: 0.5803922, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []

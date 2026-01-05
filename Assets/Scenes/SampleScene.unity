@@ -817,7 +817,6 @@ GameObject:
   - component: {fileID: 534889507}
   - component: {fileID: 534889505}
   - component: {fileID: 534889509}
-  - component: {fileID: 534889508}
   - component: {fileID: 534889510}
   - component: {fileID: 534889511}
   - component: {fileID: 534889512}
@@ -921,18 +920,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &534889508
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 534889504}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a2fa1113f4e427280af461b8830641c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &534889509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -947,10 +934,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gameMainCanvasTransform: {fileID: 1676391184}
   _draggingTransform: {fileID: 426540645}
-  _clickHandler: {fileID: 534889508}
   _finishedFigureParticles: {fileID: 981916948}
-  _levelVisualHandlerPrefab: {fileID: 7161379702550670063, guid: 65c46781588fb4f4e813c0d92887f614,
-    type: 3}
 --- !u!114 &534889510
 MonoBehaviour:
   m_ObjectHideFlags: 0

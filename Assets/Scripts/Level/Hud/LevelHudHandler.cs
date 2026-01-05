@@ -40,6 +40,7 @@ namespace Level.Hud
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private StarsProgressWidget _starsProgressWidget;
         [SerializeField] private LevelTimerWidget _levelTimerWidget;
+        [SerializeField] private GraphicRaycaster _figuresAssemblyCanvasRaycaster;
         
         private List<FigureMenu> _figureAnimalsForAssemblyList = new List<FigureMenu>();
         private List<FigureTarget> _figureAnimalsTargetList = new List<FigureTarget>();
@@ -47,6 +48,7 @@ namespace Level.Hud
         private Sequence _shiftingSequence;
         
         public FSignal BackToMenuClickSignal { get; } = new FSignal();
+        public GraphicRaycaster FiguresAssemblyCanvasRaycaster => _figuresAssemblyCanvasRaycaster;
 
         public void ResetHandler()
         {
