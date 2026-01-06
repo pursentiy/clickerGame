@@ -37,31 +37,7 @@ MonoBehaviour:
       volume: 0
       pitch: 0
     - name: theme_2
-      clip: {fileID: 8300000, guid: d39f6a0e17511d14682c35f0b6ae606c, type: 3}
-      volume: 0
-      pitch: 0
-    - name: theme_3
-      clip: {fileID: 8300000, guid: 0ea41709f4665324c97b0739bf9ec67e, type: 3}
-      volume: 0
-      pitch: 0
-    - name: theme_4
-      clip: {fileID: 8300000, guid: 98d93fb7c03dced4e9bd17ac6384821c, type: 3}
-      volume: 0
-      pitch: 0
-    - name: theme_5
       clip: {fileID: 8300000, guid: 1e44c166148e04748b32712dece3dce9, type: 3}
-      volume: 0
-      pitch: 0
-    - name: theme_6
-      clip: {fileID: 8300000, guid: 64640bd8cc2808745a0e7ccb46fd7927, type: 3}
-      volume: 0
-      pitch: 0
-    - name: theme_7
-      clip: {fileID: 8300000, guid: eaa08a3a528ccbb4ea3be9ea2af5e749, type: 3}
-      volume: 0
-      pitch: 0
-    - name: theme_8
-      clip: {fileID: 8300000, guid: b57f3eaf2f9634f43ac2502c2489daab, type: 3}
       volume: 0
       pitch: 0
   _buttonsPacks:
@@ -71,38 +47,6 @@ MonoBehaviour:
       volume: 0
       pitch: 0
     - name: button_2
-      clip: {fileID: 8300000, guid: 90133253dc9a205449d0aa9776ae94d8, type: 3}
-      volume: 0
-      pitch: 0
-    - name: button_3
-      clip: {fileID: 8300000, guid: 6e6f7e6aef9f946408ad25599e2ede6a, type: 3}
-      volume: 0
-      pitch: 0
-    - name: button_4
-      clip: {fileID: 8300000, guid: 68b6a39f33f059646badc3e5c0966b80, type: 3}
-      volume: 0
-      pitch: 0
-    - name: button_5
-      clip: {fileID: 8300000, guid: ffe479ea8baf0d34eaa143cb18eee4b0, type: 3}
-      volume: 0
-      pitch: 0
-    - name: button_6
-      clip: {fileID: 8300000, guid: e0fca8013c41ca740838f62723ac2617, type: 3}
-      volume: 0
-      pitch: 0
-    - name: button_7
-      clip: {fileID: 8300000, guid: 5bcc110381352c7449c692cadd2091d9, type: 3}
-      volume: 0
-      pitch: 0
-    - name: button_8
-      clip: {fileID: 8300000, guid: 08c59feb73c95c841aeee6acac98197a, type: 3}
-      volume: 0
-      pitch: 0
-    - name: button_9
-      clip: {fileID: 8300000, guid: 2fa96fabf0432d8468f99dfd95870106, type: 3}
-      volume: 0
-      pitch: 0
-    - name: button_10
       clip: {fileID: 8300000, guid: ea2f364c4741f684596e5e829a79a402, type: 3}
       volume: 0
       pitch: 0
