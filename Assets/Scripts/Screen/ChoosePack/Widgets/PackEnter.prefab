@@ -67,7 +67,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Unlocked!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: cb9c16d4545f7774d90d3c21b9c5616e, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 40335a8a4d5094cf39f913533f10eda8, type: 2}
   m_sharedMaterial: {fileID: 7877227770960874473, guid: cb9c16d4545f7774d90d3c21b9c5616e,
     type: 2}
   m_fontSharedMaterials: []
@@ -132,7 +132,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &637425355916907447
@@ -485,8 +485,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: ANIMALS
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: cb9c16d4545f7774d90d3c21b9c5616e, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 67a9c5dfb4e999448940aa6fef563973, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 40335a8a4d5094cf39f913533f10eda8, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 23bfd851754574bd5b85383ec91e7d4f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -510,7 +510,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 83.4
+  m_fontSize: 96.05
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -892,7 +892,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 25 stars required
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: cb9c16d4545f7774d90d3c21b9c5616e, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 40335a8a4d5094cf39f913533f10eda8, type: 2}
   m_sharedMaterial: {fileID: 7877227770960874473, guid: cb9c16d4545f7774d90d3c21b9c5616e,
     type: 2}
   m_fontSharedMaterials: []
@@ -957,7 +957,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &7728771316093060561

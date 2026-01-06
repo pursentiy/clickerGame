@@ -313,8 +313,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: DEER
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: cb9c16d4545f7774d90d3c21b9c5616e, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: d3a9c6bb75d680d4a86c6e76dd347eac, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 40335a8a4d5094cf39f913533f10eda8, type: 2}
+  m_sharedMaterial: {fileID: 7034097681165985734, guid: 40335a8a4d5094cf39f913533f10eda8,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -338,7 +339,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 76.2
+  m_fontSize: 87.75
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -397,7 +398,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1803877356123055895
 RectTransform:
   m_ObjectHideFlags: 0
@@ -522,8 +523,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Difficulty: Easy'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: cb9c16d4545f7774d90d3c21b9c5616e, type: 2}
-  m_sharedMaterial: {fileID: 7877227770960874473, guid: cb9c16d4545f7774d90d3c21b9c5616e,
+  m_fontAsset: {fileID: 11400000, guid: 40335a8a4d5094cf39f913533f10eda8, type: 2}
+  m_sharedMaterial: {fileID: 7034097681165985734, guid: 40335a8a4d5094cf39f913533f10eda8,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

@@ -332,8 +332,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7a4a1fc79074f17990eef7de8e68e9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _backgroundGameObjectPrefab: {fileID: 9137227510321094588, guid: 6ef0c0647962c45b2967b2ca53f78814,
-    type: 3}
   _playButton: {fileID: 1496618069684825166}
   _settingsButton: {fileID: 614988029759736858}
 --- !u!1 &1496618069537809096
@@ -403,8 +401,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Start
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: cb9c16d4545f7774d90d3c21b9c5616e, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: cba98170ac5081342a355493917b8820, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 40335a8a4d5094cf39f913533f10eda8, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 23bfd851754574bd5b85383ec91e7d4f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -428,7 +426,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 130
   m_fontSizeBase: 130
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1077,7 +1075,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6817978088746886115}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.3977647}
+  m_AnchorMin: {x: 0, y: 0.36091882}
   m_AnchorMax: {x: 1, y: 0.55760723}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
@@ -1110,10 +1108,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Cartoon World Puzzle Adventyre
+  m_text: Cartoon World Puzzle Adventure
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: cb9c16d4545f7774d90d3c21b9c5616e, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 69bbcb2fe05af4f7dbbe71c561691f88, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 40335a8a4d5094cf39f913533f10eda8, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 23bfd851754574bd5b85383ec91e7d4f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1137,7 +1135,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 70.3
+  m_fontSize: 150
   m_fontSizeBase: 165.52
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1149,7 +1147,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: -8.41
   m_wordSpacing: 0
-  m_lineSpacing: -57.2
+  m_lineSpacing: -25.42
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -2249,8 +2247,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: cb9c16d4545f7774d90d3c21b9c5616e, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: cba98170ac5081342a355493917b8820, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 40335a8a4d5094cf39f913533f10eda8, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 23bfd851754574bd5b85383ec91e7d4f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2274,7 +2272,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 89.85
   m_fontSizeBase: 130
   m_fontWeight: 400
   m_enableAutoSizing: 1

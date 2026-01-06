@@ -142,8 +142,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Time: 0:26'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: cb9c16d4545f7774d90d3c21b9c5616e, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 74cea6656e5f6194fa541b39d7a8ea48, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 40335a8a4d5094cf39f913533f10eda8, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 23bfd851754574bd5b85383ec91e7d4f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5214,7 +5214,6 @@ MonoBehaviour:
   - {fileID: 1295737757339845732}
   - {fileID: 3358620936536749126}
   - {fileID: 7924686380830619081}
-  GrayScaleMaterial: {fileID: 2100000, guid: 610ecc4d165e343e2a016b00f91bffa3, type: 2}
   GrayScaleStarMaterial: {fileID: 2100000, guid: 610ecc4d165e343e2a016b00f91bffa3,
     type: 2}
   DefaultStareMaterial: {fileID: 2100000, guid: 2d0140163a5f5478fa0f687eaea10630,
@@ -5310,8 +5309,8 @@ MonoBehaviour:
 
     Confratulations!'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: cb9c16d4545f7774d90d3c21b9c5616e, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: cba98170ac5081342a355493917b8820, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 40335a8a4d5094cf39f913533f10eda8, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 23bfd851754574bd5b85383ec91e7d4f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5335,7 +5334,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 131.2
+  m_fontSize: 103.05
   m_fontSizeBase: 140
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5347,7 +5346,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: -31.2
+  m_lineSpacing: -6.04
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0

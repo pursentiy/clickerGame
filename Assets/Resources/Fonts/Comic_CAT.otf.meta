@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cb3d1b6c4a974e74d9a438f9994cde1e
+guid: 98a6cf2a25eed48ef8f421c55a9933b6
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -8,9 +8,8 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Rumpelstiltskin
   fontNames:
-  - Rumpelstiltskin
+  - Comic CAT
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
