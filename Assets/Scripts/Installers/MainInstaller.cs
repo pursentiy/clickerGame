@@ -21,7 +21,7 @@ namespace Installers
         [SerializeField] private PopupHandler _popupHandler;
         [SerializeField] private LevelSessionHandler _levelSessionHandler;
         [SerializeField] private LevelParamsHandler _levelParamsHandler;
-        [SerializeField] private ObjectsPoolHandler _objectsPoolHandler;
+        [SerializeField] private UIScreenUpdater _uiScreenUpdater;
         [SerializeField] private UIBlockHandler _uiBlockHandler;
         [SerializeField] private SoundHandler _soundHandler;
         [SerializeField] private UISystemData _uiSystemData;
@@ -61,7 +61,7 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<LevelSessionHandler>().FromInstance(_levelSessionHandler);
             Container.Bind<LevelParamsHandler>().FromInstance(_levelParamsHandler);
             Container.Bind<UIBlockHandler>().FromInstance(_uiBlockHandler);
-            Container.Bind<ObjectsPoolHandler>().FromInstance(_objectsPoolHandler);
+            Container.Bind<UIScreenUpdater>().FromInstance(_uiScreenUpdater);
             Container.BindInterfacesAndSelfTo<SoundHandler>().FromInstance(_soundHandler);
             Container.Bind<LevelsParamsStorageData>().FromScriptableObject(_levelsParamsStorageData).AsSingle().NonLazy();
             Container.Bind<AudioStorageData>().FromScriptableObject(audioStorageData).AsSingle().NonLazy();
