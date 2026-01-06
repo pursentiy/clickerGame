@@ -48,40 +48,10 @@ SpriteAtlas:
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
-    packedSpriteRenderDataKeys:
-    - b1a0f5f0014e36d4f8f92d010876d8e7: 21300000
-    - ad73c5a21b3ad0c4e90ad57e113b2403: 21300000
-    - 67a86c0303377c44e929ac69363ae1ea: 21300000
-    - 72df2b76f8a197442b9a12357d9db7b3: 21300000
-    - 46a95b29e3999504a950dd9461012f08: 21300000
-    - 353b1a8a198fbf04f894382d88ceb96a: 21300000
-    - e85afa2ce2ef2a849942d38c8d32661b: 21300000
-    - 2374f7fce1fad4a47adc74f70fc387b8: 21300000
-    - b7cd213ea8f19ae4caeb966c405fb0a4: 21300000
-    - 3fb654ce5aac1224f8d23ab20e4eb86f: 21300000
+    packedSpriteRenderDataKeys: []
   m_MasterAtlas: {fileID: 0}
-  m_PackedSprites:
-  - {fileID: 21300000, guid: b1a0f5f0014e36d4f8f92d010876d8e7, type: 3}
-  - {fileID: 21300000, guid: ad73c5a21b3ad0c4e90ad57e113b2403, type: 3}
-  - {fileID: 21300000, guid: 67a86c0303377c44e929ac69363ae1ea, type: 3}
-  - {fileID: 21300000, guid: 72df2b76f8a197442b9a12357d9db7b3, type: 3}
-  - {fileID: 21300000, guid: 46a95b29e3999504a950dd9461012f08, type: 3}
-  - {fileID: 21300000, guid: 353b1a8a198fbf04f894382d88ceb96a, type: 3}
-  - {fileID: 21300000, guid: e85afa2ce2ef2a849942d38c8d32661b, type: 3}
-  - {fileID: 21300000, guid: 2374f7fce1fad4a47adc74f70fc387b8, type: 3}
-  - {fileID: 21300000, guid: b7cd213ea8f19ae4caeb966c405fb0a4, type: 3}
-  - {fileID: 21300000, guid: 3fb654ce5aac1224f8d23ab20e4eb86f, type: 3}
-  m_PackedSpriteNamesToIndex:
-  - soundOn
-  - LeftArrowButton
-  - SettingsButton
-  - buttonLargeDefault
-  - close
-  - musicOn
-  - on
-  - information
-  - RightArrowButton
-  - off
+  m_PackedSprites: []
+  m_PackedSpriteNamesToIndex: []
   m_RenderDataMap: {}
-  m_Tag: LogoAtlas
+  m_Tag: RabbitAtlas 1
   m_IsVariant: 0
