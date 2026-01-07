@@ -62,6 +62,10 @@ MonoBehaviour:
     m_Localized: '{0} stars required'
     m_Metadata:
       m_Items: []
+  - m_Id: 79655895003291648
+    m_Localized: Pack
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -13,8 +13,24 @@ MonoBehaviour:
   m_Name: LocalizationTableGame Shared Data
   m_EditorClassIdentifier: 
   m_TableCollectionName: LocalizationTableGame
-  m_TableCollectionNameGuidString: 00000000000000000000000000000000
-  m_Entries: []
+  m_TableCollectionNameGuidString: 04c8f2c44e5aa42f98b694f2bac87542
+  m_Entries:
+  - m_Id: 14904969912320
+    m_Key: pack_animals
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14907532632064
+    m_Key: level_deer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14909902413824
+    m_Key: level_duck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14912247029760
+    m_Key: level_pig
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
