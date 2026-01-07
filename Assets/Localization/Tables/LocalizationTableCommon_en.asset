@@ -9,65 +9,59 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
-  m_Name: LocalizationTableMain Shared Data
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: LocalizationTableCommon_en
   m_EditorClassIdentifier: 
-  m_TableCollectionName: LocalizationTableMain
-  m_TableCollectionNameGuidString: 7fcfd1c1436c14d4c9d556fb66f42b92
-  m_Entries:
-  - m_Id: 4588187463680
-    m_Key: settings_main
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 7fcfd1c1436c14d4c9d556fb66f42b92, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 9892589514752
+    m_Localized: LANGUAGES
     m_Metadata:
       m_Items: []
-  - m_Id: 9892589514752
-    m_Key: settings_languages
+  - m_Id: 4588187463680
+    m_Localized: SETTINGS
     m_Metadata:
       m_Items: []
   - m_Id: 10404516900864
-    m_Key: selected_language_name
+    m_Localized: English
     m_Metadata:
       m_Items: []
   - m_Id: 19807051755520
-    m_Key: setting_music
+    m_Localized: music
     m_Metadata:
       m_Items: []
   - m_Id: 19809790636032
-    m_Key: setting_sound
+    m_Localized: sounds
     m_Metadata:
       m_Items: []
   - m_Id: 77837471734292480
-    m_Key: difficulty_setup
+    m_Localized: Difficulty
     m_Metadata:
       m_Items: []
   - m_Id: 77837475089735680
-    m_Key: difficulty_easy
+    m_Localized: Easy
     m_Metadata:
       m_Items: []
   - m_Id: 77837477602123776
-    m_Key: difficulty_medium
+    m_Localized: Medium
     m_Metadata:
       m_Items: []
   - m_Id: 77838202818256896
-    m_Key: difficulty_hard
+    m_Localized: Hard
     m_Metadata:
       m_Items: []
   - m_Id: 77843398436839424
-    m_Key: result_time
+    m_Localized: 'Time: {0:F2}'
     m_Metadata:
       m_Items: []
   - m_Id: 77843401150554112
-    m_Key: pack_stars_required
+    m_Localized: '{0} stars required'
     m_Metadata:
       m_Items: []
-  m_Metadata:
-    m_Items: []
-  m_KeyGenerator:
-    rid: 5618737553530159104
   references:
     version: 2
-    RefIds:
-    - rid: 5618737553530159104
-      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables,
-        asm: Unity.Localization}
-      data:
-        m_CustomEpoch: 1748798868265
+    RefIds: []
