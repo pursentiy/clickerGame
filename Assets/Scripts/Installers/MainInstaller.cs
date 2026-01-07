@@ -4,6 +4,7 @@ using Handlers.UISystem;
 using Level.Widgets;
 using Pooling;
 using Services;
+using Services.Cheats;
 using Services.ContentDeliveryService;
 using Storage;
 using Storage.Audio;
@@ -49,8 +50,7 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<PlayerCurrencyService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<LevelHelperService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<ClickHandlerService>().AsSingle().NonLazy();
-
-            Container.BindInterfacesAndSelfTo<CheatService>().AsSingle().NonLazy();
+            
             Container.BindInterfacesAndSelfTo<PersistentCoroutinesService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<CoroutineService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<TimeService>().AsSingle().NonLazy();
@@ -65,6 +65,10 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<SoundHandler>().FromInstance(_soundHandler);
             Container.Bind<LevelsParamsStorageData>().FromScriptableObject(_levelsParamsStorageData).AsSingle().NonLazy();
             Container.Bind<AudioStorageData>().FromScriptableObject(audioStorageData).AsSingle().NonLazy();
+            
+#if UNITY_EDITOR
+            Container.BindInterfacesAndSelfTo<CheatService>().AsSingle().NonLazy();
+#endif
         }
     }
 }

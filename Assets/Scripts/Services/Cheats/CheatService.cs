@@ -1,19 +1,22 @@
-using UnityEngine;
 using Zenject;
 
-namespace Services
+namespace Services.Cheats
 {
-    //TODO REMOVE
     public class CheatService
     {
         [Inject] private PlayerRepositoryService _playerRepositoryService;
         [Inject] private ProfileBuilderService _profileBuilderService;
         
-        public void CheatResetProgress()
+        public void ResetProgress()
         {
             var snapshot = _profileBuilderService.BuildNewProfileSnapshot();
             _playerRepositoryService.SavePlayerSnapshot(snapshot);
-            Application.Quit();
+            
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit(); // Closes the actual built app
+#endif
         }
     }
 }
