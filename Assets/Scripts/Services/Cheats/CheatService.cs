@@ -14,8 +14,6 @@ namespace Services.Cheats
             
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit(); // Closes the actual built app
 #endif
         }
     }
