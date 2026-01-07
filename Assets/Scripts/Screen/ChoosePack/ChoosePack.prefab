@@ -64,6 +64,7 @@ MonoBehaviour:
   _horizontalLayoutGroupPrefab: {fileID: 8399391387326885449, guid: 038723734860dbc4aa9918f525815788,
     type: 3}
   _starsDisplayWidget: {fileID: 1585478366241746034}
+  _headerText: {fileID: 5870720989226935585}
 --- !u!1 &3457223826188242404
 GameObject:
   m_ObjectHideFlags: 0
@@ -478,7 +479,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 159
+  m_fontSize: 55.8
   m_fontSizeBase: 156.6
   m_fontWeight: 400
   m_enableAutoSizing: 1

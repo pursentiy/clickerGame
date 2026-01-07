@@ -32,11 +32,14 @@ namespace Screen.ChooseLevel
         [SerializeField] private Button _settingsButton;
         [SerializeField] private TMP_Text _packName;
         [SerializeField] private CurrencyDisplayWidget _starsDisplayWidget;
+        [SerializeField] private TextMeshProUGUI _headerText;
         
         private HorizontalLayoutGroup _horizontalGroup;
 
         private void Start()
         {
+            _headerText.text = _localization.GetGameValue("choose_level_header");
+
             InitializeLevelsButton();
 
             _starsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);

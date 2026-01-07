@@ -5,6 +5,7 @@ using Screen.ChoosePack.Widgets;
 using Services;
 using Storage;
 using Storage.Levels;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -18,15 +19,19 @@ namespace Screen.ChoosePack
         [Inject] private PlayerService _playerService;
         [Inject] private LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private PlayerCurrencyService _playerCurrencyService;
+        [Inject] private LocalizationService _localization;
         
         [SerializeField] private PackItemWidget _packItemWidgetPrefab;
         [SerializeField] private RectTransform _levelEnterPopupsParentTransform;
         [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroupPrefab;
         [SerializeField] private CurrencyDisplayWidget _starsDisplayWidget;
+        [SerializeField] private TextMeshProUGUI _headerText;
 
         private List<HorizontalLayoutGroup> _horizontalGroups = new();
         private void Start()
         {
+            _headerText.text = _localization.GetGameValue("choose_pack_header");
+
             InitializePackButtons();
             _starsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
         }
