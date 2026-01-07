@@ -2,7 +2,6 @@ using Components.Levels;
 using Handlers;
 using Handlers.UISystem;
 using Level.Widgets;
-using Pooling;
 using Services;
 using Services.Cheats;
 using Services.ContentDeliveryService;
@@ -55,7 +54,9 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<CoroutineService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<TimeService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<LevelInfoTrackerService>().AsSingle().NonLazy();
-            
+
+            Container.BindInterfacesAndSelfTo<LocalizationService>().AsSingle().NonLazy();
+
             Container.Bind<PopupHandler>().FromInstance(_popupHandler);
             Container.Bind<ScreenHandler>().FromInstance(_screenHandler);
             Container.BindInterfacesAndSelfTo<LevelSessionHandler>().FromInstance(_levelSessionHandler);

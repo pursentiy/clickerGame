@@ -23,6 +23,7 @@ namespace Screen.ChooseLevel
         [Inject] private SoundHandler _soundHandler;
         [Inject] private UIManager _uiManager;
         [Inject] private PlayerCurrencyService _playerCurrencyService;
+        [Inject] private LocalizationService _localization;
         
         [SerializeField] private LevelItemWidget _levelItemWidgetPrefab;
         [SerializeField] private RectTransform _levelEnterPopupsParentTransform;
@@ -40,7 +41,10 @@ namespace Screen.ChooseLevel
 
             _starsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
             
-            _packName.text = _levelsParamsStorageData.GetPackParamsData(_playerProgressService.CurrentPackNumber).PackName + " Pack";
+            var rawPackName = _levelsParamsStorageData.GetPackParamsData(_playerProgressService.CurrentPackNumber).PackName;
+            var localizedName = _localization.GetGameValue($"pack_{rawPackName.ToLower()}");
+            var wordPack = _localization.GetCommonValue("word_pack");
+            _packName.text = $"{localizedName} {wordPack}";
             
             _goToChoosePackScreenButton.onClick.MapListenerWithSound(()=> _screenHandler.ShowChoosePackScreen());
             _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null));

@@ -10,56 +10,60 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
-  m_Name: LocalizationTableMain_en
+  m_Name: LocalizationTableCommon_es
   m_EditorClassIdentifier: 
   m_LocaleId:
-    m_Code: en
+    m_Code: es
   m_SharedData: {fileID: 11400000, guid: 7fcfd1c1436c14d4c9d556fb66f42b92, type: 2}
   m_Metadata:
     m_Items: []
   m_TableData:
   - m_Id: 9892589514752
-    m_Localized: LANGUAGES
+    m_Localized: IDIOMAS
     m_Metadata:
       m_Items: []
   - m_Id: 4588187463680
-    m_Localized: SETTINGS
+    m_Localized: AJUSTES
     m_Metadata:
       m_Items: []
   - m_Id: 10404516900864
-    m_Localized: English
+    m_Localized: "Espa\xF1ola"
     m_Metadata:
       m_Items: []
   - m_Id: 19807051755520
-    m_Localized: music
+    m_Localized: "m\xFAsica"
     m_Metadata:
       m_Items: []
   - m_Id: 19809790636032
-    m_Localized: sounds
+    m_Localized: sonidos
     m_Metadata:
       m_Items: []
   - m_Id: 77837471734292480
-    m_Localized: Difficulty
-    m_Metadata:
-      m_Items: []
-  - m_Id: 77837475089735680
-    m_Localized: Easy
-    m_Metadata:
-      m_Items: []
-  - m_Id: 77837477602123776
-    m_Localized: Medium
+    m_Localized: "Difficult\xE9"
     m_Metadata:
       m_Items: []
   - m_Id: 77838202818256896
-    m_Localized: Hard
+    m_Localized: Difficile
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77837477602123776
+    m_Localized: Moyenne
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77837475089735680
+    m_Localized: Facile
     m_Metadata:
       m_Items: []
   - m_Id: 77843398436839424
-    m_Localized: 'Time: {0:F2}'
+    m_Localized: 'Temps: {0:F2}'
     m_Metadata:
       m_Items: []
   - m_Id: 77843401150554112
-    m_Localized: '{0} stars required'
+    m_Localized: "{0} \xE9toiles requises"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 79655895003291648
+    m_Localized: Paquete
     m_Metadata:
       m_Items: []
   references:

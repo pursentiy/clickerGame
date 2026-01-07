@@ -2,9 +2,9 @@ using System;
 using Extensions;
 using Handlers;
 using Installers;
+using Services;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 using Utilities.Disposable;
 using Zenject;
@@ -15,6 +15,7 @@ namespace Screen.ChoosePack.Widgets
     {
         
         [Inject] private SoundHandler _soundHandler;
+        [Inject] private LocalizationService _localization;
         
         [SerializeField] private Image _lockImage;
         [SerializeField] private Image _fadeImage;
@@ -30,15 +31,14 @@ namespace Screen.ChoosePack.Widgets
 
         public void Initialize(string packName, GameObject packImagePrefab, int packNumber, bool isUnlocked, Action onClickAction, Action onLockedClickAction, int starsRequired)
         {
-            _packText.text = packName;
+            var packKey = $"pack_{packName.ToLower()}";
+            _packText.text = _localization.GetGameValue(packKey);
             _packImageInstance = Instantiate(packImagePrefab, _packImagePrefabContainer);
             _currentPackNumber = packNumber;
             _lockImage.gameObject.SetActive(!isUnlocked);
             _fadeImage.gameObject.SetActive(!isUnlocked);
-
-            var tableName = "LocalizationTableMain";
-            var localizedPattern = LocalizationSettings.StringDatabase.GetLocalizedString(tableName, "pack_stars_required");
-            _lockedBlockText.text = string.Format(localizedPattern, starsRequired);
+            
+            _lockedBlockText.text = _localization.GetFormattedCommonValue("pack_stars_required", starsRequired);
 
             _unlockedBlockHolder.gameObject.SetActive(isUnlocked);
             _lockedBlockHolder.gameObject.SetActive(!isUnlocked);

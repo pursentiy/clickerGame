@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
-  m_Name: LocalizationTableMain Shared Data
+  m_Name: LocalizationTableCommon Shared Data
   m_EditorClassIdentifier: 
-  m_TableCollectionName: LocalizationTableMain
+  m_TableCollectionName: LocalizationTableCommon
   m_TableCollectionNameGuidString: 7fcfd1c1436c14d4c9d556fb66f42b92
   m_Entries:
   - m_Id: 4588187463680
@@ -57,6 +57,10 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 77843401150554112
     m_Key: pack_stars_required
+    m_Metadata:
+      m_Items: []
+  - m_Id: 79655895003291648
+    m_Key: word_pack
     m_Metadata:
       m_Items: []
   m_Metadata:

@@ -2,10 +2,10 @@
 using Extensions;
 using Handlers;
 using Installers;
+using Services;
 using Storage.Levels;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 using Utilities.Disposable;
 using Zenject;
@@ -15,7 +15,8 @@ namespace Screen.ChooseLevel.Widgets
     public class LevelItemWidget : InjectableMonoBehaviour
     {
         [Inject] private SoundHandler _soundHandler;
-        
+        [Inject] private LocalizationService _localization;
+
         [SerializeField] private Image _lockImage;
         [SerializeField] private TMP_Text _levelText;
         [SerializeField] private TMP_Text _levelDifficultyText;
@@ -28,7 +29,8 @@ namespace Screen.ChooseLevel.Widgets
 
         public void Initialize(string levelName, Sprite levelSprite, int totalEarnedStars, LevelDifficulty levelDifficulty, bool isUnlocked, Action action)
         {
-            _levelText.text = levelName;
+            var levelKey = $"level_{levelName.ToLower()}";
+            _levelText.text = _localization.GetGameValue(levelKey);
             _levelImage.sprite = levelSprite;
             
             _levelEnterButton.interactable = isUnlocked;
@@ -43,10 +45,8 @@ namespace Screen.ChooseLevel.Widgets
 
         private void SetDifficultyText(LevelDifficulty difficulty)
         {
-            var tableName = "LocalizationTableMain";
-            var label = LocalizationSettings.StringDatabase.GetLocalizedString(tableName, "difficulty_setup");
-            var difficultyKey = $"difficulty_{difficulty.ToString().ToLower()}";
-            var value = LocalizationSettings.StringDatabase.GetLocalizedString(tableName, difficultyKey);
+            var label = _localization.GetCommonValue("difficulty_setup");
+            var value = _localization.GetCommonValue($"difficulty_{difficulty.ToString().ToLower()}");
             _levelDifficultyText.text = $"{label}: {value}";
         }
         
