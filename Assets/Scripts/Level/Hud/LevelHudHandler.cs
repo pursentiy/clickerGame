@@ -59,10 +59,22 @@ namespace Level.Hud
 
         public void Initialize(LevelBeatingTimeInfoSnapshot levelBeatingTime, float assemblyContainerScale)
         {
+            TryLogBeatingTime(levelBeatingTime);
+            
             _levelInfoTrackerService.CurrentLevelPlayingTimeChangedSignal.MapListener(OnTimerChanged).DisposeWith(this);
             _starsProgressWidget.Initialize(levelBeatingTime);
             SetAssemblyContainerScale(assemblyContainerScale);
             OnTimerChanged(_levelInfoTrackerService.CurrentLevelPlayingTime);
+        }
+
+        private void TryLogBeatingTime(LevelBeatingTimeInfoSnapshot levelBeatingTime)
+        {
+#if UNITY_EDITOR
+            Debug.LogWarning($"{nameof(LevelBeatingTimeInfoSnapshot)}: \n" +
+                             $"{nameof(levelBeatingTime.FastestTime)} - {levelBeatingTime.FastestTime}\n" +
+                             $"{nameof(levelBeatingTime.MediumTime)} - {levelBeatingTime.MediumTime}\n" +
+                             $"{nameof(levelBeatingTime.MinimumTime)} - {levelBeatingTime.MinimumTime}");
+#endif
         }
 
         public void SetupHUDFigures(List<LevelFigureParamsSnapshot> levelFiguresParams)
