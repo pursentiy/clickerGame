@@ -12,7 +12,6 @@ namespace Popup.Settings
         public RectTransform MainTransform;
         public Button LeftLanguageButton;
         public Button RightLanguageButton;
-        public Button ResetProgressButton;
         public Image CountryFlagImage;
         public TMPro.TextMeshProUGUI LanguageLabel;
         public Sprite[] LanguageFlags;

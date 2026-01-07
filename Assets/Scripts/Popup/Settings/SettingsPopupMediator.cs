@@ -17,8 +17,6 @@ namespace Popup.Settings
         [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private CheatService _cheatService;
         [Inject] private GlobalSettingsService _globalSettingsService;
-        
-        [SerializeField] private Sprite[] _languageFlags;
         private int _currentLanguageIndex = 0;
         
         public override IUIPopupAnimation Animation => new ScalePopupAnimation(View.MainTransform);
@@ -47,9 +45,6 @@ namespace Popup.Settings
             View.LeftLanguageButton.onClick.MapListenerWithSound(() => ChangeLanguage(-1));
             View.RightLanguageButton.onClick.MapListenerWithSound(() => ChangeLanguage(1));
 
-            //TODO CHEAT REMOVE
-            View.ResetProgressButton.onClick.MapListenerWithSound(CheatResetProgress);
-
             UpdateLanguagePopup();
         }
 
@@ -74,13 +69,8 @@ namespace Popup.Settings
 
         private void UpdateLanguagePopup()
         {
-            View.CountryFlagImage.sprite = _languageFlags[_currentLanguageIndex];
+            View.CountryFlagImage.sprite = View.LanguageFlags[_currentLanguageIndex];
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[_currentLanguageIndex];
-        }
-
-        private void CheatResetProgress()
-        {
-            _cheatService.CheatResetProgress();
         }
 
         private void OnDestroy()
