@@ -7,7 +7,6 @@ using Handlers.UISystem;
 using Popup.Common;
 using Services;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 using Utilities.Disposable;
 using Zenject;
 using Random = UnityEngine.Random;
@@ -22,6 +21,7 @@ namespace Popup.CompleteLevelInfoPopup
         [Inject] private PlayerCurrencyService _playerCurrencyService;
         [Inject] private PlayerRepositoryService _playerRepositoryService;
         [Inject] private PlayerService _playerService;
+        [Inject] private LocalizationService _localization;
 
         private Camera _textureCamera;
         private RenderTexture _renderTexture;
@@ -55,16 +55,15 @@ namespace Popup.CompleteLevelInfoPopup
     
         private void AnimateTime(float finalTime)
         {
-            var tableName = "LocalizationTableMain";
-            var localizedFormat = LocalizationSettings.StringDatabase.GetLocalizedString(tableName, "result_time");
-            View.TimeText.text = string.Format(localizedFormat, 0f);
+            var format = _localization.GetCommonValue("result_time");
+            View.TimeText.text = string.Format(format, 0f);
             float displayTime = 0;
             var seq = DOTween.Sequence();
     
             seq.Append(DOTween.To(() => displayTime, x => displayTime = x, finalTime, 1.5f)
                 .OnUpdate(() => 
                 {
-                    View.TimeText.text = string.Format(localizedFormat, displayTime);
+                    View.TimeText.text = string.Format(format, displayTime);
                 })
                 .SetEase(Ease.OutQuad)).KillWith(this);
     
@@ -152,7 +151,7 @@ namespace Popup.CompleteLevelInfoPopup
                     StartFloating(View.Stars[i].transform, i);
             }
         }
-        
+
         private void StartFloating(Transform starTrm, int index)
         {
             // Небольшой разброс по времени и высоте, чтобы звезды летали вразнобой
