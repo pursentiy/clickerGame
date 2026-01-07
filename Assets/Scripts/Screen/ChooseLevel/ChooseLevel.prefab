@@ -104,6 +104,7 @@ MonoBehaviour:
   _settingsButton: {fileID: 8743648213371521664}
   _packName: {fileID: 5870720989226935585}
   _starsDisplayWidget: {fileID: 1585478366241746034}
+  _headerText: {fileID: 679452920455784314}
 --- !u!1 &3457223826188242404
 GameObject:
   m_ObjectHideFlags: 0
@@ -235,7 +236,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 159
+  m_fontSize: 61.85
   m_fontSizeBase: 156.6
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -822,7 +823,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 136.45
+  m_fontSize: 44.1
   m_fontSizeBase: 156.6
   m_fontWeight: 400
   m_enableAutoSizing: 1
