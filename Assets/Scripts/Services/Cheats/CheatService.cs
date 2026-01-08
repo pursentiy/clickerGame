@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Linq;
 using Extensions;
 using Handlers.UISystem;
@@ -42,9 +43,9 @@ namespace Services.Cheats
             var snapshot = _profileBuilderService.BuildNewProfileSnapshot();
             _playerRepositoryService.SavePlayerSnapshot(snapshot);
             
-#if UNITY_EDITOR
+
             UnityEditor.EditorApplication.isPlaying = false;
-#endif
         }
     }
 }
+#endif

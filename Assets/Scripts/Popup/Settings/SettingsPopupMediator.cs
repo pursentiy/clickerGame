@@ -4,7 +4,6 @@ using Handlers;
 using Handlers.UISystem;
 using Popup.Common;
 using Services;
-using Services.Cheats;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using Zenject;
@@ -16,7 +15,6 @@ namespace Popup.Settings
     {
         [Inject] private SoundHandler _soundHandler;
         [Inject] private PlayerProgressService _playerProgressService;
-        [Inject] private CheatService _cheatService;
         [Inject] private GlobalSettingsService _globalSettingsService;
         
         private int _currentLanguageIndex = 0;

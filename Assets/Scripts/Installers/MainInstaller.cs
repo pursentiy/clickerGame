@@ -4,13 +4,15 @@ using Handlers;
 using Handlers.UISystem;
 using Level.Widgets;
 using Services;
-using Services.Cheats;
 using Services.ContentDeliveryService;
 using Services.FlyingRewardsAnimation;
 using Storage;
 using Storage.Audio;
 using UnityEngine;
 using Zenject;
+#if UNITY_EDITOR
+using Services.Cheats;
+#endif
 
 namespace Installers
 {
