@@ -111,8 +111,8 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _Falloff: 0.11
-    - _FillAlpha: 1
+    - _Falloff: 0.3
+    - _FillAlpha: 0.832
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -123,7 +123,7 @@ Material:
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShadowWidth: 5.3
+    - _ShadowWidth: 3.5
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -146,9 +146,9 @@ Material:
     - _BgColorToIgnore: {r: 1, g: 1, b: 0.8, a: 0}
     - _Color: {r: 1, g: 0.92429775, b: 0.9103774, a: 0.03529412}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LinearColor: {r: 0, g: 0, b: 0, a: 1}
+    - _LinearColor: {r: 0.8235294, g: 0.48235294, b: 0.20392157, a: 1}
     - _OutlineColor: {r: 0.2627451, g: 0.45882353, b: 0.65882355, a: 1}
-    - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ShadowColor: {r: 0.7169812, g: 0.52630836, b: 0.36863655, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _SpiralColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

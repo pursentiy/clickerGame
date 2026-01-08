@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DG.Tweening;
 using Handlers;
 using Handlers.UISystem;
 using Installers;
@@ -25,6 +26,8 @@ namespace GameState
 
         protected override void Awake()
         {
+            DOTween.Init(true, true, LogBehaviour.Default);
+            
             _applicationService.RegisterDisposableService(_uiManager);
             
             _uiManager.ShowScreensUI();

@@ -28,7 +28,7 @@ namespace Screen.ChooseLevel
         [SerializeField] private LevelItemWidget _levelItemWidgetPrefab;
         [SerializeField] private RectTransform _levelEnterPopupsParentTransform;
         [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroupPrefab;
-        [SerializeField] private Button _goToChoosePackScreenButton;
+        [SerializeField] private Button _goBack;
         [SerializeField] private Button _settingsButton;
         [SerializeField] private TMP_Text _packName;
         [SerializeField] private CurrencyDisplayWidget _starsDisplayWidget;
@@ -49,7 +49,7 @@ namespace Screen.ChooseLevel
             var wordPack = _localization.GetCommonValue("word_pack");
             _packName.text = $"{localizedName} {wordPack}";
             
-            _goToChoosePackScreenButton.onClick.MapListenerWithSound(()=> _screenHandler.ShowChoosePackScreen());
+            _goBack.onClick.MapListenerWithSound(()=> _screenHandler.ShowChoosePackScreen());
             _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null));
         }
 

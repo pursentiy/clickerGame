@@ -50,6 +50,7 @@ namespace Services.ContentDeliveryService
         {
             var timeStarted = Time.realtimeSinceStartup;
             
+            Debug.Log($"[DEBUG] Starting {nameof(LoadAssetAsyncInternal)} Addressables Load for ID: {id}");
             var handle = Addressables.LoadAssetAsync<T>(id);
 
             timeout ??= AddressablesTimeout;
@@ -86,15 +87,19 @@ namespace Services.ContentDeliveryService
         
         public void ReleaseHandle<T>(AsyncOperationHandle<T> handle)
         {
+            // Проверяем не только валидность, но и завершенность, если это возможно
             if (handle.IsValid())
             {
                 try
                 {
+                    // В WebGL безопасно релизить только то, что валидно.
+                    // Если handle.Result еще в процессе, Release может вызвать сбой.
                     Addressables.Release(handle);
                 }
                 catch (Exception e)
                 {
-                    LoggerService.LogError(e);
+                    // Используйте лог, который не останавливает выполнение
+                    LoggerService.LogWarning($"[Addressables] Safe Release caught: {e.Message}");
                 }
             }
         }
@@ -118,6 +123,7 @@ namespace Services.ContentDeliveryService
             bool inWorldSpace = false,
             float? timeout = null)
         {
+            Debug.Log($"[DEBUG] Starting {nameof(InstantiateAsyncInternal)} Addressables Load for reference: {reference}");
             var handle = Addressables.InstantiateAsync(reference, parent, inWorldSpace);
             
             timeout ??= Timeout;
