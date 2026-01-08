@@ -237,8 +237,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 3540686249549514174}
   - {fileID: 7105021539367332845}
+  - {fileID: 4115329540564904963}
   m_Father: {fileID: 7505053122958690425}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -5153,7 +5153,7 @@ GameObject:
   - component: {fileID: 5651327515096755991}
   - component: {fileID: 3668919458347311833}
   m_Layer: 5
-  m_Name: LevelCompletedInfoPopup
+  m_Name: CompleteLevelInfoPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5227,8 +5227,9 @@ MonoBehaviour:
   - {fileID: 4138932087970721870}
   - {fileID: 2822367878057236699}
   TimeText: {fileID: 2269927573737630943}
-  StarsDisplayWidget: {fileID: 7298797807882805698}
+  StarsDisplayWidget: {fileID: 7887233292712904831}
   StarsFlightStartPlace: {fileID: 2644083954325254318}
+  FlyingRewardsContainer: {fileID: 4303779283134089369}
 --- !u!114 &3668919458347311833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33692,7 +33693,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1001 &3227343312222638194
+--- !u!1001 &2663402743695931855
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -33733,12 +33734,12 @@ PrefabInstance:
     - target: {fileID: 2155773720201860556, guid: a3f902d9e9bb74bc483ea62a04344d5d,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 250
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 2155773720201860556, guid: a3f902d9e9bb74bc483ea62a04344d5d,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 150
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 2155773720201860556, guid: a3f902d9e9bb74bc483ea62a04344d5d,
         type: 3}
@@ -33763,17 +33764,17 @@ PrefabInstance:
     - target: {fileID: 2155773720201860556, guid: a3f902d9e9bb74bc483ea62a04344d5d,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2155773720201860556, guid: a3f902d9e9bb74bc483ea62a04344d5d,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2155773720201860556, guid: a3f902d9e9bb74bc483ea62a04344d5d,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2155773720201860556, guid: a3f902d9e9bb74bc483ea62a04344d5d,
         type: 3}
@@ -33783,7 +33784,7 @@ PrefabInstance:
     - target: {fileID: 2155773720201860556, guid: a3f902d9e9bb74bc483ea62a04344d5d,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -65
       objectReference: {fileID: 0}
     - target: {fileID: 2155773720201860556, guid: a3f902d9e9bb74bc483ea62a04344d5d,
         type: 3}
@@ -33800,32 +33801,27 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7307461831945833006, guid: a3f902d9e9bb74bc483ea62a04344d5d,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8088082150326855554, guid: a3f902d9e9bb74bc483ea62a04344d5d,
         type: 3}
       propertyPath: m_Name
-      value: StarsWidget
+      value: StarsWidget (1)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3f902d9e9bb74bc483ea62a04344d5d, type: 3}
---- !u!224 &3540686249549514174 stripped
+--- !u!224 &4115329540564904963 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2155773720201860556, guid: a3f902d9e9bb74bc483ea62a04344d5d,
     type: 3}
-  m_PrefabInstance: {fileID: 3227343312222638194}
+  m_PrefabInstance: {fileID: 2663402743695931855}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7298797807882805698 stripped
+--- !u!114 &7887233292712904831 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5297176865675571632, guid: a3f902d9e9bb74bc483ea62a04344d5d,
     type: 3}
-  m_PrefabInstance: {fileID: 3227343312222638194}
+  m_PrefabInstance: {fileID: 2663402743695931855}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1

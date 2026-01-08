@@ -52,10 +52,10 @@ namespace Popup.CompleteLevelInfoPopup
             _playerCurrencyService.StarsChangedSignal.MapListener(OnStarsUpdated).DisposeWith(this);
         }
 
-        private void OnStarsUpdated(int stars)
+        private void OnStarsUpdated(int earnedStars)
         {
             //TODO REPLACE TO FlyingUIRewardAnimationService AUTOMATICALLY UPDATE
-            View.StarsDisplayWidget.AddCurrency(stars);
+            View.StarsDisplayWidget.AddCurrency(earnedStars);
         }
 
         private void OnStarsAnimated()
@@ -203,7 +203,7 @@ namespace Popup.CompleteLevelInfoPopup
             
             var context = new FlyingUIRewardAnimationContext(
                 new ICurrency[]{earnedStars}, 
-                View.MainTransform, 
+                View.FlyingRewardsContainer, 
                 new Vector3[] {View.StarsFlightStartPlace.position},
                 new Vector3[] {View.StarsDisplayWidget.AnimationTarget.position});
             
@@ -265,7 +265,7 @@ namespace Popup.CompleteLevelInfoPopup
             
             var context = new FlyingUIRewardAnimationContext(
                 new ICurrency[]{earnedStarsForLevel}, 
-                View.MainTransform, 
+                View.StarsFlightStartPlace, 
                 new Vector3[] {View.StarsFlightStartPlace.position},
                 new Vector3[] {View.StarsDisplayWidget.AnimationTarget.position}, 
                 updateProfileValues: updateProfileValues);

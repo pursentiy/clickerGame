@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using Components.UI;
+using Extensions;
 using Handlers;
+using Handlers.UISystem;
+using Popup.Settings;
 using Screen.ChoosePack.Widgets;
 using Services;
 using Storage;
@@ -20,12 +23,15 @@ namespace Screen.ChoosePack
         [Inject] private LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private PlayerCurrencyService _playerCurrencyService;
         [Inject] private LocalizationService _localization;
+        [Inject] private UIManager _uiManager;
         
         [SerializeField] private PackItemWidget _packItemWidgetPrefab;
         [SerializeField] private RectTransform _levelEnterPopupsParentTransform;
         [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroupPrefab;
         [SerializeField] private CurrencyDisplayWidget _starsDisplayWidget;
         [SerializeField] private TextMeshProUGUI _headerText;
+        [SerializeField] private Button _goBack;
+        [SerializeField] private Button _settingsButton;
 
         private List<HorizontalLayoutGroup> _horizontalGroups = new();
         private void Start()
@@ -34,6 +40,9 @@ namespace Screen.ChoosePack
 
             InitializePackButtons();
             _starsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
+            
+            _goBack.onClick.MapListenerWithSound(()=> _screenHandler.ShowWelcomeScreen());
+            _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null));
         }
 
         private void InitializePackButtons()

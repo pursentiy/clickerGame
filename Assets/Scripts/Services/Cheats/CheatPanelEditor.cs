@@ -77,7 +77,7 @@ namespace Services.Cheats
 
                 if (parameters.Length == 0)
                 {
-                    if (GUILayout.Button($"Invoke {method.Name}", GUILayout.Height(25)))
+                    if (GUILayout.Button($"{method.Name}", GUILayout.Height(25)))
                     {
                         method.Invoke(_service, null);
                     }

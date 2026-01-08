@@ -24,7 +24,7 @@ namespace Services
             }
             
             _playerService.ProfileSnapshot.Stars += amount;
-            StarsChangedSignal.Dispatch( _playerService.ProfileSnapshot.Stars);
+            StarsChangedSignal.Dispatch(amount);
         }
     }
 }

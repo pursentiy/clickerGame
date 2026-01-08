@@ -14,6 +14,15 @@ namespace Services.Cheats
 
         public int StarsCount { get; set; } = 5;
         public bool UpdateProfileValues { get; set; }
+
+        public void ShowCompleteLevelInfoPopupMediator()
+        {
+            if (!_uiManager.PopupsHandler.GetShownPopups<CompleteLevelInfoPopupMediator>().IsNullOrEmpty())
+                return;
+
+            _uiManager.PopupsHandler.ShowPopupImmediately<CompleteLevelInfoPopupMediator>(
+                new CompleteLevelInfoPopupContext(3, 0, 10, null));
+        }
         
         public void VisualizeStarsFlightInCompleteLevelPopup()
         {

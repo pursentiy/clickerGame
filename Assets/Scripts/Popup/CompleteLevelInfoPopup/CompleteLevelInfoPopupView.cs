@@ -18,5 +18,6 @@ namespace Popup.CompleteLevelInfoPopup
         public TMP_Text TimeText;
         public CurrencyDisplayWidget StarsDisplayWidget;
         public RectTransform StarsFlightStartPlace;
+        public RectTransform FlyingRewardsContainer;
     }
 }
