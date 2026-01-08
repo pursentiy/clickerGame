@@ -1,4 +1,4 @@
-Shader "Custom/SpriteInnerShadow_Pro_Spiral"
+Shader "Custom/SpriteFill_Pro_Spiral_Colored"
 {
     Properties
     {
@@ -7,14 +7,23 @@ Shader "Custom/SpriteInnerShadow_Pro_Spiral"
         _ShadowWidth ("Shadow Width", Range(0, 30)) = 2
         _Falloff ("Shadow Softness", Range(0.1, 4)) = 1.0
 
+        [Header(Base Settings)]
+        _PaleIntensity ("Pale Intensity (0-1)", Range(0, 1)) = 0.5
+        _BaseAlpha ("Base Image Alpha", Range(0, 1)) = 1.0
+
+        [Header(Animation Settings)]
+        _FillAlpha ("Global Alpha Multiplier", Range(0, 1)) = 1.0
+        
         [Header(Linear Wave)]
         [Toggle(ENABLE_LINEAR)] _UseWave ("Enable Linear Wave", Float) = 0
+        _LinearColor ("Linear Wave Color", Color) = (1,1,1,1)
         _WaveSpeed ("Speed", Range(0, 10)) = 3
         _WaveFreq ("Frequency", Range(0, 20)) = 10
         _WaveStrength ("Intensity", Range(0, 1)) = 0.5
 
         [Header(Spiral Wave)]
         [Toggle(ENABLE_SPIRAL)] _UseSpiral ("Enable Spiral Wave", Float) = 0
+        _SpiralColor ("Spiral Wave Color", Color) = (1,1,1,1)
         _SpiralSpeed ("Spiral Speed", Range(-10, 10)) = 3
         _SpiralArms ("Spiral Arms", Range(1, 10)) = 3
         _SpiralTightness ("Spiral Tightness", Range(0, 20)) = 5
@@ -42,8 +51,8 @@ Shader "Custom/SpriteInnerShadow_Pro_Spiral"
 
             sampler2D _MainTex;
             float4 _MainTex_TexelSize;
-            fixed4 _ShadowColor;
-            float _ShadowWidth, _Falloff;
+            fixed4 _ShadowColor, _LinearColor, _SpiralColor;
+            float _ShadowWidth, _Falloff, _FillAlpha, _PaleIntensity, _BaseAlpha;
             float _WaveSpeed, _WaveFreq, _WaveStrength;
             float _SpiralSpeed, _SpiralArms, _SpiralTightness;
 
@@ -56,54 +65,66 @@ Shader "Custom/SpriteInnerShadow_Pro_Spiral"
 
             fixed4 frag(v2f i) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, i.uv);
-                if (col.a <= 0.05) discard;
+                fixed4 mainTex = tex2D(_MainTex, i.uv);
+                if (mainTex.a <= 0.05) discard;
 
-                // --- 1. RADIAL SAMPLING ---
+                // --- 1. PALE & BASE ALPHA LOGIC ---
+                float luminance = dot(mainTex.rgb, float3(0.2126, 0.7152, 0.0722));
+                float3 grayscale = float3(luminance, luminance, luminance);
+                mainTex.rgb = lerp(mainTex.rgb, grayscale, _PaleIntensity);
+                
+                // Set the starting alpha based on the property
+                float currentAlpha = mainTex.a * _BaseAlpha;
+
+                // --- 2. SHADOW LOGIC ---
                 float totalAlpha = 0;
-                float sampleCount = 0;
-                float2 texelSize = _MainTex_TexelSize.xy * _ShadowWidth;
+                int sampleCount = 0;
+                float2 baseOffset = _MainTex_TexelSize.xy * _ShadowWidth;
 
-                // Increased density to 0.2 to ensure NO GAPS
-                // for (float angle = 0; angle < 6.28; angle += 0.2)
-                // {
-                //     float2 offset = float2(cos(angle), sin(angle)) * texelSize;
-                //     totalAlpha += tex2D(_MainTex, i.uv + offset).a;
-                //     sampleCount++; // Added increment fix
-                // }
+                for (float angle = 0; angle < 6.28; angle += 0.4)
+                {
+                    float2 offset = float2(cos(angle), sin(angle)) * baseOffset;
+                    totalAlpha += tex2D(_MainTex, i.uv + offset).a;
+                    sampleCount++; 
+                }
 
-                for(float angle = 0; angle < 6.28; angle += 0.4) {
-    float2 offset = float2(cos(angle), sin(angle)) * _MainTex_TexelSize.xy * _ShadowWidth;
-    totalAlpha += tex2D(_MainTex, i.uv + offset).a;; // Added increment fix
-}
+                float avgAlpha = totalAlpha / max(sampleCount, 1);
+                float shadowMask = pow(saturate(1.0 - avgAlpha), _Falloff);
 
-                float avgAlpha = totalAlpha / sampleCount;
-                float shadow = saturate(1.0 - avgAlpha);
-                shadow = pow(shadow, _Falloff);
+                // --- 3. ANIMATION & COLOR LOGIC ---
+                float3 effectColorMix = mainTex.rgb;
+                float animationAlphaBonus = 0.0;
 
-                // --- 2. LINEAR WAVE LOGIC ---
                 #ifdef ENABLE_LINEAR
                     float lWave = sin((i.uv.y + i.uv.x) * _WaveFreq + (_Time.g * _WaveSpeed));
-                    lWave = lerp(1.0 - _WaveStrength, 1.0, (lWave * 0.5 + 0.5));
-                    shadow *= lWave;
+                    float lIntensity = lWave * 0.5 + 0.5;
+                    
+                    effectColorMix = lerp(effectColorMix, _LinearColor.rgb, lIntensity * _WaveStrength);
+                    // Additive alpha logic: waves can make the image more opaque
+                    animationAlphaBonus = max(animationAlphaBonus, lIntensity * _WaveStrength);
                 #endif
 
-                // --- 3. SPIRAL WAVE LOGIC ---
                 #ifdef ENABLE_SPIRAL
-                    // Get UV centered at (0,0)
                     float2 centeredUV = i.uv - 0.5;
-                    // Calculate angle (0 to 2*PI) and distance from center
                     float dist = length(centeredUV);
                     float anglePos = atan2(centeredUV.y, centeredUV.x);
                     
-                    // Spiral formula: Angle + (Distance * Tightness) - Time
                     float sWave = sin(anglePos * _SpiralArms + (dist * _SpiralTightness) - (_Time.g * _SpiralSpeed));
-                    sWave = saturate(sWave * 0.5 + 0.5);
-                    shadow *= sWave;
+                    float sIntensity = saturate(sWave * 0.5 + 0.5);
+                    
+                    effectColorMix = lerp(effectColorMix, _SpiralColor.rgb, sIntensity);
+                    // Additive alpha logic
+                    animationAlphaBonus = max(animationAlphaBonus, sIntensity);
                 #endif
 
-                fixed4 finalCol = _ShadowColor;
-                finalCol.a *= shadow * col.a;
+                // Combine base alpha with the animation "glow"
+                // This ensures the image is visible where the base alpha says OR where waves are
+                float finalAlpha = saturate(currentAlpha + animationAlphaBonus);
+
+                // --- 4. FINAL COMPOSITION ---
+                fixed4 finalCol;
+                finalCol.rgb = lerp(effectColorMix, _ShadowColor.rgb, shadowMask);
+                finalCol.a = finalAlpha * _FillAlpha;
 
                 return finalCol;
             }
