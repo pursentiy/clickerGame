@@ -5,6 +5,7 @@ using Level.Widgets;
 using Services;
 using Services.Cheats;
 using Services.ContentDeliveryService;
+using Services.FlyingRewardsAnimation;
 using Storage;
 using Storage.Audio;
 using UnityEngine;
@@ -49,6 +50,9 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<PlayerCurrencyService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<LevelHelperService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<ClickHandlerService>().AsSingle().NonLazy();
+            
+            Container.BindInterfacesAndSelfTo<FlyingUIRewardAnimationService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<FlyingUIRewardDestinationService>().AsSingle().NonLazy();
             
             Container.BindInterfacesAndSelfTo<PersistentCoroutinesService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<CoroutineService>().AsSingle().NonLazy();

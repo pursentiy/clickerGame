@@ -39,5 +39,13 @@ namespace Extensions
             rectTransform.GetLocalCorners(corners);
             return corners[2] - corners[0];
         }
+        
+        public static void SetUniversalScale(this Transform rt, float scale)
+        {
+            if (rt != null)
+            {
+                rt.localScale = new Vector3(scale,scale,scale);
+            } 
+        }
     }
 }

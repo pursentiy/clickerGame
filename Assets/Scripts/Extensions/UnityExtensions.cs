@@ -1,3 +1,4 @@
+using Services;
 using UnityEngine;
 
 namespace Extensions
@@ -32,5 +33,17 @@ namespace Extensions
             component.gameObject.SetActive(active);
         }
         
+        public static void TrySetActive(this GameObject gameObject, bool active)
+        {
+            if (gameObject != null)
+            {
+                gameObject.SetActive(active);
+            }
+            else
+            {
+                if (active)
+                    LoggerService.LogWarning("Attempt to set active, but go is null");
+            }
+        }
     }
 }

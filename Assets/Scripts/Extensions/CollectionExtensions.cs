@@ -34,7 +34,7 @@ namespace Extensions
         public static bool IsNullOrEmpty<T>(this ICollection<T> collection)
         {
             return collection == null || collection.Count == 0;
-        }	
+        }
         
         public static bool InListRange(this int i, System.Collections.IList list)
         {
@@ -52,6 +52,33 @@ namespace Extensions
             {
                 action.SafeInvoke(list[i]);
             }
+        }
+        
+        public static void Foreach<T>(this T[] array, Action<T> action)
+        {
+            if (array == null) return;
+			
+            for (int i = 0; i < array.Length; i++)
+            {
+                action.SafeInvoke(array[i]);
+            }
+        }
+        
+        public static IList<TOut> Map<TIn, TOut>(this IEnumerable<TIn> container, Func<TIn, TOut> mapFunction,
+            IList<TOut> buffer = null)
+        {
+            buffer = buffer.Or(new List<TOut>());
+			
+            foreach (var inValue in container)
+            {
+                var transformed = mapFunction(inValue);
+                if (transformed != null)
+                {
+                    buffer.Add(transformed);
+                }
+            }
+
+            return buffer;
         }
     }
 }
