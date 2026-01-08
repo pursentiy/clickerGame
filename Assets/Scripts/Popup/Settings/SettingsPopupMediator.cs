@@ -2,6 +2,7 @@ using Attributes;
 using Extensions;
 using Handlers;
 using Handlers.UISystem;
+using Plugins.FSignal;
 using Popup.Common;
 using Services;
 using UnityEngine;
@@ -17,6 +18,8 @@ namespace Popup.Settings
         [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private GlobalSettingsService _globalSettingsService;
         
+        public FSignal OnChangedLanguageSignal { get; } = new FSignal();
+
         private int _currentLanguageIndex = 0;
         
         public override IUIPopupAnimation Animation => new ScalePopupAnimation(View.MainTransform);
@@ -24,6 +27,8 @@ namespace Popup.Settings
         public override void OnCreated()
         {
             base.OnCreated();
+            
+            _currentLanguageIndex = PlayerPrefs.GetInt("language_index", 0);
 
             SetupMusicAndSoundToggles();
             
@@ -58,17 +63,22 @@ namespace Popup.Settings
         {
             _currentLanguageIndex += direction;
 
+            var localesCount = LocalizationSettings.AvailableLocales.Locales.Count;
             if (_currentLanguageIndex < 0)
-                _currentLanguageIndex = LocalizationSettings.AvailableLocales.Locales.Count - 1;
-            else if (_currentLanguageIndex >= LocalizationSettings.AvailableLocales.Locales.Count)
+                _currentLanguageIndex = localesCount - 1;
+            else if (_currentLanguageIndex >= localesCount)
                 _currentLanguageIndex = 0;
 
             UpdateLanguagePopup();
+
             PlayerPrefs.SetInt("language_index", _currentLanguageIndex);
+            OnChangedLanguageSignal.Dispatch();
         }
 
         private void UpdateLanguagePopup()
         {
+            if (LocalizationSettings.AvailableLocales.Locales.Count == 0) return;
+
             View.CountryFlagImage.sprite = View.LanguageFlags[_currentLanguageIndex];
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[_currentLanguageIndex];
         }

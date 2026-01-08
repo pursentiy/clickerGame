@@ -19,11 +19,11 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 9892589514752
-    m_Localized: IDIOMAS
+    m_Localized: Idioma
     m_Metadata:
       m_Items: []
   - m_Id: 4588187463680
-    m_Localized: AJUSTES
+    m_Localized: Ajustes
     m_Metadata:
       m_Items: []
   - m_Id: 10404516900864
