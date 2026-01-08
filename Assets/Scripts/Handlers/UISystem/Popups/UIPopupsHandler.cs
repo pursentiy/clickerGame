@@ -18,7 +18,6 @@ namespace Handlers.UISystem.Popups
 {
     public class UIPopupsHandler : IDisposeProvider, IPopupHider
     {
-        
         [Inject] private readonly AddressableContentDeliveryService _contentDeliveryService;
         [Inject] private readonly CoroutineService _coroutineService;
         
@@ -43,163 +42,10 @@ namespace Handlers.UISystem.Popups
             _popupsShowQueue = new List<UIPopupShowQuery>();
             _shownPopups = new Dictionary<Type, List<(UIPopupBase popup, IDisposableContent<GameObject> asset)>>();
             _popupsCanvas = parentCanvas;
+            
             IsQueueProcessingPopup = false;
         }
-
-        private IPromise<UIPopupBase> ShowPopup(Type type, IPopupContext context)
-        {
-            if (type == null)
-            {
-                return Promise<UIPopupBase>.Rejected(new ArgumentException("Requested type is null"));
-            }
-            
-            var key = type.TryGetAttribute<AssetKeyAttribute>()?.Key;
-
-            if (key.IsNullOrEmpty())
-            {
-                var msg = $"Can't find an asset key for popup {type.Name}";
-                LoggerService.LogDebug(msg);
-                return Promise<UIPopupBase>.Rejected(new NullReferenceException(msg));
-            }
-
-            var uniqueId = Guid.NewGuid();
-            var loadPromise = LoadPrefabAsync(key);
-            
-            var resultPromise = loadPromise.Then(asset =>
-            {
-                if (_popupsCanvas == null)
-                {
-                    asset?.Dispose();
-                    return Promise<(UIPopupBase popup, IDisposableContent<GameObject> asset)>
-                        .Canceled();
-                }
-            
-                var popup =
-                    UIInstaller.Container.InstantiatePrefabForComponent<UIPopupBase>(asset.Asset,
-                        _popupsCanvas.transform);
-
-                if (popup == null)
-                {
-                    asset.Dispose();
-                    var msg = $"Failed to resolve popup mediator with type = {type.Name}";
-                    LoggerService.LogDebug(msg);
-                    return Promise<(UIPopupBase popup, IDisposableContent<GameObject> asset)>
-                        .Rejected(new MissingComponentException(msg));
-                }
-                
-                popup.SetHider(this);
-
-                var rt = (RectTransform) popup.transform;
-                rt.anchorMin = Vector2.zero;
-                rt.anchorMax = Vector2.one;
-                rt.localScale = Vector3.one;
-                rt.offsetMin = Vector2.zero;
-                rt.offsetMax = Vector2.zero;
-
-                return Promise<(UIPopupBase popup, IDisposableContent<GameObject> asset)>.Resolved((popup, asset));
-            }).Then(pair =>
-            {
-                return pair.popup.OnCreated(context, uniqueId)
-                    .Then(() => OnPopupCreated(type, pair.popup, pair.asset, context))
-                    .CancelWith(pair.popup)
-                    .Catch(e =>
-                    {
-                        LoggerService.LogError(e);
-                        DestroyPopup(pair.popup, pair.asset);
-                    });
-            }).CancelWith(this);
-            
-            return resultPromise;
-        }
-
-        private IPromise<IDisposableContent<GameObject>> LoadPrefabAsync(string key)
-        {
-            return _contentDeliveryService.LoadAssetAsync<GameObject>(key);
-        }
         
-        private IPromise<UIPopupBase> OnPopupCreated(Type type, UIPopupBase popup, IDisposableContent<GameObject> asset, IPopupContext context)
-        {
-            if (_shownPopups.ContainsKey(type))
-            {
-                _shownPopups[type].Add((popup, asset));
-            }
-            else
-            {
-                _shownPopups.Add(type,
-                    new List<(UIPopupBase popup, IDisposableContent<GameObject> asset)>
-                        {(popup, asset)});
-            }
-
-            ShownPopupsChanged.Dispatch(PopupsQueueStringify(_shownPopups));
-            
-            popup.gameObject.SetActive(true);
-            var animation = popup.Animation;
-
-            if (animation == null)
-            {
-                try
-                {
-                    PopupBeginAppearingSignal.Dispatch(popup);
-                    popup.OnBeginShow();
-                    popup.OnEndShow();
-                    PopupFinishedAppearingSignal.Dispatch(popup);
-                    return Promise<UIPopupBase>.Resolved(popup);
-                }
-                catch (Exception e)
-                {
-                    DestroyPopup(popup, asset);
-                    return Promise<UIPopupBase>.Rejected(e);
-                }
-            }
-
-            try
-            {
-                PopupBeginAppearingSignal.Dispatch(popup);
-                animation.SetHiddenState();
-                popup.OnBeginShow();
-                return animation.AnimateShow(context).Then(() =>
-                {
-                    try
-                    {
-                        popup.OnEndShow();
-                        PopupFinishedAppearingSignal.Dispatch(popup);
-                        LoggerService.LogDebug(this, $"ShowPopup with {nameof(Type)} = {type.Name}: Popup shown");
-                        return Promise<UIPopupBase>.Resolved(popup);
-                    }
-                    catch (Exception e)
-                    {
-                        DestroyPopup(popup, asset);
-                        return Promise<UIPopupBase>.Rejected(e);
-                    }
-                });
-            }
-            catch (Exception e)
-            {
-                DestroyPopup(popup, asset);
-                return Promise<UIPopupBase>.Rejected(e);
-            }
-        }
-
-        private void DestroyPopup(UIPopupBase popup, IDisposableContent<GameObject> asset)
-        {
-            if (_shownPopups.ContainsKey(popup.GetType()))
-            {
-                _shownPopups[popup.GetType()].RemoveAll(p =>
-                {
-                    if (p.popup == popup)
-                    {
-                        p.asset?.Dispose();
-                        return true;
-                    }
-
-                    return false;
-                });
-            }
-            asset?.Dispose();
-            Object.Destroy(popup.gameObject);
-            ShownPopupsChanged.Dispatch(PopupsQueueStringify(_shownPopups));
-        }
-
         public IPromise<UIPopupBase> ShowPopupImmediately(Type type, IPopupContext context)
         {
             LoggerService.LogDebug(this, $"ShowPopupImmediately with {nameof(Type)} = {type.Name}");
@@ -402,6 +248,160 @@ namespace Handlers.UISystem.Popups
                 .Where(popup => popup != null)
                 .OrderBy(popup => popup.transform.GetSiblingIndex())
                 .LastOrDefault();
+        }
+        
+        private IPromise<UIPopupBase> ShowPopup(Type type, IPopupContext context)
+        {
+            if (type == null)
+            {
+                return Promise<UIPopupBase>.Rejected(new ArgumentException("Requested type is null"));
+            }
+            
+            var key = type.TryGetAttribute<AssetKeyAttribute>()?.Key;
+
+            if (key.IsNullOrEmpty())
+            {
+                var msg = $"Can't find an asset key for popup {type.Name}";
+                LoggerService.LogDebug(msg);
+                return Promise<UIPopupBase>.Rejected(new NullReferenceException(msg));
+            }
+
+            var uniqueId = Guid.NewGuid();
+            var loadPromise = LoadPrefabAsync(key);
+            
+            var resultPromise = loadPromise.Then(asset =>
+            {
+                if (_popupsCanvas == null)
+                {
+                    asset?.Dispose();
+                    return Promise<(UIPopupBase popup, IDisposableContent<GameObject> asset)>
+                        .Canceled();
+                }
+            
+                var popup =
+                    UIInstaller.Container.InstantiatePrefabForComponent<UIPopupBase>(asset.Asset,
+                        _popupsCanvas.transform);
+
+                if (popup == null)
+                {
+                    asset.Dispose();
+                    var msg = $"Failed to resolve popup mediator with type = {type.Name}";
+                    LoggerService.LogDebug(msg);
+                    return Promise<(UIPopupBase popup, IDisposableContent<GameObject> asset)>
+                        .Rejected(new MissingComponentException(msg));
+                }
+                
+                popup.SetHider(this);
+
+                var rt = (RectTransform) popup.transform;
+                rt.anchorMin = Vector2.zero;
+                rt.anchorMax = Vector2.one;
+                rt.localScale = Vector3.one;
+                rt.offsetMin = Vector2.zero;
+                rt.offsetMax = Vector2.zero;
+
+                return Promise<(UIPopupBase popup, IDisposableContent<GameObject> asset)>.Resolved((popup, asset));
+            }).Then(pair =>
+            {
+                return pair.popup.OnCreated(context, uniqueId)
+                    .Then(() => OnPopupCreated(type, pair.popup, pair.asset, context))
+                    .CancelWith(pair.popup)
+                    .Catch(e =>
+                    {
+                        LoggerService.LogError(e);
+                        DestroyPopup(pair.popup, pair.asset);
+                    });
+            }).CancelWith(this);
+            
+            return resultPromise;
+        }
+
+        private IPromise<IDisposableContent<GameObject>> LoadPrefabAsync(string key)
+        {
+            return _contentDeliveryService.LoadAssetAsync<GameObject>(key);
+        }
+        
+        private IPromise<UIPopupBase> OnPopupCreated(Type type, UIPopupBase popup, IDisposableContent<GameObject> asset, IPopupContext context)
+        {
+            if (_shownPopups.ContainsKey(type))
+            {
+                _shownPopups[type].Add((popup, asset));
+            }
+            else
+            {
+                _shownPopups.Add(type,
+                    new List<(UIPopupBase popup, IDisposableContent<GameObject> asset)>
+                        {(popup, asset)});
+            }
+
+            ShownPopupsChanged.Dispatch(PopupsQueueStringify(_shownPopups));
+            
+            popup.gameObject.SetActive(true);
+            var animation = popup.Animation;
+
+            if (animation == null)
+            {
+                try
+                {
+                    PopupBeginAppearingSignal.Dispatch(popup);
+                    popup.OnBeginShow();
+                    popup.OnEndShow();
+                    PopupFinishedAppearingSignal.Dispatch(popup);
+                    return Promise<UIPopupBase>.Resolved(popup);
+                }
+                catch (Exception e)
+                {
+                    DestroyPopup(popup, asset);
+                    return Promise<UIPopupBase>.Rejected(e);
+                }
+            }
+
+            try
+            {
+                PopupBeginAppearingSignal.Dispatch(popup);
+                animation.SetHiddenState();
+                popup.OnBeginShow();
+                return animation.AnimateShow(context).Then(() =>
+                {
+                    try
+                    {
+                        popup.OnEndShow();
+                        PopupFinishedAppearingSignal.Dispatch(popup);
+                        LoggerService.LogDebug(this, $"ShowPopup with {nameof(Type)} = {type.Name}: Popup shown");
+                        return Promise<UIPopupBase>.Resolved(popup);
+                    }
+                    catch (Exception e)
+                    {
+                        DestroyPopup(popup, asset);
+                        return Promise<UIPopupBase>.Rejected(e);
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                DestroyPopup(popup, asset);
+                return Promise<UIPopupBase>.Rejected(e);
+            }
+        }
+
+        private void DestroyPopup(UIPopupBase popup, IDisposableContent<GameObject> asset)
+        {
+            if (_shownPopups.ContainsKey(popup.GetType()))
+            {
+                _shownPopups[popup.GetType()].RemoveAll(p =>
+                {
+                    if (p.popup == popup)
+                    {
+                        p.asset?.Dispose();
+                        return true;
+                    }
+
+                    return false;
+                });
+            }
+            asset?.Dispose();
+            Object.Destroy(popup.gameObject);
+            ShownPopupsChanged.Dispatch(PopupsQueueStringify(_shownPopups));
         }
         
         private void InsertPopupToQueue(Type type, IPopupContext context, int priority, Promise<UIPopupBase> promise)

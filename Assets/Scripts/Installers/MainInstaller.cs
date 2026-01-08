@@ -1,3 +1,4 @@
+using Common.Rewards;
 using Components.Levels;
 using Handlers;
 using Handlers.UISystem;
@@ -17,6 +18,7 @@ namespace Installers
     {
         [SerializeField] private LevelsParamsStorageData _levelsParamsStorageData;
         [SerializeField] private AudioStorageData audioStorageData;
+        [SerializeField] private CurrencyLibrary currencyLibrary;
         
         [SerializeField] private ScreenHandler _screenHandler;
         [SerializeField] private PopupHandler _popupHandler;
@@ -51,6 +53,7 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<LevelHelperService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<ClickHandlerService>().AsSingle().NonLazy();
             
+            Container.BindInterfacesAndSelfTo<CurrencyLibraryService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<FlyingUIRewardAnimationService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<FlyingUIRewardDestinationService>().AsSingle().NonLazy();
             
@@ -70,6 +73,7 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<SoundHandler>().FromInstance(_soundHandler);
             Container.Bind<LevelsParamsStorageData>().FromScriptableObject(_levelsParamsStorageData).AsSingle().NonLazy();
             Container.Bind<AudioStorageData>().FromScriptableObject(audioStorageData).AsSingle().NonLazy();
+            Container.Bind<CurrencyLibrary>().FromScriptableObject(currencyLibrary).AsSingle().NonLazy();
             
 #if UNITY_EDITOR
             Container.BindInterfacesAndSelfTo<CheatService>().AsSingle().NonLazy();

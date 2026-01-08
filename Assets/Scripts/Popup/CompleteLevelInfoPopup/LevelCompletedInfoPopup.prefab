@@ -5228,6 +5228,7 @@ MonoBehaviour:
   - {fileID: 2822367878057236699}
   TimeText: {fileID: 2269927573737630943}
   StarsDisplayWidget: {fileID: 7298797807882805698}
+  StarsFlightStartPlace: {fileID: 2644083954325254318}
 --- !u!114 &3668919458347311833
 MonoBehaviour:
   m_ObjectHideFlags: 0

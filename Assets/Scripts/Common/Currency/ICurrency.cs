@@ -1,6 +1,8 @@
+using Services.FlyingRewardsAnimation;
+
 namespace Common.Currency
 {
-    public interface ICurrency
+    public interface ICurrency : IFlyableItem
     {
         long GetCount();
         ICurrency Add(long value);

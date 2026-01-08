@@ -27,6 +27,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b228df3f5d6d04f168ef38d83a1fa13b
+    m_Address: Assets/Prefabs/Rewards/CommonReward.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: e24ffa8b9424ddd438d6f352cb603ea5, type: 2}
   m_SchemaSet:

@@ -19,49 +19,68 @@ namespace Services.Cheats
 
         private void OnGUI()
         {
-            if (ContainerHolder.CurrentContainer == null)
+            // Safety check for Zenject container
+            if (Application.isPlaying == false || ContainerHolder.CurrentContainer == null)
             {
+                EditorGUILayout.HelpBox("Enter Play Mode to use Cheats.", MessageType.Info);
                 return;
             }
             
-            GUILayout.Label("Service Debug Actions", EditorStyles.boldLabel);
-            
-            // 1. Find the service in the scene if not already set
             if (_service == null)
             {
-                _service = ContainerHolder.CurrentContainer.Resolve<CheatService>();
-                if (_service == null)
-                {
-                    EditorGUILayout.HelpBox("GameService not found in scene!", MessageType.Warning);
-                    return;
-                }
+                _service = ContainerHolder.CurrentContainer.TryResolve<CheatService>();
+                if (_service == null) return;
             }
 
-            EditorGUILayout.Space();
             _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos);
 
-            // 2. Use Reflection to get all public methods
-            // BindingFlags.DeclaredOnly prevents showing inherited methods like ToString() or GetHashCode()
+            // --- SECTION 1: PROPERTIES (Settings) ---
+            GUILayout.Label("Cheat Settings", EditorStyles.boldLabel);
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+
+            // Get public properties
+            var props = _service.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            foreach (var prop in props)
+            {
+                if (!prop.CanWrite) continue; // Skip read-only properties
+
+                if (prop.PropertyType == typeof(int))
+                {
+                    int val = (int)prop.GetValue(_service);
+                    int newVal = EditorGUILayout.IntField(prop.Name, val);
+                    if (val != newVal) prop.SetValue(_service, newVal);
+                }
+                else if (prop.PropertyType == typeof(bool))
+                {
+                    bool val = (bool)prop.GetValue(_service);
+                    bool newVal = EditorGUILayout.Toggle(prop.Name, val);
+                    if (val != newVal) prop.SetValue(_service, newVal);
+                }
+                // Add more types here (float, string, etc.) if needed
+            }
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.Space(10);
+
+            // --- SECTION 2: METHODS (Actions) ---
+            GUILayout.Label("Actions", EditorStyles.boldLabel);
+            
             MethodInfo[] methods = _service.GetType()
                 .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
 
             foreach (MethodInfo method in methods)
             {
-                // We only want to show buttons for methods that don't require complex parameters
+                // Ignore property getters/setters (they start with get_ or set_)
+                if (method.IsSpecialName) continue;
+                
                 ParameterInfo[] parameters = method.GetParameters();
 
                 if (parameters.Length == 0)
                 {
-                    if (GUILayout.Button($"Invoke {method.Name}"))
+                    if (GUILayout.Button($"Invoke {method.Name}", GUILayout.Height(25)))
                     {
                         method.Invoke(_service, null);
                     }
-                }
-                else
-                {
-                    // Optional: Handle simple parameters or just label them as "Unsupported"
-                    EditorGUILayout.LabelField($"{method.Name} (Requires {parameters.Length} params)",
-                        EditorStyles.miniLabel);
                 }
             }
 

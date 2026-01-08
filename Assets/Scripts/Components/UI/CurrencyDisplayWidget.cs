@@ -10,6 +10,7 @@ namespace Components.UI
         [Header("UI References")] [SerializeField]
         private TextMeshProUGUI currencyText;
 
+        [SerializeField] private RectTransform animationTarget;
         [SerializeField] private ParticleSystem confettiParticles;
         [SerializeField] private RectTransform bumpTransform;
 
@@ -26,6 +27,8 @@ namespace Components.UI
         private int _currentDisplayValue;
         private int _targetValue;
         private Tween _countTween;
+
+        public RectTransform AnimationTarget => animationTarget;
 
         public void AddCurrency(int amount, bool withAnimation = true)
         {

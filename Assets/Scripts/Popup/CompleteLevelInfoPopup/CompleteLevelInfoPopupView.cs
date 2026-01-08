@@ -17,5 +17,6 @@ namespace Popup.CompleteLevelInfoPopup
         public ParticleSystem[] FireworksParticles;
         public TMP_Text TimeText;
         public CurrencyDisplayWidget StarsDisplayWidget;
+        public RectTransform StarsFlightStartPlace;
     }
 }

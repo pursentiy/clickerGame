@@ -14,8 +14,23 @@ namespace Services.ContentDeliveryService
     {
         private const float AddressablesTimeout = 10f;
         private const float SendErrorTimeout = 10f;
+        private const float Timeout = 10f;
         
         [Inject] private CoroutineService _coroutineService;
+        
+        public IPromise<DisposableAssetInstance> InstantiateAsync(
+            AssetReference reference,
+            Transform parent = null,
+            bool inWorldSpace = false)
+        {
+            LoggerService.LogDebug(this, $"Instantiate addressable asset with reference = {reference}");
+            
+            var promise = new Promise<DisposableAssetInstance>();
+            
+            InstantiateAsyncInternal(promise, reference, parent, inWorldSpace);
+            
+            return promise;
+        }
         
         public IPromise<IDisposableContent<T>> LoadAssetAsync<T>(string id, IPromise middleware = null, Action<float> progressCallback = null, float? timeout = null) 
             where T : Object
@@ -95,15 +110,50 @@ namespace Services.ContentDeliveryService
             LoggerService.LogDebug(this, $"Releasing addressable asset with name = {instance.name}");
             Addressables.ReleaseInstance(instance);
         }
+        
+        private void InstantiateAsyncInternal(
+            Promise<DisposableAssetInstance> promise,
+            AssetReference reference,
+            Transform parent = null,
+            bool inWorldSpace = false,
+            float? timeout = null)
+        {
+            var handle = Addressables.InstantiateAsync(reference, parent, inWorldSpace);
+            
+            timeout ??= Timeout;
+
+            handle.OnResult(Promise.Resolved(), _coroutineService, timeout.Value, SendErrorTimeout).Then(either =>
+            {
+                either.Match(result =>
+                    {
+                        if (promise.CurState != PromiseState.Pending && result != null)
+                        {
+                            ReleaseInstance(result);
+                            return;
+                        }
+                    
+                        promise.SafeResolve(new DisposableAssetInstance(this, handle, result));
+                    },
+                    exception =>
+                    {
+                        ReleaseHandle(handle);
+                    
+                        if (promise.CurState == PromiseState.Pending)
+                        {
+                            promise.Reject(exception);
+                        }
+                    });
+            });
+        }
 
         protected override void OnInitialize()
         {
-            throw new NotImplementedException();
+           
         }
 
         protected override void OnDisposing()
         {
-            throw new NotImplementedException();
+           
         }
     }
 }

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Services;
 
 namespace Extensions
 {
@@ -79,6 +81,26 @@ namespace Extensions
             }
 
             return buffer;
+        }
+        
+        public static TValue GetValueOrFirst<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+        {
+            if (key != null)
+            {
+                try
+                {
+                    if (dictionary.ContainsKey(key))
+                    {
+                        return dictionary[key];
+                    }
+                }
+                catch (Exception e)
+                {
+                    LoggerService.LogWarning($"{e} with a {key} in the dictionary");
+                }
+            }
+
+            return dictionary.Any() ? dictionary.Values.First() : default;
         }
     }
 }

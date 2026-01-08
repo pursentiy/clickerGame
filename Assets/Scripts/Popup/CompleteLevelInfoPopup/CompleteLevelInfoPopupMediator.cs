@@ -1,11 +1,14 @@
 using System.Collections;
 using Attributes;
+using Common.Currency;
 using DG.Tweening;
 using Extensions;
 using Handlers;
 using Handlers.UISystem;
 using Popup.Common;
+using RSG;
 using Services;
+using Services.FlyingRewardsAnimation;
 using UnityEngine;
 using Utilities.Disposable;
 using Zenject;
@@ -19,6 +22,7 @@ namespace Popup.CompleteLevelInfoPopup
         [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private PlayerCurrencyService _playerCurrencyService;
+        [Inject] private FlyingUIRewardAnimationService _flyingUIRewardAnimationService;
         [Inject] private PlayerRepositoryService _playerRepositoryService;
         [Inject] private PlayerService _playerService;
         [Inject] private LocalizationService _localization;
@@ -45,6 +49,13 @@ namespace Popup.CompleteLevelInfoPopup
             
             View.BackgronudButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
             View.GoToLevelsChooseScreenButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
+            _playerCurrencyService.StarsChangedSignal.MapListener(OnStarsUpdated).DisposeWith(this);
+        }
+
+        private void OnStarsUpdated(int stars)
+        {
+            //TODO REPLACE TO FlyingUIRewardAnimationService AUTOMATICALLY UPDATE
+            View.StarsDisplayWidget.AddCurrency(stars);
         }
 
         private void OnStarsAnimated()
@@ -70,7 +81,7 @@ namespace Popup.CompleteLevelInfoPopup
             seq.Append(View.TimeText.transform.DOPunchScale(Vector3.one * 0.1f, 0.3f));
         }
         
-        private Sequence AnimateStarsSequence(int totalStarsForLevel)
+        private Sequence AnimateStarsSequence(Stars totalStarsForLevel)
         {
             foreach (var s in View.Stars) 
                 s.transform.localScale = Vector3.zero;
@@ -135,7 +146,7 @@ namespace Popup.CompleteLevelInfoPopup
             return seq;
         }
         
-        private void StartStarsFloating(int totalStarsForLevel)
+        private void StartStarsFloating(Stars totalStarsForLevel)
         {
             for (var i = 0; i < View.Stars.Length; i++)
             {
@@ -168,17 +179,35 @@ namespace Popup.CompleteLevelInfoPopup
                 .SetLoops(-1, LoopType.Yoyo);
         }
 
-        private void TryAcquireEarnedStars(int earnedStarsForLevel, bool fast = false)
+        private void TryAcquireEarnedStars(Stars earnedStarsForLevel, bool fast = false)
         {
             if (_currencyAcquired || earnedStarsForLevel <= 0)
                 return;
 
             _currencyAcquired = true;
-            _playerCurrencyService.AddStars(earnedStarsForLevel);
-            _playerRepositoryService.SavePlayerSnapshot(_playerService.ProfileSnapshot);
+            if (fast)
+            {
+                _playerCurrencyService.AddStars(earnedStarsForLevel);
+                _playerRepositoryService.SavePlayerSnapshot(_playerService.ProfileSnapshot);
+            }
+            else
+            {
+                VisualizeStarsFlight(earnedStarsForLevel);
+            }
+        }
+        
+        private IPromise VisualizeStarsFlight(Stars earnedStars)
+        {
+            if (earnedStars.Value <= 0)
+                return Promise.Resolved();
             
-            if (!fast)
-                View.StarsDisplayWidget.AddCurrency(earnedStarsForLevel);
+            var context = new FlyingUIRewardAnimationContext(
+                new ICurrency[]{earnedStars}, 
+                View.MainTransform, 
+                new Vector3[] {View.StarsFlightStartPlace.position},
+                new Vector3[] {View.StarsDisplayWidget.AnimationTarget.position});
+            
+            return _flyingUIRewardAnimationService.PlayAnimation(context);
         }
 
         private void GoToLevelsMenuScreen()
@@ -227,5 +256,22 @@ namespace Popup.CompleteLevelInfoPopup
             yield return new WaitForSeconds(Random.Range(1.3f, 3f));
             TryPlayFireworksParticles(totalStars);
         }
+        
+#if UNITY_EDITOR
+        public void PlayStarsAnimation(Stars earnedStarsForLevel, bool updateProfileValues)
+        {
+            if (earnedStarsForLevel.Value <= 0)
+                return;
+            
+            var context = new FlyingUIRewardAnimationContext(
+                new ICurrency[]{earnedStarsForLevel}, 
+                View.MainTransform, 
+                new Vector3[] {View.StarsFlightStartPlace.position},
+                new Vector3[] {View.StarsDisplayWidget.AnimationTarget.position}, 
+                updateProfileValues: updateProfileValues);
+            
+            _flyingUIRewardAnimationService.PlayAnimation(context);
+        }
+#endif
     }
 }

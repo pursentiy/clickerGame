@@ -5355,6 +5355,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currencyText: {fileID: 6035581737092229778}
+  animationTarget: {fileID: 4791460756429245177}
   confettiParticles: {fileID: 4761143323773388728}
   bumpTransform: {fileID: 4791460756429245177}
   animationDuration: 0.5

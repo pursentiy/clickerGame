@@ -15,6 +15,10 @@ namespace Services.FlyingRewardsAnimation
     public class FlyingUIRewardAnimationService
     {
         [Inject] private FlyingUIRewardDestinationService _destinationService;
+        [Inject] private CurrencyLibraryService _currencyLibraryService;
+        [Inject] private PlayerCurrencyService _playerCurrencyService;
+        [Inject] private PlayerRepositoryService _playerRepositoryService;
+        [Inject] private PlayerService _playerService;
         
         public IPromise Play(FlyingUIRewardAnimationContext context)
         {
@@ -102,21 +106,20 @@ namespace Services.FlyingRewardsAnimation
                                             .AnimateAndWaitFor(
                                                 startingPosition,
                                                 targetPos,
-                                                particlesScale, 
+                                                particlesScale,
                                                 stars,
                                                 context.RewardsMoveTimeSpeedupFactor,
                                                 particleSpacing: particleAppearDistanceScale,
-                                                callbackForEachAnimation: () =>
-                                                {
-                                                    _uiManager.GetPlayerHUDWidget()?.UpdateStarsValueWithAnimation(stars.Value, 0.3f);
-                                                });
+                                                callbackForEachAnimation: null);
 
                                         starsRewardAnimationPromises.AllParticlesFinish
                                             .Then(() =>
                                             {
-                                                _playerService.UpdateStarsSilentlySignal.Dispatch(true);
-                                                _currencyService.Add<Stars>(animation.PoolCount > stars ? 0 : stars - animation.PoolCount);
-                                                _playerService.UpdateStarsSilentlySignal.Dispatch(false);
+                                                if (context.UpdateProfileValues)
+                                                {
+                                                    _playerCurrencyService.AddStars(stars);
+                                                    _playerRepositoryService.SavePlayerSnapshot(_playerService.ProfileSnapshot);
+                                                }
                                             });
 
                                         return starsRewardAnimationPromises.AllParticlesFinish;
@@ -127,7 +130,7 @@ namespace Services.FlyingRewardsAnimation
                                             .AnimateAndWaitAll(
                                                 startingPosition,
                                                 targetPos,
-                                                particlesScale.AsMaybe(),
+                                                particlesScale,
                                                 currency.GetCount(),
                                                 context.RewardsMoveTimeSpeedupFactor,
                                                 particleSpacing: particleAppearDistanceScale)
@@ -135,8 +138,7 @@ namespace Services.FlyingRewardsAnimation
                                             {
                                                 if (context.UpdateProfileValues)
                                                 {
-                                                    _currencyService.Visualize(currency);
-                                                    _currencyService.Add(currency);
+                                                    //TODO ADD LOGIC HERE
                                                 }
                                             });
                                 }
@@ -144,24 +146,13 @@ namespace Services.FlyingRewardsAnimation
                             .CancelWith(context.ParentTransform.gameObject.GetDisposeProvider());
                         }));
                 }
-
-                _soundService.Play(context.Rewards, context.RewardsMoveTimeSpeedupFactor);
+                
+                //TODO ADD SOUND LOGIC HERE
+                //_soundService.Play(context.Rewards, context.RewardsMoveTimeSpeedupFactor);
 
                 if (!isAnyRewards)
                 {
                     context.RewardStartFlyPromise?.SafeResolve();
-                    context?.ChestFly?.StartFly?.SafeResolve();
-                }
-                
-                if (context.UpdateProfileValues && spinsPromises.Any())
-                {
-                    Promise<Spins>.All(spinsPromises)
-                        .Then(spins =>
-                        {
-                            var spinsFlat = spins.Aggregate((a, b) => a + b);
-                            _currencyService.Visualize<Spins>(spinsFlat);
-                            _currencyService.Add<Spins>(spinsFlat);
-                        });
                 }
 
                 var animationPromise = Promise.All(promises)
@@ -173,7 +164,7 @@ namespace Services.FlyingRewardsAnimation
             }
             catch (Exception e)
             {
-                _silentErrorHandler.HandleDevSilentError(e.ToString());
+                LoggerService.LogError(e.ToString());
 
                 return Promise.Resolved();
             }
@@ -181,9 +172,7 @@ namespace Services.FlyingRewardsAnimation
         
         private Sprite GetRewardSprite(ICurrency currency)
         {
-            return currency is Coins 
-                ? _currencyLibraryService.GetSingleCoinSprite()
-                : _currencyLibraryService.GetMainIcon(currency);
+            return _currencyLibraryService.GetMainIcon(currency.GetType().Name);
         }
         
         private IPromise FlyToDestination(FlyingUIRewardAnimationContext context)
@@ -201,14 +190,14 @@ namespace Services.FlyingRewardsAnimation
                 }
                 
                 var result = new Promise(this);
-                var particleScale = context.MaybeParticleScale.HasValue ? context.MaybeParticleScale.Value : 1f;
-                var particleDistanceScale = context.ParticleSpacing;
+                var particleScale = context.SpawnSettings?.ParticlesScale ?? 1f;
+                var particleDistanceScale = context.SpawnSettings?.ParticleAppearDistanceScale ?? 1f;
 
                 var animContext = new FlyingUIRewardAnimationContext(
                     context.Rewards.ToArray(),
                     context.ParentTransform,
                     context.RewardPlaces.ToArray(),
-                    targetsPlaces: context.CustomDestination.HasValue ? new [] { context.CustomDestination.Value } : null,
+                    targetsPlaces: context.TargetsPlaces,
                     context.RewardsMoveTimeSpeedupFactor,
                     (particleScale, particleDistanceScale),
                     updateProfileValues: context.UpdateProfileValues);
@@ -228,6 +217,14 @@ namespace Services.FlyingRewardsAnimation
                 LoggerService.LogError( e.ToString());
                 return Promise.Resolved();
             }
+        }
+
+        private void DisposeRewardsContent(List<IDisposableContent<GameObject>> disposableRewardsContent)
+        {
+            if (disposableRewardsContent.IsNullOrEmpty())
+                return;
+
+            disposableRewardsContent.Foreach(disposableContent => disposableContent?.Dispose());
         }
     }
 }

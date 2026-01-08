@@ -250,6 +250,7 @@ MonoBehaviour:
   _levelsParamsStorageData: {fileID: 11400000, guid: ee10b72902a1ab94db068e4883dc8e28,
     type: 2}
   audioStorageData: {fileID: 11400000, guid: ec45e6d10e0bfff40beb768986062abb, type: 2}
+  currencyLibrary: {fileID: 11400000, guid: 00a9f433c458b41dcab0d492b9c4c9eb, type: 2}
   _screenHandler: {fileID: 534889505}
   _popupHandler: {fileID: 534889512}
   _levelSessionHandler: {fileID: 534889509}

@@ -1,4 +1,5 @@
 using System;
+using Plugins.RotaryHeart;
 using UnityEngine;
 
 namespace Common.Rewards
