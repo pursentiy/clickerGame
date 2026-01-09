@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 using Handlers;
 using Handlers.UISystem;
@@ -13,27 +14,45 @@ namespace GameState
 {
     public class OnGameEnterState : InjectableMonoBehaviour
     {
-        [Inject] private ScreenHandler _screenHandler;
-        [Inject] private PlayerProgressService _playerProgressService;
-        [Inject] private SoundHandler _soundHandler;
-        [Inject] private ProfileBuilderService _profileBuilderService;
-        [Inject] private PlayerRepositoryService _playerRepositoryService;
-        [Inject] private PlayerService _playerService;
+        [Inject] private readonly ScreenHandler _screenHandler;
+        [Inject] private readonly PlayerProgressService _playerProgressService;
+        [Inject] private readonly SoundHandler _soundHandler;
+        [Inject] private readonly ProfileBuilderService _profileBuilderService;
+        [Inject] private readonly PlayerRepositoryService _playerRepositoryService;
+        [Inject] private readonly PlayerService _playerService;
         [Inject] private readonly ApplicationService _applicationService;
         [Inject] private readonly UIManager _uiManager;
-        [Inject] private GlobalSettingsService _globalSettingsService;
-        [Inject] private LevelsParamsStorageData _levelsParamsStorage;
+        [Inject] private readonly GlobalSettingsService _globalSettingsService;
+        [Inject] private readonly LevelsParamsStorageData _levelsParamsStorage;
+        [Inject] private readonly LocalizationService _localizationService;
 
         protected override void Awake()
         {
             DOTween.Init(true, true, LogBehaviour.Default);
             
             _applicationService.RegisterDisposableService(_uiManager);
+
+            LoggerService.LogDebugEditor($"[{nameof(OnGameEnterState)}] Awake finished");
+        }
+
+        private IEnumerator Start()
+        {
+            LoggerService.LogDebugEditor($"[{nameof(OnGameEnterState)}]  Start: Waiting for Localization...");
+            
+            yield return _localizationService.InitializeRoutine();
+
+            if (!_localizationService.IsInitialized)
+            {
+                LoggerService.LogDebugEditor($"[{nameof(OnGameEnterState)}]  Localization failed to initialize. Stopping.");
+                yield break;
+            }
+
+            LoggerService.LogDebugEditor($"[{nameof(OnGameEnterState)}]  Proceeding with UI Setup...");
             
             _uiManager.ShowScreensUI();
             _uiManager.SetupHandlers();
             _globalSettingsService.InitializeProfileSettings();
-            
+
             if (_playerRepositoryService.HasProfile)
             {
                 StartOldProfileSession();
@@ -42,6 +61,12 @@ namespace GameState
             {
                 StartNewProfileSession();
             }
+
+            SetupSounds();
+            _screenHandler.InitializeBackground();
+            _screenHandler.ShowWelcomeScreen(true);
+
+            LoggerService.LogDebugEditor($"[{nameof(OnGameEnterState)}] Successfully entered game.");
         }
 
         private void StartNewProfileSession()
@@ -72,24 +97,11 @@ namespace GameState
             return newPacks;
         }
 
-        private void Start()
-        {
-            _screenHandler.InitializeBackground();
-            _screenHandler.ShowWelcomeScreen(true);
-
-            SetupSounds();
-        }
-
         private void SetupSounds()
         {
             _soundHandler.SetMusicVolume(_globalSettingsService.ProfileSettingsMusic);
             _soundHandler.SetSoundVolume(_globalSettingsService.ProfileSettingsSound);
             _soundHandler.StartAmbience();
-        }
-
-        private bool IsNewPacksAdded(List<PackParamsData> savedDataProgress)
-        {
-            return _levelsParamsStorage.DefaultPacksParamsList.Count > savedDataProgress.Count;
         }
     }
 }

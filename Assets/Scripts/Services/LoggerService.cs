@@ -16,6 +16,13 @@ namespace Services
             Debug.Log(message);
         }
         
+        public static void LogDebugEditor(string message)
+        {
+#if UNITY_EDITOR
+            Debug.Log(message);
+#endif
+        }
+        
         public static void LogWarning(Object @object, string message)
         {
             LogWarning(@object.GetType().Name +  ": " + message);
