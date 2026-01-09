@@ -1,12 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Extensions;
+using Services.Base;
 using UnityEngine;
 using Zenject;
 
 namespace Services
 {
-    public class TimeService
+    public class TimeService : DisposableService
     {
         [Inject] private CoroutineService _coroutineService;
         
@@ -63,6 +66,26 @@ namespace Services
                 
             timer.Dispose();
             _activeTimers.Remove(id);
+        }
+        
+        protected override void OnInitialize()
+        {
+            
+        }
+
+        protected override void OnDisposing()
+        {
+            StopAllTimers();
+        }
+        
+        private void StopAllTimers()
+        {
+            if (_activeTimers.IsNullOrEmpty())
+            {
+                return;
+            }
+            
+            _activeTimers.Select(i => i.Key).ToList().ForEach(StopTimer);
         }
 
         private IEnumerator RunTimerRoutine(Timer timer)

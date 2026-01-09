@@ -47,5 +47,10 @@ namespace Extensions
                 rt.localScale = new Vector3(scale,scale,scale);
             } 
         }
+        
+        public static void SetTop(this RectTransform rt, float top)
+        {
+            rt.offsetMax = new Vector2(rt.offsetMax.x, -top);
+        }
     }
 }

@@ -5,6 +5,7 @@ using Extensions;
 using JetBrains.Annotations;
 using Platform.Common.Utilities.StateMachine;
 using RSG;
+using Services.Base;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -19,6 +20,16 @@ namespace Services
 			Object.DontDestroyOnLoad(runner);
 			MonoBehaviour = runner.AddComponent<EmptyMonoBehaviour>();
 		}
+		
+		protected override void OnInitialize()
+		{
+			
+		}
+
+		protected override void OnDisposing()
+		{
+			StopAllCoroutines();
+		}
 	}
 	
 	[UsedImplicitly]
@@ -29,10 +40,20 @@ namespace Services
 			var runner = new GameObject("-CoroutinesService");
 			MonoBehaviour = runner.AddComponent<EmptyMonoBehaviour>();
 		}
+
+		protected override void OnInitialize()
+		{
+			
+		}
+
+		protected override void OnDisposing()
+		{
+			StopAllCoroutines();
+		}
 	}
 	
 	[UsedImplicitly]
-	public abstract class CoroutineServiceBase
+	public abstract class CoroutineServiceBase : DisposableService
 	{
 		protected EmptyMonoBehaviour MonoBehaviour;
 

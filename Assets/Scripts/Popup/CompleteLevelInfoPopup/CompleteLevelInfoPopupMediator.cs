@@ -196,7 +196,7 @@ namespace Popup.CompleteLevelInfoPopup
             }
         }
         
-        private IPromise VisualizeStarsFlight(Stars earnedStars)
+        private IPromise VisualizeStarsFlight(Stars earnedStars, bool updateProfileValues = true)
         {
             if (earnedStars.Value <= 0)
                 return Promise.Resolved();
@@ -205,7 +205,8 @@ namespace Popup.CompleteLevelInfoPopup
                 new ICurrency[]{earnedStars}, 
                 View.FlyingRewardsContainer, 
                 new Vector3[] {View.StarsFlightStartPlace.position},
-                new Vector3[] {View.StarsDisplayWidget.AnimationTarget.position});
+                new Vector3[] {View.StarsDisplayWidget.AnimationTarget.position},
+                updateProfileValues: updateProfileValues);
             
             return _flyingUIRewardAnimationService.PlayAnimation(context);
         }
@@ -260,17 +261,7 @@ namespace Popup.CompleteLevelInfoPopup
 #if UNITY_EDITOR
         public void PlayStarsAnimation(Stars earnedStarsForLevel, bool updateProfileValues)
         {
-            if (earnedStarsForLevel.Value <= 0)
-                return;
-            
-            var context = new FlyingUIRewardAnimationContext(
-                new ICurrency[]{earnedStarsForLevel}, 
-                View.StarsFlightStartPlace, 
-                new Vector3[] {View.StarsFlightStartPlace.position},
-                new Vector3[] {View.StarsDisplayWidget.AnimationTarget.position}, 
-                updateProfileValues: updateProfileValues);
-            
-            _flyingUIRewardAnimationService.PlayAnimation(context);
+            VisualizeStarsFlight(earnedStarsForLevel, updateProfileValues);
         }
 #endif
     }

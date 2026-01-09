@@ -65,6 +65,7 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<LevelInfoTrackerService>().AsSingle().NonLazy();
 
             Container.BindInterfacesAndSelfTo<LocalizationService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<ReloadService>().AsSingle().NonLazy();
 
             Container.Bind<PopupHandler>().FromInstance(_popupHandler);
             Container.Bind<ScreenHandler>().FromInstance(_screenHandler);

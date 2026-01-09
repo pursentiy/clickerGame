@@ -3,6 +3,7 @@ using System.Reflection;
 using Installers;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Services.Cheats
 {
@@ -15,6 +16,22 @@ namespace Services.Cheats
         public static void ShowWindow()
         {
             GetWindow<CheatPanelEditor>("Cheat Panel");
+        }
+        
+        private void OnEnable()
+        {
+            // Подписываемся на событие загрузки сцены в редакторе
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            Close(); 
         }
 
         private void OnGUI()

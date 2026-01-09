@@ -31,6 +31,10 @@ namespace GameState
             DOTween.Init(true, true, LogBehaviour.Default);
             
             _applicationService.RegisterDisposableService(_uiManager);
+            _applicationService.RegisterDisposableService<TimeService>();
+            _applicationService.RegisterDisposableService<PersistentCoroutinesService>();
+            _applicationService.RegisterDisposableService<CoroutineService>();
+            _applicationService.SetApplicationInitialized();
 
             LoggerService.LogDebugEditor($"[{nameof(OnGameEnterState)}] Awake finished");
         }
@@ -40,6 +44,12 @@ namespace GameState
             LoggerService.LogDebugEditor($"[{nameof(OnGameEnterState)}]  Start: Waiting for Localization...");
             
             yield return _localizationService.InitializeRoutine();
+            
+            // Если объект был уничтожен во время yield, эта проверка сработает
+            if (this == null)
+            {
+                yield break;
+            }
 
             if (!_localizationService.IsInitialized)
             {
