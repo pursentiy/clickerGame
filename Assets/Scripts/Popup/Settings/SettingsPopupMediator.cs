@@ -68,6 +68,8 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
 
     private void RefreshLanguageUI()
     {
+        View.SaveLanguageButton.TrySetActive(_pendingLanguageIndex != _currentLanguageIndex);
+        
         if (View.LanguageFlags.Length > _pendingLanguageIndex)
             View.CountryFlagImage.sprite = View.LanguageFlags[_pendingLanguageIndex];
 

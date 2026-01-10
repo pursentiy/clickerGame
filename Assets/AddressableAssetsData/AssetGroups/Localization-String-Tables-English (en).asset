@@ -24,7 +24,7 @@ MonoBehaviour:
     - Locale-en
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d9b3e2fa49797434aa3d8f2ec601f087
-    m_Address: LocalizationTableMain_en
+    m_Address: LocalizationTableCommon_en
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-en
