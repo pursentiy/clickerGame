@@ -20,8 +20,6 @@ namespace Components.UI
         [SerializeField] private float punchStrength = 0.2f; // 0.2 means +20% scale at peak
         [SerializeField] private int vibrato = 10; // How much it vibrates/shakes
         [SerializeField] private float elasticity = 1f; // Bounciness
-
-        [Header("Data")] [SerializeField] private int startingValue = 0;
         [SerializeField] private string numberFormat = "N0";
 
         private int _currentDisplayValue;

@@ -5493,7 +5493,7 @@ SpriteRenderer:
   m_Size: {x: 4.864, y: 0.57}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &9106994843758623848
@@ -5614,7 +5614,7 @@ MonoBehaviour:
   sunTransform: {fileID: 1783795267583733156}
   maybeRayTransform: {fileID: 0}
   arcHeightRange: {x: 4, y: 7}
-  cycleDurationRange: {x: 15, y: 25}
+  cycleDurationRange: {x: 24, y: 30}
   widthCoefficientOffset: 0.1
   startingYCoefficient: 4
   sunRotationDurationRange: {x: 8, y: 12}
@@ -6880,7 +6880,7 @@ SpriteRenderer:
   m_Size: {x: 4.864, y: 0.57}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &2273551253989561334
