@@ -49,7 +49,7 @@ namespace Services.Cheats
             UnityEditor.EditorApplication.isPlaying = false;
         }
         
-        public void ShowUniversalPopup()
+        public void ShowReloadPopup()
         {
             if (!_uiManager.PopupsHandler.GetShownPopups<UniversalPopupMediator>().IsNullOrEmpty())
                 return;

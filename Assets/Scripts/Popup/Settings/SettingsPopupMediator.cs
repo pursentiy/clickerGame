@@ -2,11 +2,12 @@ using Attributes;
 using Extensions;
 using Handlers;
 using Handlers.UISystem;
-using Plugins.FSignal;
 using Popup.Common;
+using Popup.Universal;
 using Services;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
+using Utilities.Disposable;
 using Zenject;
 
 namespace Popup.Settings
@@ -14,13 +15,14 @@ namespace Popup.Settings
     [AssetKey("UI Popups/SettingsPopupMediator")]
     public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
     {
-        [Inject] private SoundHandler _soundHandler;
-        [Inject] private PlayerProgressService _playerProgressService;
-        [Inject] private GlobalSettingsService _globalSettingsService;
-        
-        public FSignal OnChangedLanguageSignal { get; } = new FSignal();
+        [Inject] private readonly SoundHandler _soundHandler;
+        [Inject] private readonly PlayerProgressService _playerProgressService;
+        [Inject] private readonly GlobalSettingsService _globalSettingsService;
+        [Inject] private readonly UIManager _uiManager;
+        [Inject] private readonly ReloadService _reloadService;
 
-        private int _currentLanguageIndex = 0;
+        private int _currentLanguageIndex;
+        private int _pendingLanguageIndex;
         
         public override IUIPopupAnimation Animation => new ScalePopupAnimation(View.MainTransform);
 
@@ -28,29 +30,27 @@ namespace Popup.Settings
         {
             base.OnCreated();
             
-            _currentLanguageIndex = PlayerPrefs.GetInt("language_index", 0);
-
+            _currentLanguageIndex = _pendingLanguageIndex = PlayerPrefs.GetInt("language_index", 0);
+            UpdateLocalizationSettings(_currentLanguageIndex);
+            UpdateLanguageSprite(_currentLanguageIndex);
             SetupMusicAndSoundToggles();
             
-            View.MusicToggle.onValueChanged.AddListener(isOn =>
+            View.MusicToggle.onValueChanged.MapListenerWithSound(isOn =>
             {
-                _soundHandler.PlayButtonSound();
                 _globalSettingsService.ProfileSettingsMusic = isOn;
                 _soundHandler.SetMusicVolume(isOn);
-            });
+            }).DisposeWith(this);
             
-            View.SoundToggle.onValueChanged.AddListener(isOn =>
+            View.SoundToggle.onValueChanged.MapListenerWithSound(isOn =>
             {
-                _soundHandler.PlayButtonSound();
                 _globalSettingsService.ProfileSettingsSound = isOn;
                 _soundHandler.SetSoundVolume(isOn);
-            });
+            }).DisposeWith(this);
 
-            View.CloseButton.onClick.MapListenerWithSound(Hide);
-            View.LeftLanguageButton.onClick.MapListenerWithSound(() => ChangeLanguage(-1));
-            View.RightLanguageButton.onClick.MapListenerWithSound(() => ChangeLanguage(1));
-
-            UpdateLanguagePopup();
+            View.CloseButton.onClick.MapListenerWithSound(Hide).DisposeWith(this);
+            View.SaveLanguageButton.onClick.MapListenerWithSound(SaveLanguage).DisposeWith(this);
+            View.LeftLanguageButton.onClick.MapListenerWithSound(() => SetPendingLanguage(-1)).DisposeWith(this);
+            View.RightLanguageButton.onClick.MapListenerWithSound(() => SetPendingLanguage(1)).DisposeWith(this);
         }
 
         private void SetupMusicAndSoundToggles()
@@ -59,34 +59,85 @@ namespace Popup.Settings
             View.SoundToggle.isOn = _globalSettingsService.ProfileSettingsSound;
         }
         
-        private void ChangeLanguage(int direction)
+        private void SetPendingLanguage(int direction)
         {
-            _currentLanguageIndex += direction;
+            var newLanguageIndex = GetNewLanguageIndex(direction);
+            
+            if (newLanguageIndex < 0 || newLanguageIndex >= View.LanguageFlags.Length)
+                return;
+
+            _pendingLanguageIndex = newLanguageIndex;
+            UpdateLanguageSprite(_pendingLanguageIndex);
+        }
+
+        private int GetNewLanguageIndex(int direction)
+        {
+            var newLanguageIndex = _pendingLanguageIndex;
+            newLanguageIndex += direction;
 
             var localesCount = LocalizationSettings.AvailableLocales.Locales.Count;
-            if (_currentLanguageIndex < 0)
-                _currentLanguageIndex = localesCount - 1;
-            else if (_currentLanguageIndex >= localesCount)
-                _currentLanguageIndex = 0;
+            if (newLanguageIndex < 0)
+                newLanguageIndex = localesCount - 1;
+            else if (newLanguageIndex >= localesCount)
+                newLanguageIndex = 0;
 
-            UpdateLanguagePopup();
+            return newLanguageIndex;
+        }
+        
+        private void ShowConfirmLanguagePopup()
+        {
+            var spriteAsset = View.LanguageFlagsAssets[_pendingLanguageIndex];
+            
+            //TODO LOCALIZATION
+            var reloadButton = new UniversalPopupButtonAction("Релоад", ApplyLanguageChanges);
+            var cancelButton = new UniversalPopupButtonAction("Отмена", null, UniversalPopupButtonStyle.Red);
+            var context = new UniversalPopupContext(
+                "Если вы поменяете язык, то игра перезагрузиться. Вы точно хотите поменять язык на <sprite=0> ?",
+                new[] { cancelButton, reloadButton }, "Смена языка", spriteAsset: spriteAsset);
+            _uiManager.PopupsHandler.ShowPopupImmediately<UniversalPopupMediator>(context);
 
+            void ApplyLanguageChanges()
+            {
+                SaveNewLanguageIndex(_pendingLanguageIndex);
+                _reloadService.SoftRestart();
+            }
+        }
+
+        private void SaveNewLanguageIndex(int newLanguageIndex)
+        {
+            _currentLanguageIndex = newLanguageIndex;
+            UpdateLocalizationSettings(_currentLanguageIndex);
+            UpdateLanguageSprite(_currentLanguageIndex);
+            
             PlayerPrefs.SetInt("language_index", _currentLanguageIndex);
-            OnChangedLanguageSignal.Dispatch();
         }
 
-        private void UpdateLanguagePopup()
+        private void SaveLanguage()
         {
-            if (LocalizationSettings.AvailableLocales.Locales.Count == 0) return;
-
-            View.CountryFlagImage.sprite = View.LanguageFlags[_currentLanguageIndex];
-            LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[_currentLanguageIndex];
+            if (_pendingLanguageIndex == _currentLanguageIndex)
+                return;
+            
+            ShowConfirmLanguagePopup();
         }
 
-        private void OnDestroy()
+        private void UpdateLanguageSprite(int languageIndex)
         {
-            View.MusicToggle.onValueChanged.RemoveAllListeners();
-            View.SoundToggle.onValueChanged.RemoveAllListeners();
+            if (View.LanguageFlags.IsNullOrEmpty() 
+                || languageIndex < 0 
+                || languageIndex >= View.LanguageFlags.Length) 
+                return;
+            
+            View.CountryFlagImage.sprite = View.LanguageFlags[languageIndex];
+        }
+        
+        private void UpdateLocalizationSettings(int languageIndex)
+        {
+            if (LocalizationSettings.AvailableLocales.Locales.IsNullOrEmpty() 
+                || languageIndex < 0 
+                || languageIndex >= LocalizationSettings.AvailableLocales.Locales.Count) 
+                return;
+            
+            LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[languageIndex];
         }
     }
 }

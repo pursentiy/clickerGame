@@ -1,4 +1,5 @@
 using Handlers.UISystem;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +14,9 @@ namespace Popup.Settings
         public Button LeftLanguageButton;
         public Button RightLanguageButton;
         public Image CountryFlagImage;
-        public TMPro.TextMeshProUGUI LanguageLabel;
+        public TextMeshProUGUI LanguageLabel;
         public Sprite[] LanguageFlags;
+        public TMP_SpriteAsset[] LanguageFlagsAssets;
+        public Button SaveLanguageButton;
     }
 }
