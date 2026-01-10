@@ -15,50 +15,79 @@ namespace Common.Widgets
         [Header("Alignment")]
         [Tooltip("If true, the bottom of the sprite will always touch the bottom of the screen")]
         public bool alignToBottom = true;
-
-        void Start()
-        {
-            ApplyUniversalFill();
-        }
-
-#if UNITY_EDITOR
-        void Update() => ApplyUniversalFill();
-#endif
         
-        public void ApplyUniversalFill()
+        private int _lastScreenWidth;
+        private int _lastScreenHeight;
+        private float _lastOrthoSize;
+        private Vector3 _lastCameraPos;
+        private float _lastTargetWidth;
+        private float _lastTargetHeight;
+        private float _lastPpu;
+        private bool _lastAlign;
+        
+        public void ApplyUniversalFill(bool force = false)
         {
-            // 1. Get Camera Dimensions in World Units
-            var worldScreenHeight = Camera.main.orthographicSize * 2.0f;
-            var aspectRatio = (float)UnityEngine.Device.Screen.width / UnityEngine.Device.Screen.height; // Cast to float is important!
+            if (Camera.main == null) return;
+
+            // Проверяем, изменилось ли что-то в окружении или настройках
+            if (!force && !HasChanges()) return;
+
+            // 1. Get Camera Dimensions
+            var cam = Camera.main;
+            var worldScreenHeight = cam.orthographicSize * 2.0f;
+            var screenWidth = UnityEngine.Device.Screen.width;
+            var screenHeight = UnityEngine.Device.Screen.height;
+            var aspectRatio = (float)screenWidth / screenHeight;
             var worldScreenWidth = worldScreenHeight * aspectRatio;
 
-            // 2. Calculate "Natural" World Size of the Sprite
+            // 2. Calculate "Natural" World Size
             var spriteWorldWidth = targetWidth / ppu;
             var spriteWorldHeight = targetHeight / ppu;
 
-            // 3. Calculate Scale Factors for both axes
+            // 3. Calculate Scale Factors
             float scaleX = worldScreenWidth / spriteWorldWidth;
             float scaleY = worldScreenHeight / spriteWorldHeight;
 
-            // 4. Use the LARGER scale factor to ensure "Fill" (no gaps)
-            // If scaleX is 1.2 and scaleY is 1.5, we use 1.5. 
-            // The width will be "over-scaled" but the height will fit perfectly.
+            // 4. Final Scale
             float finalScale = Mathf.Max(scaleX, scaleY);
             transform.localScale = new Vector3(finalScale, finalScale, 1f);
 
             // 5. Align to Bottom
             if (alignToBottom)
             {
-                // Calculate the actual height of the sprite AFTER scaling
                 float scaledSpriteHeight = spriteWorldHeight * finalScale;
-            
-                float cameraBottomY = Camera.main.transform.position.y - (worldScreenHeight / 2f);
-            
-                // Shift the center up by half the scaled height from the bottom edge
+                float cameraBottomY = cam.transform.position.y - (worldScreenHeight / 2f);
                 float newY = cameraBottomY + (scaledSpriteHeight / 2f);
-            
                 transform.position = new Vector3(transform.position.x, newY, transform.position.z);
             }
+
+            // Обновляем кэш после успешного применения
+            UpdateCache(screenWidth, screenHeight, cam);
+        }
+
+        private bool HasChanges()
+        {
+            var cam = Camera.main;
+            return UnityEngine.Device.Screen.width != _lastScreenWidth ||
+                   UnityEngine.Device.Screen.height != _lastScreenHeight ||
+                   !Mathf.Approximately(cam.orthographicSize, _lastOrthoSize) ||
+                   cam.transform.position != _lastCameraPos ||
+                   !Mathf.Approximately(targetWidth, _lastTargetWidth) ||
+                   !Mathf.Approximately(targetHeight, _lastTargetHeight) ||
+                   !Mathf.Approximately(ppu, _lastPpu) ||
+                   alignToBottom != _lastAlign;
+        }
+
+        private void UpdateCache(int w, int h, Camera cam)
+        {
+            _lastScreenWidth = w;
+            _lastScreenHeight = h;
+            _lastOrthoSize = cam.orthographicSize;
+            _lastCameraPos = cam.transform.position;
+            _lastTargetWidth = targetWidth;
+            _lastTargetHeight = targetHeight;
+            _lastPpu = ppu;
+            _lastAlign = alignToBottom;
         }
     }
 }

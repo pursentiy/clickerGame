@@ -1,5 +1,4 @@
 ﻿using Installers;
-using UnityEngine;
 
 namespace Screen
 {
