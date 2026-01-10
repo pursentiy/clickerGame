@@ -1,6 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Utilities.Disposable;
 
 namespace Animations
 {
@@ -45,7 +46,7 @@ namespace Animations
             }
 
             _tween = _bounceAnimation?.keys?.Length > 1 ? _transform.DOScale(scale, _animationScaleDuration).SetEase(_bounceAnimation) : _transform.DOScale(scale, _animationScaleDuration);
-
+            _tween.KillWith(this);
         }
     }
 }

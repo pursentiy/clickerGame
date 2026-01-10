@@ -4,7 +4,9 @@ using Extensions;
 using Handlers.UISystem;
 using Installers;
 using RSG;
+using Services;
 using UnityEngine;
+using Utilities.Disposable;
 using Zenject;
 
 namespace Popup.Common
@@ -80,11 +82,17 @@ namespace Popup.Common
 
         public IPromise AnimateHide(object context)
         {
-            var promise = new Promise();
+            if (_popupRootTransform == null || _popupRootTransform.gameObject == null)
+            {
+                LoggerService.LogError($"[{nameof(ScalePopupAnimation)}] {nameof(_popupRootTransform)} is null");
+                return Promise.Resolved();
+            }
+
             _popupRootTransform.localScale = Vector3.one * _scale;
             Enum.TryParse(_easingHideAnimationName, out Ease type);
-            _popupRootTransform.DOScale(_hideScale, _hideDuration).SetEase(type).OnComplete(promise.Resolve);
-            return promise;
+            return _popupRootTransform.DOScale(_hideScale, _hideDuration).SetEase(type)
+                .KillWith(_popupRootTransform.gameObject)
+                .AsPromiseWithKillOnCancel();
         }
     }
 }

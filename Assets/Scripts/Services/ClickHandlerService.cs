@@ -7,8 +7,6 @@ namespace Services
 {
     public class ClickHandlerService
     {
-        private float _rayDistance = 10f;
-        
         public FigureTarget DetectFigureTarget(PointerEventData eventData, GraphicRaycaster raycaster)
         {
             var results = new List<RaycastResult>();
