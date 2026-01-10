@@ -14,6 +14,7 @@ namespace Services.Cheats
         [Inject] private readonly ProfileBuilderService _profileBuilderService;
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly ReloadService _reloadService;
+        [Inject] private readonly LocalizationService _localizationService;
 
         public int StarsCount { get; set; } = 5;
         public bool UpdateProfileValues { get; set; }
@@ -53,12 +54,15 @@ namespace Services.Cheats
         {
             if (!_uiManager.PopupsHandler.GetShownPopups<UniversalPopupMediator>().IsNullOrEmpty())
                 return;
-
-            var reloadButton = new UniversalPopupButtonAction("Релоад", _reloadService.SoftRestart, UniversalPopupButtonStyle.Common);
-            var cancelButton = new UniversalPopupButtonAction("Отмена", null, UniversalPopupButtonStyle.Red);
+            
             var context = new UniversalPopupContext(
-                "Если вы поменеяете язык, то игра перезагрузиться. Вы точно хотите поменять язык?",
-                new[] { cancelButton, reloadButton }, "Смена языка");
+                _localizationService.GetCommonValue(LocalizationExtensions.ChangeLanguageNotifyKey),
+                new[] {
+                    new UniversalPopupButtonAction(_localizationService.GetCommonValue(LocalizationExtensions.CancelKey), null, UniversalPopupButtonStyle.Red),
+                    new UniversalPopupButtonAction(_localizationService.GetCommonValue(LocalizationExtensions.ChangeKey), _reloadService.SoftRestart)
+                }, _localizationService.GetCommonValue(LocalizationExtensions.ChangeLanguageTitle));
+            
+            
             _uiManager.PopupsHandler.ShowPopupImmediately<UniversalPopupMediator>(context);
         }
     }

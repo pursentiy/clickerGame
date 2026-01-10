@@ -14,7 +14,7 @@ namespace Popup.Settings
         public Button LeftLanguageButton;
         public Button RightLanguageButton;
         public Image CountryFlagImage;
-        public TextMeshProUGUI LanguageLabel;
+        public TMP_Text LanguageLabel;
         public Sprite[] LanguageFlags;
         public TMP_SpriteAsset[] LanguageFlagsAssets;
         public Button SaveLanguageButton;

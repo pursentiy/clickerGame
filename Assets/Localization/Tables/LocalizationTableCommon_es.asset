@@ -66,6 +66,39 @@ MonoBehaviour:
     m_Localized: Paquete
     m_Metadata:
       m_Items: []
+  - m_Id: 80736421617328128
+    m_Localized: English
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80736472662007808
+    m_Localized: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80736558745903104
+    m_Localized: "Espa\xF1ola"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80737493840814080
+    m_Localized: Guardar idioma
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80743542287228928
+    m_Localized: Cambiar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80743576143650816
+    m_Localized: Cancelar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80743593252216832
+    m_Localized: Cambiar idioma
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80743605512167424
+    m_Localized: "\xBFQuieres cambiar el idioma a <sprite=0>? \xA1El juego se reiniciar\xE1
+      al cambiar el idioma!"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

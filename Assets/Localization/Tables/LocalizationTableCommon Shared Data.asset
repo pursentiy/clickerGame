@@ -63,6 +63,38 @@ MonoBehaviour:
     m_Key: word_pack
     m_Metadata:
       m_Items: []
+  - m_Id: 80736421617328128
+    m_Key: English (en)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80736472662007808
+    m_Key: Russian (ru)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80736558745903104
+    m_Key: Spanish (es)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80737493840814080
+    m_Key: change_language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80743542287228928
+    m_Key: changeKey
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80743576143650816
+    m_Key: cancelKey
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80743593252216832
+    m_Key: changeLanguageTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80743605512167424
+    m_Key: changeLanguageNotify
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
