@@ -48,7 +48,6 @@ SpriteAtlas:
     - {fileID: 2800000, guid: ce4c100007841f242a811bd83c121706, type: 3}
     - {fileID: 2800000, guid: 606ca500e39175948b531bf380928131, type: 3}
     - {fileID: 2800000, guid: 1c8bdda2b5c2b98409106de5ebc9dce0, type: 3}
-    - {fileID: 2800000, guid: 0b56b4e9a335b384ca6f83181b90f8b0, type: 3}
     - {fileID: 2800000, guid: d938b921d8cc1724cbdb70a39faaf29f, type: 3}
     - {fileID: 2800000, guid: 955e1ee26a099084db6b1f25f71ddbd5, type: 3}
     bindAsDefault: 1
@@ -60,7 +59,6 @@ SpriteAtlas:
     - d938b921d8cc1724cbdb70a39faaf29f: 21300000
     - 1c8bdda2b5c2b98409106de5ebc9dce0: 21300000
     - 955e1ee26a099084db6b1f25f71ddbd5: 21300000
-    - 0b56b4e9a335b384ca6f83181b90f8b0: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: ce4c100007841f242a811bd83c121706, type: 3}
@@ -68,14 +66,12 @@ SpriteAtlas:
   - {fileID: 21300000, guid: d938b921d8cc1724cbdb70a39faaf29f, type: 3}
   - {fileID: 21300000, guid: 1c8bdda2b5c2b98409106de5ebc9dce0, type: 3}
   - {fileID: 21300000, guid: 955e1ee26a099084db6b1f25f71ddbd5, type: 3}
-  - {fileID: 21300000, guid: 0b56b4e9a335b384ca6f83181b90f8b0, type: 3}
   m_PackedSpriteNamesToIndex:
   - cloud1
   - cloud2
   - cloud5S
   - cloud3
   - cloud6
-  - cloud4S
   m_RenderDataMap: {}
   m_Tag: CloudsAtlas
   m_IsVariant: 0

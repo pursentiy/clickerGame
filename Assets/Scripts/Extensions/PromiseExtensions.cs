@@ -79,6 +79,38 @@ namespace Extensions
             }
         }
         
+        private static void AppendOnComplete(Tweener tweener, Promise promise)
+        {
+            if (tweener.onComplete != null)
+            {
+                var oldCallback = tweener.onComplete;
+                tweener.OnComplete(() =>
+                {
+                    oldCallback.Invoke();
+                    promise.SafeResolve();
+                });
+            }
+            else
+            {
+                tweener.OnComplete(promise.SafeResolve);
+            }
+        }
+        
+        public static IPromise AsPromiseWithKillOnCancel(this Tweener tweener, bool completeOnKill = false)
+        {
+            var promise = tweener.AsPromise();
+            promise.OnCancel(() => tweener.Kill(completeOnKill));
+            return promise;
+        }
+        
+        public static IPromise AsPromise(this Tweener tweener)
+        {
+            var promise = new Promise(tweener);
+            AppendOnComplete(tweener, promise);
+            AppendOnKill(tweener, promise);
+            return promise;
+        }
+        
         private static void AppendOnKill(Tweener tweener, Promise promise)
         {
             if (tweener.onKill != null)
