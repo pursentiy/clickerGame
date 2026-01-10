@@ -73,7 +73,6 @@ namespace GameState
             }
 
             SetupSounds();
-            _screenHandler.InitializeBackground();
             _screenHandler.ShowWelcomeScreen(true);
 
             LoggerService.LogDebugEditor($"[{nameof(OnGameEnterState)}] Successfully entered game.");

@@ -29,18 +29,12 @@ namespace Handlers
         [SerializeField] private ChoosePackScreen _choosePackScreen;
         [SerializeField] private ParticleSystem[] _changeScreenParticles;
         [SerializeField] private AnimationCurve _popupAnimationCurve;
-        [SerializeField] private GameObject _backgroundGameObjectPrefab;
         
         private Screen.ScreenBase _currentScreenBase;
         GameObject _backgroundGameObject;
         private const float _awaitChangeScreenTime = 0.7f;
 
         public float AwaitChangeScreenTime => _awaitChangeScreenTime;
-        
-        public void InitializeBackground()
-        {
-            _backgroundGameObject = ContainerHolder.CurrentContainer.InstantiatePrefab(_backgroundGameObjectPrefab);
-        }
 
         public void ShowChooseLevelScreen(FSignal levelResetSignal = null, bool fast = false)
         {
