@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.Localization.Settings;
+using UnityEngine.Localization.Tables;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Services
@@ -10,25 +12,18 @@ namespace Services
         private const string GameTable = "LocalizationTableGame";
         
         public bool IsInitialized { get; private set; }
+        
+        private readonly Dictionary<string, Dictionary<string, string>> _tablesCache = 
+            new Dictionary<string, Dictionary<string, string>>();
 
-        /// <summary>
-        /// ВАЖНО: Вызовите этот метод один раз при старте игры (например, в загрузочном экране)
-        /// </summary>
         public IEnumerator InitializeRoutine()
         {
-            if (IsInitialized)
-            {
-                yield break;
-            }
+            if (IsInitialized) yield break;
 
             LoggerService.LogDebugEditor("Starting Localization Init...");
             
             var initOp = LocalizationSettings.InitializationOperation;
-        
-            while (!initOp.IsDone)
-            {
-                yield return null; 
-            }
+            while (!initOp.IsDone) yield return null; 
 
             if (initOp.Status == AsyncOperationStatus.Failed)
             {
@@ -36,48 +31,80 @@ namespace Services
                 yield break;
             }
 
-            LoggerService.LogDebugEditor("Localization Settings Initialized. Loading Tables...");
+            // Загружаем таблицы
+            var commonTableOp = LocalizationSettings.StringDatabase.GetTableAsync(CommonTable);
+            var gameTableOp = LocalizationSettings.StringDatabase.GetTableAsync(GameTable);
             
-            var commonTableOp = LocalizationSettings.StringDatabase.GetTableAsync("LocalizationTableCommon");
-            var gameTableOp = LocalizationSettings.StringDatabase.GetTableAsync("LocalizationTableGame");
-            
-            while (!commonTableOp.IsDone || !gameTableOp.IsDone)
-            {
-                yield return null;
-            }
+            while (!commonTableOp.IsDone || !gameTableOp.IsDone) yield return null;
 
             if (commonTableOp.Status == AsyncOperationStatus.Succeeded && gameTableOp.Status == AsyncOperationStatus.Succeeded)
             {
+                // Наполняем кэш данными из таблиц
+                WarmUpCache(CommonTable, commonTableOp.Result);
+                WarmUpCache(GameTable, gameTableOp.Result);
+
                 IsInitialized = true;
-                LoggerService.LogDebugEditor("Localization Tables preloaded successfully.");
+                LoggerService.LogDebugEditor("Localization Tables preloaded and cached successfully.");
             }
             else
             {
                 LoggerService.LogWarning("Failed to preload one or more localization tables.");
             }
         }
+        
+        // Метод для очистки при смене языка, если вы не используете SoftRestart
+        public void ClearCache()
+        {
+            _tablesCache.Clear();
+        }
+
+        private void WarmUpCache(string tableName, StringTable table)
+        {
+            if (!_tablesCache.ContainsKey(tableName))
+                _tablesCache[tableName] = new Dictionary<string, string>();
+
+            var cache = _tablesCache[tableName];
+            cache.Clear();
+
+            // Проходим по всем ключам в таблице и сохраняем финальные строки
+            foreach (var entry in table.SharedData.Entries)
+            {
+                var localizedString = table.GetEntry(entry.Id)?.LocalizedValue;
+                if (localizedString != null)
+                {
+                    cache[entry.Key] = localizedString;
+                }
+            }
+        }
 
         public string GetCommonValue(string key) => GetInternalValue(key, CommonTable);
-
         public string GetGameValue(string key) => GetInternalValue(key, GameTable);
-
-        public string GetFormattedCommonValue(string key, params object[] args) 
-            => GetFormattedInternalValue(key, CommonTable, args);
-
-        public string GetFormattedGameValue(string key, params object[] args) 
-            => GetFormattedInternalValue(key, GameTable, args);
 
         private string GetInternalValue(string key, string tableName)
         {
             if (string.IsNullOrEmpty(key)) return "KEY_EMPTY";
+
+            // Пытаемся взять значение из кэша
+            if (_tablesCache.TryGetValue(tableName, out var table) && table.TryGetValue(key, out var value))
+            {
+                return value;
+            }
 
             if (!IsInitialized)
             {
                 LoggerService.LogWarning($"[LocalizationService] Accessing key '{key}' before initialization!");
             }
 
+            // Fallback (на случай, если ключа нет в кэше, но он есть в системе)
             return LocalizationSettings.StringDatabase.GetLocalizedString(tableName, key);
         }
+
+        // Остальные методы (GetFormatted...) используют GetInternalValue, поэтому тоже ускорятся
+        public string GetFormattedCommonValue(string key, params object[] args) 
+            => GetFormattedInternalValue(key, CommonTable, args);
+
+        public string GetFormattedGameValue(string key, params object[] args) 
+            => GetFormattedInternalValue(key, GameTable, args);
 
         private string GetFormattedInternalValue(string key, string tableName, params object[] args)
         {
