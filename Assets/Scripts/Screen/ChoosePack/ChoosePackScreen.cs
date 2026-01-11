@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Common.Widgets.Animations;
 using Components.UI;
 using Extensions;
 using Handlers;
@@ -34,8 +35,11 @@ namespace Screen.ChoosePack
         [SerializeField] private Button _settingsButton;
 
         private List<HorizontalLayoutGroup> _horizontalGroups = new();
-        private void Start()
+
+        protected override void Start()
         {
+            base.Start();
+            
             _headerText.text = _localization.GetGameValue("choose_pack_header");
 
             InitializePackButtons();

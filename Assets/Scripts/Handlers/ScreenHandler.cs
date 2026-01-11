@@ -11,6 +11,7 @@ using Services;
 using Storage.Extensions;
 using Storage.Levels;
 using UnityEngine;
+using Utilities.Disposable;
 using Zenject;
 
 namespace Handlers
@@ -38,36 +39,39 @@ namespace Handlers
 
         public void ShowChooseLevelScreen(FSignal levelResetSignal = null, bool fast = false)
         {
-            var awaitPromise = TryStartParticlesAwaitPromiseTransition(fast);
-
-            awaitPromise.Then(() =>
+            AnimateTransition(fast).Then(() =>
             {
                 levelResetSignal?.Dispatch();
                 PopupCurrentScreenAndDisposeHandlers();
                 _currentScreenBase = Instantiate(_chooseLevelScreen, _screenCanvasTransform);
-            });
+            }).CancelWith(this);
+        }
+
+        private IPromise AnimateTransition(bool fast = false)
+        {
+            var particlesPromise = TryStartParticlesAwaitPromiseTransition(fast);
+            var screenHidePromise = !fast ? (_currentScreenBase?.HideScreen() ?? Promise.Resolved()) : Promise.Resolved();
+            var levelHudHidePromise = _levelSessionHandler.HideHUD(fast);
+
+            return Promise.All(particlesPromise, screenHidePromise, levelHudHidePromise);
         }
         
         public void ShowChoosePackScreen(bool fast = false)
         {
-            var awaitPromise = TryStartParticlesAwaitPromiseTransition(fast);
-
-            awaitPromise.Then(() =>
+            AnimateTransition(fast).Then(() =>
             {
                 PopupCurrentScreenAndDisposeHandlers();
                 _currentScreenBase = Instantiate(_choosePackScreen, _screenCanvasTransform);
-            });
+            }).CancelWith(this);;
         }
 
         public void ShowWelcomeScreen(bool fast = false)
         {
-            var awaitPromise = TryStartParticlesAwaitPromiseTransition(fast);
-            
-            awaitPromise.Then(() =>
+            AnimateTransition(fast).Then(() =>
             {
                 PopupCurrentScreenAndDisposeHandlers();
                 _currentScreenBase = Instantiate(_welcomeScreen, _screenCanvasTransform);
-            });
+            }).CancelWith(this);;
         }
 
         private void PopupCurrentScreenAndDisposeHandlers()
@@ -101,7 +105,7 @@ namespace Handlers
         //TODO ADD REPLAY LEVEL LOGIC
         // public void ReplayCurrentLevel(int levelNumber, bool fast = false)
         // {
-        //     var awaitPromise = TryStartParticlesAwaitPromiseTransition(fast);
+        //     
         //
         //     awaitPromise.Then(() =>
         //     {
@@ -115,14 +119,12 @@ namespace Handlers
 
         public void StartNewLevel(int levelNumber, LevelParamsData levelParams, bool fast = false)
         {
-            var awaitPromise = TryStartParticlesAwaitPromiseTransition(fast);
-
-            awaitPromise.Then(() =>
+            AnimateTransition(fast).Then(() =>
             {
                 _playerProgressService.CurrentLevelNumber = levelNumber;
                 PopupCurrentScreenAndDisposeHandlers();
                 _levelSessionHandler.StartLevel(levelParams.ToSnapshot(), _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
-            });
+            }).CancelWith(this);
         }
         
         private void OnDestroy()
@@ -169,6 +171,9 @@ namespace Handlers
         {
             foreach (var particles in _changeScreenParticles)
             {
+                if (particles == null)
+                    continue;
+                
                 if (particles.isPlaying)
                 {
                     particles.Stop();

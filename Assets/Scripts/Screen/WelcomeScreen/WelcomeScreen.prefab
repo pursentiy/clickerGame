@@ -211,6 +211,7 @@ GameObject:
   - component: {fileID: 1496618069183132052}
   - component: {fileID: 7921471923265396243}
   - component: {fileID: 3474397992489960418}
+  - component: {fileID: 8346604982936261098}
   m_Layer: 5
   m_Name: WelcomeScreen
   m_TagString: Untagged
@@ -258,9 +259,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7a4a1fc79074f17990eef7de8e68e9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _scaleWidget: {fileID: 7921471923265396243}
+  _fadeWidget: {fileID: 8346604982936261098}
+  _screenAnimationType: 1
   _playButton: {fileID: 1496618069684825166}
   _settingsButton: {fileID: 614988029759736858}
-  _scaleWidget: {fileID: 7921471923265396243}
 --- !u!114 &7921471923265396243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,7 +281,7 @@ MonoBehaviour:
   easeType: 27
   targetRectTransform: {fileID: 1496618069183132049}
   canvasGroup: {fileID: 3474397992489960418}
-  initialScale: {x: 1, y: 1, z: 1}
+  targetScale: {x: 1, y: 1, z: 1}
 --- !u!225 &3474397992489960418
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -291,6 +294,24 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &8346604982936261098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496618069183132048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd186c05614f4a50bf2c6b8a354a6737, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 0.6
+  easeType: 9
+  moveOffset: 30
+  startAlpha: 0
+  targetRectTransform: {fileID: 1496618069183132049}
+  canvasGroup: {fileID: 3474397992489960418}
 --- !u!1 &1496618069537809096
 GameObject:
   m_ObjectHideFlags: 0

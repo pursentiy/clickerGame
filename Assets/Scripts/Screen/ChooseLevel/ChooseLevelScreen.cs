@@ -1,8 +1,8 @@
-﻿using Components.UI;
+﻿using Common.Widgets.Animations;
+using Components.UI;
 using Extensions;
 using Handlers;
 using Handlers.UISystem;
-using Popup.Settings;
 using Screen.ChooseLevel.Widgets;
 using Services;
 using Storage;
@@ -36,8 +36,10 @@ namespace Screen.ChooseLevel
         
         private HorizontalLayoutGroup _horizontalGroup;
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
+            
             _headerText.text = _localization.GetGameValue("choose_level_header");
 
             InitializeLevelsButton();

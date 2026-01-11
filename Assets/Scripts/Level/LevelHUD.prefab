@@ -1177,6 +1177,7 @@ GameObject:
   - component: {fileID: 4922581533627459723}
   - component: {fileID: 4202509390955207686}
   - component: {fileID: 6055261361001014442}
+  - component: {fileID: 8228417023552302274}
   m_Layer: 5
   m_Name: LevelHUD
   m_TagString: Untagged
@@ -1239,6 +1240,7 @@ MonoBehaviour:
   _levelTimerWidget: {fileID: 6215761390008440264}
   _figuresAssemblyCanvasRaycaster: {fileID: 8461509400237562173}
   _finishLevelParticles: {fileID: 3547966252787234113}
+  _fadeWidget: {fileID: 8228417023552302274}
 --- !u!225 &6055261361001014442
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1251,6 +1253,24 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &8228417023552302274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4922581533627459721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd186c05614f4a50bf2c6b8a354a6737, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 0.6
+  easeType: 9
+  moveOffset: 30
+  startAlpha: 0
+  targetRectTransform: {fileID: 4922581533627459722}
+  canvasGroup: {fileID: 6055261361001014442}
 --- !u!1 &5778911037274480501
 GameObject:
   m_ObjectHideFlags: 0

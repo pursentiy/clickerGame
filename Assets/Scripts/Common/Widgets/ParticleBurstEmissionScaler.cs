@@ -30,6 +30,9 @@ namespace Common.Widgets
 
             foreach (var ps in particleSystems)
             {
+                if (ps == null)
+                    continue;
+                
                 if (ps.emission.burstCount <= 0)
                 {
                     initialBursts.Add(null);
@@ -61,6 +64,9 @@ namespace Common.Widgets
             for (var i = 0; i < particleSystems.Length; i++)
             {
                 var ps = particleSystems[i];
+                if (ps == null)
+                    continue;
+                
                 var emission = ps.emission;
             
                 var currentBursts = new ParticleSystem.Burst[initialBursts[i].Length];

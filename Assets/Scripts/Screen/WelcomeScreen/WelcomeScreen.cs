@@ -1,5 +1,4 @@
-﻿using Common.Widgets;
-using Extensions;
+﻿using Extensions;
 using Handlers;
 using Handlers.UISystem;
 using UnityEngine;
@@ -18,18 +17,11 @@ namespace Screen.WelcomeScreen
         
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _settingsButton;
-        [SerializeField] private ScaleWidget _scaleWidget;
 
-        protected override void Awake()
+        protected override void Start()
         {
-            base.Awake();
+            base.Start();
             
-            _scaleWidget.ResetWidget();
-        }
-        
-        private void Start()
-        {
-            _scaleWidget.Show();
             _playButton.onClick.MapListenerWithSound(PushNextScreen).DisposeWith(this);
             _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null)).DisposeWith(this);;
         }
@@ -38,6 +30,5 @@ namespace Screen.WelcomeScreen
         {
             _screenHandler.ShowChoosePackScreen();
         }
-
     }
 }

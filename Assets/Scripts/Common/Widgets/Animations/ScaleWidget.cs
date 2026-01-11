@@ -3,7 +3,7 @@ using Extensions;
 using RSG;
 using UnityEngine;
 
-namespace Common.Widgets
+namespace Common.Widgets.Animations
 {
     public class ScaleWidget : MonoBehaviour
     {
@@ -22,7 +22,7 @@ namespace Common.Widgets
         [Tooltip("CanvasGroup on the parent for fade effect (optional)")]
         [SerializeField] private CanvasGroup canvasGroup; // Для плавного появления/исчезновения
         
-        [SerializeField] private Vector3 initialScale = Vector3.one;
+        [SerializeField] private Vector3 targetScale = Vector3.one;
 
         public void ResetWidget()
         {
@@ -39,7 +39,7 @@ namespace Common.Widgets
             targetRectTransform.DOKill(true);
             canvasGroup.DOKill(true);
             
-            var scalePromise = targetRectTransform.DOScale(initialScale, duration)
+            var scalePromise = targetRectTransform.DOScale(targetScale, duration)
                 .SetEase(easeType, overshoot) // Используем overshoot для пружинистого эффекта
                 .SetLink(gameObject) // Привязываем к жизненному циклу GameObject
                 .OnComplete(() => canvasGroup.blocksRaycasts = true)

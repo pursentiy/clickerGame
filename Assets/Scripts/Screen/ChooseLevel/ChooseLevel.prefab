@@ -180,6 +180,9 @@ GameObject:
   - component: {fileID: 2254273223443519544}
   - component: {fileID: 2254273223443519543}
   - component: {fileID: 454104832983673469}
+  - component: {fileID: 4253924867569979261}
+  - component: {fileID: 1829823661562230504}
+  - component: {fileID: 4531385338540992215}
   m_Layer: 5
   m_Name: ChooseLevel
   m_TagString: Untagged
@@ -227,6 +230,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9a0711ed4c44238ba3a0b0dc63e1bf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _scaleWidget: {fileID: 4531385338540992215}
+  _fadeWidget: {fileID: 1829823661562230504}
+  _screenAnimationType: 0
   _levelItemWidgetPrefab: {fileID: 980463320655953494, guid: 471bb6fd7fdd82b40bbd80909ad66053,
     type: 3}
   _levelEnterPopupsParentTransform: {fileID: 6808412473636373514}
@@ -237,6 +243,54 @@ MonoBehaviour:
   _packName: {fileID: 5870720989226935585}
   _starsDisplayWidget: {fileID: 2582970909528499171}
   _headerText: {fileID: 679452920455784314}
+--- !u!225 &4253924867569979261
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2254273223443519547}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &1829823661562230504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2254273223443519547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd186c05614f4a50bf2c6b8a354a6737, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 0.6
+  easeType: 9
+  moveOffset: 30
+  startAlpha: 0
+  targetRectTransform: {fileID: 2254273223443519544}
+  canvasGroup: {fileID: 4253924867569979261}
+--- !u!114 &4531385338540992215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2254273223443519547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7882089cb8b94d3dac543bb226315dc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 0.5
+  overshoot: 0.8
+  easeType: 27
+  targetRectTransform: {fileID: 2254273223443519544}
+  canvasGroup: {fileID: 4253924867569979261}
+  targetScale: {x: 1, y: 1, z: 1}
 --- !u!1 &3457223826188242404
 GameObject:
   m_ObjectHideFlags: 0

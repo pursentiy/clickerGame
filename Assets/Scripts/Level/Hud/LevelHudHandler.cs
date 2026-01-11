@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Common.Widgets.Animations;
 using Components.Levels.Figures;
 using DG.Tweening;
 using Extensions;
@@ -42,6 +44,7 @@ namespace Level.Hud
         [SerializeField] private LevelTimerWidget _levelTimerWidget;
         [SerializeField] private GraphicRaycaster _figuresAssemblyCanvasRaycaster;
         [SerializeField] private ParticleSystem _finishLevelParticles;
+        [SerializeField] private FadeWidget _fadeWidget;
         
         private List<FigureMenu> _figureAnimalsForAssemblyList = new List<FigureMenu>();
         private List<FigureTarget> _figureAnimalsTargetList = new List<FigureTarget>();
@@ -55,6 +58,16 @@ namespace Level.Hud
         {
             _starsProgressWidget.ResetWidget();
             OnTimerChanged(_levelInfoTrackerService.CurrentLevelPlayingTime);
+        }
+        
+        public IPromise HideScreen()
+        {
+            return _fadeWidget.Hide();
+        }
+
+        public void SetInteractivity(bool isInteractable)
+        {
+            _canvasGroup.interactable = isInteractable;
         }
 
         public void Initialize(LevelBeatingTimeInfoSnapshot levelBeatingTime, float assemblyContainerScale)
@@ -82,26 +95,28 @@ namespace Level.Hud
             levelFiguresParams.ForEach(SetDraggingFigure);
             levelFiguresParams.ForEach(SetAssemblyContainerFigure);
         }
-
-        private void SetAssemblyContainerScale(float scale)
+        
+        
+        private void Start()
         {
-            if (scale <= 0)
-                return;
-            
-            _figuresAssemblyContainer.localScale = new Vector3(scale, scale, scale);
+            _fadeWidget.Show();
         }
         
         protected override void Awake()
         {
+            _fadeWidget.ResetWidget();
             _backButton.onClick.MapListenerWithSound(GoToMainMenuScreen).DisposeWith(this);
             _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null)).DisposeWith(this);
 
             _figuresGroupSpacing = _figuresGroup.spacing;
         }
         
-        public void SetInteractivity(bool isInteractable)
+        private void SetAssemblyContainerScale(float scale)
         {
-            _canvasGroup.interactable = isInteractable;
+            if (scale <= 0)
+                return;
+            
+            _figuresAssemblyContainer.localScale = new Vector3(scale, scale, scale);
         }
         
         private void OnTimerChanged(float seconds)

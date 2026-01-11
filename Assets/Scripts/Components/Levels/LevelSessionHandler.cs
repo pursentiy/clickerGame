@@ -6,7 +6,6 @@ using Extensions;
 using Handlers;
 using Handlers.UISystem;
 using Installers;
-using Level.Game;
 using Level.Hud;
 using Level.Widgets;
 using Popup.CompleteLevelInfoPopup;
@@ -65,6 +64,14 @@ namespace Components.Levels
             SetupHud(levelParamsSnapshot, levelHudHandler);
             
             _soundHandler.PlaySound("start");
+        }
+
+        public IPromise HideHUD(bool fast = false)
+        {
+            if (fast || _levelHudHandler == null)
+                return Promise.Resolved();
+
+            return _levelHudHandler.HideScreen();
         }
 
         private void OnDestroy()
