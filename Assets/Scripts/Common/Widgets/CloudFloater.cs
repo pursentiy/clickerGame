@@ -24,7 +24,7 @@ namespace Common.Widgets
         private float _rightEdge;
         private float _targetY;
 
-        private void Start()
+        public void StartAnimation()
         {
             if (Random.Range(0f, 1f) < _disablingChance)
             {

@@ -1,4 +1,5 @@
 using Common.Widgets;
+using Extensions;
 using Services;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ namespace Handlers
         [SerializeField] private ParticleStretchWidget _particleStretchWidget;
         [SerializeField] private ParticleBurstEmissionScaler _particleBurstEmissionScaler;
         [SerializeField] private BackgroundFitter _backgroundFitter;
+        [SerializeField] private CloudFloater[] _cloudFloaters;
 
         private ScreenOrientation _lastOrientation;
         private int _lastWidth;
@@ -24,6 +26,19 @@ namespace Handlers
         private void Start()
         {
             UpdateWidgets();
+            StarCloudsAnimation();
+        }
+
+        private void StarCloudsAnimation()
+        {
+            if (_cloudFloaters.IsNullOrEmpty())
+                return;
+
+            foreach (var cloudFloater in _cloudFloaters)
+            {
+                if (cloudFloater != null)
+                    cloudFloater.StartAnimation();
+            }
         }
         
         private void Update()
