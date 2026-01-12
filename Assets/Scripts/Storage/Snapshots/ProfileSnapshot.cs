@@ -1,17 +1,26 @@
 using System.Collections.Generic;
+using Common.Currency;
 
 namespace Storage.Snapshots
 {
     public class ProfileSnapshot
     {
-        public ProfileSnapshot(int stars, List<PackSnapshot> packSnapshots)
+        public ProfileSnapshot(Stars stars, ICurrency softCurrency, ICurrency hardCurrency, List<PackSnapshot> packSnapshots, List<string> purchasedItemsIds, AnalyticsInfoSnapshot analyticsInfoSnapshot)
         {
             Stars = stars;
             PackSnapshots = packSnapshots;
+            SoftCurrency = softCurrency;
+            HardCurrency = hardCurrency;
+            PurchasedItemsIds = purchasedItemsIds;
+            AnalyticsInfoSnapshot = analyticsInfoSnapshot;
         }
 
-        public int Stars {get; set;}
+        public Stars Stars {get; set;}
+        public ICurrency SoftCurrency {get; set;}
+        public ICurrency HardCurrency {get; set;}
         public List<PackSnapshot> PackSnapshots {get; set;}
+        public List<string> PurchasedItemsIds {get; set;}
+        public AnalyticsInfoSnapshot AnalyticsInfoSnapshot {get; set;}
         
     }
 }

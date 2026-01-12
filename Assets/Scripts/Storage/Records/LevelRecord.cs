@@ -1,19 +1,25 @@
 using System;
+using Common.Currency;
 
 namespace Storage.Records
 {
     [Serializable]
     public class LevelRecord
     {
-        public LevelRecord(int levelNumber, float levelCompletedTime, int starsEarned)
+        public LevelRecord(int levelNumber, float bestCompletedTime, int starsEarned, UnlockStatus isUnlocked, int playCount)
         {
             LevelNumber = levelNumber;
-            LevelCompletedTime = levelCompletedTime;
+            BestCompletedTime = bestCompletedTime;
             StarsEarned = starsEarned;
+            IsUnlocked = isUnlocked;
+            PlayCount = playCount;
         }
-
+        
         public int LevelNumber;
-        public float LevelCompletedTime;
         public int StarsEarned;
+        public float BestCompletedTime;
+        public int Score;
+        public UnlockStatus IsUnlocked;
+        public int PlayCount;
     }
 }

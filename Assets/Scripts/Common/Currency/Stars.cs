@@ -1,13 +1,19 @@
+using System;
+using UnityEngine;
+
 namespace Common.Currency
 {
+    [Serializable]
     public readonly struct Stars : ICurrency
     {
+        [SerializeField] private readonly int _value;
+
         public Stars(int value)
         {
-            Value = value;
+            _value = value;
         }
 
-        public int Value { get; }
+        public int Value => _value;
 
         public static Stars Zero => new Stars(0);
 

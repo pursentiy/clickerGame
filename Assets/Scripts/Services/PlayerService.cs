@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Common.Currency;
 using Extensions;
+using Storage;
 using Storage.Snapshots;
 
 namespace Services
@@ -19,7 +21,7 @@ namespace Services
             ProfileSnapshot = profileSnapshot;
         }
 
-        public void SetLevelCompleted(int packNumber, int levelNumber, float levelCompletedTime, int starsEarned)
+        public void SetLevelCompleted(int packNumber, int levelNumber, float levelCompletedTime, Stars starsEarned)
         {
             if (levelCompletedTime < 0)
             {
@@ -43,13 +45,14 @@ namespace Services
             var level = pack.CompletedLevelsSnapshots.FirstOrDefault(x => x.LevelNumber == levelNumber);
             if (level == null)
             {
-                pack.CompletedLevelsSnapshots.Add(new LevelSnapshot(levelNumber,  levelCompletedTime, starsEarned));
+                //TODO ADD CORRECT FIELD
+                pack.CompletedLevelsSnapshots.Add(new LevelSnapshot(levelNumber, levelCompletedTime, starsEarned, UnlockStatus.UnlockedByProgress, 1));
             }
             else
             {
-                if (levelCompletedTime < level.LevelCompletedTime)
+                if (levelCompletedTime < level.BestCompletedTime)
                 {
-                    level.LevelCompletedTime = levelCompletedTime;
+                    level.BestCompletedTime = levelCompletedTime;
                 }
 
                 if (level.StarsEarned > starsEarned)

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Common.Currency;
 using Extensions;
+using Storage;
 using Storage.Levels;
 using Storage.Snapshots;
 using Zenject;
@@ -31,28 +33,28 @@ namespace Services
         public bool IsPackAvailable(int packNumber)
         {
             var starsToUnlock = GetPackStarsToUnlock(packNumber);
-            if (starsToUnlock < 0)
+            if (starsToUnlock.GetCount() < 0)
                 return false;
 
-            return _playerCurrencyService.Stars >= starsToUnlock;
+            return _playerCurrencyService.Stars.GetCount() >= starsToUnlock.GetCount();
         }
 
-        public int GetPackStarsToUnlock(int packNumber)
+        public Stars GetPackStarsToUnlock(int packNumber)
         {
             if (_packParamsList.IsNullOrEmpty())
             {
                 LoggerService.LogWarning($"Levels Params is null in {this}");
-                return -1;
+                return new Stars(-1);
             }
 
             var pack = _packParamsList.FirstOrDefault(i => i.PackNumber == packNumber);
             if (pack == null)
             {
                 LoggerService.LogWarning($"Pack Params is null in {this} for PackNumber {packNumber}");
-                return -1;
+                return new Stars(-1);
             }
             
-            return pack.StarsToUnlock;
+            return new Stars(pack.StarsToUnlock);
         }
 
         public bool IsLevelAvailable(int packNumber, int levelNumber)
@@ -67,15 +69,20 @@ namespace Services
             return previousLevelIsCompleted;
         }
         
-        public int? GetEarnedStarsForLevel(int packNumber, int levelNumber)
+        public Stars? GetEarnedStarsForLevel(int packNumber, int levelNumber)
         {
             var pack = _playerService.TryGetPack(packNumber);
 
             var level = pack?.CompletedLevelsSnapshots.FirstOrDefault(x => x.LevelNumber == levelNumber);
-            return level?.StarsEarned;
+
+            if (level == null)
+                return null;
+            
+            
+            return new Stars((int)level.StarsEarned.GetCount());
         }
 
-        public bool TrySetOrUpdateLevelCompletion(int packNumber, int levelNumber, int earnedStars, float completeTime)
+        public bool TrySetOrUpdateLevelCompletion(int packNumber, int levelNumber, Stars earnedStars, float completeTime)
         {
             var pack = _playerService.GetOrCreatePack(packNumber);
             if (pack == null)
@@ -89,15 +96,18 @@ namespace Services
                     level.StarsEarned = earnedStars;
                 }
                 
-                if (completeTime < level.LevelCompletedTime || level.LevelCompletedTime <= 0)
+                if (completeTime < level.BestCompletedTime || level.BestCompletedTime <= 0)
                 {
-                    level.LevelCompletedTime = completeTime;
+                    level.BestCompletedTime = completeTime;
                 }
+
+                level.PlayCount++;
                 
                 return true;
             }
             
-            pack.CompletedLevelsSnapshots.Add(new LevelSnapshot(levelNumber, completeTime, earnedStars));
+            //TODO ADD CORRECT FIELD
+            pack.CompletedLevelsSnapshots.Add(new LevelSnapshot(levelNumber, completeTime, earnedStars, UnlockStatus.UnlockedByProgress, 1));
             return true;
         }
 

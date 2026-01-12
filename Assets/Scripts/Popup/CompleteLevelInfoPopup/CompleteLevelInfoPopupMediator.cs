@@ -52,7 +52,7 @@ namespace Popup.CompleteLevelInfoPopup
             _playerCurrencyService.StarsChangedSignal.MapListener(OnStarsUpdated).DisposeWith(this);
         }
 
-        private void OnStarsUpdated(int earnedStars)
+        private void OnStarsUpdated(Stars earnedStars)
         {
             //TODO REPLACE TO FlyingUIRewardAnimationService AUTOMATICALLY UPDATE
             View.StarsDisplayWidget.AddCurrency(earnedStars);

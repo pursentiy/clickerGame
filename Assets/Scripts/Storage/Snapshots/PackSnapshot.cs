@@ -12,5 +12,7 @@ namespace Storage.Snapshots
 
         public int PackNumber {get; set;}
         public List<LevelSnapshot> CompletedLevelsSnapshots {get; set;}
+        public UnlockStatus IsUnlocked {get; set;}
+        public bool IsNew {get; set;}
     }
 }

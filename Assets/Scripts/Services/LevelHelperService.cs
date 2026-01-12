@@ -1,3 +1,4 @@
+using Common.Currency;
 using Storage.Snapshots.LevelParams;
 
 namespace Services
@@ -17,7 +18,7 @@ namespace Services
             return progress;
         }
 
-        public int EvaluateStarsForAccrual(int newEarnedStars, int? maybeOldEarnedStars)
+        public int EvaluateStarsForAccrual(Stars newEarnedStars, int? maybeOldEarnedStars)
         {
             if (newEarnedStars <= 0)
                 return 0;

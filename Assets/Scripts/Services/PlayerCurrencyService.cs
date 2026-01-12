@@ -1,3 +1,4 @@
+using Common.Currency;
 using Plugins.FSignal;
 using Zenject;
 
@@ -7,8 +8,8 @@ namespace Services
     {
         [Inject] private PlayerService _playerService;
         
-        public FSignal<int> StarsChangedSignal = new FSignal<int>();
-        public int Stars => _playerService.ProfileSnapshot?.Stars ?? 0;
+        public FSignal<Stars> StarsChangedSignal = new ();
+        public Stars Stars => _playerService.ProfileSnapshot?.Stars ?? new Stars();
         
         public void AddStars(int amount)
         {

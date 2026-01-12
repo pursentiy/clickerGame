@@ -1,4 +1,5 @@
 using System;
+using Common.Currency;
 using Extensions;
 using Handlers;
 using Installers;
@@ -29,7 +30,7 @@ namespace Screen.ChoosePack.Widgets
         private GameObject _packImageInstance;
         private int _currentPackNumber;
 
-        public void Initialize(string packName, GameObject packImagePrefab, int packNumber, bool isUnlocked, Action onClickAction, Action onLockedClickAction, int starsRequired)
+        public void Initialize(string packName, GameObject packImagePrefab, int packNumber, bool isUnlocked, Action onClickAction, Action onLockedClickAction, Stars starsRequired)
         {
             var packKey = $"pack_{packName.ToLower()}";
             _packText.text = _localization.GetGameValue(packKey);
