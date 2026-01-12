@@ -268,6 +268,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   duration: 0.6
   easeType: 9
+  postShowDelay: 0
+  postHideDelay: 0.25
   moveOffset: 30
   startAlpha: 0
   targetRectTransform: {fileID: 2254273223443519544}
@@ -589,9 +591,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6808412472487802491}
   - component: {fileID: 6808412472487802471}
-  - component: {fileID: 6808412472487802468}
   - component: {fileID: 6808412472487802469}
   - component: {fileID: 6808412472487802490}
+  - component: {fileID: 1959824232774858106}
   m_Layer: 5
   m_Name: Scroll
   m_TagString: Untagged
@@ -650,19 +652,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6808412472487802468
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6808412472487802488}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ShowMaskGraphic: 1
 --- !u!222 &6808412472487802469
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -701,6 +690,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1959824232774858106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6808412472487802488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding: {x: 0, y: 0, z: 0, w: 0}
+  m_Softness: {x: 0, y: 0}
 --- !u!1 &6808412473636373515
 GameObject:
   m_ObjectHideFlags: 0
@@ -910,19 +913,19 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 159
+  m_fontSize: 136
   m_fontSizeBase: 156.6
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 200
+  m_fontSizeMax: 136
   m_fontStyle: 16
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: -0.09
+  m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: -34.82
+  m_lineSpacing: -34
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0

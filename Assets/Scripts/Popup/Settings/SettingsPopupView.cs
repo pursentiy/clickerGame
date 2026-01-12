@@ -8,6 +8,7 @@ namespace Popup.Settings
     public class SettingsPopupView : MonoBehaviour, IUIView
     {
         public Button CloseButton;
+        public Button BackgroundButton;
         public Toggle MusicToggle;
         public Toggle SoundToggle;
         public RectTransform MainTransform;

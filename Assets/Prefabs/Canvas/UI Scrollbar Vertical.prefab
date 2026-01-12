@@ -49,7 +49,7 @@ GameObject:
   - component: {fileID: 6326018155117143672}
   - component: {fileID: 3176568391640083226}
   m_Layer: 5
-  m_Name: Scrollbar Vertical
+  m_Name: UI Scrollbar Vertical
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

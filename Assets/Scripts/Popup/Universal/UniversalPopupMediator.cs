@@ -37,7 +37,7 @@ namespace Popup.Universal
 
              if (Context.AllowBackgroundClose)
              {
-                 View.BackgroundButton.onClick.MapListener(Hide).DisposeWith(this);
+                 View.BackgroundButton.onClick.MapListenerWithSound(Hide).DisposeWith(this);
              }
              
              View.CommonCrossButton.onClick.MapListenerWithSound(Hide).DisposeWith(this);

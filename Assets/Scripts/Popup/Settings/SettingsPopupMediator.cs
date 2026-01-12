@@ -42,6 +42,7 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
         View.RightLanguageButton.onClick.MapListenerWithSound(() => ChangePendingIndex(1)).DisposeWith(this);
         View.SaveLanguageButton.onClick.MapListenerWithSound(TrySaveLanguage).DisposeWith(this);
         View.CloseButton.onClick.MapListenerWithSound(Hide).DisposeWith(this);
+        View.BackgroundButton.onClick.MapListenerWithSound(Hide).DisposeWith(this);
     }
 
     private void SetupToggles()

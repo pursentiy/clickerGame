@@ -269,6 +269,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   duration: 0.6
   easeType: 9
+  postShowDelay: 0
+  postHideDelay: 0.25
   moveOffset: 30
   startAlpha: 0
   targetRectTransform: {fileID: 2254273223443519544}
@@ -531,10 +533,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 574675370528015709}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.1, y: 0.564504}
-  m_AnchorMax: {x: 0.9, y: 0.71656376}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.1, y: 0.62063414}
+  m_AnchorMax: {x: 0.9, y: 0.72708815}
+  m_AnchoredPosition: {x: 10, y: 0}
+  m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2265707361834292093
 CanvasRenderer:
@@ -591,19 +593,19 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 159
+  m_fontSize: 136
   m_fontSizeBase: 156.6
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 200
+  m_fontSizeMax: 136
   m_fontStyle: 16
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: -0.09
+  m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: -34.82
+  m_lineSpacing: -34
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -986,8 +988,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 574675370528015709}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.1013541, y: 0.72764444}
-  m_AnchorMax: {x: 0.9013541, y: 0.8360563}
+  m_AnchorMin: {x: 0.1, y: 0.72764444}
+  m_AnchorMax: {x: 0.9, y: 0.8360563}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1046,19 +1048,19 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 136.45
+  m_fontSize: 136
   m_fontSizeBase: 156.6
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 200
+  m_fontSizeMax: 136
   m_fontStyle: 16
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: -0.09
+  m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: -34.82
+  m_lineSpacing: -34
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0

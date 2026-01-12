@@ -11,14 +11,14 @@ namespace Common.Widgets.Animations
     public class FadeWidget : MonoBehaviour
     {
         [Header("Timing")]
-        [SerializeField] private float duration = 0.6f;
+        [SerializeField] private float duration = 0.3f;
         [SerializeField] private Ease easeType = Ease.OutCubic;
         
         [Header("Delays")]
         [Tooltip("Задержка ПОСЛЕ того, как объект полностью показан")]
         [SerializeField] private float postShowDelay = 0f;
         [Tooltip("Задержка ПОСЛЕ того, как объект полностью скрыт")]
-        [SerializeField] private float postHideDelay = 0.5f;
+        [SerializeField] private float postHideDelay = 0.25f;
 
         [Header("Rich Effect Settings")]
         [SerializeField] private float moveOffset = 30f;
