@@ -1,5 +1,4 @@
 using System;
-using Common.Currency;
 
 namespace Storage.Records
 {
@@ -18,8 +17,9 @@ namespace Storage.Records
         public int LevelNumber;
         public int StarsEarned;
         public float BestCompletedTime;
-        public int Score;
-        public UnlockStatus IsUnlocked;
         public int PlayCount;
+        
+        //TODO IN THE FUTURE BLOCK
+        public UnlockStatus IsUnlocked;
     }
 }

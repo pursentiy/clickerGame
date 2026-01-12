@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Common.Currency;
 
 namespace Storage.Records
 {
@@ -15,14 +14,14 @@ namespace Storage.Records
             SoftCurrency = softCurrency;
             HardCurrency = hardCurrency;
         }
-        
-        public int Version = 1; 
-        
+         
         public int Stars;
-        public int SoftCurrency; // Например, монеты
-        public int HardCurrency; // Например, кристаллы
-        
         public List<PackRecord> PackRecords;
+        
+        //TODO IN THE FUTURE BLOCK
+        public int Version = 1;
+        public int SoftCurrency;
+        public int HardCurrency;
         public List<string> PurchasedItemsIds;
         public AnalyticsInfoRecord AnalyticsInfoRecord;
     }

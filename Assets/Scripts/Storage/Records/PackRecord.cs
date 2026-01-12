@@ -14,8 +14,10 @@ namespace Storage.Records
         }
         
         public int PackNumber;
-        public UnlockStatus IsUnlocked;
         public List<LevelRecord> CompletedLevelsRecords;
+        
+        //TODO IN THE FUTURE BLOCK
         public bool IsNew;
+        public UnlockStatus IsUnlocked;
     }
 }
