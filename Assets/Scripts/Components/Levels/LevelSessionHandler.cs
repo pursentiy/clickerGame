@@ -90,15 +90,13 @@ namespace Components.Levels
             _levelInfoTrackerService.StopLevelTracking();
             _levelInfoTrackerService.ClearData();
 
-            var maybeOldEarnedStars = _playerProgressService.GetEarnedStarsForLevel(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber);
             var earnedStars = _levelHelperService.EvaluateEarnedStars(_currentLevelParams, levelPlayedTime);
-            var starsForAccrual = _levelHelperService.EvaluateStarsForAccrual(earnedStars, maybeOldEarnedStars);
             _playerService.SetLevelCompleted(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber, levelPlayedTime, earnedStars);
             
             _levelHudHandler.SetInteractivity(false);
             _levelHudHandler.PlayFinishParticles();
             _playerProgressService.TrySetOrUpdateLevelCompletion(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber, earnedStars, levelPlayedTime);
-            _finishCoroutine = StartCoroutine(AwaitFinishLevel(earnedStars, starsForAccrual, levelPlayedTime));
+            _finishCoroutine = StartCoroutine(AwaitFinishLevel(earnedStars, earnedStars, levelPlayedTime));
         }
 
         private IEnumerator AwaitFinishLevel(int totalStars, int starsForAccrual, float levelPlayedTime)

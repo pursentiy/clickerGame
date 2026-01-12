@@ -18,7 +18,7 @@ namespace Services
             return progress;
         }
 
-        public int EvaluateStarsForAccrual(Stars newEarnedStars, int? maybeOldEarnedStars)
+        public int EvaluateStarsProgress(Stars newEarnedStars, int? maybeOldEarnedStars)
         {
             if (newEarnedStars <= 0)
                 return 0;
