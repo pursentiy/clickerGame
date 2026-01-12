@@ -69,14 +69,14 @@ namespace Popup.CompleteLevelInfoPopup
             var format = _localization.GetCommonValue("result_time");
             View.TimeText.text = string.Format(format, 0f);
             float displayTime = 0;
-            var seq = DOTween.Sequence();
+            var seq = DOTween.Sequence().KillWith(this);
     
             seq.Append(DOTween.To(() => displayTime, x => displayTime = x, finalTime, 1.5f)
                 .OnUpdate(() => 
                 {
                     View.TimeText.text = string.Format(format, displayTime);
                 })
-                .SetEase(Ease.OutQuad)).KillWith(this);
+                .SetEase(Ease.OutQuad));
     
             seq.Append(View.TimeText.transform.DOPunchScale(Vector3.one * 0.1f, 0.3f));
         }
@@ -171,12 +171,14 @@ namespace Popup.CompleteLevelInfoPopup
 
             starTrm.DOLocalMoveY(starTrm.localPosition.y + strength, duration)
                 .SetEase(Ease.InOutSine) // Плавный вход и выход
-                .SetLoops(-1, LoopType.Yoyo); // -1 значит бесконечно, Yoyo - туда-обратно
+                .SetLoops(-1, LoopType.Yoyo) // -1 значит бесконечно, Yoyo - туда-обратно
+                .KillWith(this);
 
             // Дополнительно можно добавить легкое покачивание
             starTrm.DORotate(new Vector3(0, 0, 5f), duration * 1.2f)
                 .SetEase(Ease.InOutSine)
-                .SetLoops(-1, LoopType.Yoyo);
+                .SetLoops(-1, LoopType.Yoyo)
+                .KillWith(this);
         }
 
         private void TryAcquireEarnedStars(Stars earnedStarsForLevel, bool fast = false)
@@ -208,7 +210,7 @@ namespace Popup.CompleteLevelInfoPopup
                 new Vector3[] {View.StarsDisplayWidget.AnimationTarget.position},
                 updateProfileValues: updateProfileValues);
             
-            return _flyingUIRewardAnimationService.PlayAnimation(context);
+            return _flyingUIRewardAnimationService.PlayAnimation(context).CancelWith(this);
         }
 
         private void GoToLevelsMenuScreen()

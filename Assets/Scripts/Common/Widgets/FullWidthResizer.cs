@@ -46,11 +46,5 @@ namespace Common.Widgets
             pos.x = 0;
             _rectTransform.anchoredPosition = pos;
         }
-
-        // Вызывается автоматически при изменении параметров в инспекторе
-        private void OnValidate()
-        {
-            UpdateSize();
-        }
     }
 }

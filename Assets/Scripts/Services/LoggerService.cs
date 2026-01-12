@@ -23,6 +23,13 @@ namespace Services
 #endif
         }
         
+        public static void LogDebugEditor(Object @object, string message)
+        {
+#if UNITY_EDITOR
+            LogDebugEditor(@object.GetType().Name +  ": " + message);
+#endif
+        }
+        
         public static void LogWarning(Object @object, string message)
         {
             LogWarning(@object.GetType().Name +  ": " + message);

@@ -5207,7 +5207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed42d4e193864ea794173d56d28e1808, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MainTransform: {fileID: 7105021539367332845}
+  MainTransform: {fileID: 1795250813654733639}
   GoToLevelsChooseScreenButton: {fileID: 4995292288417103503}
   BackgronudButton: {fileID: 2477982833825234958}
   Stars:
@@ -19405,7 +19405,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 3000, y: 0}
+  m_SizeDelta: {x: 622, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &859764150656246196
 CanvasRenderer:

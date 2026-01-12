@@ -15,7 +15,7 @@ namespace Services.Base
         public void InitializeService()
         {
             _disposed = false;
-            LoggerService.LogWarning(this, "Initialized");
+            LoggerService.LogDebugEditor(this, "Initialized");
             OnInitialize();
         }
 
@@ -31,7 +31,7 @@ namespace Services.Base
             
             OnDisposing();
             DisposableExtensions.HandledDispose(this);
-            LoggerService.LogWarning(this, "Disposed");
+            LoggerService.LogDebugEditor(this, "Disposed");
             _disposed = true;
         }
 
