@@ -1267,6 +1267,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   duration: 0.6
   easeType: 9
+  postShowDelay: 0
+  postHideDelay: 0.25
   moveOffset: 30
   startAlpha: 0
   targetRectTransform: {fileID: 4922581533627459722}
@@ -1805,6 +1807,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9003264824920361964, guid: be80cfd84f14f44a68df059240fd0aa6,
         type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9003264824920361964, guid: be80cfd84f14f44a68df059240fd0aa6,
+        type: 3}
       propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
@@ -1812,6 +1819,11 @@ PrefabInstance:
         type: 3}
       propertyPath: UVModule.fps
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9003264824920361964, guid: be80cfd84f14f44a68df059240fd0aa6,
+        type: 3}
+      propertyPath: ShapeModule.m_Rotation.x
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

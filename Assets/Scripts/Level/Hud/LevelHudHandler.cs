@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Common.Widgets.Animations;
 using Components.Levels.Figures;
@@ -10,7 +9,6 @@ using Handlers.UISystem;
 using Installers;
 using Level.Widgets;
 using Plugins.FSignal;
-using Popup.Settings;
 using RSG;
 using Services;
 using Storage;
@@ -72,22 +70,15 @@ namespace Level.Hud
 
         public void Initialize(LevelBeatingTimeInfoSnapshot levelBeatingTime, float assemblyContainerScale)
         {
-            TryLogBeatingTime(levelBeatingTime);
+            LoggerService.LogDebugEditor($"{nameof(LevelBeatingTimeInfoSnapshot)}: \n" +
+                                         $"{nameof(levelBeatingTime.FastestTime)} - {levelBeatingTime.FastestTime}\n" +
+                                         $"{nameof(levelBeatingTime.MediumTime)} - {levelBeatingTime.MediumTime}\n" +
+                                         $"{nameof(levelBeatingTime.MinimumTime)} - {levelBeatingTime.MinimumTime}");
             
             _levelInfoTrackerService.CurrentLevelPlayingTimeChangedSignal.MapListener(OnTimerChanged).DisposeWith(this);
             _starsProgressWidget.Initialize(levelBeatingTime);
             SetAssemblyContainerScale(assemblyContainerScale);
             OnTimerChanged(_levelInfoTrackerService.CurrentLevelPlayingTime);
-        }
-
-        private void TryLogBeatingTime(LevelBeatingTimeInfoSnapshot levelBeatingTime)
-        {
-#if UNITY_EDITOR
-            Debug.LogWarning($"{nameof(LevelBeatingTimeInfoSnapshot)}: \n" +
-                             $"{nameof(levelBeatingTime.FastestTime)} - {levelBeatingTime.FastestTime}\n" +
-                             $"{nameof(levelBeatingTime.MediumTime)} - {levelBeatingTime.MediumTime}\n" +
-                             $"{nameof(levelBeatingTime.MinimumTime)} - {levelBeatingTime.MinimumTime}");
-#endif
         }
 
         public void SetupHUDFigures(List<LevelFigureParamsSnapshot> levelFiguresParams)
