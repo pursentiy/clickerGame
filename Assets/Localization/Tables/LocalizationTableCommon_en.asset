@@ -103,6 +103,32 @@ MonoBehaviour:
     m_Localized: Play
     m_Metadata:
       m_Items: []
+  - m_Id: 81789968387661824
+    m_Localized: 'Unlocked sets: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81790010515251200
+    m_Localized: 'Unlocked levels: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81790477022519296
+    m_Localized: To unlock new sets, you need to earn stars! Stars are awarded for
+      successfully completing levels!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81790485121720320
+    m_Localized: To unlock new levels, you must complete the ones already unlocked.
+      You will receive stars for completing levels quickly!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81792305588068352
+    m_Localized: OK
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81792298663272448
+    m_Localized: Info!
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

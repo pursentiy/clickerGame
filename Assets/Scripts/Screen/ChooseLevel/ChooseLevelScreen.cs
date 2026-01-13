@@ -1,8 +1,9 @@
-﻿using Common.Widgets.Animations;
+﻿using System;
 using Components.UI;
 using Extensions;
 using Handlers;
 using Handlers.UISystem;
+using Popup.Universal;
 using Screen.ChooseLevel.Widgets;
 using Services;
 using Storage;
@@ -16,23 +17,26 @@ namespace Screen.ChooseLevel
 {
     public class ChooseLevelScreen : ScreenBase
     {
-        [Inject] private ScreenHandler _screenHandler;
-        [Inject] private PopupHandler _popupHandler;
-        [Inject] private PlayerProgressService _playerProgressService;
-        [Inject] private LevelsParamsStorageData _levelsParamsStorageData;
-        [Inject] private SoundHandler _soundHandler;
-        [Inject] private UIManager _uiManager;
-        [Inject] private PlayerCurrencyService _playerCurrencyService;
-        [Inject] private LocalizationService _localization;
+        [Inject] private readonly ScreenHandler _screenHandler;
+        [Inject] private readonly PopupHandler _popupHandler;
+        [Inject] private readonly PlayerProgressService _playerProgressService;
+        [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
+        [Inject] private readonly SoundHandler _soundHandler;
+        [Inject] private readonly UIManager _uiManager;
+        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        [Inject] private readonly LocalizationService _localization;
+        [Inject] private readonly LocalizationService _localizationService;
         
         [SerializeField] private LevelItemWidget _levelItemWidgetPrefab;
         [SerializeField] private RectTransform _levelEnterPopupsParentTransform;
         [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroupPrefab;
         [SerializeField] private Button _goBack;
         [SerializeField] private Button _settingsButton;
-        [SerializeField] private TMP_Text _packName;
+        [SerializeField] private Button _infoButton;
         [SerializeField] private CurrencyDisplayWidget _starsDisplayWidget;
         [SerializeField] private TextMeshProUGUI _headerText;
+        [SerializeField] private TextMeshProUGUI _availableLevelsText;
+        [SerializeField] private TMP_Text _packName;
         
         private HorizontalLayoutGroup _horizontalGroup;
 
@@ -43,6 +47,7 @@ namespace Screen.ChooseLevel
             _headerText.text = _localization.GetGameValue("choose_level_header");
 
             InitializeLevelsButton();
+            SetAvailableLevelsText();
 
             _starsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
             
@@ -52,7 +57,26 @@ namespace Screen.ChooseLevel
             _packName.text = $"{localizedName} {wordPack}";
             
             _goBack.onClick.MapListenerWithSound(()=> _screenHandler.ShowChoosePackScreen());
+            _infoButton.onClick.MapListenerWithSound(OnInfoButtonClicked);
             _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null));
+        }
+
+        private void OnInfoButtonClicked()
+        {
+            var context = new UniversalPopupContext(
+                _localizationService.GetCommonValue("unlocked_levels_info"),
+                new[] {
+                    new UniversalPopupButtonAction(_localizationService.GetCommonValue(LocalizationExtensions.OkKey), null)
+                }, _localizationService.GetCommonValue(LocalizationExtensions.InfoTitle));
+
+            _uiManager.PopupsHandler.ShowPopupImmediately<UniversalPopupMediator>(context);
+        }
+        
+        private void SetAvailableLevelsText()
+        {
+            var totalLevels = _playerProgressService.GetAllLevelsCount(_playerProgressService.CurrentPackNumber);
+            var totalAvailableLevels = _playerProgressService.GetAllAvailableLevelsCount(_playerProgressService.CurrentPackNumber);
+            _availableLevelsText.text = _localization.GetFormattedCommonValue("unlocked_levels", $"{totalAvailableLevels}/{totalLevels}");
         }
 
         private void InitializeLevelsButton()
@@ -83,6 +107,11 @@ namespace Screen.ChooseLevel
             }
 
             _screenHandler.StartNewLevel(levelParams.LevelNumber, levelParams);
+        }
+
+        private void OnDestroy()
+        {
+            _uiManager.PopupsHandler.HideAllPopups<UniversalPopupMediator>();
         }
     }
 }

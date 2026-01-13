@@ -87,7 +87,6 @@ namespace Level.Hud
             levelFiguresParams.ForEach(SetAssemblyContainerFigure);
         }
         
-        
         private void Start()
         {
             _fadeWidget.Show();

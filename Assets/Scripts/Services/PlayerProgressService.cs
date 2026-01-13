@@ -30,6 +30,19 @@ namespace Services
             _packParamsList = levelsParams;
         }
 
+        public int GetAllPacksCount()
+        {
+            return _packParamsList.IsNullOrEmpty() ? 0 : _packParamsList.Count;
+        }
+        
+        public int GetAllAvailablePacksCount()
+        {
+            if (_packParamsList.IsNullOrEmpty())
+                return 0;
+
+            return _packParamsList.Count(i => IsPackAvailable(i.PackNumber));
+        }
+
         public bool IsPackAvailable(int packNumber)
         {
             var starsToUnlock = GetPackStarsToUnlock(packNumber);
@@ -55,6 +68,30 @@ namespace Services
             }
             
             return new Stars(pack.StarsToUnlock);
+        }
+        
+        public int GetAllLevelsCount(int packNumber)
+        {
+            if (_packParamsList.IsNullOrEmpty())
+                return 0;
+            
+            var pack = _packParamsList.FirstOrDefault(i => i.PackNumber == packNumber);
+            if (pack == null)
+                return 0;
+            
+            return pack.LevelsParams.Count;
+        }
+        
+        public int GetAllAvailableLevelsCount(int packNumber)
+        {
+            if (_packParamsList.IsNullOrEmpty())
+                return 0;
+            
+            var pack = _packParamsList.FirstOrDefault(i => i.PackNumber == packNumber);
+            if (pack == null)
+                return 0;
+
+            return pack.LevelsParams.Count(i => IsLevelAvailable(packNumber, i.LevelNumber));
         }
 
         public bool IsLevelAvailable(int packNumber, int levelNumber)

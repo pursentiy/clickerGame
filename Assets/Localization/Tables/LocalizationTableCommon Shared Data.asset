@@ -99,6 +99,30 @@ MonoBehaviour:
     m_Key: play
     m_Metadata:
       m_Items: []
+  - m_Id: 81789968387661824
+    m_Key: unlocked_sets
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81790010515251200
+    m_Key: unlocked_levels
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81790477022519296
+    m_Key: unlock_sets_info
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81790485121720320
+    m_Key: unlocked_levels_info
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81792298663272448
+    m_Key: info_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81792305588068352
+    m_Key: ok
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

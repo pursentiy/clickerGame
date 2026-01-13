@@ -5,6 +5,7 @@ using Extensions;
 using Handlers;
 using Handlers.UISystem;
 using Popup.Settings;
+using Popup.Universal;
 using Screen.ChoosePack.Widgets;
 using Services;
 using Storage;
@@ -18,21 +19,24 @@ namespace Screen.ChoosePack
 {
     public class ChoosePackScreen : ScreenBase
     {
-        [Inject] private ScreenHandler _screenHandler;
-        [Inject] private PlayerProgressService _playerProgressService;
-        [Inject] private PlayerService _playerService;
-        [Inject] private LevelsParamsStorageData _levelsParamsStorageData;
-        [Inject] private PlayerCurrencyService _playerCurrencyService;
-        [Inject] private LocalizationService _localization;
-        [Inject] private UIManager _uiManager;
+        [Inject] private readonly ScreenHandler _screenHandler;
+        [Inject] private readonly PlayerProgressService _playerProgressService;
+        [Inject] private readonly PlayerService _playerService;
+        [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
+        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        [Inject] private readonly LocalizationService _localization;
+        [Inject] private readonly UIManager _uiManager;
+        [Inject] private readonly LocalizationService _localizationService;
         
         [SerializeField] private PackItemWidget _packItemWidgetPrefab;
         [SerializeField] private RectTransform _levelEnterPopupsParentTransform;
         [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroupPrefab;
         [SerializeField] private CurrencyDisplayWidget _starsDisplayWidget;
         [SerializeField] private TextMeshProUGUI _headerText;
+        [SerializeField] private TextMeshProUGUI _availablePacksText;
         [SerializeField] private Button _goBack;
         [SerializeField] private Button _settingsButton;
+        [SerializeField] private Button _infoButton;
 
         private List<HorizontalLayoutGroup> _horizontalGroups = new();
 
@@ -43,10 +47,31 @@ namespace Screen.ChoosePack
             _headerText.text = _localization.GetGameValue("choose_pack_header");
 
             InitializePackButtons();
+            SetAvailablePacksText();
             _starsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
             
+            _infoButton.onClick.MapListenerWithSound(OnInfoButtonClicked);
             _goBack.onClick.MapListenerWithSound(()=> _screenHandler.ShowWelcomeScreen());
             _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null));
+        }
+        
+        private void OnInfoButtonClicked()
+        {
+            var context = new UniversalPopupContext(
+                _localizationService.GetCommonValue("unlock_sets_info"),
+                new[] {
+                    new UniversalPopupButtonAction(_localizationService.GetCommonValue(LocalizationExtensions.OkKey), null)
+                }, _localizationService.GetCommonValue(LocalizationExtensions.InfoTitle));
+
+            _uiManager.PopupsHandler.ShowPopupImmediately<UniversalPopupMediator>(context);
+        }
+
+        private void SetAvailablePacksText()
+        {
+            var totalPacks = _playerProgressService.GetAllPacksCount();
+            var totalAvailablePacks = _playerProgressService.GetAllAvailablePacksCount();
+            
+            _availablePacksText.text = _localization.GetFormattedCommonValue("unlocked_sets", $"{totalAvailablePacks}/{totalPacks}");
         }
 
         private void InitializePackButtons()
@@ -84,6 +109,11 @@ namespace Screen.ChoosePack
                 _playerProgressService.CurrentPackNumber = packParams.PackNumber;
                 _screenHandler.ShowChooseLevelScreen();
             }
+        }
+        
+        private void OnDestroy()
+        {
+            _uiManager.PopupsHandler.HideAllPopups<UniversalPopupMediator>();
         }
     }
 }

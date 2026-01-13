@@ -95,12 +95,38 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 80743605512167424
-    m_Localized: "\xBFQuieres cambiar el idioma a <sprite=0>? \xA1El juego se reiniciar\xE1
+    m_Localized: "Quieres cambiar el idioma a <sprite=0>? El juego se reiniciar\xE1
       al cambiar el idioma!"
     m_Metadata:
       m_Items: []
   - m_Id: 80746643094233088
     m_Localized: Jugar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81790010515251200
+    m_Localized: 'Niveles desbloqueados: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81789968387661824
+    m_Localized: 'Sets desbloqueados: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81790477022519296
+    m_Localized: To unlock new levels, you must complete the ones already unlocked.
+      You will receive stars for completing levels quickly!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81790485121720320
+    m_Localized: "Para desbloquear nuevos niveles, debes completar los que ya est\xE1n
+      disponibles. Recibir\xE1s estrellas por terminar los niveles r\xE1pidamente!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81792305588068352
+    m_Localized: OK
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81792298663272448
+    m_Localized: Info!
     m_Metadata:
       m_Items: []
   references:
