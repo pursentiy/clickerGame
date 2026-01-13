@@ -23,34 +23,40 @@ namespace Components.Levels.Figures
 
         private void SetFigureCompletedAnimation()
         {
-            _completeParticles.Simulate(0);
+            // Полная очистка предыдущих состояний
+            _fullImageSpriteRenderer.rectTransform.DOKill();
+            _outlineImageSpriteRenderer.rectTransform.DOKill();
+            _fullImageSpriteRenderer.DOKill();
+            _outlineImageSpriteRenderer.DOKill();
+
+            _completeParticles.Stop();
             _completeParticles.Play();
-            
-            // 1. Prepare the Full Image (The "Pop In")
+
+            // 1. Подготовка: никакого нулевого масштаба. 
+            // Начнем с 0.95, чтобы движение было едва заметным, но приятным.
             _fullImageSpriteRenderer.gameObject.SetActive(true);
-            _fullImageSpriteRenderer.transform.localScale = Vector3.zero; // Start from nothing
-            _fullImageSpriteRenderer.color = new Color(1, 1, 1, 0); // Start transparent
+            _fullImageSpriteRenderer.color = new Color(1, 1, 1, 0);
+            _fullImageSpriteRenderer.rectTransform.localScale = Vector3.one * 0.95f;
 
-            // Sequence for the Full Image
-            _fullImageSpriteRenderer.DOFade(1, 0.2f).SetUpdate(true);
-            _fullImageSpriteRenderer.transform.DOScale(1.1f, 0.3f) // Overshoot slightly
-                .SetEase(Ease.OutBack) // This gives the "bounce" effect
-                .OnComplete(() => {
-                    _fullImageSpriteRenderer.transform.DOScale(1.0f, 0.15f); // Settle to normal
-                })
-                .KillWith(this);
+            Sequence s = DOTween.Sequence().SetUpdate(true).KillWith(this);
 
-            // 2. Prepare the Outline (The "Pop Out/Dissolve")
-            _outlineImageSpriteRenderer.transform.DOScale(1.3f, 0.3f) // Scale UP while fading out
-                .SetEase(Ease.InQuad);
+            // 2. Плавное проявление (Fade) — чуть дольше, чтобы глаз успел заметить
+            s.Join(_fullImageSpriteRenderer.DOFade(1f, 0.4f).SetEase(Ease.OutCubic));
     
-            _outlineImageSpriteRenderer.DOFade(0, 0.25f)
-                .SetEase(Ease.InQuad)
-                .OnComplete(() => _outlineImageSpriteRenderer.gameObject.SetActive(false))
-                .KillWith(this);
+            // 3. Плавное расширение до 1.0 (без отскоков Back)
+            s.Join(_fullImageSpriteRenderer.rectTransform.DOScale(1f, 0.5f).SetEase(Ease.OutQuint));
 
-            // 3. Optional: Add a subtle punch or shake to the camera or parent container
-            // transform.DOPunchScale(new Vector3(0.05f, 0.05f, 0), 0.2f, 10, 1);
+            // 4. Контур: он должен просто мягко растаять, не мешая основной картинке
+            s.Join(_outlineImageSpriteRenderer.DOFade(0f, 0.3f).SetEase(Ease.Linear));
+            // Контур чуть-чуть увеличим, создавая эффект "растворения в воздухе"
+            s.Join(_outlineImageSpriteRenderer.rectTransform.DOScale(1.05f, 0.4f).SetEase(Ease.OutQuad));
+
+            s.OnComplete(() =>
+            {
+                _outlineImageSpriteRenderer.gameObject.SetActive(false);
+                // Вместо резкого Punch используем очень мягкий затухающий импульс
+                _fullImageSpriteRenderer.rectTransform.DOPunchScale(new Vector3(0.02f, 0.02f, 0), 0.3f, 2, 0.5f);
+            });
         }
         
         public void SetConnected()
