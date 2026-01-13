@@ -18,7 +18,6 @@ namespace Screen.ChoosePack.Widgets
         [Inject] private SoundHandler _soundHandler;
         [Inject] private LocalizationService _localization;
         
-        [SerializeField] private Image _lockImage;
         [SerializeField] private Image _fadeImage;
         [SerializeField] private RectTransform _packImagePrefabContainer;
         [SerializeField] private TMP_Text _packText;
@@ -36,10 +35,8 @@ namespace Screen.ChoosePack.Widgets
             _packText.text = _localization.GetGameValue(packKey);
             _packImageInstance = Instantiate(packImagePrefab, _packImagePrefabContainer);
             _currentPackNumber = packNumber;
-            _lockImage.gameObject.SetActive(!isUnlocked);
             _fadeImage.gameObject.SetActive(!isUnlocked);
-            
-            _lockedBlockText.text = _localization.GetFormattedCommonValue("pack_stars_required", starsRequired);
+            _lockedBlockText.TrySetActive(!isUnlocked);
 
             _unlockedBlockHolder.gameObject.SetActive(isUnlocked);
             _lockedBlockHolder.gameObject.SetActive(!isUnlocked);
@@ -50,6 +47,7 @@ namespace Screen.ChoosePack.Widgets
             }
             else
             {
+                _lockedBlockText.text = _localization.GetFormattedCommonValue("pack_stars_required", $"{starsRequired} <sprite=0>");
                 _packEnterButton.onClick.MapListenerWithSound(onLockedClickAction.SafeInvoke).DisposeWith(this);
             }
         }

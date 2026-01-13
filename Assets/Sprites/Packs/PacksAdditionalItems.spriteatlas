@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CloudsAtlas
+  m_Name: PacksAdditionalItems
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -27,7 +27,7 @@ SpriteAtlas:
       m_ResizeAlgorithm: 0
       m_TextureFormat: 65
       m_TextureCompression: 1
-      m_CompressionQuality: 50
+      m_CompressionQuality: 40
       m_CrunchedCompression: 0
       m_AllowsAlphaSplitting: 0
       m_Overridden: 1
@@ -45,32 +45,21 @@ SpriteAtlas:
     secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
-    - {fileID: 102900000, guid: 4665b7a72eb124b9da0acb3db7117923, type: 3}
+    - {fileID: 2800000, guid: c781342b14f564d6486eaac49598b0d2, type: 3}
+    - {fileID: 2800000, guid: 712a4b30d0bfc4ff796c9d09f7ba0ede, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
     packedSpriteRenderDataKeys:
-    - ce4c100007841f242a811bd83c121706: 21300000
-    - 606ca500e39175948b531bf380928131: 21300000
-    - d938b921d8cc1724cbdb70a39faaf29f: 21300000
-    - 1c8bdda2b5c2b98409106de5ebc9dce0: 21300000
-    - 955e1ee26a099084db6b1f25f71ddbd5: 21300000
-    - 1ab9cdbdf26ecf94c941549cbbc995da: 21300000
+    - 712a4b30d0bfc4ff796c9d09f7ba0ede: 21300000
+    - c781342b14f564d6486eaac49598b0d2: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: ce4c100007841f242a811bd83c121706, type: 3}
-  - {fileID: 21300000, guid: 606ca500e39175948b531bf380928131, type: 3}
-  - {fileID: 21300000, guid: d938b921d8cc1724cbdb70a39faaf29f, type: 3}
-  - {fileID: 21300000, guid: 1c8bdda2b5c2b98409106de5ebc9dce0, type: 3}
-  - {fileID: 21300000, guid: 955e1ee26a099084db6b1f25f71ddbd5, type: 3}
-  - {fileID: 21300000, guid: 1ab9cdbdf26ecf94c941549cbbc995da, type: 3}
+  - {fileID: 21300000, guid: 712a4b30d0bfc4ff796c9d09f7ba0ede, type: 3}
+  - {fileID: 21300000, guid: c781342b14f564d6486eaac49598b0d2, type: 3}
   m_PackedSpriteNamesToIndex:
-  - cloud1
-  - cloud2
-  - cloud5S
-  - cloud3
-  - cloud6
-  - cloud7
+  - locked
+  - unlocked
   m_RenderDataMap: {}
-  m_Tag: CloudsAtlas
+  m_Tag: PacksAdditionalItems
   m_IsVariant: 0
