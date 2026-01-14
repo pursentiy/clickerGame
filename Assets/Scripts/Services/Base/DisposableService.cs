@@ -29,9 +29,10 @@ namespace Services.Base
                 return;
             }
             
+            LoggerService.LogDebug(this, "Started disposing");
             OnDisposing();
             DisposableExtensions.HandledDispose(this);
-            LoggerService.LogDebugEditor(this, "Disposed");
+            LoggerService.LogDebug(this, "Disposed");
             _disposed = true;
         }
 

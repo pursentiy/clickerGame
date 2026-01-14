@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Extensions;
 using UnityEngine.Localization.Settings;
 using UnityEngine.Localization.Tables;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -70,9 +71,11 @@ namespace Services
             foreach (var entry in table.SharedData.Entries)
             {
                 var localizedString = table.GetEntry(entry.Id)?.LocalizedValue;
+                var clearedText = TmpExtensions.RemoveDiacritics(localizedString);
+                
                 if (localizedString != null)
                 {
-                    cache[entry.Key] = localizedString;
+                    cache[entry.Key] = clearedText;
                 }
             }
         }
@@ -96,7 +99,7 @@ namespace Services
             }
 
             // Fallback (на случай, если ключа нет в кэше, но он есть в системе)
-            return LocalizationSettings.StringDatabase.GetLocalizedString(tableName, key);
+            return TmpExtensions.RemoveDiacritics(LocalizationSettings.StringDatabase.GetLocalizedString(tableName, key));
         }
 
         // Остальные методы (GetFormatted...) используют GetInternalValue, поэтому тоже ускорятся

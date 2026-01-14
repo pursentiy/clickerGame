@@ -17,23 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 910f27671029b4441b1dd93152702dac
   m_SerializeEntries:
-  - m_GUID: 23bfd851754574bd5b85383ec91e7d4f
-    m_Address: Assets/TextMesh Pro/Fonts/Comic_CAT SDF Material Outline Shadow.mat
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 40335a8a4d5094cf39f913533f10eda8
-    m_Address: Assets/TextMesh Pro/Fonts/Comic_CAT SDF.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 98a6cf2a25eed48ef8f421c55a9933b6
     m_Address: Assets/TextMesh Pro/Fonts/Comic_CAT.otf
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e2e1c2b26105c4c1ab35c9e3ecdfa279
-    m_Address: Assets/TextMesh Pro/Fonts/Comic_CAT SDF Material Outline.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

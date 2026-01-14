@@ -129,6 +129,22 @@ MonoBehaviour:
     m_Localized: Info!
     m_Metadata:
       m_Items: []
+  - m_Id: 82247570506637312
+    m_Localized: Inicio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82248502518734848
+    m_Localized: Menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82249606623125504
+    m_Localized: Nivel superado! Enhorabuena!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82251874000953344
+    m_Localized: "Puzzles m\xE1gicos"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
