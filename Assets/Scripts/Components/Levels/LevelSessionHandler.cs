@@ -174,7 +174,7 @@ namespace Components.Levels
                             SetMenuFigureConnected();
                             TryHandleLevelCompletion();
                         });
-                });
+                }).CancelWith(this);
             }
             else
             {
@@ -190,7 +190,7 @@ namespace Components.Levels
             {
                 _levelHudHandler.DestroyFigure(_draggingFigureContainer.FigureId);
                 ClearDraggingFigure();
-            });
+            }).CancelWith(this);
         }
 
         private void ResetDraggingFigure()
@@ -203,7 +203,8 @@ namespace Components.Levels
                 .Append(_draggingFigureImage.transform.DOMove(_draggingFigureContainer.transform.position, 0.4f))
                 .Join(_draggingFigureContainer.transform.DOScale(1, 0.3f))
                 .Join(_draggingFigureContainer.ContainerTransform.DOSizeDelta
-                    (new Vector2(_draggingFigureContainer.InitialWidth, _draggingFigureContainer.InitialHeight), 0.3f));
+                    (new Vector2(_draggingFigureContainer.InitialWidth, _draggingFigureContainer.InitialHeight), 0.3f))
+                .KillWith(this);
             
             shiftingAnimationPromise.Then(() =>
             {
@@ -213,7 +214,7 @@ namespace Components.Levels
                         _draggingFigureContainer.FigureTransform.transform.localPosition = Vector3.zero;
                         ClearDraggingFigure();
                     });
-            });
+            }).CancelWith(this);
         }
 
         private void ClearDraggingFigure()

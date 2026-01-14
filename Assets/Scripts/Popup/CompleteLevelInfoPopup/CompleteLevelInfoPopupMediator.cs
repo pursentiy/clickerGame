@@ -66,18 +66,22 @@ namespace Popup.CompleteLevelInfoPopup
     
         private void AnimateTime(float finalTime)
         {
+            if (View.TimeText == null) return;
+
             var format = _localization.GetCommonValue("result_time");
             View.TimeText.text = string.Format(format, 0f);
             float displayTime = 0;
+    
             var seq = DOTween.Sequence().KillWith(this);
     
             seq.Append(DOTween.To(() => displayTime, x => displayTime = x, finalTime, 1.5f)
                 .OnUpdate(() => 
                 {
-                    View.TimeText.text = string.Format(format, displayTime);
+                    if (View.TimeText != null) // Дополнительная проверка внутри цикла
+                        View.TimeText.text = string.Format(format, displayTime);
                 })
                 .SetEase(Ease.OutQuad));
-    
+
             seq.Append(View.TimeText.transform.DOPunchScale(Vector3.one * 0.1f, 0.3f));
         }
         
@@ -165,6 +169,9 @@ namespace Popup.CompleteLevelInfoPopup
 
         private void StartFloating(Transform starTrm, int index)
         {
+            if (starTrm == null) 
+                return;
+            
             // Небольшой разброс по времени и высоте, чтобы звезды летали вразнобой
             float duration = 1.5f + (index * 0.2f);
             float strength = 15f + (index * 5f); // Амплитуда движения вверх-вниз

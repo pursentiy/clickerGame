@@ -23,7 +23,7 @@ namespace Screen.WelcomeScreen
             base.Start();
             
             _playButton.onClick.MapListenerWithSound(PushNextScreen).DisposeWith(this);
-            _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null)).DisposeWith(this);;
+            _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null)).DisposeWith(this);
         }
 
         private void PushNextScreen()

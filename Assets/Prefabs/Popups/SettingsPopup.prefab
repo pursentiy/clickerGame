@@ -1406,6 +1406,7 @@ GameObject:
   - component: {fileID: 4303779283134089371}
   - component: {fileID: 5190251194091138930}
   - component: {fileID: 2896667149843234290}
+  - component: {fileID: 6075597891337191011}
   m_Layer: 5
   m_Name: SettingsPopup
   m_TagString: Untagged
@@ -1484,6 +1485,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f656541fa5bbf4cb99b9832d073a1f9d, type: 2}
   - {fileID: 11400000, guid: 2aecac877d06045daaa8401526191955, type: 2}
   SaveLanguageButton: {fileID: 119001573344383953}
+--- !u!114 &6075597891337191011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4303779283134089368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f43065f89f48c395f216d2d52146da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4780682053470147399
 GameObject:
   m_ObjectHideFlags: 0

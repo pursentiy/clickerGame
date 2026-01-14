@@ -94,15 +94,8 @@ namespace Utilities.Disposable
         {
             return sequence.FinishWith(provider.GetDisposeProvider());
         }
-
-        public static TweenerCore<T1, T2, TPlugOptions> KillWith<T1, T2, TPlugOptions>(
-            this TweenerCore<T1, T2, TPlugOptions> tweenerCore,
-            IDisposeProvider provider) where TPlugOptions : struct, IPlugOptions
-        {
-            new DeferredDisposable(() => tweenerCore.Kill()).DisposeWith(provider);
-            return tweenerCore;
-        }
         
+        //TODO UPDATE THIS SEQUENCE DISPOSE SAFETY
         public static TweenerCore<T1, T2, TPlugOptions> KillWith<T1, T2, TPlugOptions>(
             this TweenerCore<T1, T2, TPlugOptions> tweenerCore,
             IStateSequence sequence) where TPlugOptions : struct, IPlugOptions
@@ -123,18 +116,52 @@ namespace Utilities.Disposable
             this TweenerCore<T1, T2, TPlugOptions> tweenerCore,
             MonoBehaviour provider) where TPlugOptions : struct, IPlugOptions
         {
-            return tweenerCore.KillWith(provider.GetDisposeProvider());
-        }
+            if (provider == null)
+            {
+                LoggerService.LogError("provider is null");
+                return tweenerCore;
+            }
 
-        public static Sequence KillWith(this Sequence sequence, IDisposeProvider provider)
-        {
-            new DeferredDisposable(() => sequence.Kill()).DisposeWith(provider);
-            return sequence;
+            if (provider.gameObject == null)
+            {
+                LoggerService.LogError("provider gameObject is null");
+                return tweenerCore;
+            }
+ 
+            tweenerCore.SetLink(provider.gameObject);
+
+            var disposeProvider = provider.GetDisposeProvider();
+            if (disposeProvider != null)
+            {
+                tweenerCore.KillWith(disposeProvider);
+            }
+    
+            return tweenerCore;
         }
 
         public static Sequence KillWith(this Sequence sequence, MonoBehaviour provider)
         {
-            return sequence.KillWith(provider.GetDisposeProvider());
+            if (provider == null)
+            {
+                LoggerService.LogError("provider is null");
+                return sequence;
+            }
+
+            if (provider.gameObject == null)
+            {
+                LoggerService.LogError("provider gameObject is null");
+                return sequence;
+            }
+            
+            sequence.SetLink(provider.gameObject);
+            
+            var disposeProvider = provider.GetDisposeProvider();
+            if (disposeProvider != null)
+            {
+                sequence.KillWith(disposeProvider);
+            }
+            
+            return sequence;
         }
 
         public static IList<T> ClearWith<T>(this IList<T> list, IDisposeProvider provider)
@@ -195,6 +222,36 @@ namespace Utilities.Disposable
             where T : IDisposable
         {
             return promise.Then(d => provider.OnCancel(() => d?.Dispose()));
+        }
+        
+        private static Sequence KillWith(this Sequence sequence, IDisposeProvider provider)
+        {
+            if (sequence == null || provider == null) 
+                return sequence;
+            
+            new DeferredDisposable(() => 
+            {
+                if (sequence is { active: true }) 
+                    sequence.Kill();
+            }).DisposeWith(provider);
+
+            return sequence;
+        }
+        
+        private static TweenerCore<T1, T2, TPlugOptions> KillWith<T1, T2, TPlugOptions>(
+            this TweenerCore<T1, T2, TPlugOptions> tweenerCore,
+            IDisposeProvider provider) where TPlugOptions : struct, IPlugOptions
+        {
+            if (tweenerCore == null || provider == null) 
+                return tweenerCore;
+
+            new DeferredDisposable(() => 
+            {
+                if (tweenerCore is { active: true }) 
+                    tweenerCore.Kill();
+            }).DisposeWith(provider);
+
+            return tweenerCore;
         }
     }
 }

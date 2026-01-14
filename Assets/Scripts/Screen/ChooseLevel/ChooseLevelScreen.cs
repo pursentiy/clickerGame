@@ -11,6 +11,7 @@ using Storage.Levels;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities.Disposable;
 using Zenject;
 
 namespace Screen.ChooseLevel
@@ -56,9 +57,9 @@ namespace Screen.ChooseLevel
             var wordPack = _localization.GetCommonValue("word_pack");
             _packName.text = $"{localizedName} {wordPack}";
             
-            _goBack.onClick.MapListenerWithSound(()=> _screenHandler.ShowChoosePackScreen());
-            _infoButton.onClick.MapListenerWithSound(OnInfoButtonClicked);
-            _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null));
+            _goBack.onClick.MapListenerWithSound(()=> _screenHandler.ShowChoosePackScreen()).DisposeWith(this);
+            _infoButton.onClick.MapListenerWithSound(OnInfoButtonClicked).DisposeWith(this);
+            _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null)).DisposeWith(this);
         }
 
         private void OnInfoButtonClicked()

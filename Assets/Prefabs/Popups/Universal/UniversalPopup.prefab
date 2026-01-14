@@ -156,6 +156,7 @@ GameObject:
   - component: {fileID: 1480046705226183967}
   - component: {fileID: 8610381156458475629}
   - component: {fileID: 5687570736935076932}
+  - component: {fileID: 3363188397536524151}
   m_Layer: 0
   m_Name: UniversalPopup
   m_TagString: Untagged
@@ -286,6 +287,18 @@ MonoBehaviour:
     _values:
     - {fileID: 7738354597382539209, guid: bf40ac0fb45f1cb4caec939477e3c29b, type: 3}
     - {fileID: 8042788745139100566, guid: 21e29160813e01a4489d8b7e4b6f4db8, type: 3}
+--- !u!114 &3363188397536524151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2338835691722024426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f43065f89f48c395f216d2d52146da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2735815901896783140
 GameObject:
   m_ObjectHideFlags: 0

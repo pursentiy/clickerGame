@@ -5151,6 +5151,7 @@ GameObject:
   - component: {fileID: 4303779283134089371}
   - component: {fileID: 5651327515096755991}
   - component: {fileID: 3668919458347311833}
+  - component: {fileID: 51233319889140113}
   m_Layer: 5
   m_Name: CompleteLevelInfoPopup
   m_TagString: Untagged
@@ -5239,6 +5240,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c0060bdd25c0415596895ea37e73e533, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &51233319889140113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4303779283134089368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f43065f89f48c395f216d2d52146da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4303779283167890084

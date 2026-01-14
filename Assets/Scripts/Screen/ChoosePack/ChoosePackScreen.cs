@@ -13,6 +13,7 @@ using Storage.Levels;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities.Disposable;
 using Zenject;
 
 namespace Screen.ChoosePack
@@ -50,9 +51,9 @@ namespace Screen.ChoosePack
             SetAvailablePacksText();
             _starsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
             
-            _infoButton.onClick.MapListenerWithSound(OnInfoButtonClicked);
-            _goBack.onClick.MapListenerWithSound(()=> _screenHandler.ShowWelcomeScreen());
-            _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null));
+            _infoButton.onClick.MapListenerWithSound(OnInfoButtonClicked).DisposeWith(this);
+            _goBack.onClick.MapListenerWithSound(()=> _screenHandler.ShowWelcomeScreen()).DisposeWith(this);
+            _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null)).DisposeWith(this);
         }
         
         private void OnInfoButtonClicked()

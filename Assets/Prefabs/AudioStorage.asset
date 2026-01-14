@@ -33,11 +33,7 @@ MonoBehaviour:
   _musicPacks:
     sounds:
     - name: theme_1
-      clip: {fileID: 8300000, guid: 5cd1f2c666656f34981b769fd96450bc, type: 3}
-      volume: 0
-      pitch: 0
-    - name: theme_2
-      clip: {fileID: 8300000, guid: 1e44c166148e04748b32712dece3dce9, type: 3}
+      clip: {fileID: 8300000, guid: f6566c3e8f9ca46a890cdff31ee81e69, type: 3}
       volume: 0
       pitch: 0
   _buttonsPacks:
