@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Common UI
+  m_EditorClassIdentifier: 
+  m_GroupName: Common UI
+  m_Data:
+    m_SerializedData: []
+  m_GUID: d497eda6d715c4916a13d559f9c85ead
+  m_SerializeEntries:
+  - m_GUID: 2374f7fce1fad4a47adc74f70fc387b8
+    m_Address: Assets/Sprites/Buttons/information.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 353b1a8a198fbf04f894382d88ceb96a
+    m_Address: Assets/Sprites/Buttons/musicOn.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3fb654ce5aac1224f8d23ab20e4eb86f
+    m_Address: Assets/Sprites/Buttons/off.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46a95b29e3999504a950dd9461012f08
+    m_Address: Assets/Sprites/Buttons/close.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ffe841dfbb6ce447b17d5328d875589
+    m_Address: Assets/Sprites/Screens/Common/scroller.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67a86c0303377c44e929ac69363ae1ea
+    m_Address: Assets/Sprites/Buttons/SettingsButton.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72df2b76f8a197442b9a12357d9db7b3
+    m_Address: Assets/Sprites/Buttons/buttonLargeDefault.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad73c5a21b3ad0c4e90ad57e113b2403
+    m_Address: Assets/Sprites/Buttons/LeftArrowButton.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1a0f5f0014e36d4f8f92d010876d8e7
+    m_Address: Assets/Sprites/Buttons/soundOn.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7cd213ea8f19ae4caeb966c405fb0a4
+    m_Address: Assets/Sprites/Buttons/RightArrowButton.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9f23f956b3b34723abacb652dcfc337
+    m_Address: Assets/Sprites/Buttons/buttonLargeDefaultRed.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bbe0f3746b5824fd9ad4f84c307d006a
+    m_Address: Assets/Sprites/Screens/Common/star.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e85afa2ce2ef2a849942d38c8d32661b
+    m_Address: Assets/Sprites/Buttons/on.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: e24ffa8b9424ddd438d6f352cb603ea5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: c78a45ed7146c49bba4418559e89a8ac, type: 2}
+    - {fileID: 11400000, guid: c27c57a18166a42d79f228652c527c54, type: 2}

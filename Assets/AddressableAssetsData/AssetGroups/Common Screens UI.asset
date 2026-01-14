@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Common Screens UI
+  m_EditorClassIdentifier: 
+  m_GroupName: Common Screens UI
+  m_Data:
+    m_SerializedData: []
+  m_GUID: c42de25ce741c46228cf0b0d2f752dbe
+  m_SerializeEntries:
+  - m_GUID: 712a4b30d0bfc4ff796c9d09f7ba0ede
+    m_Address: Assets/Sprites/Packs/locked.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba1b6fdea9829401b80a2bf87a48407f
+    m_Address: Assets/Sprites/Screens/Common/widget.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d483f336a9bf0497d85e691d7153f0a8
+    m_Address: Assets/Sprites/Screens/PackScreen/background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: e24ffa8b9424ddd438d6f352cb603ea5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 2a9977f1a17f94c5a92712c9ba416338, type: 2}
+    - {fileID: 11400000, guid: bbd3d74b1b81b4c7da495736243e79b1, type: 2}

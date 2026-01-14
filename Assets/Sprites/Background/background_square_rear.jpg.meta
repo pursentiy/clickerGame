@@ -110,7 +110,7 @@ TextureImporter:
     buildTarget: WebGL
     maxTextureSize: 32
     resizeAlgorithm: 0
-    textureFormat: 65
+    textureFormat: 53
     textureCompression: 1
     compressionQuality: 10
     crunchedCompression: 0

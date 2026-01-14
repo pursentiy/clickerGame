@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Common
+  m_EditorClassIdentifier: 
+  m_GroupName: Common
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 910f27671029b4441b1dd93152702dac
+  m_SerializeEntries:
+  - m_GUID: 23bfd851754574bd5b85383ec91e7d4f
+    m_Address: Assets/TextMesh Pro/Fonts/Comic_CAT SDF Material Outline Shadow.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 40335a8a4d5094cf39f913533f10eda8
+    m_Address: Assets/TextMesh Pro/Fonts/Comic_CAT SDF.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98a6cf2a25eed48ef8f421c55a9933b6
+    m_Address: Assets/TextMesh Pro/Fonts/Comic_CAT.otf
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2e1c2b26105c4c1ab35c9e3ecdfa279
+    m_Address: Assets/TextMesh Pro/Fonts/Comic_CAT SDF Material Outline.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: e24ffa8b9424ddd438d6f352cb603ea5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 81468e603d40844a99ab11a54cf0689a, type: 2}
+    - {fileID: 11400000, guid: 3b455abe3b6ee416a894be6479d2483c, type: 2}

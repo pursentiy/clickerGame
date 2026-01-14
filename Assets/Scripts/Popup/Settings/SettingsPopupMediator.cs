@@ -100,7 +100,7 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
         
         void ApplyLanguageChanges()
         {
-            _currentLanguageIndex =  _pendingLanguageIndex;
+            _currentLanguageIndex = _pendingLanguageIndex;
             UpdateLocalizationSettings(_currentLanguageIndex);
             _reloadService.SoftRestart();
         }

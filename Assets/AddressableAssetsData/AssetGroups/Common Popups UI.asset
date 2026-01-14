@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Common Popups UI
+  m_EditorClassIdentifier: 
+  m_GroupName: Common Popups UI
+  m_Data:
+    m_SerializedData: []
+  m_GUID: ef7044852122240748c6516e8f2d4dcf
+  m_SerializeEntries:
+  - m_GUID: 478b9f605e0b06f428fced59f35de1df
+    m_Address: Assets/Sprites/Popups/Window_Inner_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87d0ad4b03a84734eb42403ae6f49be2
+    m_Address: Assets/Sprites/Popups/popupBackgroundVertical.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5210422b53d64abd86f1979156280dc
+    m_Address: Assets/Sprites/Popups/header.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: e24ffa8b9424ddd438d6f352cb603ea5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 7f6e2a096ae994d028443221623f4c24, type: 2}
+    - {fileID: 11400000, guid: 700b2039cb4b24330b55ddc6d52f5b5a, type: 2}
