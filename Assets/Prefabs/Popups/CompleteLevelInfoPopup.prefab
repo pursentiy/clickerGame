@@ -5211,8 +5211,8 @@ MonoBehaviour:
   BackgronudButton: {fileID: 2477982833825234958}
   Stars:
   - {fileID: 1295737757339845732}
-  - {fileID: 3358620936536749126}
   - {fileID: 7924686380830619081}
+  - {fileID: 3358620936536749126}
   GrayScaleStarMaterial: {fileID: 2100000, guid: 610ecc4d165e343e2a016b00f91bffa3,
     type: 2}
   DefaultStareMaterial: {fileID: 2100000, guid: 2d0140163a5f5478fa0f687eaea10630,

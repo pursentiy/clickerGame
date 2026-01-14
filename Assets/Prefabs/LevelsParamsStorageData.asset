@@ -71,9 +71,9 @@ MonoBehaviour:
         FigureMenu: {fileID: 9180308159367904065, guid: 0457751680129fc439ed214a497c25c6,
           type: 3}
       LevelBeatingTimeInfo:
-        FastestTime: 11
-        MediumTime: 16
-        MinimumTime: 21
+        FastestTime: 1
+        MediumTime: 78
+        MinimumTime: 80
     - LevelNumber: 3
       LevelName: Pig
       LevelDifficulty: 1

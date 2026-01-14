@@ -24,7 +24,6 @@ namespace Screen.ChoosePack.Widgets
         [SerializeField] private Button _packEnterButton;
         [SerializeField] private TMP_Text _lockedBlockText;
         [SerializeField] private RectTransform _lockedBlockHolder;
-        [SerializeField] private RectTransform _unlockedBlockHolder;
 
         private GameObject _packImageInstance;
         private int _currentPackNumber;
@@ -38,7 +37,6 @@ namespace Screen.ChoosePack.Widgets
             _fadeImage.gameObject.SetActive(!isUnlocked);
             _lockedBlockText.TrySetActive(!isUnlocked);
 
-            _unlockedBlockHolder.gameObject.SetActive(isUnlocked);
             _lockedBlockHolder.gameObject.SetActive(!isUnlocked);
 
             if (isUnlocked)
