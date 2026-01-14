@@ -17,18 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: ef7044852122240748c6516e8f2d4dcf
   m_SerializeEntries:
-  - m_GUID: 478b9f605e0b06f428fced59f35de1df
-    m_Address: Assets/Sprites/Popups/Window_Inner_2.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 87d0ad4b03a84734eb42403ae6f49be2
     m_Address: Assets/Sprites/Popups/popupBackgroundVertical.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e5210422b53d64abd86f1979156280dc
-    m_Address: Assets/Sprites/Popups/header.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
