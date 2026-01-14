@@ -53,6 +53,7 @@ namespace Services.FlyingRewardsAnimation
                 }
 
                 var isAnyRewards = false;
+                var disposeProvider = context.ParentTransform.gameObject.GetDisposeProvider();
 
                 for (var i = 0; i < context.Rewards.Length; i++)
                 {
@@ -62,13 +63,16 @@ namespace Services.FlyingRewardsAnimation
                     var i1 = i;
                     promises.Add(_currencyLibraryService.InstantiateAsync2DRewardAnimation(context.ParentTransform)
                         .DisposeResultWith(context.ParentTransform)
-                        .CancelWith(context.ParentTransform.gameObject.GetDisposeProvider())
+                        .CancelWith(disposeProvider)
                         .Then(disposableContent =>
                         {
                             context.RewardStartFlyPromise?.SafeResolve();
 
                             if (disposableContent.Asset == null)
+                            {
+                                LoggerService.LogError($"disposableContent's Asset is null");
                                 return Promise.Resolved();
+                            }
 
                             disposableRewardsContent.Add(disposableContent);
                             var rewardAnimationObject = disposableContent.Asset;
@@ -120,7 +124,8 @@ namespace Services.FlyingRewardsAnimation
                                                     _playerCurrencyService.AddStars(stars);
                                                     _playerRepositoryService.SavePlayerSnapshot(_playerService.ProfileSnapshot);
                                                 }
-                                            });
+                                            })
+                                            .CancelWith(disposeProvider);
 
                                         return starsRewardAnimationPromises.AllParticlesFinish;
                                     
@@ -140,10 +145,11 @@ namespace Services.FlyingRewardsAnimation
                                                 {
                                                     //TODO ADD LOGIC HERE
                                                 }
-                                            });
+                                            })
+                                            .CancelWith(disposeProvider);
                                 }
                             })
-                            .CancelWith(context.ParentTransform.gameObject.GetDisposeProvider());
+                            .CancelWith(disposeProvider);
                         }));
                 }
                 
@@ -156,7 +162,7 @@ namespace Services.FlyingRewardsAnimation
                 }
 
                 var animationPromise = Promise.All(promises)
-                    .CancelWith(context.ParentTransform.gameObject.GetDisposeProvider());
+                    .CancelWith(disposeProvider);
 
                 animationPromise.Finally(() => DisposeRewardsContent(disposableRewardsContent));
 

@@ -1,0 +1,17 @@
+<linker>
+    <assembly fullname="DOTween" preserve="all" />
+    <assembly fullname="DOTweenPro" preserve="all" />
+
+    <assembly fullname="UnityEngine.CoreModule" preserve="all">
+        <type fullname="UnityEngine.Transform" preserve="all" />
+        <type fullname="UnityEngine.GameObject" preserve="all" />
+    </assembly>
+
+    <assembly fullname="UnityEngine.UI" preserve="all" />
+    <assembly fullname="Unity.TextMeshPro" preserve="all" />
+
+    <assembly fullname="Assembly-CSharp" preserve="all">
+        <type fullname="Utilities.Disposable.IDisposeProvider" preserve="all" />
+        <type fullname="Utilities.Disposable.ComponentDisposeProvider" preserve="all" />
+    </assembly>
+</linker>

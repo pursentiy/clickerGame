@@ -80,7 +80,7 @@ namespace Common.Rewards
                 Vector3[] flyingPath = new Vector3[] { poppedPos, midPoint, targetPos };
 
                 // --- The Sequence ---
-                var seq = DOTween.Sequence();
+                var seq = DOTween.Sequence().KillWith(this);
 
                 // STEP 1: POP OUT (The explosion)
                 // Individualized stagger makes it look like a shower of stars
@@ -120,13 +120,13 @@ namespace Common.Rewards
             if (widget != null)
             {
                 widget.DOKill(true);
-                widget.DOPunchScale(new Vector3(0.3f, 0.3f, 0), 0.2f, 15, 0.5f);
+                widget.DOPunchScale(new Vector3(0.3f, 0.3f, 0), 0.2f, 15, 0.5f).KillWith(this);
             }
 
             if (parent != null)
             {
                 parent.DOKill(true);
-                parent.DOPunchScale(new Vector3(0.15f, 0.15f, 0), 0.25f, 10, 0.5f);
+                parent.DOPunchScale(new Vector3(0.15f, 0.15f, 0), 0.25f, 10, 0.5f).KillWith(this);
             }
 
             if (container != null)
@@ -134,7 +134,7 @@ namespace Common.Rewards
                 container.DOKill(true);
                 // Container "jiggles" slightly to show weight of the reward
                 container.DOShakeAnchorPos(0.2f, 15f, 30, 90, false, true);
-                container.DOPunchScale(new Vector3(0.1f, 0.1f, 0), 0.2f, 10, 0.5f);
+                container.DOPunchScale(new Vector3(0.1f, 0.1f, 0), 0.2f, 10, 0.5f).KillWith(this);
             }
         }
 

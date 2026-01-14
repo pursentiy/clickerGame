@@ -5237,6 +5237,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2155773720201860556}
   - component: {fileID: 5297176865675571632}
+  - component: {fileID: 1493906881176459603}
   m_Layer: 5
   m_Name: StarsWidget
   m_TagString: Untagged
@@ -5263,7 +5264,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: 200}
+  m_SizeDelta: {x: 311.5, y: 200}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &5297176865675571632
 MonoBehaviour:
@@ -5286,6 +5287,18 @@ MonoBehaviour:
   vibrato: 10
   elasticity: 1
   numberFormat: N0
+--- !u!114 &1493906881176459603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8088082150326855554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f43065f89f48c395f216d2d52146da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8107665133548707261
 GameObject:
   m_ObjectHideFlags: 0
@@ -5319,8 +5332,8 @@ RectTransform:
   - {fileID: 5998215046757486322}
   m_Father: {fileID: 4791460756429245177}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.22917517, y: 0.158479}
-  m_AnchorMax: {x: 0.74638623, y: 0.93137723}
+  m_AnchorMin: {x: 0.16380256, y: 0.16272095}
+  m_AnchorMax: {x: 0.86351234, y: 0.93137723}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

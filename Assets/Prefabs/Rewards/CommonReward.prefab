@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3494415332215149105}
   - component: {fileID: 3930866094541723125}
+  - component: {fileID: 4116098792256422218}
   m_Layer: 5
   m_Name: CommonReward
   m_TagString: Untagged
@@ -124,3 +125,15 @@ MonoBehaviour:
     type: 3}
   _poolCount: 15
   _particlesScale: 1
+--- !u!114 &4116098792256422218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6886814658431251618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f43065f89f48c395f216d2d52146da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

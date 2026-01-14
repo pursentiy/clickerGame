@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Installers;
 using Storage.Audio;
@@ -17,6 +18,9 @@ namespace Handlers
         [Range(0, 1)] 
         [SerializeField] private float _musicVolume = 0.25f;
 
+        private Coroutine _ambientAwaitCoroutine;
+
+        //TODO FIX EXCEPT CLIP CHOOSING
         public void StartAmbience(string exceptClipName = "")
         {
             var clip = _audioStorageData.MusicPack.GetRandomSoundExceptSpecific(exceptClipName);
@@ -25,13 +29,14 @@ namespace Handlers
                 return;
             
             _musicSource.PlayOneShot(clip.clip);
-            StartCoroutine(AwaitForNextAmbienceSong(clip));
+            
+            _ambientAwaitCoroutine = StartCoroutine(AwaitForNextAmbienceSong(clip));
         }
 
         private IEnumerator AwaitForNextAmbienceSong(Sound soundParams)
         {
             yield return new WaitForSeconds(soundParams.clip.length);
-            StartAmbience(soundParams.name);
+            StartAmbience();
         }
 
         public void PlaySound(string clipName, float volume = 1)
@@ -70,6 +75,12 @@ namespace Handlers
             }
 
             _effectsSource.volume = _effectsVolume;
+        }
+
+        private void OnDestroy()
+        {
+            if (_ambientAwaitCoroutine != null)
+                StopCoroutine(_ambientAwaitCoroutine);
         }
     }
 }

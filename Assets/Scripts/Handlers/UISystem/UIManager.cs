@@ -22,8 +22,8 @@ namespace Handlers.UISystem
 
         public float UIScale { get; private set; } = 1;
 
-        public const float MinAspectRatio = 1200f / 2688;
-        public const float MaxAspectRatio = 2016f / 2688;
+        public const float MinAspectRatio = 0f;
+        public const float MaxAspectRatio = 3f;
 
         private Canvas _uiCanvas;
         private Canvas _popupsCanvas;
