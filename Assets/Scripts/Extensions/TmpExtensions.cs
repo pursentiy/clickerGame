@@ -5,31 +5,42 @@ namespace Extensions
 {
     public static class TmpExtensions
     {
-        public static string RemoveDiacritics(string text) 
+        public static string RemoveDiacritics(string text)
         {
-            if (text.IsNullOrEmpty())
-                return string.Empty;
-            
-            // Разделяет буквы и их акценты (например, 'á' станет 'a' + '´')
-            var normalizedString = text.Normalize(NormalizationForm.FormD);
-            var stringBuilder = new StringBuilder();
+            if (string.IsNullOrEmpty(text)) return text;
 
-            foreach (var c in normalizedString)
+            // Нормализуем строку (разбиваем символы на базовую букву и ударение)
+            string normalizedString = text.Normalize(NormalizationForm.FormD);
+            StringBuilder stringBuilder = new StringBuilder();
+
+            foreach (char c in normalizedString)
             {
-                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
-                // Оставляем только базовые буквы, игнорируя символы акцентов (NonSpacingMark)
-                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                // Проверяем, является ли символ частью кириллицы
+                // Диапазон кириллицы в Unicode: 0400–04FF
+                bool isCyrillic = c >= '\u0400' && c <= '\u04FF';
+
+                if (isCyrillic)
                 {
+                    // Если это кириллица (включая Й и Ё в разложенном виде), 
+                    // мы просто оставляем символ как есть
                     stringBuilder.Append(c);
                 }
+                else
+                {
+                    // Для латиницы (испанского и т.д.) применяем фильтр диакритики
+                    UnicodeCategory unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                    if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                    {
+                        stringBuilder.Append(c);
+                    }
+                }
             }
-            
-            var result = stringBuilder.ToString().Normalize(NormalizationForm.FormC);
 
-            // Дополнительная ручная замена для символов, которые не убираются нормализацией
-            var clearedText = result.Replace("¿", "").Replace("¡", "").Replace("ñ", "n").Replace("Ñ", "N");
-            
-            return clearedText.IsNullOrEmpty() ? text : clearedText;
+            // Возвращаем в исходную форму (склеиваем обратно И + кратка в Й)
+            string result = stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+        
+            // Ручная замена специфических испанских знаков, которые не являются диакритикой
+            return result.Replace("¿", "").Replace("¡", "");
         }
     }
 }
