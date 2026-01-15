@@ -8,15 +8,27 @@ namespace Services
     {
         [Inject] private ZenjectSceneLoader _sceneLoader;
         [Inject] private ApplicationService _applicationService;
-        
+        [Inject] private CoroutineService _coroutineService;
+
         public void SoftRestart()
         {
-            DOTween.KillAll(); 
-            AudioListener.pause = false; // На случай если игра была на паузе
+            RestartRoutine();
+        }
+
+        private void RestartRoutine()
+        {
+            DOTween.KillAll();
             Time.timeScale = 1f;
+            AudioListener.pause = false;
             _applicationService.DisposeServices();
 
-            _sceneLoader.LoadScene(0);
+            _coroutineService.WaitFrame()
+                .Then(Finally);
+            
+            void Finally()
+            {
+                _sceneLoader.LoadScene(0);
+            }
         }
     }
 }

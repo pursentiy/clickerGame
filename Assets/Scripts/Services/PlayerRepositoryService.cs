@@ -1,4 +1,7 @@
+using System;
+using Extensions;
 using Storage.Extensions;
+using Storage.Records;
 using Storage.Snapshots;
 using Zenject;
 
@@ -6,20 +9,21 @@ namespace Services
 {
     public class PlayerRepositoryService
     {
-        [Inject] private ProfileSerializerService _profileSerializerService;
-        
-        public bool HasProfile => LoadPlayerSnapshot() != null;
+        [Inject] private ProfileStorageService _profileStorageService;
         
         public void SavePlayerSnapshot(ProfileSnapshot snapshot)
         {
-            _profileSerializerService.SaveProfileRecord(snapshot.ToRecord());
+            _profileStorageService.SaveProfileRecord(snapshot.ToRecord());
         }
 
-        public ProfileSnapshot LoadPlayerSnapshot()
+        public void LoadPlayerSnapshot(Action<ProfileSnapshot> onLoaded)
         {
-            var profileRecord = _profileSerializerService.LoadProfileRecord();
+            _profileStorageService.LoadProfileRecord(OnLoaded);
 
-            return profileRecord?.ToSnapshot();
+            void OnLoaded(ProfileRecord rawProfileRecord)
+            {
+                onLoaded.SafeInvoke(rawProfileRecord?.ToSnapshot());
+            }
         }
     }
 }
