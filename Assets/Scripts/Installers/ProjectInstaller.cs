@@ -15,21 +15,24 @@ namespace Installers
 
         public override void InstallBindings()
         {
+            ContainerHolder.OnProjectInstall(Container);
+            
             // INFRASTRUCTURE AND CORE SERVICES
             Container.BindInterfacesAndSelfTo<ApplicationService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<ScenesManagerService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<LocalizationService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<CoroutineService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<PersistentCoroutinesService>().AsSingle();
             Container.BindInterfacesAndSelfTo<AddressableContentDeliveryService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<TimeService>().AsSingle();
-            Container.BindInterfacesAndSelfTo<PersistentCoroutinesService>().AsSingle();
             Container.BindInterfacesAndSelfTo<ReloadService>().AsSingle();
 
             // DATA AND PLAYER PROGRESS
             Container.BindInterfacesAndSelfTo<ProfileStorageService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerRepositoryService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerService>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<PlayerProgressService>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerCurrencyService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<PlayerProgressService>().AsSingle();
             Container.BindInterfacesAndSelfTo<ProfileBuilderService>().AsSingle();
             Container.BindInterfacesAndSelfTo<GlobalSettingsService>().AsSingle();
 

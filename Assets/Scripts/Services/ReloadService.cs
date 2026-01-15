@@ -6,9 +6,10 @@ namespace Services
 {
     public class ReloadService
     {
-        [Inject] private ZenjectSceneLoader _sceneLoader;
-        [Inject] private ApplicationService _applicationService;
-        [Inject] private CoroutineService _coroutineService;
+        [Inject] private readonly ZenjectSceneLoader _sceneLoader;
+        [Inject] private readonly ApplicationService _applicationService;
+        [Inject] private readonly CoroutineService _coroutineService;
+        [Inject] private readonly ScenesManagerService _scenesManagerService;
 
         public void SoftRestart()
         {
@@ -22,12 +23,12 @@ namespace Services
             AudioListener.pause = false;
             _applicationService.DisposeServices();
 
-            _coroutineService.WaitFrame()
+            _coroutineService.WaitFrames(3)
                 .Then(Finally);
             
             void Finally()
             {
-                _sceneLoader.LoadScene(0);
+                _scenesManagerService.LoadScene(SceneTypes.MainScene);
             }
         }
     }

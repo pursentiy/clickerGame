@@ -33,7 +33,6 @@ namespace Installers
 
             UIInstaller.DiInstall(Container, sceneServicesRoot, _uiSystemData);
             
-            Container.BindInterfacesAndSelfTo<CoroutineService>().AsSingle();
             Container.BindInterfacesAndSelfTo<ClickHandlerService>().AsSingle();
             Container.BindInterfacesAndSelfTo<LevelHelperService>().AsSingle();
             Container.BindInterfacesAndSelfTo<LevelInfoTrackerService>().AsSingle();

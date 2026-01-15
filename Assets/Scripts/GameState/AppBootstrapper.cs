@@ -2,8 +2,6 @@ using System.Collections;
 using Installers;
 using Playgama;
 using Services;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 using Zenject;
 
 namespace GameState
@@ -11,9 +9,7 @@ namespace GameState
     public class AppBootstrapper: InjectableMonoBehaviour
     {
         [Inject] private readonly LocalizationService _localizationService;
-        
-        [Header("Settings")]
-        [SerializeField] private string _nextSceneName = "1_MainScene";
+        [Inject] private readonly ScenesManagerService _scenesManagerService;
         
         private bool _isBridgeAuthComplete = false;
 
@@ -31,7 +27,7 @@ namespace GameState
 
             LoggerService.LogWarning($"[{GetType().Name}] Initialization finished...");
             
-            SceneManager.LoadScene(_nextSceneName);
+            _scenesManagerService.LoadScene(SceneTypes.MainScene);
         }
         
         private IEnumerator BridgeAuthenticationRoutine()
@@ -43,20 +39,27 @@ namespace GameState
 
             LoggerService.LogWarning($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Платформа определена: {Bridge.platform.id}");
             
-            Bridge.player.Authorize(null, success =>
+            while (Bridge.platform.id == "unknown") yield return null;
+            
+#if UNITY_EDITOR
+            LoggerService.LogDebug($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Editor detected: Automatic authorization bypass");
+            _isBridgeAuthComplete = true;
+#else
+        Bridge.player.Authorize(null, success =>
             {
                 if (success)
                 {
-                    LoggerService.LogWarning($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Авторизация успешна");
+                    LoggerService.LogWarning($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Successful player authorization.");
                 }
                 else
                 {
-                    LoggerService.LogWarning($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Вход в режиме гостя");
+                    LoggerService.LogWarning($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Guest mode.");
                 }
                 
                 _isBridgeAuthComplete = true;
             });
-            
+#endif
+
             while (!_isBridgeAuthComplete)
             {
                 yield return null;
