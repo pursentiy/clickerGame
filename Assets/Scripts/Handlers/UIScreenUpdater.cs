@@ -68,6 +68,5 @@ namespace Handlers
             
             LoggerService.LogDebugEditor($"[{GetType().Name}] Widgets updated for resolution: {_lastWidth}x{_lastHeight}");
         }
-        
     }
 }

@@ -17,7 +17,6 @@ namespace Installers
     {
         [SerializeField] private LevelsParamsStorageData _levelsParamsStorageData;
         [SerializeField] private ScreenHandler _screenHandler;
-        [SerializeField] private PopupHandler _popupHandler;
         [SerializeField] private LevelSessionHandler _levelSessionHandler;
         [SerializeField] private LevelParamsHandler _levelParamsHandler;
         [SerializeField] private UIScreenUpdater _uiScreenUpdater;
@@ -31,6 +30,15 @@ namespace Installers
         {
             var sceneServicesRoot = new GameObject("SceneServices").transform;
 
+            Container.Bind<UIBlockHandler>().FromInstance(_uiBlockHandler).AsSingle();
+            Container.Bind<UIScreenUpdater>().FromInstance(_uiScreenUpdater).AsSingle();
+            Container.Bind<ScreenHandler>().FromInstance(_screenHandler).AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<LevelSessionHandler>().FromInstance(_levelSessionHandler).AsSingle();
+            Container.Bind<LevelParamsHandler>().FromInstance(_levelParamsHandler).AsSingle();
+            Container.BindInterfacesAndSelfTo<SoundHandler>().FromInstance(_soundHandler).AsSingle();
+            Container.Bind<LevelsParamsStorageData>().FromScriptableObject(_levelsParamsStorageData).AsSingle();
+            
             UIInstaller.DiInstall(Container, sceneServicesRoot, _uiSystemData);
             
             Container.BindInterfacesAndSelfTo<ClickHandlerService>().AsSingle();
@@ -39,16 +47,6 @@ namespace Installers
             
             Container.BindInterfacesAndSelfTo<FlyingUIRewardAnimationService>().AsSingle();
             Container.BindInterfacesAndSelfTo<FlyingUIRewardDestinationService>().AsSingle();
-            
-            Container.Bind<ScreenHandler>().FromInstance(_screenHandler).AsSingle();
-            Container.Bind<PopupHandler>().FromInstance(_popupHandler).AsSingle();
-            Container.Bind<UIBlockHandler>().FromInstance(_uiBlockHandler).AsSingle();
-            Container.Bind<UIScreenUpdater>().FromInstance(_uiScreenUpdater).AsSingle();
-
-            Container.BindInterfacesAndSelfTo<LevelSessionHandler>().FromInstance(_levelSessionHandler).AsSingle();
-            Container.Bind<LevelParamsHandler>().FromInstance(_levelParamsHandler).AsSingle();
-            Container.BindInterfacesAndSelfTo<SoundHandler>().FromInstance(_soundHandler).AsSingle();
-            Container.Bind<LevelsParamsStorageData>().FromScriptableObject(_levelsParamsStorageData).AsSingle();
             
 #if UNITY_EDITOR
             Container.BindInterfacesAndSelfTo<CheatService>().AsSingle().NonLazy();

@@ -7,7 +7,7 @@ using Zenject;
 
 namespace Handlers
 {
-    public class SoundHandler : InjectableMonoBehaviour
+    public class SoundHandler : MonoBehaviour
     {
         [Inject] private AudioStorageData _audioStorageData;
 

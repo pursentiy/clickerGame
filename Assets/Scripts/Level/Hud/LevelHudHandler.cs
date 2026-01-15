@@ -25,7 +25,6 @@ namespace Level.Hud
     {
         [Inject] private LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private ScreenHandler _screenHandler;
-        [Inject] private PopupHandler _popupHandler;
         [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private LevelInfoTrackerService _levelInfoTrackerService;

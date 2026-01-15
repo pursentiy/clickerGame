@@ -20,7 +20,7 @@ using Zenject;
 
 namespace Components.Levels
 {
-    public class LevelSessionHandler : InjectableMonoBehaviour, IDisposableHandlers
+    public class LevelSessionHandler : MonoBehaviour, IDisposableHandlers
     {
         [Inject] private PlayerProgressService _playerProgressService;
         [Inject] private PlayerService _playerService;

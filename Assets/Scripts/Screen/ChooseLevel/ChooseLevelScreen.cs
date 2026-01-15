@@ -19,7 +19,6 @@ namespace Screen.ChooseLevel
     public class ChooseLevelScreen : ScreenBase
     {
         [Inject] private readonly ScreenHandler _screenHandler;
-        [Inject] private readonly PopupHandler _popupHandler;
         [Inject] private readonly PlayerProgressService _playerProgressService;
         [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private readonly SoundHandler _soundHandler;

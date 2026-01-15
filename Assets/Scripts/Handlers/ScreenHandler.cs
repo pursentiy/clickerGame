@@ -15,7 +15,7 @@ using Zenject;
 
 namespace Handlers
 {
-    public class ScreenHandler : InjectableMonoBehaviour
+    public class ScreenHandler : MonoBehaviour
     {
         [Inject] private UIBlockHandler _uiBlockHandler;
         [Inject] private PlayerProgressService _playerProgressService;

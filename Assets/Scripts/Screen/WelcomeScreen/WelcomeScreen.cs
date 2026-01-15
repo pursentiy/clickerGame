@@ -11,7 +11,6 @@ namespace Screen.WelcomeScreen
     public class WelcomeScreen : ScreenBase
     {
         [Inject] private ScreenHandler _screenHandler;
-        [Inject] private PopupHandler _popupHandler;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private UIManager _uiManager;
         
