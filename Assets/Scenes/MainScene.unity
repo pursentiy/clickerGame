@@ -451,11 +451,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _levelsParamsStorageData: {fileID: 11400000, guid: ee10b72902a1ab94db068e4883dc8e28,
     type: 2}
-  _screenHandler: {fileID: 0}
-  _levelSessionHandler: {fileID: 0}
-  _levelParamsHandler: {fileID: 0}
-  _uiScreenUpdater: {fileID: 0}
-  _uiBlockHandler: {fileID: 0}
+  _screenHandler: {fileID: 1655798618}
+  _levelSessionHandler: {fileID: 496767643}
+  _levelParamsHandler: {fileID: 1979438337}
+  _uiScreenUpdater: {fileID: 2018566234}
+  _uiBlockHandler: {fileID: 85632687}
   _soundHandler: {fileID: 1636764269}
   _uiSystemData: {fileID: 11400000, guid: 1b0df2e0c3e4b4dcab5ff0413b614fe7, type: 2}
 --- !u!114 &237686205
