@@ -1,5 +1,5 @@
 
-namespace Services
+namespace Services.Static
 {
     public static class AppConfigService
     {

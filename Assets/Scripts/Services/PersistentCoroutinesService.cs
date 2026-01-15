@@ -70,7 +70,7 @@ namespace Services
 				return coroutine;
 			}
 
-			Debug.LogException(
+			LoggerService.LogError(
 				new Exception("[CoroutineServiceBase] GameObject is not active"));
 			
 			return null;
@@ -129,7 +129,7 @@ namespace Services
 				return MonoBehaviour.StartCoroutine(WaitHandler(seconds, callback));
 			}
 
-			Debug.LogException(
+			LoggerService.LogError(
 				new Exception("[CoroutineServiceBase] GameObject is not active"));
 			
 			return null;

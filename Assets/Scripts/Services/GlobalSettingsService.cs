@@ -1,8 +1,10 @@
 using GlobalParams;
+using Services.Base;
+using UnityEngine;
 
 namespace Services
 {
-    public class GlobalSettingsService
+    public class GlobalSettingsService : DisposableService
     {
         private ProfileSettingsParams _profileSettings;
         
@@ -21,6 +23,16 @@ namespace Services
         public void InitializeProfileSettings()
         {
             _profileSettings = new ProfileSettingsParams(true, true);
+        }
+
+        protected override void OnInitialize()
+        {
+            Input.multiTouchEnabled = false;
+        }
+
+        protected override void OnDisposing()
+        {
+            
         }
     }
 }

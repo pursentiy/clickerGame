@@ -1,5 +1,6 @@
 using System;
 using Extensions;
+using RSG;
 using Storage.Extensions;
 using Storage.Records;
 using Storage.Snapshots;
@@ -16,13 +17,15 @@ namespace Services
             _profileStorageService.SaveProfileRecord(snapshot.ToRecord());
         }
 
-        public void LoadPlayerSnapshot(Action<ProfileSnapshot> onLoaded)
+        public IPromise<ProfileSnapshot> LoadPlayerSnapshot()
         {
+            var snapshotPromise = new Promise<ProfileSnapshot>();
             _profileStorageService.LoadProfileRecord(OnLoaded);
 
+            return snapshotPromise;
             void OnLoaded(ProfileRecord rawProfileRecord)
             {
-                onLoaded.SafeInvoke(rawProfileRecord?.ToSnapshot());
+                snapshotPromise.SafeResolve(rawProfileRecord?.ToSnapshot());
             }
         }
     }

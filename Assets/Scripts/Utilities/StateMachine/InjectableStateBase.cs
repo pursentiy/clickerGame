@@ -1,6 +1,7 @@
 using Extensions;
 using Installers;
 using Platform.Common.Utilities.StateMachine;
+using Services;
 using UnityEngine;
 
 namespace Utilities.StateMachine
@@ -10,14 +11,14 @@ namespace Utilities.StateMachine
         public override void OnEnter(params object[] arguments)
         {
             ContainerHolder.CurrentContainer.Inject(this);
-            Debug.Log($"Enter:{GetType().Name}");
+            LoggerService.LogDebug($"Enter:{GetType().Name}");
             
             base.OnEnter(arguments);
         }
 
         public override void OnExit()
         {
-            Debug.Log($"Exit:{GetType().Name}");
+            LoggerService.LogDebug($"Exit:{GetType().Name}");
             base.OnExit();
         }
     }
