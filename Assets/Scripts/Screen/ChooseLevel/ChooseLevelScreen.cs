@@ -6,6 +6,7 @@ using Handlers.UISystem;
 using Popup.Universal;
 using Screen.ChooseLevel.Widgets;
 using Services;
+using Services.Player;
 using Storage;
 using Storage.Levels;
 using TMPro;
@@ -19,7 +20,7 @@ namespace Screen.ChooseLevel
     public class ChooseLevelScreen : ScreenBase
     {
         [Inject] private readonly ScreenHandler _screenHandler;
-        [Inject] private readonly PlayerProgressService _playerProgressService;
+        [Inject] private readonly ProgressProvider _progressProvider;
         [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private readonly SoundHandler _soundHandler;
         [Inject] private readonly UIManager _uiManager;
@@ -51,7 +52,7 @@ namespace Screen.ChooseLevel
 
             _starsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
             
-            var rawPackName = _levelsParamsStorageData.GetPackParamsData(_playerProgressService.CurrentPackNumber).PackName;
+            var rawPackName = _levelsParamsStorageData.GetPackParamsData(_progressProvider.CurrentPackNumber).PackName;
             var localizedName = _localization.GetGameValue($"pack_{rawPackName.ToLower()}");
             var wordPack = _localization.GetCommonValue("word_pack");
             _packName.text = $"{localizedName} {wordPack}";
@@ -74,25 +75,25 @@ namespace Screen.ChooseLevel
         
         private void SetAvailableLevelsText()
         {
-            var totalLevels = _playerProgressService.GetAllLevelsCount(_playerProgressService.CurrentPackNumber);
-            var totalAvailableLevels = _playerProgressService.GetAllAvailableLevelsCount(_playerProgressService.CurrentPackNumber);
+            var totalLevels = _progressProvider.GetLevelsCountInPack(_progressProvider.CurrentPackNumber);
+            var totalAvailableLevels = _progressProvider.GetAllAvailableLevelsCount(_progressProvider.CurrentPackNumber);
             _availableLevelsText.text = _localization.GetFormattedCommonValue("unlocked_levels", $"{totalAvailableLevels}/{totalLevels}");
         }
 
         private void InitializeLevelsButton()
         {
-            var levelsParams = _playerProgressService.GetLevelsByPack(_playerProgressService.CurrentPackNumber);
+            var levelsParams = _progressProvider.GetLevelsByPack(_progressProvider.CurrentPackNumber);
             var index = 0;
             levelsParams.ForEach(levelParams =>
             {
                 if(_horizontalGroup == null || index % 2 == 0)
                     _horizontalGroup = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
 
-                var levelParamsData = _levelsParamsStorageData.GetLevelParamsData(_playerProgressService.CurrentPackNumber, levelParams.LevelNumber);
+                var levelParamsData = _levelsParamsStorageData.GetLevelParamsData(_progressProvider.CurrentPackNumber, levelParams.LevelNumber);
                 var enterButton = Instantiate(_levelItemWidgetPrefab, _horizontalGroup.transform);
                 
-                var earnedStarsForLevel = _playerProgressService.GetEarnedStarsForLevel(_playerProgressService.CurrentPackNumber, levelParams.LevelNumber) ?? 0;
-                enterButton.Initialize(levelParamsData.LevelName, levelParamsData.LevelImage, earnedStarsForLevel, levelParamsData.LevelDifficulty, _playerProgressService.IsLevelAvailable(_playerProgressService.CurrentPackNumber, levelParams.LevelNumber),
+                var earnedStarsForLevel = _progressProvider.GetEarnedStarsForLevel(_progressProvider.CurrentPackNumber, levelParams.LevelNumber) ?? 0;
+                enterButton.Initialize(levelParamsData.LevelName, levelParamsData.LevelImage, earnedStarsForLevel, levelParamsData.LevelDifficulty, _progressProvider.IsLevelAvailableToPlay(_progressProvider.CurrentPackNumber, levelParams.LevelNumber),
                     () => StartLevel(levelParams));
                 index++;
             });
@@ -106,7 +107,7 @@ namespace Screen.ChooseLevel
                 return;
             }
 
-            _screenHandler.StartNewLevel(levelParams.LevelNumber, levelParams);
+            _screenHandler.StartNewLevel(levelParams.LevelId, levelParams);
         }
 
         private void OnDestroy()

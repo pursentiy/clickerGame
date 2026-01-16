@@ -7,7 +7,7 @@ namespace Storage.Levels
     [Serializable]
     public class LevelParamsData
     {
-        public int LevelNumber;
+        public int LevelId;
         public string LevelName;
         public LevelDifficulty LevelDifficulty;
         public Sprite LevelImage;

@@ -1,5 +1,3 @@
-using System;
-
 namespace Storage.Snapshots
 {
     public class AnalyticsInfoSnapshot

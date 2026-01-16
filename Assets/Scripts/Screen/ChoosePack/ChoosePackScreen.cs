@@ -6,6 +6,7 @@ using Handlers.UISystem;
 using Popup.Universal;
 using Screen.ChoosePack.Widgets;
 using Services;
+using Services.Player;
 using Storage;
 using Storage.Levels;
 using TMPro;
@@ -19,7 +20,7 @@ namespace Screen.ChoosePack
     public class ChoosePackScreen : ScreenBase
     {
         [Inject] private readonly ScreenHandler _screenHandler;
-        [Inject] private readonly PlayerProgressService _playerProgressService;
+        [Inject] private readonly ProgressProvider _progressProvider;
         [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
         [Inject] private readonly LocalizationService _localization;
@@ -66,15 +67,15 @@ namespace Screen.ChoosePack
 
         private void SetAvailablePacksText()
         {
-            var totalPacks = _playerProgressService.GetAllPacksCount();
-            var totalAvailablePacks = _playerProgressService.GetAllAvailablePacksCount();
+            var totalPacks = _progressProvider.GetAllPacksCount();
+            var totalAvailablePacks = _progressProvider.GetAllAvailablePacksCount();
             
             _availablePacksText.text = _localization.GetFormattedCommonValue("unlocked_sets", $"{totalAvailablePacks}/{totalPacks}");
         }
 
         private void InitializePackButtons()
         {
-            var currentPackParams = _playerProgressService.GetPackParams();
+            var currentPackParams = _progressProvider.GetPackParams();
             var index = 0;
             
             HorizontalLayoutGroup horizontalLayoutGroup = null;
@@ -87,8 +88,8 @@ namespace Screen.ChoosePack
                 }
                 
                 var enterButton = Instantiate(_packItemWidgetPrefab, horizontalLayoutGroup.transform);
-                var isUnlocked = _playerProgressService.IsPackAvailable(packParams.PackNumber);
-                var starsRequired = _playerProgressService.GetPackStarsToUnlock(packParams.PackNumber);
+                var isUnlocked = _progressProvider.IsPackAvailable(packParams.PackNumber);
+                var starsRequired = _progressProvider.GetStarsCountForPackUnlocking(packParams.PackNumber);
                 enterButton.Initialize(_levelsParamsStorageData.GetPackParamsData(packParams.PackNumber).PackName, _levelsParamsStorageData.GetPackParamsData(packParams.PackNumber).PackImagePrefab, packParams.PackNumber, isUnlocked,
                     () => TryOpenPack(isUnlocked, packParams), OnUnavailablePackClicked, starsRequired);
                 index++;
@@ -104,7 +105,7 @@ namespace Screen.ChoosePack
                 if (!isUnlocked)
                     return;
                         
-                _playerProgressService.CurrentPackNumber = packParams.PackNumber;
+                _progressProvider.CurrentPackNumber = packParams.PackId;
                 _screenHandler.ShowChooseLevelScreen();
             }
         }

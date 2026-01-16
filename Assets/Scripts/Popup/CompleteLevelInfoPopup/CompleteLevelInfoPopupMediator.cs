@@ -9,6 +9,7 @@ using Popup.Common;
 using RSG;
 using Services;
 using Services.FlyingRewardsAnimation;
+using Services.Player;
 using UnityEngine;
 using Utilities.Disposable;
 using Zenject;
@@ -19,7 +20,7 @@ namespace Popup.CompleteLevelInfoPopup
     [AssetKey("UI Popups/CompleteLevelInfoPopupMediator")]
     public class CompleteLevelInfoPopupMediator : UIPopupBase<CompleteLevelInfoPopupView, CompleteLevelInfoPopupContext>
     {
-        [Inject] private readonly PlayerProgressService _playerProgressService;
+        [Inject] private readonly ProgressProvider _progressProvider;
         [Inject] private readonly SoundHandler _soundHandler;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
         [Inject] private readonly FlyingUIRewardAnimationService _flyingUIRewardAnimationService;
@@ -195,7 +196,7 @@ namespace Popup.CompleteLevelInfoPopup
             _currencyAcquired = true;
             if (fast)
             {
-                _playerCurrencyService.AddStars(earnedStarsForLevel);
+                _playerCurrencyService.TryAddStars(earnedStarsForLevel);
                 _playerProfileManager.SaveProfile();
             }
             else

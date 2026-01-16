@@ -3,6 +3,7 @@ using Handlers.UISystem;
 using JetBrains.Annotations;
 using RSG;
 using Services;
+using Services.Player;
 using Storage;
 using Storage.Snapshots;
 using Utilities.Disposable;
@@ -19,9 +20,9 @@ namespace GameState.OnGameEnterSequence
         [Inject] private readonly ScreenHandler _screenHandler;
         [Inject] private readonly SoundHandler _soundHandler;
         [Inject] private readonly PlayerProfileManager _playerProfileManager;
-        [Inject] private readonly PlayerProgressService _playerProgressService;
+        [Inject] private readonly ProgressProvider _progressProvider;
         [Inject] private readonly ProfileBuilderService _profileBuilderService;
-        [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
+        [Inject] private readonly LanguageConversionService _languageConversionService;
         
         public override void OnEnter(params object[] arguments)
         {
@@ -71,11 +72,11 @@ namespace GameState.OnGameEnterSequence
             }
             
             _playerProfileManager.Initialize(profileSnapshot);
-            _playerProgressService.InitializeHandler(_levelsParamsStorageData.DefaultPacksParamsList);
             
             _soundHandler.SetMusicVolume(_playerProfileManager.IsMusicOn);
             _soundHandler.SetSoundVolume(_playerProfileManager.IsSoundOn);
             _soundHandler.StartAmbience();
+            _globalSettingsService.SetCurrentLanguage(_languageConversionService.GetLocale(_playerProfileManager.LanguageCode));
 
             NextState();
         }

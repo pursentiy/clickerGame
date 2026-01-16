@@ -38,6 +38,11 @@ namespace Extensions
             return collection == null || collection.Count == 0;
         }
         
+        public static bool IsCollectionNullOrEmpty<T>(this IReadOnlyCollection<T> collection)
+        {
+            return collection == null || collection.Count == 0;
+        }
+        
         public static bool InListRange(this int i, System.Collections.IList list)
         {
             if (list == null || list.Count == 0)

@@ -7,6 +7,7 @@ using Popup.Common;
 using Popup.Settings;
 using Popup.Universal;
 using Services;
+using Services.Player;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using Utilities.Disposable;
@@ -23,10 +24,12 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
     [Inject] private readonly ReloadService _reloadService;
     [Inject] private readonly LocalizationService _localizationService;
     [Inject] private readonly PlayerProfileManager _playerProfileManager;
+    [Inject] private readonly LanguageConversionService _languageConversionService;
+    [Inject] private readonly GameManager _gameManager;
 
     private int _currentLanguageIndex;
     private int _pendingLanguageIndex;
-    private int LocalesCount => LocalizationSettings.AvailableLocales.Locales.Count;
+    private int _localesCount;
     private Coroutine _saveTogglesRoutine;
     
     public override IUIPopupAnimation Animation => new ScalePopupAnimation(View.MainTransform);
@@ -34,10 +37,9 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
     public override void OnCreated()
     {
         base.OnCreated();
-        
-        _currentLanguageIndex = LocalizationSettings.AvailableLocales.Locales.IndexOf(LocalizationSettings.SelectedLocale);
-        if (_currentLanguageIndex < 0) _currentLanguageIndex = 0;
-        
+
+        _localesCount = _languageConversionService.AvailableLocalesCount;
+        _currentLanguageIndex = _languageConversionService.GetSelectedLocaleIndex();
         _pendingLanguageIndex = _currentLanguageIndex;
         
         RefreshLanguageUI();
@@ -52,8 +54,8 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
 
     private void SetupToggles()
     {
-        View.MusicToggle.SetIsOnWithoutNotify(_playerProfileManager.IsMusicOn);
-        View.SoundToggle.SetIsOnWithoutNotify(_playerProfileManager.IsSoundOn);
+        View.MusicToggle.SetIsOnWithoutNotify(_gameManager.IsMusicOn);
+        View.SoundToggle.SetIsOnWithoutNotify(_gameManager.IsSoundOn);
 
         View.MusicToggle.onValueChanged.MapListenerWithSound(OnMusicToggled).DisposeWith(this);
         View.SoundToggle.onValueChanged.MapListenerWithSound(OnSoundToggled).DisposeWith(this);
@@ -61,7 +63,7 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
 
     private void OnSoundToggled(bool isOn)
     {
-        _playerProfileManager.SetSoundAvailable(isOn);
+        _gameManager.SetSoundAvailable(isOn);
         _soundHandler.SetSoundVolume(isOn);
         
         RestartSaveTimer();
@@ -69,7 +71,7 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
     
     private void OnMusicToggled(bool isOn)
     {
-        _playerProfileManager.SetMusicAvailable(isOn);
+        _gameManager.SetMusicAvailable(isOn);
         _soundHandler.SetMusicVolume(isOn);
         
         RestartSaveTimer();
@@ -93,7 +95,7 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
 
     private void ChangePendingIndex(int direction)
     {
-        _pendingLanguageIndex = (_pendingLanguageIndex + direction + LocalesCount) % LocalesCount;
+        _pendingLanguageIndex = (_pendingLanguageIndex + direction + _localesCount) % _localesCount;
         RefreshLanguageUI();
     }
 
@@ -104,12 +106,7 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
         if (View.LanguageFlags.Length > _pendingLanguageIndex)
             View.CountryFlagImage.sprite = View.LanguageFlags[_pendingLanguageIndex];
 
-        if (!LocalizationSettings.AvailableLocales.Locales.IsNullOrEmpty()
-            && _pendingLanguageIndex >= 0
-            && _pendingLanguageIndex < LocalizationSettings.AvailableLocales.Locales.Count)
-        {
-            View.LanguageLabel.text = _localizationService.GetCommonValue(LocalizationSettings.AvailableLocales.Locales[_pendingLanguageIndex].LocaleName);
-        }
+        View.LanguageLabel.text = _localizationService.GetCommonValue(_languageConversionService.GetLocaleLanguageCodeByIndex(_pendingLanguageIndex));
     }
 
     private void TrySaveLanguage()
@@ -131,19 +128,10 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
         void ApplyLanguageChanges()
         {
             _currentLanguageIndex = _pendingLanguageIndex;
-            UpdateLocalizationSettings(_currentLanguageIndex);
+            //TODO SAVE PROFILE AFTER UPDATING LANGUAGE
+            _gameManager.UpdateLanguage(_languageConversionService.GetLocaleLanguageCodeByIndex(_currentLanguageIndex));
             _reloadService.SoftRestart();
         }
-    }
-    
-    private void UpdateLocalizationSettings(int languageIndex)
-    {
-        if (LocalizationSettings.AvailableLocales.Locales.IsNullOrEmpty()
-            || languageIndex < 0
-            || languageIndex >= LocalizationSettings.AvailableLocales.Locales.Count)
-            return;
-        
-        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[languageIndex];
     }
 
     private void OnDestroy()

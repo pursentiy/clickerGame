@@ -11,6 +11,7 @@ using Level.Widgets;
 using Plugins.FSignal;
 using RSG;
 using Services;
+using Services.Player;
 using Storage;
 using Storage.Snapshots.LevelParams;
 using UnityEngine;
@@ -25,7 +26,7 @@ namespace Level.Hud
     {
         [Inject] private LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private ScreenHandler _screenHandler;
-        [Inject] private PlayerProgressService _playerProgressService;
+        [Inject] private ProgressProvider _progressProvider;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private LevelInfoTrackerService _levelInfoTrackerService;
         [Inject] private UIManager _uiManager;
@@ -116,8 +117,8 @@ namespace Level.Hud
 
         private void SetDraggingFigure(LevelFigureParamsSnapshot figureParams)
         {
-            var figurePrefab = _levelsParamsStorageData.GetMenuFigure(_playerProgressService.CurrentPackNumber,
-                _playerProgressService.CurrentLevelNumber, figureParams.FigureId);
+            var figurePrefab = _levelsParamsStorageData.GetMenuFigure(_progressProvider.CurrentPackNumber,
+                _progressProvider.CurrentLevelNumber, figureParams.FigureId);
 
             if (figurePrefab == null)
             {
@@ -140,8 +141,8 @@ namespace Level.Hud
         
         private void SetAssemblyContainerFigure(LevelFigureParamsSnapshot figureParams)
         {
-            var figurePrefab = _levelsParamsStorageData.GetTargetFigure(_playerProgressService.CurrentPackNumber,
-                _playerProgressService.CurrentLevelNumber, figureParams.FigureId);
+            var figurePrefab = _levelsParamsStorageData.GetTargetFigure(_progressProvider.CurrentPackNumber,
+                _progressProvider.CurrentLevelNumber, figureParams.FigureId);
 
             if (figurePrefab == null)
             {

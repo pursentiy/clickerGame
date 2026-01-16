@@ -3,6 +3,7 @@ using Services;
 using Services.ContentDeliveryService;
 using Services.CoroutineServices;
 using Services.FlyingRewardsAnimation;
+using Services.Player;
 using Storage.Audio;
 using UnityEngine;
 using Zenject;
@@ -30,9 +31,13 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<PlayerRepositoryService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerProfileManager>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerCurrencyService>().AsSingle();
-            Container.BindInterfacesAndSelfTo<PlayerProgressService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<ProgressProvider>().AsSingle();
+            Container.BindInterfacesAndSelfTo<ProgressController>().AsSingle();
             Container.BindInterfacesAndSelfTo<ProfileBuilderService>().AsSingle();
             Container.BindInterfacesAndSelfTo<GlobalSettingsService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<LanguageConversionService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<GameConfigurationProvider>().AsSingle();
+            Container.BindInterfacesAndSelfTo<GameManager>().AsSingle();
 
             // STATIC DATA
             Container.Bind<CurrencyLibrary>().FromScriptableObject(_currencyLibrary).AsSingle();

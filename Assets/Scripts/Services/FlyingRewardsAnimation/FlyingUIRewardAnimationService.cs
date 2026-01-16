@@ -6,6 +6,7 @@ using Common.Rewards;
 using Extensions;
 using RSG;
 using Services.ContentDeliveryService;
+using Services.Player;
 using UnityEngine;
 using Utilities.Disposable;
 using Zenject;
@@ -120,7 +121,7 @@ namespace Services.FlyingRewardsAnimation
                                             {
                                                 if (context.UpdateProfileValues)
                                                 {
-                                                    _playerCurrencyService.AddStars(stars);
+                                                    _playerCurrencyService.TryAddStars(stars);
                                                     _playerProfileManager.SaveProfile();
                                                 }
                                             })

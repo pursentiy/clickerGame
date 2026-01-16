@@ -7,7 +7,7 @@ namespace Storage.Levels
     [Serializable]
     public class PackParamsData
     {
-        public int PackNumber;
+        public int PackId;
         public string PackName;
         public GameObject PackImagePrefab;
         public int StarsToUnlock;

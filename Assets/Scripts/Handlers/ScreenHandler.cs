@@ -8,6 +8,7 @@ using Screen.ChoosePack;
 using Screen.WelcomeScreen;
 using Services;
 using Services.CoroutineServices;
+using Services.Player;
 using Storage.Extensions;
 using Storage.Levels;
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace Handlers
     public class ScreenHandler : MonoBehaviour
     {
         [Inject] private UIBlockHandler _uiBlockHandler;
-        [Inject] private PlayerProgressService _playerProgressService;
+        [Inject] private ProgressProvider _progressProvider;
         [Inject] private LevelSessionHandler _levelSessionHandler;
         [Inject] private LevelParamsHandler _levelParamsHandler;
         [Inject] private IDisposableHandlers[] _disposableHandlers;
@@ -77,7 +78,7 @@ namespace Handlers
             _uiBlockHandler.BlockUserInput(true);
             AnimateTransition(fast).Then(() =>
             {
-                _playerProgressService.CurrentLevelNumber = levelNumber;
+                _progressProvider.CurrentLevelNumber = levelNumber;
                 PopupCurrentScreenAndDisposeHandlers();
                 _levelSessionHandler.StartLevel(levelParams.ToSnapshot(), _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
                 _uiBlockHandler.BlockUserInput(false);

@@ -11,6 +11,7 @@ using Level.Widgets;
 using Popup.CompleteLevelInfoPopup;
 using RSG;
 using Services;
+using Services.Player;
 using Storage;
 using Storage.Snapshots.LevelParams;
 using UnityEngine;
@@ -22,7 +23,7 @@ namespace Components.Levels
 {
     public class LevelSessionHandler : MonoBehaviour, IDisposableHandlers
     {
-        [Inject] private readonly PlayerProgressService _playerProgressService;
+        [Inject] private readonly ProgressProvider _progressProvider;
         [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private readonly ScreenHandler _screenHandler;
         [Inject] private readonly SoundHandler _soundHandler;
@@ -57,7 +58,7 @@ namespace Components.Levels
                 return;
             }
             _currentLevelParams =  levelParamsSnapshot;
-            var levelId = $"{_playerProgressService.CurrentPackNumber}-{_playerProgressService.CurrentLevelNumber}";
+            var levelId = $"{_progressProvider.CurrentPackNumber}-{_progressProvider.CurrentLevelNumber}";
             _levelInfoTrackerService.StartLevelTracking(levelId);
             
             SetupHud(levelParamsSnapshot, levelHudHandler);
@@ -90,11 +91,10 @@ namespace Components.Levels
             _levelInfoTrackerService.ClearData();
 
             var earnedStars = _levelHelperService.EvaluateEarnedStars(_currentLevelParams, levelPlayedTime);
-            _playerProgressService.SetLevelCompleted(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber, levelPlayedTime, earnedStars);
+            _progressProvider.SetLevelCompleted(_progressProvider.CurrentPackNumber, _progressProvider.CurrentLevelNumber, levelPlayedTime, earnedStars);
             
             _levelHudHandler.SetInteractivity(false);
             _levelHudHandler.PlayFinishParticles();
-            _playerProgressService.TrySetOrUpdateLevelCompletion(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber, earnedStars, levelPlayedTime);
             _finishCoroutine = StartCoroutine(AwaitFinishLevel(earnedStars, earnedStars, levelPlayedTime));
         }
 
