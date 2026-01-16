@@ -1,3 +1,4 @@
+using System.Collections;
 using Attributes;
 using Extensions;
 using Handlers;
@@ -6,6 +7,7 @@ using Popup.Common;
 using Popup.Settings;
 using Popup.Universal;
 using Services;
+using UnityEngine;
 using UnityEngine.Localization.Settings;
 using Utilities.Disposable;
 using Zenject;
@@ -13,6 +15,8 @@ using Zenject;
 [AssetKey("UI Popups/SettingsPopupMediator")]
 public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
 {
+    private const float SaveTogglesDelay = 1.0f;
+    
     [Inject] private readonly SoundHandler _soundHandler;
     [Inject] private readonly GlobalSettingsService _globalSettingsService;
     [Inject] private readonly UIManager _uiManager;
@@ -24,6 +28,7 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
     private int _currentLanguageIndex;
     private int _pendingLanguageIndex;
     private int LocalesCount => LocalizationSettings.AvailableLocales.Locales.Count;
+    private Coroutine _saveTogglesRoutine;
     
     public override IUIPopupAnimation Animation => new ScalePopupAnimation(View.MainTransform);
 
@@ -58,16 +63,34 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
 
     private void OnSoundToggled(bool isOn)
     {
-        _playerService.SetMusicAvailable(isOn);
+        _playerService.SetSoundAvailable(isOn);
         _soundHandler.SetSoundVolume(isOn);
-        _playerProfileManager.SaveProfile();
+        
+        RestartSaveTimer();
     }
     
     private void OnMusicToggled(bool isOn)
     {
         _playerService.SetMusicAvailable(isOn);
         _soundHandler.SetMusicVolume(isOn);
+        
+        RestartSaveTimer();
+    }
+    
+    private void RestartSaveTimer()
+    {
+        if (_saveTogglesRoutine != null)
+            StopCoroutine(_saveTogglesRoutine);
+
+        _saveTogglesRoutine = StartCoroutine(SaveProfileWithDelayRoutine());
+    }
+
+    private IEnumerator SaveProfileWithDelayRoutine()
+    {
+        yield return new WaitForSeconds(SaveTogglesDelay);
+        
         _playerProfileManager.SaveProfile();
+        _saveTogglesRoutine = null;
     }
 
     private void ChangePendingIndex(int direction)
@@ -123,5 +146,11 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
             return;
         
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[languageIndex];
+    }
+
+    private void OnDestroy()
+    {
+        if (_saveTogglesRoutine != null)
+            StopCoroutine(_saveTogglesRoutine);
     }
 }

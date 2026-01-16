@@ -1,5 +1,8 @@
+using System;
+
 namespace Storage.Records
 {
+    [Serializable]
     public class GameParamsRecord
     {
         public bool IsMusicOn;

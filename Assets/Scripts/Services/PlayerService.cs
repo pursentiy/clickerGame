@@ -25,7 +25,7 @@ namespace Services
             GameParamsSnapshot.IsMusicOn = isOn;
         }
         
-        public void SetSoundsAvailable(bool isOn)
+        public void SetSoundAvailable(bool isOn)
         {
             if (GameParamsSnapshot == null)
                 return;
