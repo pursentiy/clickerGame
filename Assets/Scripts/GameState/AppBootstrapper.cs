@@ -2,6 +2,7 @@ using System.Collections;
 using Installers;
 using Playgama;
 using Services;
+using UnityEngine;
 using Zenject;
 
 namespace GameState
@@ -11,11 +12,22 @@ namespace GameState
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly ScenesManagerService _scenesManagerService;
         
+#if UNITY_EDITOR
+        [SerializeField] private bool _skipNextSceneLoading = false;
+#endif
+        
         private bool _isBridgeAuthComplete = false;
-
+        
         protected override void Awake()
         {
             DontDestroyOnLoad(gameObject);
+            
+#if UNITY_EDITOR
+            if (_skipNextSceneLoading)
+            {
+                LoggerService.LogWarning($"!!!ALERT: {nameof(AppBootstrapper)}: {nameof(_skipNextSceneLoading)} field is set to true, so you will not proceed to the next scene!!!");
+            }
+#endif
         }
         
         private IEnumerator Start()
@@ -27,6 +39,18 @@ namespace GameState
 
             LoggerService.LogWarning($"[{GetType().Name}] Initialization finished...");
             
+#if UNITY_EDITOR
+            if (!_skipNextSceneLoading)
+            {
+                LoadNextScene();
+            }
+#else
+            LoadNextScene();
+#endif
+        }
+
+        private void LoadNextScene()
+        {
             _scenesManagerService.LoadScene(SceneTypes.MainScene);
         }
         
@@ -37,7 +61,7 @@ namespace GameState
                 yield return null;
             }
 
-            LoggerService.LogWarning($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Платформа определена: {Bridge.platform.id}");
+            LoggerService.LogWarning($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Platform detected: {Bridge.platform.id}");
             
             while (Bridge.platform.id == "unknown") yield return null;
             
@@ -70,8 +94,7 @@ namespace GameState
         {
             LoggerService.LogWarning($"[{GetType().Name}] [{nameof(LocalizationPreloadRoutine)}]: Waiting for Localization...");
             yield return _localizationService.InitializeRoutine();
-
-            // Проверка на выживание объекта после долгих ожиданий
+            
             if (this == null)
             {
                 yield break;
