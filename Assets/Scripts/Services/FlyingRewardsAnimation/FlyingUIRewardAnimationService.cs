@@ -18,7 +18,6 @@ namespace Services.FlyingRewardsAnimation
         [Inject] private CurrencyLibraryService _currencyLibraryService;
         [Inject] private PlayerCurrencyService _playerCurrencyService;
         [Inject] private readonly PlayerProfileManager _playerProfileManager;
-        [Inject] private PlayerService _playerService;
         
         public IPromise Play(FlyingUIRewardAnimationContext context)
         {

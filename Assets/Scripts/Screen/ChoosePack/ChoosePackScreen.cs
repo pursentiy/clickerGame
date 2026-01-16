@@ -1,10 +1,8 @@
 using System.Collections.Generic;
-using Common.Widgets.Animations;
 using Components.UI;
 using Extensions;
 using Handlers;
 using Handlers.UISystem;
-using Popup.Settings;
 using Popup.Universal;
 using Screen.ChoosePack.Widgets;
 using Services;
@@ -22,7 +20,6 @@ namespace Screen.ChoosePack
     {
         [Inject] private readonly ScreenHandler _screenHandler;
         [Inject] private readonly PlayerProgressService _playerProgressService;
-        [Inject] private readonly PlayerService _playerService;
         [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
         [Inject] private readonly LocalizationService _localization;

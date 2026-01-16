@@ -11,7 +11,7 @@ namespace Services
 {
     public class PlayerProgressService
     {
-        [Inject] private PlayerService _playerService;
+        [Inject] private PlayerProfileManager _playerProfileManager;
         [Inject] private PlayerCurrencyService _playerCurrencyService;
         
         private List<PackParamsData> _packParamsList;
@@ -28,6 +28,80 @@ namespace Services
             }
             
             _packParamsList = levelsParams;
+        }
+        
+                public bool IsLevelCompleted(int packNumber, int levelNumber)
+        {
+            var pack = GetOrCreatePack(packNumber);
+
+            var level = pack?.CompletedLevelsSnapshots.FirstOrDefault(x => x.LevelNumber == levelNumber);
+            return level != null;
+        }
+
+        public PackSnapshot TryGetPack(int packNumber)
+        {
+            if (_playerProfileManager.ProfileSnapshot == null || _playerProfileManager.ProfileSnapshot.PackSnapshots.IsNullOrEmpty()) 
+                return null;
+            
+            return _playerProfileManager.ProfileSnapshot.PackSnapshots.FirstOrDefault(p => p.PackNumber == packNumber);
+        }
+
+        public PackSnapshot GetOrCreatePack(int packNumber)
+        {
+            if (_playerProfileManager.ProfileSnapshot == null) 
+                return null;
+
+            _playerProfileManager.ProfileSnapshot.PackSnapshots ??= new List<PackSnapshot>();
+
+            var pack = _playerProfileManager.ProfileSnapshot.PackSnapshots.FirstOrDefault(p => p.PackNumber == packNumber);
+            if (pack != null) 
+                return pack;
+            
+            pack = new PackSnapshot(packNumber, new List<LevelSnapshot>());
+            _playerProfileManager.ProfileSnapshot.PackSnapshots.Add(pack);
+
+            return pack;
+        }
+
+        public void SetLevelCompleted(int packNumber, int levelNumber, float levelCompletedTime, Stars starsEarned)
+        {
+            if (levelCompletedTime < 0)
+            {
+                LoggerService.LogError($"LevelCompletedTime cannot be negative: {levelCompletedTime}. For pack {packNumber} and levelNumber {levelNumber}");
+                return;
+            }
+            
+            if (starsEarned < 0)
+            {
+                LoggerService.LogError($"Earned Stars cannot be negative: {starsEarned}. For pack {packNumber} and levelNumber {levelNumber}");
+                return;
+            }
+            
+            var pack = GetOrCreatePack(packNumber);
+            if (pack == null)
+            {
+                LoggerService.LogError($"Cannot get pack {packNumber} from {nameof(GetOrCreatePack)}");
+                return;
+            }
+            
+            var level = pack.CompletedLevelsSnapshots.FirstOrDefault(x => x.LevelNumber == levelNumber);
+            if (level == null)
+            {
+                //TODO ADD CORRECT FIELD
+                pack.CompletedLevelsSnapshots.Add(new LevelSnapshot(levelNumber, levelCompletedTime, starsEarned, UnlockStatus.UnlockedByProgress, 1));
+            }
+            else
+            {
+                if (levelCompletedTime < level.BestCompletedTime)
+                {
+                    level.BestCompletedTime = levelCompletedTime;
+                }
+
+                if (level.StarsEarned > starsEarned)
+                {
+                    level.StarsEarned = starsEarned;
+                }
+            }
         }
 
         public int GetAllPacksCount()
@@ -102,13 +176,13 @@ namespace Services
             if (levelNumber == 1)
                 return true;
 
-            var previousLevelIsCompleted = _playerService.IsLevelCompleted(packNumber, levelNumber - 1);
+            var previousLevelIsCompleted = IsLevelCompleted(packNumber, levelNumber - 1);
             return previousLevelIsCompleted;
         }
         
         public Stars? GetEarnedStarsForLevel(int packNumber, int levelNumber)
         {
-            var pack = _playerService.TryGetPack(packNumber);
+            var pack = TryGetPack(packNumber);
 
             var level = pack?.CompletedLevelsSnapshots.FirstOrDefault(x => x.LevelNumber == levelNumber);
 
@@ -121,7 +195,7 @@ namespace Services
 
         public bool TrySetOrUpdateLevelCompletion(int packNumber, int levelNumber, Stars earnedStars, float completeTime)
         {
-            var pack = _playerService.GetOrCreatePack(packNumber);
+            var pack = GetOrCreatePack(packNumber);
             if (pack == null)
                 return false;
             

@@ -19,7 +19,6 @@ namespace GameState.OnGameEnterSequence
         [Inject] private readonly ScreenHandler _screenHandler;
         [Inject] private readonly SoundHandler _soundHandler;
         [Inject] private readonly PlayerProfileManager _playerProfileManager;
-        [Inject] private readonly PlayerService _playerService;
         [Inject] private readonly PlayerProgressService _playerProgressService;
         [Inject] private readonly ProfileBuilderService _profileBuilderService;
         [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
@@ -53,7 +52,7 @@ namespace GameState.OnGameEnterSequence
         private IPromise<ProfileSnapshot> BuildNewProfile()
         {
             var playerSnapshot = _profileBuilderService.BuildNewProfileSnapshot();
-            _playerService.Initialize(playerSnapshot);
+            _playerProfileManager.Initialize(playerSnapshot);
             _playerProfileManager.SaveProfile();
             
             return Promise<ProfileSnapshot>.Resolved(playerSnapshot);
@@ -71,11 +70,11 @@ namespace GameState.OnGameEnterSequence
                     .CancelWith(this);
             }
             
-            _playerService.Initialize(profileSnapshot);
+            _playerProfileManager.Initialize(profileSnapshot);
             _playerProgressService.InitializeHandler(_levelsParamsStorageData.DefaultPacksParamsList);
             
-            _soundHandler.SetMusicVolume(_playerService.IsMusicOn);
-            _soundHandler.SetSoundVolume(_playerService.IsSoundOn);
+            _soundHandler.SetMusicVolume(_playerProfileManager.IsMusicOn);
+            _soundHandler.SetSoundVolume(_playerProfileManager.IsSoundOn);
             _soundHandler.StartAmbience();
 
             NextState();

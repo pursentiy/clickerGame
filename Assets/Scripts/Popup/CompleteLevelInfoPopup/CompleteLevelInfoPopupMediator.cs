@@ -24,7 +24,6 @@ namespace Popup.CompleteLevelInfoPopup
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
         [Inject] private readonly FlyingUIRewardAnimationService _flyingUIRewardAnimationService;
         [Inject] private readonly PlayerProfileManager _playerProfileManager;
-        [Inject] private readonly PlayerService _playerService;
         [Inject] private readonly LocalizationService _localization;
 
         private Camera _textureCamera;

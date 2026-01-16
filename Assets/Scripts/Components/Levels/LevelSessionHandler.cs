@@ -22,16 +22,15 @@ namespace Components.Levels
 {
     public class LevelSessionHandler : MonoBehaviour, IDisposableHandlers
     {
-        [Inject] private PlayerProgressService _playerProgressService;
-        [Inject] private PlayerService _playerService;
-        [Inject] private LevelsParamsStorageData _levelsParamsStorageData;
-        [Inject] private ScreenHandler _screenHandler;
-        [Inject] private SoundHandler _soundHandler;
-        [Inject] private LevelInfoTrackerService _levelInfoTrackerService;
-        [Inject] private LevelHelperService _levelHelperService;
-        [Inject] private UIManager _uiManager;
+        [Inject] private readonly PlayerProgressService _playerProgressService;
+        [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
+        [Inject] private readonly ScreenHandler _screenHandler;
+        [Inject] private readonly SoundHandler _soundHandler;
+        [Inject] private readonly LevelInfoTrackerService _levelInfoTrackerService;
+        [Inject] private readonly LevelHelperService _levelHelperService;
+        [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly PlayerProfileManager _playerProfileManager;
-        [Inject] private ClickHandlerService _clickHandlerService;
+        [Inject] private readonly ClickHandlerService _clickHandlerService;
 
         [SerializeField] private RectTransform _gameMainCanvasTransform;
         [SerializeField] private RectTransform _draggingTransform;
@@ -91,7 +90,7 @@ namespace Components.Levels
             _levelInfoTrackerService.ClearData();
 
             var earnedStars = _levelHelperService.EvaluateEarnedStars(_currentLevelParams, levelPlayedTime);
-            _playerService.SetLevelCompleted(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber, levelPlayedTime, earnedStars);
+            _playerProgressService.SetLevelCompleted(_playerProgressService.CurrentPackNumber, _playerProgressService.CurrentLevelNumber, levelPlayedTime, earnedStars);
             
             _levelHudHandler.SetInteractivity(false);
             _levelHudHandler.PlayFinishParticles();

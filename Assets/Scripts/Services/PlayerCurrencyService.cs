@@ -6,14 +6,14 @@ namespace Services
 {
     public class PlayerCurrencyService
     {
-        [Inject] private PlayerService _playerService;
+        [Inject] private readonly PlayerProfileManager _playerProfileManager;
         
         public FSignal<Stars> StarsChangedSignal = new ();
-        public Stars Stars => _playerService.ProfileSnapshot?.Stars ?? new Stars();
+        public Stars Stars => _playerProfileManager.ProfileSnapshot?.Stars ?? new Stars();
         
         public void AddStars(int amount)
         {
-            if (_playerService == null)
+            if (_playerProfileManager == null)
             {
                 LoggerService.LogError("ProfileSnapshot is null");
                 return;
@@ -24,7 +24,7 @@ namespace Services
                 return;
             }
             
-            _playerService.ProfileSnapshot.Stars += amount;
+            _playerProfileManager.ProfileSnapshot.Stars += amount;
             StarsChangedSignal.Dispatch(amount);
         }
     }

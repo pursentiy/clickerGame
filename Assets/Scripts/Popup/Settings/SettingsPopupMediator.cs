@@ -22,7 +22,6 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
     [Inject] private readonly UIManager _uiManager;
     [Inject] private readonly ReloadService _reloadService;
     [Inject] private readonly LocalizationService _localizationService;
-    [Inject] private readonly PlayerService _playerService;
     [Inject] private readonly PlayerProfileManager _playerProfileManager;
 
     private int _currentLanguageIndex;
@@ -36,7 +35,6 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
     {
         base.OnCreated();
         
-        // Получаем текущий индекс напрямую из настроек локализации
         _currentLanguageIndex = LocalizationSettings.AvailableLocales.Locales.IndexOf(LocalizationSettings.SelectedLocale);
         if (_currentLanguageIndex < 0) _currentLanguageIndex = 0;
         
@@ -54,8 +52,8 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
 
     private void SetupToggles()
     {
-        View.MusicToggle.SetIsOnWithoutNotify(_playerService.IsMusicOn);
-        View.SoundToggle.SetIsOnWithoutNotify(_playerService.IsSoundOn);
+        View.MusicToggle.SetIsOnWithoutNotify(_playerProfileManager.IsMusicOn);
+        View.SoundToggle.SetIsOnWithoutNotify(_playerProfileManager.IsSoundOn);
 
         View.MusicToggle.onValueChanged.MapListenerWithSound(OnMusicToggled).DisposeWith(this);
         View.SoundToggle.onValueChanged.MapListenerWithSound(OnSoundToggled).DisposeWith(this);
@@ -63,7 +61,7 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
 
     private void OnSoundToggled(bool isOn)
     {
-        _playerService.SetSoundAvailable(isOn);
+        _playerProfileManager.SetSoundAvailable(isOn);
         _soundHandler.SetSoundVolume(isOn);
         
         RestartSaveTimer();
@@ -71,7 +69,7 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
     
     private void OnMusicToggled(bool isOn)
     {
-        _playerService.SetMusicAvailable(isOn);
+        _playerProfileManager.SetMusicAvailable(isOn);
         _soundHandler.SetMusicVolume(isOn);
         
         RestartSaveTimer();
