@@ -19,7 +19,13 @@ namespace Storage.Extensions
                 : snapshot.PackSnapshots.Select(i => i.ToRecord()).Where(i => i != null).ToList();
 
             //TODO FIX CONVERSION
-            return new ProfileRecord(snapshot.Stars, (int)snapshot.HardCurrency.GetCount(), (int)snapshot.SoftCurrency.GetCount(), packSnapshots, snapshot.AnalyticsInfoSnapshot.ToRecord());
+            return new ProfileRecord(
+                snapshot.Stars,
+                (int)snapshot.HardCurrency.GetCount(),
+                (int)snapshot.SoftCurrency.GetCount(),
+                packSnapshots,
+                snapshot.AnalyticsInfoSnapshot.ToRecord(),
+                snapshot.GameParamsSnapshot.ToRecord());
         }
         
         public static PackRecord ToRecord(this PackSnapshot snapshot)
@@ -64,6 +70,22 @@ namespace Storage.Extensions
 
             return new AnalyticsInfoSnapshot(record.LastSaveTime, record.TotalPlayTime, record.CreationDate);
         }
+
+        public static GameParamsSnapshot ToSnapshot(this GameParamsRecord record)
+        {
+            if (record == null)
+                return null;
+            
+            return new GameParamsSnapshot(record.IsMusicOn, record.IsSoundOn, record.Language);
+        }
+        
+        public static GameParamsRecord ToRecord(this GameParamsSnapshot snapshot)
+        {
+            if (snapshot == null)
+                return null;
+            
+            return new GameParamsRecord(snapshot.IsMusicOn, snapshot.IsSoundOn, snapshot.Language);
+        }
         
         public static ProfileSnapshot ToSnapshot(this ProfileRecord record)
         {
@@ -76,7 +98,14 @@ namespace Storage.Extensions
                 : record.PackRecords.Select(i => i.ToSnapshot()).Where(i => i != null).ToList();
 
             //TODO beware of overflow
-            return new ProfileSnapshot(new Stars(record.Stars), new SoftCurrency(record.SoftCurrency), new HardCurrency(record.HardCurrency), packSnapshots, record.PurchasedItemsIds, record.AnalyticsInfoRecord.ToSnapshot() );
+            return new ProfileSnapshot(
+                new Stars(record.Stars),
+                new SoftCurrency(record.SoftCurrency),
+                new HardCurrency(record.HardCurrency),
+                packSnapshots,
+                record.PurchasedItemsIds,
+                record.AnalyticsInfoRecord.ToSnapshot(),
+                record.GameParamsRecord.ToSnapshot());
         }
 
         public static PackSnapshot ToSnapshot(this PackRecord record)

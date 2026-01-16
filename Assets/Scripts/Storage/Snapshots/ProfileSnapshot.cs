@@ -5,7 +5,14 @@ namespace Storage.Snapshots
 {
     public class ProfileSnapshot
     {
-        public ProfileSnapshot(Stars stars, ICurrency softCurrency, ICurrency hardCurrency, List<PackSnapshot> packSnapshots, List<string> purchasedItemsIds, AnalyticsInfoSnapshot analyticsInfoSnapshot)
+        public ProfileSnapshot(
+            Stars stars,
+            ICurrency softCurrency,
+            ICurrency hardCurrency,
+            List<PackSnapshot> packSnapshots,
+            List<string> purchasedItemsIds,
+            AnalyticsInfoSnapshot analyticsInfoSnapshot,
+            GameParamsSnapshot gameParamsSnapshot)
         {
             Stars = stars;
             PackSnapshots = packSnapshots;
@@ -13,6 +20,7 @@ namespace Storage.Snapshots
             HardCurrency = hardCurrency;
             PurchasedItemsIds = purchasedItemsIds;
             AnalyticsInfoSnapshot = analyticsInfoSnapshot;
+            GameParamsSnapshot = gameParamsSnapshot;
         }
 
         public Stars Stars {get; set;}
@@ -21,6 +29,6 @@ namespace Storage.Snapshots
         public List<PackSnapshot> PackSnapshots {get; set;}
         public List<string> PurchasedItemsIds {get; set;}
         public AnalyticsInfoSnapshot AnalyticsInfoSnapshot {get; set;}
-        
+        public GameParamsSnapshot GameParamsSnapshot {get; set;}
     }
 }

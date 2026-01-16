@@ -30,7 +30,7 @@ namespace Components.Levels
         [Inject] private LevelInfoTrackerService _levelInfoTrackerService;
         [Inject] private LevelHelperService _levelHelperService;
         [Inject] private UIManager _uiManager;
-        [Inject] private PlayerRepositoryService _playerRepositoryService;
+        [Inject] private readonly PlayerProfileManager _playerProfileManager;
         [Inject] private ClickHandlerService _clickHandlerService;
 
         [SerializeField] private RectTransform _gameMainCanvasTransform;

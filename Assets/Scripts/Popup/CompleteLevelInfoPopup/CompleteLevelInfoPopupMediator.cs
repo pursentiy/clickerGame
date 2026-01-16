@@ -19,13 +19,13 @@ namespace Popup.CompleteLevelInfoPopup
     [AssetKey("UI Popups/CompleteLevelInfoPopupMediator")]
     public class CompleteLevelInfoPopupMediator : UIPopupBase<CompleteLevelInfoPopupView, CompleteLevelInfoPopupContext>
     {
-        [Inject] private PlayerProgressService _playerProgressService;
-        [Inject] private SoundHandler _soundHandler;
-        [Inject] private PlayerCurrencyService _playerCurrencyService;
-        [Inject] private FlyingUIRewardAnimationService _flyingUIRewardAnimationService;
-        [Inject] private PlayerRepositoryService _playerRepositoryService;
-        [Inject] private PlayerService _playerService;
-        [Inject] private LocalizationService _localization;
+        [Inject] private readonly PlayerProgressService _playerProgressService;
+        [Inject] private readonly SoundHandler _soundHandler;
+        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        [Inject] private readonly FlyingUIRewardAnimationService _flyingUIRewardAnimationService;
+        [Inject] private readonly PlayerProfileManager _playerProfileManager;
+        [Inject] private readonly PlayerService _playerService;
+        [Inject] private readonly LocalizationService _localization;
 
         private Camera _textureCamera;
         private RenderTexture _renderTexture;
@@ -197,7 +197,7 @@ namespace Popup.CompleteLevelInfoPopup
             if (fast)
             {
                 _playerCurrencyService.AddStars(earnedStarsForLevel);
-                _playerRepositoryService.SavePlayerSnapshot(_playerService.ProfileSnapshot);
+                _playerProfileManager.SaveProfile();
             }
             else
             {

@@ -15,7 +15,8 @@ namespace Services
                 new HardCurrency(0),
                 new List<PackSnapshot>(),
                 new List<string>(),
-                new AnalyticsInfoSnapshot(0, 0, DateTime.UtcNow.Ticks));
+                new AnalyticsInfoSnapshot(0, 0, DateTime.UtcNow.Ticks),
+                new GameParamsSnapshot(true, true, "rus"));
         }
     }
 }

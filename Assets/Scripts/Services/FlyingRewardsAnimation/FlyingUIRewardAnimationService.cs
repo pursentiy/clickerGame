@@ -17,7 +17,7 @@ namespace Services.FlyingRewardsAnimation
         [Inject] private FlyingUIRewardDestinationService _destinationService;
         [Inject] private CurrencyLibraryService _currencyLibraryService;
         [Inject] private PlayerCurrencyService _playerCurrencyService;
-        [Inject] private PlayerRepositoryService _playerRepositoryService;
+        [Inject] private readonly PlayerProfileManager _playerProfileManager;
         [Inject] private PlayerService _playerService;
         
         public IPromise Play(FlyingUIRewardAnimationContext context)
@@ -122,7 +122,7 @@ namespace Services.FlyingRewardsAnimation
                                                 if (context.UpdateProfileValues)
                                                 {
                                                     _playerCurrencyService.AddStars(stars);
-                                                    _playerRepositoryService.SavePlayerSnapshot(_playerService.ProfileSnapshot);
+                                                    _playerProfileManager.SaveProfile();
                                                 }
                                             })
                                             .CancelWith(disposeProvider);

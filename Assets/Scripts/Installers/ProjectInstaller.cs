@@ -28,6 +28,7 @@ namespace Installers
             // DATA AND PLAYER PROGRESS
             Container.BindInterfacesAndSelfTo<ProfileStorageService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerRepositoryService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<PlayerProfileManager>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerCurrencyService>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerProgressService>().AsSingle();

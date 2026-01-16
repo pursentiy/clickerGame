@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Common.Currency;
 using Extensions;
+using Plugins.FSignal;
 using Storage;
 using Storage.Snapshots;
 
@@ -10,6 +11,27 @@ namespace Services
     public class PlayerService
     {
         public ProfileSnapshot ProfileSnapshot { get; private set; }
+        public FSignal ProfileSnapshotInitialized = new ();
+        public bool IsMusicOn => GameParamsSnapshot?.IsMusicOn ?? true;
+        public bool IsSoundOn => GameParamsSnapshot?.IsSoundOn ?? true;
+        
+        private GameParamsSnapshot GameParamsSnapshot { get; set; }
+        
+        public void SetMusicAvailable(bool isOn)
+        {
+            if (GameParamsSnapshot == null)
+                return;
+            
+            GameParamsSnapshot.IsMusicOn = isOn;
+        }
+        
+        public void SetSoundsAvailable(bool isOn)
+        {
+            if (GameParamsSnapshot == null)
+                return;
+            
+            GameParamsSnapshot.IsSoundOn = isOn;
+        }
 
         public void Initialize(ProfileSnapshot profileSnapshot)
         {
@@ -19,6 +41,8 @@ namespace Services
             }
             
             ProfileSnapshot = profileSnapshot;
+            GameParamsSnapshot =  profileSnapshot?.GameParamsSnapshot;
+            ProfileSnapshotInitialized.Dispatch();
         }
 
         public void SetLevelCompleted(int packNumber, int levelNumber, float levelCompletedTime, Stars starsEarned)

@@ -6,11 +6,18 @@ namespace Storage.Records
     [Serializable]
     public class ProfileRecord
     {
-        public ProfileRecord(int stars, int softCurrency, int hardCurrency, List<PackRecord> packRecords, AnalyticsInfoRecord analyticsInfoRecord)
+        public ProfileRecord(
+            int stars,
+            int softCurrency,
+            int hardCurrency,
+            List<PackRecord> packRecords,
+            AnalyticsInfoRecord analyticsInfoRecord,
+            GameParamsRecord gameParamsRecord)
         {
             Stars = stars;
             PackRecords = packRecords;
             AnalyticsInfoRecord = analyticsInfoRecord;
+            GameParamsRecord = gameParamsRecord;
             SoftCurrency = softCurrency;
             HardCurrency = hardCurrency;
         }
@@ -24,5 +31,6 @@ namespace Storage.Records
         public int HardCurrency;
         public List<string> PurchasedItemsIds;
         public AnalyticsInfoRecord AnalyticsInfoRecord;
+        public GameParamsRecord GameParamsRecord;
     }
 }

@@ -1,8 +1,6 @@
-using Extensions;
 using Handlers;
 using Handlers.UISystem;
 using JetBrains.Annotations;
-using Platform.Common.Utilities.StateMachine;
 using RSG;
 using Services;
 using Storage;
@@ -20,7 +18,7 @@ namespace GameState.OnGameEnterSequence
         [Inject] private readonly GlobalSettingsService _globalSettingsService;
         [Inject] private readonly ScreenHandler _screenHandler;
         [Inject] private readonly SoundHandler _soundHandler;
-        [Inject] private readonly PlayerRepositoryService _playerRepositoryService;
+        [Inject] private readonly PlayerProfileManager _playerProfileManager;
         [Inject] private readonly PlayerService _playerService;
         [Inject] private readonly PlayerProgressService _playerProgressService;
         [Inject] private readonly ProfileBuilderService _profileBuilderService;
@@ -32,56 +30,55 @@ namespace GameState.OnGameEnterSequence
 
             _uiManager.ShowScreensUI();
             _uiManager.SetupHandlers();
-            _globalSettingsService.InitializeProfileSettings();
-
-            SetupSounds();
             
-            SetupProfile()
-                .ContinueWithResolved(NextState)
+            //TODO CATCH ERROR RELOAD
+            LoadOrInitProfile()
+                .Then(SetupPlayer)
+                .Catch(LoggerService.LogError)
                 .CancelWith(this);
         }
         
-        private void SetupSounds()
+        private IPromise<ProfileSnapshot> LoadOrInitProfile()
         {
-            _soundHandler.SetMusicVolume(_globalSettingsService.ProfileSettingsMusic);
-            _soundHandler.SetSoundVolume(_globalSettingsService.ProfileSettingsSound);
-            _soundHandler.StartAmbience();
-        }
-        
-        private IPromise SetupProfile()
-        {
-            var setupPromise = new Promise();
-            
-            _playerRepositoryService.LoadPlayerSnapshot()
+           return _playerProfileManager.LoadProfile()
                 .Then(OnPlayerSnapshotLoaded)
-                .ContinueWithResolved(setupPromise.SafeResolve)
                 .CancelWith(this);
-            
-            return setupPromise;
 
-            IPromise OnPlayerSnapshotLoaded(ProfileSnapshot maybeSnapshot)
+            IPromise<ProfileSnapshot> OnPlayerSnapshotLoaded(ProfileSnapshot loadedProfileSnapshot)
             {
-                return maybeSnapshot == null ? StartNewProfileSession() : StartOldProfileSession(maybeSnapshot);
+                return loadedProfileSnapshot == null ? BuildNewProfile() : Promise<ProfileSnapshot>.Resolved(loadedProfileSnapshot);
             }
         }
         
-        private IPromise StartNewProfileSession()
+        private IPromise<ProfileSnapshot> BuildNewProfile()
         {
             var playerSnapshot = _profileBuilderService.BuildNewProfileSnapshot();
             _playerService.Initialize(playerSnapshot);
-            _playerRepositoryService.SavePlayerSnapshot(playerSnapshot);
-
-            _playerProgressService.InitializeHandler(_levelsParamsStorageData.DefaultPacksParamsList);
+            _playerProfileManager.SaveProfile();
             
-            return Promise.Resolved();
+            return Promise<ProfileSnapshot>.Resolved(playerSnapshot);
         }
 
-        private IPromise StartOldProfileSession(ProfileSnapshot profileSnapshot)
+        private void SetupPlayer(ProfileSnapshot profileSnapshot)
         {
+            if (profileSnapshot == null)
+            {
+                LoggerService.LogError($"[{GetType().Name}]: {nameof(ProfileSnapshot)} is null");
+
+                //TODO ADD MAX ATTEMPTS
+                BuildNewProfile()
+                    .Then(SetupPlayer)
+                    .CancelWith(this);
+            }
+            
             _playerService.Initialize(profileSnapshot);
             _playerProgressService.InitializeHandler(_levelsParamsStorageData.DefaultPacksParamsList);
             
-            return Promise.Resolved();
+            _soundHandler.SetMusicVolume(_playerService.IsMusicOn);
+            _soundHandler.SetSoundVolume(_playerService.IsSoundOn);
+            _soundHandler.StartAmbience();
+
+            NextState();
         }
 
         private void NextState()

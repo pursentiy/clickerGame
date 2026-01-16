@@ -18,6 +18,8 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
     [Inject] private readonly UIManager _uiManager;
     [Inject] private readonly ReloadService _reloadService;
     [Inject] private readonly LocalizationService _localizationService;
+    [Inject] private readonly PlayerService _playerService;
+    [Inject] private readonly PlayerProfileManager _playerProfileManager;
 
     private int _currentLanguageIndex;
     private int _pendingLanguageIndex;
@@ -47,18 +49,25 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
 
     private void SetupToggles()
     {
-        View.MusicToggle.SetIsOnWithoutNotify(_globalSettingsService.ProfileSettingsMusic);
-        View.SoundToggle.SetIsOnWithoutNotify(_globalSettingsService.ProfileSettingsSound);
+        View.MusicToggle.SetIsOnWithoutNotify(_playerService.IsMusicOn);
+        View.SoundToggle.SetIsOnWithoutNotify(_playerService.IsSoundOn);
 
-        View.MusicToggle.onValueChanged.MapListenerWithSound(isOn => {
-            _globalSettingsService.ProfileSettingsMusic = isOn;
-            _soundHandler.SetMusicVolume(isOn);
-        }).DisposeWith(this);
+        View.MusicToggle.onValueChanged.MapListenerWithSound(OnMusicToggled).DisposeWith(this);
+        View.SoundToggle.onValueChanged.MapListenerWithSound(OnSoundToggled).DisposeWith(this);
+    }
 
-        View.SoundToggle.onValueChanged.MapListenerWithSound(isOn => {
-            _globalSettingsService.ProfileSettingsSound = isOn;
-            _soundHandler.SetSoundVolume(isOn);
-        }).DisposeWith(this);
+    private void OnSoundToggled(bool isOn)
+    {
+        _playerService.SetMusicAvailable(isOn);
+        _soundHandler.SetSoundVolume(isOn);
+        _playerProfileManager.SaveProfile();
+    }
+    
+    private void OnMusicToggled(bool isOn)
+    {
+        _playerService.SetMusicAvailable(isOn);
+        _soundHandler.SetMusicVolume(isOn);
+        _playerProfileManager.SaveProfile();
     }
 
     private void ChangePendingIndex(int direction)
