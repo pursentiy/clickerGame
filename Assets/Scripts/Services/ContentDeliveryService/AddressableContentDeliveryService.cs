@@ -2,6 +2,7 @@ using System;
 using Extensions;
 using RSG;
 using Services.Base;
+using Services.CoroutineServices;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -16,7 +17,7 @@ namespace Services.ContentDeliveryService
         private const float SendErrorTimeout = 10f;
         private const float Timeout = 10f;
         
-        [Inject] private CoroutineService _coroutineService;
+        [Inject] private PersistentCoroutinesService _persistentCoroutinesService;
         
         public IPromise<DisposableAssetInstance> InstantiateAsync(
             AssetReference reference,
@@ -55,7 +56,7 @@ namespace Services.ContentDeliveryService
 
             timeout ??= AddressablesTimeout;
             
-            handle.OnResult(middleware ?? Promise.Resolved(), _coroutineService, timeout.Value, SendErrorTimeout, id).Then(either =>
+            handle.OnResult(middleware ?? Promise.Resolved(), _persistentCoroutinesService, timeout.Value, SendErrorTimeout, id).Then(either =>
             {
                 var passed = Time.realtimeSinceStartup - timeStarted;
                 
@@ -128,7 +129,7 @@ namespace Services.ContentDeliveryService
             
             timeout ??= Timeout;
 
-            handle.OnResult(Promise.Resolved(), _coroutineService, timeout.Value, SendErrorTimeout).Then(either =>
+            handle.OnResult(Promise.Resolved(), _persistentCoroutinesService, timeout.Value, SendErrorTimeout).Then(either =>
             {
                 either.Match(result =>
                     {

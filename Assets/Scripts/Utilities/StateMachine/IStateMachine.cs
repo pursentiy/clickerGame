@@ -1,6 +1,7 @@
 using System;
+using Platform.Common.Utilities.StateMachine;
 
-namespace Platform.Common.Utilities.StateMachine
+namespace Utilities.StateMachine
 {
     public interface IStateMachine
     {

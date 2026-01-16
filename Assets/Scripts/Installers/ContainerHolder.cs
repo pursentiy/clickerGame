@@ -6,7 +6,7 @@ namespace Installers
     {
         public static DiContainer CurrentContainer { get; private set; }
 
-        public static void OnProjectInstall(DiContainer container)
+        public static void SetCurrentContainer(DiContainer container)
         {
             CurrentContainer = container;
         }

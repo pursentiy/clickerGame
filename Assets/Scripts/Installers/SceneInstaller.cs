@@ -3,6 +3,7 @@ using Handlers;
 using Handlers.UISystem;
 using Level.Widgets;
 using Services;
+using Services.CoroutineServices;
 using Services.FlyingRewardsAnimation;
 using Storage;
 using UnityEngine;
@@ -29,7 +30,11 @@ namespace Installers
         public override void InstallBindings()
         {
             var sceneServicesRoot = new GameObject("SceneServices").transform;
+            
+            ContainerHolder.SetCurrentContainer(Container);
 
+            UIInstaller.DiInstall(ContainerHolder.CurrentContainer, sceneServicesRoot, _uiSystemData);
+            
             Container.Bind<UIBlockHandler>().FromInstance(_uiBlockHandler).AsSingle();
             Container.Bind<UIScreenUpdater>().FromInstance(_uiScreenUpdater).AsSingle();
             Container.Bind<ScreenHandler>().FromInstance(_screenHandler).AsSingle();
@@ -39,11 +44,10 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<SoundHandler>().FromInstance(_soundHandler).AsSingle();
             Container.Bind<LevelsParamsStorageData>().FromScriptableObject(_levelsParamsStorageData).AsSingle();
             
-            UIInstaller.DiInstall(Container, sceneServicesRoot, _uiSystemData);
-            
             Container.BindInterfacesAndSelfTo<ClickHandlerService>().AsSingle();
             Container.BindInterfacesAndSelfTo<LevelHelperService>().AsSingle();
             Container.BindInterfacesAndSelfTo<LevelInfoTrackerService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<CoroutineService>().AsSingle();
             
             Container.BindInterfacesAndSelfTo<FlyingUIRewardAnimationService>().AsSingle();
             Container.BindInterfacesAndSelfTo<FlyingUIRewardDestinationService>().AsSingle();

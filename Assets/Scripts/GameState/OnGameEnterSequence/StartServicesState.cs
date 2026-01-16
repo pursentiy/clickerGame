@@ -2,6 +2,7 @@ using Handlers.UISystem;
 using JetBrains.Annotations;
 using Platform.Common.Utilities.StateMachine;
 using Services;
+using Services.CoroutineServices;
 using Utilities.StateMachine;
 using Zenject;
 
@@ -31,7 +32,7 @@ namespace GameState.OnGameEnterSequence
 
         private void NextState()
         {
-            Sequence.ActivateState<GameIdleState>();
+            Sequence.ActivateState<PrepareSessionState>();
         }
     }
 }

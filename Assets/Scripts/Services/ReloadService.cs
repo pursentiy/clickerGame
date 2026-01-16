@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Services.CoroutineServices;
 using UnityEngine;
 using Zenject;
 
@@ -8,7 +9,7 @@ namespace Services
     {
         [Inject] private readonly ZenjectSceneLoader _sceneLoader;
         [Inject] private readonly ApplicationService _applicationService;
-        [Inject] private readonly CoroutineService _coroutineService;
+        [Inject] private readonly PersistentCoroutinesService _persistentCoroutinesService;
         [Inject] private readonly ScenesManagerService _scenesManagerService;
 
         public void SoftRestart()
@@ -23,7 +24,7 @@ namespace Services
             AudioListener.pause = false;
             _applicationService.DisposeServices();
 
-            _coroutineService.WaitFrames(3)
+            _persistentCoroutinesService.WaitFrames(3)
                 .Then(Finally);
             
             void Finally()

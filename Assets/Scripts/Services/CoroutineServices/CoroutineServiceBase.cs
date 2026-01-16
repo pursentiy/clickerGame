@@ -7,51 +7,10 @@ using Platform.Common.Utilities.StateMachine;
 using RSG;
 using Services.Base;
 using UnityEngine;
-using Object = UnityEngine.Object;
+using Utilities.StateMachine;
 
-namespace Services
+namespace Services.CoroutineServices
 {
-	[UsedImplicitly]
-    public class PersistentCoroutinesService : CoroutineServiceBase
-	{
-		public PersistentCoroutinesService()
-		{
-			var runner = new GameObject("-PersistentCoroutinesService");
-			Object.DontDestroyOnLoad(runner);
-			MonoBehaviour = runner.AddComponent<EmptyMonoBehaviour>();
-		}
-		
-		protected override void OnInitialize()
-		{
-			
-		}
-
-		protected override void OnDisposing()
-		{
-			StopAllCoroutines();
-		}
-	}
-	
-	[UsedImplicitly]
-	public class CoroutineService : CoroutineServiceBase
-	{
-		public CoroutineService()
-		{
-			var runner = new GameObject("-CoroutinesService");
-			MonoBehaviour = runner.AddComponent<EmptyMonoBehaviour>();
-		}
-
-		protected override void OnInitialize()
-		{
-			
-		}
-
-		protected override void OnDisposing()
-		{
-			StopAllCoroutines();
-		}
-	}
-	
 	[UsedImplicitly]
 	public abstract class CoroutineServiceBase : DisposableService
 	{
@@ -95,7 +54,7 @@ namespace Services
 			promise.Resolve();
 		}
 
-		public void StopCoroutine(Coroutine routine)
+		public void StopCoroutine(UnityEngine.Coroutine routine)
 		{
 			if (routine == null)
 			{
@@ -116,13 +75,13 @@ namespace Services
 			}
 		}
 
-		public Coroutine WaitFor(float fromS, float toS, Action callback)
+		public UnityEngine.Coroutine WaitFor(float fromS, float toS, Action callback)
 		{
 			var value = UnityEngine.Random.Range(fromS, toS);
 			return WaitFor(value, callback);
 		}
 
-		public Coroutine WaitFor(float seconds, Action callback)
+		public UnityEngine.Coroutine WaitFor(float seconds, Action callback)
 		{
 			if (!MonoBehaviour.Destroyed && MonoBehaviour.gameObject.activeInHierarchy)
 			{
@@ -173,7 +132,7 @@ namespace Services
 			}
 		}
 
-		public Coroutine WaitOperation(AsyncOperation operation, Action callback)
+		public UnityEngine.Coroutine WaitOperation(AsyncOperation operation, Action callback)
 		{
 			if (!MonoBehaviour.Destroyed && MonoBehaviour.gameObject.activeInHierarchy)
 			{
@@ -368,3 +327,4 @@ namespace Services
 		}
 	}
 }
+	

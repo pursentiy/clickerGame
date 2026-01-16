@@ -15,6 +15,8 @@ namespace Common.Widgets
         [Header("Alignment")]
         [Tooltip("If true, the bottom of the sprite will always touch the bottom of the screen")]
         public bool alignToBottom = true;
+
+        [SerializeField] private bool autoFitOnStart;
         
         private int _lastScreenWidth;
         private int _lastScreenHeight;
@@ -24,7 +26,13 @@ namespace Common.Widgets
         private float _lastTargetHeight;
         private float _lastPpu;
         private bool _lastAlign;
-        
+
+        private void Start()
+        {
+            if (autoFitOnStart)
+                ApplyUniversalFill();
+        }
+
         public void ApplyUniversalFill(bool force = false)
         {
             if (Camera.main == null) return;

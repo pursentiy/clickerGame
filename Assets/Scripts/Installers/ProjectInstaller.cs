@@ -1,6 +1,7 @@
 using Common.Rewards;
 using Services;
 using Services.ContentDeliveryService;
+using Services.CoroutineServices;
 using Services.FlyingRewardsAnimation;
 using Storage.Audio;
 using UnityEngine;
@@ -15,13 +16,10 @@ namespace Installers
 
         public override void InstallBindings()
         {
-            ContainerHolder.OnProjectInstall(Container);
-            
             // INFRASTRUCTURE AND CORE SERVICES
             Container.BindInterfacesAndSelfTo<ApplicationService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<ScenesManagerService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<LocalizationService>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<CoroutineService>().AsSingle();
             Container.BindInterfacesAndSelfTo<PersistentCoroutinesService>().AsSingle();
             Container.BindInterfacesAndSelfTo<AddressableContentDeliveryService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<TimeService>().AsSingle();

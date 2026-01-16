@@ -1,3 +1,4 @@
+using System;
 using Extensions;
 using Installers;
 using Platform.Common.Utilities.StateMachine;
@@ -10,7 +11,16 @@ namespace Utilities.StateMachine
     {
         public override void OnEnter(params object[] arguments)
         {
-            ContainerHolder.CurrentContainer.Inject(this);
+            try
+            {
+                ContainerHolder.CurrentContainer.Inject(this);
+            }
+            catch (Exception e)
+            {
+                LoggerService.LogError(this, e.ToString());
+                throw;
+            }
+            
             LoggerService.LogDebug($"Enter:{GetType().Name}");
             
             base.OnEnter(arguments);

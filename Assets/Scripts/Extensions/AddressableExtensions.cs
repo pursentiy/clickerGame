@@ -3,6 +3,7 @@ using System.Collections;
 using System.Diagnostics;
 using RSG;
 using Services;
+using Services.CoroutineServices;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Utilities;
 
@@ -13,7 +14,7 @@ namespace Extensions
         public static IPromise<Either<T, Exception>> OnResult<T>(
             this AsyncOperationHandle<T> handle,
             IPromise delay,
-            CoroutineService coroutineService,
+            ICoroutineService coroutineService,
             float timeout = 0,
             float sendErrorTimeout = 0,
             string debugAssetKey = null)

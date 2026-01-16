@@ -1,4 +1,6 @@
-namespace Platform.Common.Utilities.StateMachine
+using Platform.Common.Utilities.StateMachine;
+
+namespace Utilities.StateMachine
 {
     public interface IState
     {

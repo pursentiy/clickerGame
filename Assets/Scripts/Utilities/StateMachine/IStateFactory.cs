@@ -1,6 +1,6 @@
 using System;
 
-namespace Platform.Common.Utilities.StateMachine
+namespace Utilities.StateMachine
 {
     public interface IStateFactory
     { 

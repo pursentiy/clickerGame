@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Extensions;
 using Services.Base;
+using Services.CoroutineServices;
 using UnityEngine;
 using Zenject;
 
@@ -11,7 +12,7 @@ namespace Services
 {
     public class TimeService : DisposableService
     {
-        [Inject] private CoroutineService _coroutineService;
+        [Inject] private PersistentCoroutinesService _persistentCoroutinesService;
         
         private Dictionary<string, Timer> _activeTimers = new Dictionary<string, Timer>();
         
@@ -40,7 +41,7 @@ namespace Services
             Timer newTimer = new Timer(id, duration, isStopwatch, onComplete, onUpdate);
             _activeTimers.Add(id, newTimer);
 
-            newTimer.Coroutine = _coroutineService.StartCoroutine(RunTimerRoutine(newTimer));
+            newTimer.Coroutine = _persistentCoroutinesService.StartCoroutine(RunTimerRoutine(newTimer));
             return newTimer;
         }
 
@@ -62,7 +63,7 @@ namespace Services
             }
             
             if (timer.Coroutine != null)
-                _coroutineService.StopCoroutine(timer.Coroutine);
+                _persistentCoroutinesService.StopCoroutine(timer.Coroutine);
                 
             timer.Dispose();
             _activeTimers.Remove(id);
@@ -121,7 +122,7 @@ namespace Services
 
                 if (!timer.IsDisposed)
                 {
-                    _coroutineService.StopCoroutine(timer.Coroutine);
+                    _persistentCoroutinesService.StopCoroutine(timer.Coroutine);
                     StopTimer(timer.Id);
                     timer.Complete();
                 }

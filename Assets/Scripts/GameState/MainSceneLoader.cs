@@ -1,18 +1,36 @@
 ﻿using GameState.OnGameEnterSequence;
-using UnityEngine;
+using Handlers.UISystem;
+using Installers;
+using Platform.Common.Utilities.StateMachine;
+using Services;
+using Services.CoroutineServices;
 using Utilities.Disposable;
 using Utilities.StateMachine;
+using Zenject;
 
 namespace GameState
 {
-    public class MainSceneLoader : MonoBehaviour
+    public class MainSceneLoader : InjectableMonoBehaviour
     {
-        private StateMachine _machine;
+        [Inject] private CoroutineService _coroutineService;
+        [Inject] private readonly ApplicationService _applicationService;
+        [Inject] private readonly UIManager _uiManager;
         
-        private void Start()
+        private IStateSequence _machine;
+
+        protected override void Awake()
         {
-            _machine = new StateMachine(null);
-            _machine.StartSequence<StartServicesState>().FinishWith(this);
+            base.Awake();
+            
+            StartStateMachine();
+        }
+
+        private void StartStateMachine()
+        {
+            _machine = StateMachine
+                .CreateMachine(null)
+                .StartSequence<StartServicesState>()
+                .FinishWith(this);
         }
     }
 }
