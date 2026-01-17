@@ -8,19 +8,20 @@ namespace Services
 {
     public class ProgressController
     {
+        [Inject] private readonly GameParamsManager _gameParamsManager;
         [Inject] private readonly PlayerProfileManager _playerProfileManager;
 
-        public int CurrentPackNumber { get; private set; }
-        public int CurrentLevelNumber { get; private set; }
+        public int CurrentPackId { get; private set; }
+        public int CurrentLevelId { get; private set; }
 
-        public void SetCurrentLevelNumber(int currentLevelNumber)
+        public void SetCurrentLevelId(int currentLevelId)
         {
-            CurrentLevelNumber = currentLevelNumber;
+            CurrentLevelId = currentLevelId;
         }
 
-        public void SetCurrentPackNumber(int currentPackNumber)
+        public void SetCurrentPackId(int currentPackId)
         {
-            CurrentPackNumber = currentPackNumber;
+            CurrentPackId = currentPackId;
         }
         
         public bool SetLevelCompleted(int packNumber, int levelNumber, float levelCompletedTime, Stars starsEarned)
@@ -28,20 +29,20 @@ namespace Services
             if (levelCompletedTime < 0)
             {
                 LoggerService.LogWarning(this, $"[{nameof(SetLevelCompleted)}]: LevelCompletedTime cannot be negative: {levelCompletedTime}. For pack {packNumber} and levelNumber {levelNumber}");
-                return;
+                return false;
             }
             
             if (starsEarned < 0)
             {
                 LoggerService.LogWarning(this, $"[{nameof(SetLevelCompleted)}]: Earned Stars cannot be negative: {starsEarned}. For pack {packNumber} and levelNumber {levelNumber}");
-                return;
+                return false;
             }
             
             var pack = GetOrCreatePack(packNumber);
             if (pack == null)
             {
-                LoggerService.LogWarning(this, $"[{nameof(SetLevelCompleted)}]: Cannot get pack {packNumber} from {nameof(GetOrCreatePack)}");
-                return;
+                LoggerService.LogWarning(this, $"[{nameof(SetLevelCompleted)}]: Cannot get pack {packNumber} from {nameof(SetLevelCompleted)}");
+                return false;
             }
             
             var level = pack.CompletedLevelsSnapshots.FirstOrDefault(x => x.LevelNumber == levelNumber);
@@ -62,6 +63,8 @@ namespace Services
                     level.StarsEarned = starsEarned;
                 }
             }
+            
+            return true;
         }
     }
 }

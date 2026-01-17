@@ -1,24 +1,28 @@
 using Extensions;
 using Plugins.FSignal;
 using Services.Base;
+using Services.Player;
 using Storage.Snapshots;
 using Utilities.Disposable;
 using Zenject;
 
-namespace Services.Player
+namespace Services
 {
-    public class GameManager : DisposableService
+    public class GameParamsManager : DisposableService
     {
         [Inject] private PlayerProfileManager _playerProfileManager;
+        [Inject] private readonly LanguageConversionService _languageConversionService;
         
         private GameParamsSnapshot _gameParamsSnapshot;
         
         public bool IsInitialized { get; private set; }
         public readonly FSignal GameParamsSnapshotInitializedSignal = new();
+        public readonly FSignal<bool> MusicChangedSignal = new();
+        public readonly FSignal<bool> SoundChangedSignal = new();
         
         public bool IsMusicOn => _gameParamsSnapshot?.IsMusicOn ?? true;
         public bool IsSoundOn => _gameParamsSnapshot?.IsSoundOn ?? true;
-        public string LanguageCode => _gameParamsSnapshot?.Language ?? string.Empty;
+        public string LanguageCode => _gameParamsSnapshot?.Language ?? _languageConversionService.FallbackLanguageCode;
         
         public void SetMusicAvailable(bool isOn)
         {
@@ -33,6 +37,7 @@ namespace Services.Player
             
             _gameParamsSnapshot.IsMusicOn = isOn;
             _playerProfileManager.SaveProfile();
+            MusicChangedSignal.Dispatch(isOn);
         }
         
         public void SetSoundAvailable(bool isOn)
@@ -48,6 +53,7 @@ namespace Services.Player
             
             _gameParamsSnapshot.IsSoundOn = isOn;
             _playerProfileManager.SaveProfile();
+            SoundChangedSignal.Dispatch(isOn);
         }
         
         public void UpdateLanguage(string languageCode)

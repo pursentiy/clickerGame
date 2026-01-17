@@ -13,6 +13,7 @@ using RSG;
 using Services;
 using Services.Player;
 using Storage;
+using Storage.Levels;
 using Storage.Snapshots.LevelParams;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -24,6 +25,7 @@ namespace Components.Levels
     public class LevelSessionHandler : MonoBehaviour, IDisposableHandlers
     {
         [Inject] private readonly ProgressProvider _progressProvider;
+        [Inject] private readonly ProgressController _progressController;
         [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private readonly ScreenHandler _screenHandler;
         [Inject] private readonly SoundHandler _soundHandler;
@@ -46,19 +48,22 @@ namespace Components.Levels
         private Sequence _resetDraggingAnimationSequence;
         private Sequence _completeDraggingAnimationSequence;
         private Coroutine _finishCoroutine;
+        private PackParamsData _packParamsData;
         
         private bool IsLevelComplete => _currentLevelParams != null && 
                                         _currentLevelParams.LevelFiguresParamsList.TrueForAll(levelFigureParams => levelFigureParams.Completed);
 
-        public void StartLevel(LevelParamsSnapshot levelParamsSnapshot, LevelHudHandler levelHudHandler, Color defaultColor)
+        public void StartLevel(LevelParamsSnapshot levelParamsSnapshot, LevelHudHandler levelHudHandler, PackParamsData packParams)
         {
             if (levelParamsSnapshot == null)
             {
                 LoggerService.LogError($"{nameof(LevelParamsSnapshot)} cannot be null");
                 return;
             }
+            
+            _packParamsData = packParams;
             _currentLevelParams =  levelParamsSnapshot;
-            var levelId = $"{_progressProvider.CurrentPackNumber}-{_progressProvider.CurrentLevelNumber}";
+            var levelId = $"{_progressController.CurrentPackId}-{_progressController.CurrentLevelId}";
             _levelInfoTrackerService.StartLevelTracking(levelId);
             
             SetupHud(levelParamsSnapshot, levelHudHandler);
@@ -91,7 +96,7 @@ namespace Components.Levels
             _levelInfoTrackerService.ClearData();
 
             var earnedStars = _levelHelperService.EvaluateEarnedStars(_currentLevelParams, levelPlayedTime);
-            _progressProvider.SetLevelCompleted(_progressProvider.CurrentPackNumber, _progressProvider.CurrentLevelNumber, levelPlayedTime, earnedStars);
+            _progressController.SetLevelCompleted(_progressController.CurrentPackId, _progressController.CurrentLevelId, levelPlayedTime, earnedStars);
             
             _levelHudHandler.SetInteractivity(false);
             _levelHudHandler.PlayFinishParticles();
@@ -110,7 +115,7 @@ namespace Components.Levels
         {
             _levelHudHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelHudHandler>(levelHudHandler, _gameMainCanvasTransform);
             _levelHudHandler.SetupHUDFigures(packParam.LevelFiguresParamsList);
-            _levelHudHandler.Initialize(packParam.LevelBeatingTimeInfo, packParam.FigureScale);
+            _levelHudHandler.Initialize(_packParamsData, packParam.LevelBeatingTimeInfo, packParam.FigureScale);
             
             _levelHudHandler.GetOnBeginDragFiguresSignal().ForEach(signal => signal.MapListener(StartElementDragging).DisposeWith(this));
             _levelHudHandler.GetOnDragEndFiguresSignal().ForEach(signal => signal.MapListener(EndElementDragging).DisposeWith(this));
@@ -241,7 +246,7 @@ namespace Components.Levels
 
         private void GoToLevelsMenu()
         {
-            _screenHandler.ShowChooseLevelScreen();
+            _screenHandler.ShowChooseLevelScreen(_packParamsData);
         }
 
         //TODO ADD RESTART LEVEL FUNCTIONALITY

@@ -1,10 +1,8 @@
-using Handlers;
 using Handlers.UISystem;
 using JetBrains.Annotations;
 using RSG;
 using Services;
 using Services.Player;
-using Storage;
 using Storage.Snapshots;
 using Utilities.Disposable;
 using Utilities.StateMachine;
@@ -16,69 +14,38 @@ namespace GameState.OnGameEnterSequence
     public class PrepareSessionState : InjectableStateBase<DefaultStateContext>
     {
         [Inject] private readonly UIManager _uiManager;
-        [Inject] private readonly GlobalSettingsService _globalSettingsService;
-        [Inject] private readonly ScreenHandler _screenHandler;
-        [Inject] private readonly SoundHandler _soundHandler;
         [Inject] private readonly PlayerProfileManager _playerProfileManager;
-        [Inject] private readonly ProgressProvider _progressProvider;
         [Inject] private readonly ProfileBuilderService _profileBuilderService;
-        [Inject] private readonly LanguageConversionService _languageConversionService;
         
         public override void OnEnter(params object[] arguments)
         {
             base.OnEnter(arguments);
-
-            _uiManager.ShowScreensUI();
-            _uiManager.SetupHandlers();
             
             //TODO CATCH ERROR RELOAD
-            LoadOrInitProfile()
+            _playerProfileManager.LoadProfile()
                 .Then(SetupPlayer)
+                .Then(SetupScreen)
+                .Then(NextState)
                 .Catch(LoggerService.LogError)
                 .CancelWith(this);
         }
-        
-        private IPromise<ProfileSnapshot> LoadOrInitProfile()
-        {
-           return _playerProfileManager.LoadProfile()
-                .Then(OnPlayerSnapshotLoaded)
-                .CancelWith(this);
 
-            IPromise<ProfileSnapshot> OnPlayerSnapshotLoaded(ProfileSnapshot loadedProfileSnapshot)
-            {
-                return loadedProfileSnapshot == null ? BuildNewProfile() : Promise<ProfileSnapshot>.Resolved(loadedProfileSnapshot);
-            }
-        }
-        
-        private IPromise<ProfileSnapshot> BuildNewProfile()
+        private IPromise SetupPlayer(ProfileSnapshot loadedProfileSnapshot)
         {
-            var playerSnapshot = _profileBuilderService.BuildNewProfileSnapshot();
-            _playerProfileManager.Initialize(playerSnapshot);
-            _playerProfileManager.SaveProfile();
-            
-            return Promise<ProfileSnapshot>.Resolved(playerSnapshot);
+            var finalProfileSnapshot = loadedProfileSnapshot ?? _profileBuilderService.BuildNewProfileSnapshot();
+
+            _playerProfileManager.Initialize(finalProfileSnapshot);
+            _playerProfileManager.SaveProfile(SavePriority.ImmediateSave);
+
+            return Promise.Resolved();
         }
 
-        private void SetupPlayer(ProfileSnapshot profileSnapshot)
+        private IPromise SetupScreen()
         {
-            if (profileSnapshot == null)
-            {
-                LoggerService.LogError($"[{GetType().Name}]: {nameof(ProfileSnapshot)} is null");
-
-                //TODO ADD MAX ATTEMPTS
-                BuildNewProfile()
-                    .Then(SetupPlayer)
-                    .CancelWith(this);
-            }
+            _uiManager.ShowScreensUI();
+            _uiManager.SetupHandlers();
             
-            _playerProfileManager.Initialize(profileSnapshot);
-            
-            _soundHandler.SetMusicVolume(_playerProfileManager.IsMusicOn);
-            _soundHandler.SetSoundVolume(_playerProfileManager.IsSoundOn);
-            _soundHandler.StartAmbience();
-            _globalSettingsService.SetCurrentLanguage(_languageConversionService.GetLocale(_playerProfileManager.LanguageCode));
-
-            NextState();
+            return Promise.Resolved();
         }
 
         private void NextState()

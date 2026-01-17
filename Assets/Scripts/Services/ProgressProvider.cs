@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Common.Currency;
 using Services.Player;
+using Storage.Levels;
 using Storage.Snapshots;
 using Zenject;
 
@@ -13,6 +16,7 @@ namespace Services
         [Inject] private GameConfigurationProvider _gameConfigurationProvider;
 
         public int GetAllPacksCount() => _gameConfigurationProvider.IsInitialized ? _gameConfigurationProvider.GetPacksCount() : 0;
+        public IReadOnlyCollection<PackParamsData> GetAllPacks() => _gameConfigurationProvider.IsInitialized ? _gameConfigurationProvider.PackParamsData : Array.Empty<PackParamsData>();
         
         public bool IsPackAvailable(int packNumber)
         {

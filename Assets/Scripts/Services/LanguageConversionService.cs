@@ -15,6 +15,7 @@ namespace Services
 
         public int AvailableLocalesCount => LocalizationSettings.AvailableLocales.Locales.Count;
         public Locale SelectedLocale => LocalizationSettings.SelectedLocale;
+        public string FallbackLanguageCode => English;
 
         public int GetSelectedLocaleIndex()
         {

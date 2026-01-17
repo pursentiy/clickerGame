@@ -34,10 +34,10 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<ProgressProvider>().AsSingle();
             Container.BindInterfacesAndSelfTo<ProgressController>().AsSingle();
             Container.BindInterfacesAndSelfTo<ProfileBuilderService>().AsSingle();
-            Container.BindInterfacesAndSelfTo<GlobalSettingsService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<GameSettingsManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<LanguageConversionService>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameConfigurationProvider>().AsSingle();
-            Container.BindInterfacesAndSelfTo<GameManager>().AsSingle();
+            Container.BindInterfacesAndSelfTo<GameParamsManager>().AsSingle();
 
             // STATIC DATA
             Container.Bind<CurrencyLibrary>().FromScriptableObject(_currencyLibrary).AsSingle();

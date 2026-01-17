@@ -33,6 +33,14 @@ namespace Handlers
             _ambientAwaitCoroutine = StartCoroutine(AwaitForNextAmbienceSong(clip));
         }
 
+        public void StopAmbience()
+        {
+            if (_ambientAwaitCoroutine != null)
+                StopCoroutine(_ambientAwaitCoroutine);
+            
+            _musicSource.Stop();
+        }
+
         private IEnumerator AwaitForNextAmbienceSong(Sound soundParams)
         {
             yield return new WaitForSeconds(soundParams.clip.length);

@@ -21,6 +21,7 @@ namespace Handlers
     {
         [Inject] private UIBlockHandler _uiBlockHandler;
         [Inject] private ProgressProvider _progressProvider;
+        [Inject] private ProgressController _progressController;
         [Inject] private LevelSessionHandler _levelSessionHandler;
         [Inject] private LevelParamsHandler _levelParamsHandler;
         [Inject] private IDisposableHandlers[] _disposableHandlers;
@@ -39,14 +40,17 @@ namespace Handlers
 
         public float AwaitChangeScreenTime => _awaitChangeScreenTime;
 
-        public void ShowChooseLevelScreen(FSignal levelResetSignal = null, bool fast = false)
+        public void ShowChooseLevelScreen(PackParamsData packParamsData, FSignal levelResetSignal = null, bool fast = false)
         {
             _uiBlockHandler.BlockUserInput(true);
             AnimateTransition(fast).Then(() =>
             {
                 levelResetSignal?.Dispatch();
                 PopupCurrentScreenAndDisposeHandlers();
-                _currentScreenBase = Instantiate(_chooseLevelScreen, _screenCanvasTransform);
+                var screen = Instantiate(_chooseLevelScreen, _screenCanvasTransform);
+                screen.Initialize(packParamsData);
+                
+                _currentScreenBase = screen;
                 _uiBlockHandler.BlockUserInput(false);
             }).CancelWith(this);
         }
@@ -73,14 +77,14 @@ namespace Handlers
             }).CancelWith(this);;
         }
         
-        public void StartNewLevel(int levelNumber, LevelParamsData levelParams, bool fast = false)
+        public void StartNewLevel(int levelId, PackParamsData packParams, LevelParamsData levelParams, bool fast = false)
         {
             _uiBlockHandler.BlockUserInput(true);
             AnimateTransition(fast).Then(() =>
             {
-                _progressProvider.CurrentLevelNumber = levelNumber;
+                _progressController.SetCurrentLevelId(levelId);
                 PopupCurrentScreenAndDisposeHandlers();
-                _levelSessionHandler.StartLevel(levelParams.ToSnapshot(), _levelParamsHandler.LevelHudHandlerPrefab, _levelParamsHandler.TargetFigureDefaultColor);
+                _levelSessionHandler.StartLevel(levelParams.ToSnapshot(), _levelParamsHandler.LevelHudHandlerPrefab, packParams);
                 _uiBlockHandler.BlockUserInput(false);
             }).CancelWith(this);
         }

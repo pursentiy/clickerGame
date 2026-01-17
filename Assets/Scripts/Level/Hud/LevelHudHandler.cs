@@ -11,8 +11,8 @@ using Level.Widgets;
 using Plugins.FSignal;
 using RSG;
 using Services;
-using Services.Player;
 using Storage;
+using Storage.Levels;
 using Storage.Snapshots.LevelParams;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -24,12 +24,13 @@ namespace Level.Hud
 {
     public class LevelHudHandler : InjectableMonoBehaviour, IDisposableHandlers
     {
-        [Inject] private LevelsParamsStorageData _levelsParamsStorageData;
-        [Inject] private ScreenHandler _screenHandler;
-        [Inject] private ProgressProvider _progressProvider;
-        [Inject] private SoundHandler _soundHandler;
-        [Inject] private LevelInfoTrackerService _levelInfoTrackerService;
-        [Inject] private UIManager _uiManager;
+        [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
+        [Inject] private readonly ScreenHandler _screenHandler;
+        [Inject] private readonly ProgressProvider _progressProvider;
+        [Inject] private readonly ProgressController _progressController;
+        [Inject] private readonly SoundHandler _soundHandler;
+        [Inject] private readonly LevelInfoTrackerService _levelInfoTrackerService;
+        [Inject] private readonly UIManager _uiManager;
 
         [SerializeField] private RectTransform _figuresDraggingContainer;
         [SerializeField] private RectTransform _figuresAssemblyContainer;
@@ -48,6 +49,7 @@ namespace Level.Hud
         private List<FigureTarget> _figureAnimalsTargetList = new List<FigureTarget>();
         private float _figuresGroupSpacing;
         private Sequence _shiftingSequence;
+        private PackParamsData _currentPackParams;
         
         public FSignal BackToMenuClickSignal { get; } = new FSignal();
         public GraphicRaycaster FiguresAssemblyCanvasRaycaster => _figuresAssemblyCanvasRaycaster;
@@ -68,7 +70,7 @@ namespace Level.Hud
             _canvasGroup.interactable = isInteractable;
         }
 
-        public void Initialize(LevelBeatingTimeInfoSnapshot levelBeatingTime, float assemblyContainerScale)
+        public void Initialize(PackParamsData currentPackParams, LevelBeatingTimeInfoSnapshot levelBeatingTime, float assemblyContainerScale)
         {
             LoggerService.LogDebugEditor($"{nameof(LevelBeatingTimeInfoSnapshot)}: \n" +
                                          $"{nameof(levelBeatingTime.FastestTime)} - {levelBeatingTime.FastestTime}\n" +
@@ -79,6 +81,7 @@ namespace Level.Hud
             _starsProgressWidget.Initialize(levelBeatingTime);
             SetAssemblyContainerScale(assemblyContainerScale);
             OnTimerChanged(_levelInfoTrackerService.CurrentLevelPlayingTime);
+            _currentPackParams = currentPackParams;
         }
 
         public void SetupHUDFigures(List<LevelFigureParamsSnapshot> levelFiguresParams)
@@ -117,8 +120,8 @@ namespace Level.Hud
 
         private void SetDraggingFigure(LevelFigureParamsSnapshot figureParams)
         {
-            var figurePrefab = _levelsParamsStorageData.GetMenuFigure(_progressProvider.CurrentPackNumber,
-                _progressProvider.CurrentLevelNumber, figureParams.FigureId);
+            var figurePrefab = _levelsParamsStorageData.GetMenuFigure(_progressController.CurrentPackId,
+                _progressController.CurrentLevelId, figureParams.FigureId);
 
             if (figurePrefab == null)
             {
@@ -141,8 +144,8 @@ namespace Level.Hud
         
         private void SetAssemblyContainerFigure(LevelFigureParamsSnapshot figureParams)
         {
-            var figurePrefab = _levelsParamsStorageData.GetTargetFigure(_progressProvider.CurrentPackNumber,
-                _progressProvider.CurrentLevelNumber, figureParams.FigureId);
+            var figurePrefab = _levelsParamsStorageData.GetTargetFigure(_progressController.CurrentPackId,
+                _progressController.CurrentLevelId, figureParams.FigureId);
 
             if (figurePrefab == null)
             {
@@ -180,7 +183,7 @@ namespace Level.Hud
 
         private void GoToMainMenuScreen()
         {
-            _screenHandler.ShowChooseLevelScreen(BackToMenuClickSignal);
+            _screenHandler.ShowChooseLevelScreen(_currentPackParams, BackToMenuClickSignal);
         }
 
         public void ShiftAllElements(bool isInserting, int figureId, Promise animationPromise)

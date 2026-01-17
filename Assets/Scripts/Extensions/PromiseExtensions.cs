@@ -111,6 +111,16 @@ namespace Extensions
             return promise;
         }
         
+        public static void SafeCancel(this IPromise promise)
+        {
+            if (promise == null || !promise.CanBeCanceled)
+            {
+                return;
+            }
+
+            promise.Cancel();
+        }
+        
         private static void AppendOnKill(Tweener tweener, Promise promise)
         {
             if (tweener.onKill != null)

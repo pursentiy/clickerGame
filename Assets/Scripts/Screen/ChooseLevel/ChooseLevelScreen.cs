@@ -1,5 +1,4 @@
-﻿using System;
-using Components.UI;
+﻿using Components.UI;
 using Extensions;
 using Handlers;
 using Handlers.UISystem;
@@ -7,7 +6,6 @@ using Popup.Universal;
 using Screen.ChooseLevel.Widgets;
 using Services;
 using Services.Player;
-using Storage;
 using Storage.Levels;
 using TMPro;
 using UnityEngine;
@@ -21,11 +19,9 @@ namespace Screen.ChooseLevel
     {
         [Inject] private readonly ScreenHandler _screenHandler;
         [Inject] private readonly ProgressProvider _progressProvider;
-        [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
-        [Inject] private readonly SoundHandler _soundHandler;
+        [Inject] private readonly ProgressController _progressController;
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
-        [Inject] private readonly LocalizationService _localization;
         [Inject] private readonly LocalizationService _localizationService;
         
         [SerializeField] private LevelItemWidget _levelItemWidgetPrefab;
@@ -40,26 +36,42 @@ namespace Screen.ChooseLevel
         [SerializeField] private TMP_Text _packName;
         
         private HorizontalLayoutGroup _horizontalGroup;
+        private int _currentPackId;
+        private PackParamsData _currentPackParams;
 
-        protected override void Start()
+        public void Initialize(PackParamsData packParams)
         {
-            base.Start();
+            _currentPackId = _progressController.CurrentPackId;
+            _currentPackParams = packParams;
             
-            _headerText.text = _localization.GetGameValue("choose_level_header");
-
+            SetTexts();
             InitializeLevelsButton();
             SetAvailableLevelsText();
 
             _starsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
             
-            var rawPackName = _levelsParamsStorageData.GetPackParamsData(_progressProvider.CurrentPackNumber).PackName;
-            var localizedName = _localization.GetGameValue($"pack_{rawPackName.ToLower()}");
-            var wordPack = _localization.GetCommonValue("word_pack");
-            _packName.text = $"{localizedName} {wordPack}";
-            
-            _goBack.onClick.MapListenerWithSound(()=> _screenHandler.ShowChoosePackScreen()).DisposeWith(this);
+            _goBack.onClick.MapListenerWithSound(OnGoBackButtonClicked).DisposeWith(this);
             _infoButton.onClick.MapListenerWithSound(OnInfoButtonClicked).DisposeWith(this);
-            _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null)).DisposeWith(this);
+            _settingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
+        }
+
+        private void OnSettingsButtonClicked()
+        {
+            _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null);
+        }
+
+        private void OnGoBackButtonClicked()
+        {
+            _screenHandler.ShowChoosePackScreen();
+        }
+
+        private void SetTexts()
+        {
+            _headerText.text = _localizationService.GetGameValue("choose_level_header");
+            
+            var localizedName = _localizationService.GetGameValue($"pack_{_currentPackParams.PackName.ToLower()}");
+            var wordPack = _localizationService.GetCommonValue("word_pack");
+            _packName.text = $"{localizedName} {wordPack}";
         }
 
         private void OnInfoButtonClicked()
@@ -75,31 +87,29 @@ namespace Screen.ChooseLevel
         
         private void SetAvailableLevelsText()
         {
-            var totalLevels = _progressProvider.GetLevelsCountInPack(_progressProvider.CurrentPackNumber);
-            var totalAvailableLevels = _progressProvider.GetAllAvailableLevelsCount(_progressProvider.CurrentPackNumber);
-            _availableLevelsText.text = _localization.GetFormattedCommonValue("unlocked_levels", $"{totalAvailableLevels}/{totalLevels}");
+            var totalLevels = _progressProvider.GetLevelsCountInPack(_currentPackId);
+            var totalAvailableLevels = _progressProvider.GetLevelsCountInPack(_currentPackId, true);
+            
+            _availableLevelsText.text = _localizationService.GetFormattedCommonValue("unlocked_levels", $"{totalAvailableLevels}/{totalLevels}");
         }
 
         private void InitializeLevelsButton()
         {
-            var levelsParams = _progressProvider.GetLevelsByPack(_progressProvider.CurrentPackNumber);
             var index = 0;
-            levelsParams.ForEach(levelParams =>
+            _currentPackParams.LevelsParams.ForEach(levelParams =>
             {
-                if(_horizontalGroup == null || index % 2 == 0)
+                if (_horizontalGroup == null || index % 2 == 0)
                     _horizontalGroup = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
 
-                var levelParamsData = _levelsParamsStorageData.GetLevelParamsData(_progressProvider.CurrentPackNumber, levelParams.LevelNumber);
                 var enterButton = Instantiate(_levelItemWidgetPrefab, _horizontalGroup.transform);
-                
-                var earnedStarsForLevel = _progressProvider.GetEarnedStarsForLevel(_progressProvider.CurrentPackNumber, levelParams.LevelNumber) ?? 0;
-                enterButton.Initialize(levelParamsData.LevelName, levelParamsData.LevelImage, earnedStarsForLevel, levelParamsData.LevelDifficulty, _progressProvider.IsLevelAvailableToPlay(_progressProvider.CurrentPackNumber, levelParams.LevelNumber),
-                    () => StartLevel(levelParams));
+                var earnedStarsForLevel = _progressProvider.GetEarnedStarsForLevel(_currentPackId, levelParams.LevelId) ?? 0;
+                enterButton.Initialize(levelParams.LevelName, levelParams.LevelImage, earnedStarsForLevel, levelParams.LevelDifficulty, _progressProvider.IsLevelAvailableToPlay(_currentPackId, levelParams.LevelId),
+                    () => StartLevel(_currentPackParams, levelParams));
                 index++;
             });
         }
 
-        private void StartLevel(LevelParamsData levelParams)
+        private void StartLevel(PackParamsData packParams, LevelParamsData levelParams)
         {
             if (levelParams == null)
             {
@@ -107,7 +117,7 @@ namespace Screen.ChooseLevel
                 return;
             }
 
-            _screenHandler.StartNewLevel(levelParams.LevelId, levelParams);
+            _screenHandler.StartNewLevel(levelParams.LevelId, packParams, levelParams);
         }
 
         private void OnDestroy()
