@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Common.Currency;
 using Services.Player;
+using Storage;
 using Storage.Levels;
 using Storage.Snapshots;
 using Zenject;
@@ -90,27 +91,26 @@ namespace Services
             return TryGetLevelSnapshot(packId, levelId)?.StarsEarned;
         }
         
-        private PackSnapshot TryGetSnapshotPack(int packId)
+        public PackSnapshot TryGetPackSnapshot(int packId)
         {
             if (!_playerProfileManager.IsInitialized)
             {
-                LoggerService.LogWarning(this,$"[{nameof(TryGetSnapshotPack)}]: {nameof(PlayerProfileManager)} is not initialized");
+                LoggerService.LogWarning(this,$"[{nameof(TryGetPackSnapshot)}]: {nameof(PlayerProfileManager)} is not initialized");
                 return null;
             }
             
             return _playerProfileManager.TryGetPackSnapshot(packId);
         }
         
-        private LevelSnapshot TryGetLevelSnapshot(int packId, int levelId)
+        public LevelSnapshot TryGetLevelSnapshot(int packId, int levelId)
         {
             if (!_playerProfileManager.IsInitialized)
             {
                 LoggerService.LogWarning(this,$"[{nameof(TryGetLevelSnapshot)}]: {nameof(PlayerProfileManager)} is not initialized");
                 return null;
             }
-
-            var pack = TryGetSnapshotPack(packId);
-            return pack?.CompletedLevelsSnapshots.FirstOrDefault(p => p.LevelNumber == levelId);
+            
+            return _playerProfileManager.TryGetLevelSnapshot(packId, levelId);
         }
     }
 }

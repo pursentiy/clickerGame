@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: LevelsParamsStorageData
   m_EditorClassIdentifier: 
   _packParamsList:
-  - PackNumber: 1
+  - PackId: 1
     PackName: Animals
     PackImagePrefab: {fileID: 19882884362880740, guid: a013d6e27e89544059c5d55fb36d9293,
       type: 3}
     StarsToUnlock: 0
     LevelsParams:
-    - LevelNumber: 1
+    - LevelId: 1
       LevelName: Deer
       LevelDifficulty: 2
       LevelImage: {fileID: 21300000, guid: ab0ef69e772f8db4aad9763700885590, type: 3}
@@ -49,7 +49,7 @@ MonoBehaviour:
         FastestTime: 10
         MediumTime: 15
         MinimumTime: 20
-    - LevelNumber: 2
+    - LevelId: 2
       LevelName: Duck
       LevelDifficulty: 3
       LevelImage: {fileID: 21300000, guid: ad5708f27a5c9ad41a72fc53ba33df89, type: 3}
@@ -74,7 +74,7 @@ MonoBehaviour:
         FastestTime: 1
         MediumTime: 78
         MinimumTime: 80
-    - LevelNumber: 3
+    - LevelId: 3
       LevelName: Pig
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: a74249a5be4dc0b43ae69984ed8331df, type: 3}
@@ -104,13 +104,13 @@ MonoBehaviour:
         FastestTime: 5
         MediumTime: 8
         MinimumTime: 12
-  - PackNumber: 2
+  - PackId: 2
     PackName: Animals
     PackImagePrefab: {fileID: 19882884362880740, guid: a013d6e27e89544059c5d55fb36d9293,
       type: 3}
     StarsToUnlock: 1000
     LevelsParams:
-    - LevelNumber: 1
+    - LevelId: 1
       LevelName: Deer
       LevelDifficulty: 2
       LevelImage: {fileID: 21300000, guid: ab0ef69e772f8db4aad9763700885590, type: 3}
@@ -140,7 +140,7 @@ MonoBehaviour:
         FastestTime: 10
         MediumTime: 15
         MinimumTime: 20
-    - LevelNumber: 2
+    - LevelId: 2
       LevelName: Duck
       LevelDifficulty: 3
       LevelImage: {fileID: 21300000, guid: ad5708f27a5c9ad41a72fc53ba33df89, type: 3}
@@ -162,10 +162,10 @@ MonoBehaviour:
         FigureMenu: {fileID: 9180308159367904065, guid: 0457751680129fc439ed214a497c25c6,
           type: 3}
       LevelBeatingTimeInfo:
-        FastestTime: 11
-        MediumTime: 16
-        MinimumTime: 21
-    - LevelNumber: 3
+        FastestTime: 1
+        MediumTime: 78
+        MinimumTime: 80
+    - LevelId: 3
       LevelName: Pig
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: a74249a5be4dc0b43ae69984ed8331df, type: 3}

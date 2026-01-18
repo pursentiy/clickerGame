@@ -16,13 +16,11 @@ namespace Installers
 {
     public class SceneInstaller : MonoInstaller
     {
-        [SerializeField] private LevelsParamsStorageData _levelsParamsStorageData;
         [SerializeField] private ScreenHandler _screenHandler;
         [SerializeField] private LevelSessionHandler _levelSessionHandler;
         [SerializeField] private LevelParamsHandler _levelParamsHandler;
         [SerializeField] private UIScreenUpdater _uiScreenUpdater;
         [SerializeField] private UIBlockHandler _uiBlockHandler;
-        [SerializeField] private SoundHandler _soundHandler;
         [SerializeField] private UISystemData _uiSystemData;
 
         private GameObject _servicesRoot;
@@ -41,8 +39,6 @@ namespace Installers
             
             Container.BindInterfacesAndSelfTo<LevelSessionHandler>().FromInstance(_levelSessionHandler).AsSingle();
             Container.Bind<LevelParamsHandler>().FromInstance(_levelParamsHandler).AsSingle();
-            Container.BindInterfacesAndSelfTo<SoundHandler>().FromInstance(_soundHandler).AsSingle();
-            Container.Bind<LevelsParamsStorageData>().FromScriptableObject(_levelsParamsStorageData).AsSingle();
             
             Container.BindInterfacesAndSelfTo<ClickHandlerService>().AsSingle();
             Container.BindInterfacesAndSelfTo<LevelHelperService>().AsSingle();

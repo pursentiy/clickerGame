@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Currency;
@@ -16,20 +15,15 @@ namespace Services.Player
         [Inject] private readonly PlayerRepositoryService _playerRepositoryService;
         [Inject] private readonly PersistentCoroutinesService _coroutinesService;
         
-        public bool IsInitialized = false;
-        public readonly FSignal ProfileSnapshotInitializedSignal = new ();
-        
+        private ProfileSnapshot _profileSnapshot { get; set; }
         private IPromise _saveDelayPromise;
         private const float SaveDelay = 2.0f;
         
+        public bool IsInitialized { get; private set; }
+        public FSignal ProfileSnapshotInitializedSignal { get; private set; } = new();
         public Stars Stars => _profileSnapshot?.Stars ?? new Stars(0);
         public IReadOnlyList<PackSnapshot> PacksSnapshot => _profileSnapshot?.PackSnapshots;
-        
-        
         public GameParamsSnapshot TryGetGameParamsSnapshot() => _profileSnapshot?.GameParamsSnapshot;
-        
-        
-        private ProfileSnapshot _profileSnapshot { get; set; }
 
         public void UpdateStarsAndSave(int amount)
         {
@@ -40,31 +34,44 @@ namespace Services.Player
             SaveProfile();
         }
         
-        public PackSnapshot TryGetPackSnapshot(int packNumber)
+        public PackSnapshot TryGetPackSnapshot(int packId)
         {
-            return _profileSnapshot?.PackSnapshots.FirstOrDefault(p => p.PackNumber == packNumber);
+            return _profileSnapshot?.PackSnapshots.FirstOrDefault(p => p.PackId == packId);
         }
         
-        private void TryAddPackSnapshot(PackSnapshot packSnapshot)
+        public LevelSnapshot TryGetLevelSnapshot(int packId, int levelId)
         {
-            if (_profileSnapshot == null)
-                return;
-            
-            if (packSnapshot == null)
-            {
-                LoggerService.LogWarning(this, $"{nameof(PackSnapshot)} is null at {nameof(TryAddPackSnapshot)}");
-                return;
-            }
-
-            if (_profileSnapshot.PackSnapshots.Any(i => i.PackNumber == packSnapshot.PackNumber))
-            {
-                LoggerService.LogWarning($"Already contains {nameof(packSnapshot.PackNumber)} at {nameof(TryAddPackSnapshot)}");
-                return;
-            }
-            
-            _profileSnapshot.PackSnapshots.Add(packSnapshot);
+            return TryGetPackSnapshot(packId)?.CompletedLevelsSnapshots?.FirstOrDefault(p => p.LevelId == levelId);
         }
+        
+        public bool CreatePack(PackSnapshot packSnapshot)
+        {
+            if (_profileSnapshot == null || packSnapshot == null)
+                return false;
+            
+            if (TryGetPackSnapshot(packSnapshot.PackId) != null)
+                return false;
 
+            _profileSnapshot.PackSnapshots.Add(packSnapshot);
+            return true;
+        }
+        
+        public bool CreateLevel(int packId, LevelSnapshot levelSnapshot)
+        {
+            if (_profileSnapshot == null || levelSnapshot == null)
+                return false;
+
+            var pack = TryGetPackSnapshot(packId);
+            if (pack == null)
+                return false;
+            
+            if (TryGetLevelSnapshot(packId, levelSnapshot.LevelId) != null)
+                return false;
+
+            pack.CompletedLevelsSnapshots.Add(levelSnapshot);
+            return true;
+        }
+        
         public void Initialize(ProfileSnapshot profileSnapshot)
         {
             if (profileSnapshot == null)
@@ -96,6 +103,11 @@ namespace Services.Player
             }
         }
         
+        public IPromise<ProfileSnapshot> LoadProfile()
+        {
+            return _playerRepositoryService.LoadPlayerSnapshot();
+        }
+        
         private void ExecuteSave()
         {
             _saveDelayPromise?.SafeCancel();
@@ -107,11 +119,6 @@ namespace Services.Player
             //TODO CATCH AND THEN LOGGING LOGIC
             // .Then(() => LoggerService.LogDebug(this, "Profile successfully saved."))
             // .Catch(e => LoggerService.LogError(this, $"Failed to save profile: {e}"));
-        }
-        
-        public IPromise<ProfileSnapshot> LoadProfile()
-        {
-            return _playerRepositoryService.LoadPlayerSnapshot();
         }
     }
     

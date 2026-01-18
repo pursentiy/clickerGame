@@ -4,13 +4,13 @@ namespace Storage.Snapshots
 {
     public class PackSnapshot
     {
-        public PackSnapshot(int packNumber, List<LevelSnapshot> completedLevelsSnapshots)
+        public PackSnapshot(int packId, List<LevelSnapshot> completedLevelsSnapshots)
         {
-            PackNumber = packNumber;
+            PackId = packId;
             CompletedLevelsSnapshots = completedLevelsSnapshots;
         }
 
-        public int PackNumber {get; set;}
+        public int PackId {get; set;}
         public List<LevelSnapshot> CompletedLevelsSnapshots {get; set;}
         public UnlockStatus IsUnlocked {get; set;}
         public bool IsNew {get; set;}

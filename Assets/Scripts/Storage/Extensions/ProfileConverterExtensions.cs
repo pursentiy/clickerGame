@@ -38,7 +38,7 @@ namespace Storage.Extensions
             var completedLevelsSnapshots = snapshot.CompletedLevelsSnapshots == null ? new List<LevelRecord>()
                 : snapshot.CompletedLevelsSnapshots.Select(i => i.ToRecord()).Where(i => i != null).ToList();
 
-            return new PackRecord(snapshot.PackNumber, completedLevelsSnapshots, snapshot.IsUnlocked);
+            return new PackRecord(snapshot.PackId, completedLevelsSnapshots, snapshot.IsUnlocked);
         }
         
         public static LevelRecord ToRecord(this LevelSnapshot snapshot)
@@ -48,7 +48,7 @@ namespace Storage.Extensions
                 return null;
             }
         
-            return new LevelRecord(snapshot.LevelNumber, snapshot.BestCompletedTime, snapshot.StarsEarned, snapshot.IsUnlocked, snapshot.PlayCount);
+            return new LevelRecord(snapshot.LevelId, snapshot.BestCompletedTime, snapshot.StarsEarned, snapshot.IsUnlocked, snapshot.PlayCount);
         }
         
         public static AnalyticsInfoRecord ToRecord(this AnalyticsInfoSnapshot snapshot)

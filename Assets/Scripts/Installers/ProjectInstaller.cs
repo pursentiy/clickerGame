@@ -1,9 +1,11 @@
 using Common.Rewards;
+using Handlers;
 using Services;
 using Services.ContentDeliveryService;
 using Services.CoroutineServices;
 using Services.FlyingRewardsAnimation;
 using Services.Player;
+using Storage;
 using Storage.Audio;
 using UnityEngine;
 using Zenject;
@@ -14,6 +16,8 @@ namespace Installers
     {
         [SerializeField] private CurrencyLibrary _currencyLibrary;
         [SerializeField] private AudioStorageData _audioStorageData;
+        [SerializeField] private SoundHandler _soundHandler;
+        [SerializeField] private LevelsParamsStorageData _levelsParamsStorageData;
 
         public override void InstallBindings()
         {
@@ -38,6 +42,9 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<LanguageConversionService>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameConfigurationProvider>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameParamsManager>().AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<SoundHandler>().FromInstance(_soundHandler).AsSingle();
+            Container.BindInterfacesAndSelfTo<LevelsParamsStorageData>().FromScriptableObject(_levelsParamsStorageData).AsSingle();
 
             // STATIC DATA
             Container.Bind<CurrencyLibrary>().FromScriptableObject(_currencyLibrary).AsSingle();
