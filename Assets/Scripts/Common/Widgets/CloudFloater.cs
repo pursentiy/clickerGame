@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using Extensions;
+using Utilities.Disposable;
 
 namespace Common.Widgets
 {
@@ -24,6 +25,11 @@ namespace Common.Widgets
         private float _rightEdge;
         private float _targetY;
 
+        public void StopAnimation()
+        {
+            cloudTransform.DOKill(false);
+        }
+
         public void StartAnimation()
         {
             if (Random.Range(0f, 1f) < _disablingChance)
@@ -31,12 +37,6 @@ namespace Common.Widgets
                 cloudTransform.TrySetActive(false);
                 return;
             }
-
-            if (cloudTransform == null)
-                cloudTransform = transform;
-
-            if (spriteRenderer == null)
-                spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
             cloudTransform.TrySetActive(true);
             
@@ -86,7 +86,8 @@ namespace Common.Widgets
                 .SetDelay(randomDelay)
                 .SetEase(selectedEase)
                 .OnComplete(() => StartCloudCycle(false))
-                .SetLink(gameObject); // Modern replacement for KillWith(this)
+                .SetLink(gameObject)
+                .KillWith(this);
 
             // 3. Optional: Add a "Floating" vertical drift for cartoon style
             // This makes the cloud bob up and down slightly as it moves
@@ -94,7 +95,8 @@ namespace Common.Widgets
             cloudTransform.DOMoveY(_targetY + driftAmount, randomDuration / 4f)
                 .SetDelay(randomDelay)
                 .SetEase(Ease.InOutSine)
-                .SetLoops(4, LoopType.Yoyo);
+                .SetLoops(4, LoopType.Yoyo)
+                .KillWith(this);
         }
     }
 }

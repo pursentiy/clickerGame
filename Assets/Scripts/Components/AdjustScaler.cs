@@ -15,6 +15,8 @@ namespace Components
         )]
         [SerializeField]
         private AdjustScalerType _scalerType;
+        
+        private Coroutine _adjustScaleCoroutine;
 
         private void OnEnable()
         {
@@ -29,7 +31,7 @@ namespace Components
             }
             else
             {
-                StartCoroutine(AdjustCoroutine());
+                _adjustScaleCoroutine = StartCoroutine(AdjustCoroutine());
             }
         }
 
@@ -49,6 +51,12 @@ namespace Components
             {
                 GetComponent<RectTransform>().AdjustScaleMax(_targetTransform);
             }
+        }
+
+        private void OnDestroy()
+        {
+            if (_adjustScaleCoroutine != null)
+                StopCoroutine(_adjustScaleCoroutine);
         }
     }
 

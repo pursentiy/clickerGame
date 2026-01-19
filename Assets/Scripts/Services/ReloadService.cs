@@ -22,20 +22,26 @@ namespace Services
 
         private void RestartRoutine()
         {
-            //_uiBlockHandler.BlockUserInput(true);
-            DOTween.KillAll();
+            // 1. Немедленно останавливаем все анимации, БЕЗ вызова OnComplete
+            DOTween.KillAll(false);
+    
+            // 2. Сбрасываем время и звук
             Time.timeScale = 1f;
             AudioListener.pause = false;
+
+            // 3. Очищаем сервисы
             _applicationService.DisposeServices();
 
-            //TODO UPDATE AWAIT LOGIC
+            // 4. В WebGL иногда CanvasScaler сходит с ума, если его не "выключить" вручную.
+            // Если у тебя есть ссылка на корневой Canvas, можно сделать:
+            // Object.Destroy(canvas.GetComponent<CanvasScaler>()); 
+            // Но лучше просто дать кадру завершиться.
+
             _persistentCoroutinesService.WaitFor(AwaitTimeBeforeReload)
-                .Then(Finally);
-            
-            void Finally()
-            {
-                _scenesManagerService.LoadScene(SceneTypes.MainScene);
-            }
+                .Then(() => {
+                    // Перед самой загрузкой убеждаемся, что не осталось активных операций
+                    _scenesManagerService.LoadScene(SceneTypes.MainScene);
+                });
         }
     }
 }

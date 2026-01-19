@@ -30,8 +30,7 @@ namespace Common.Widgets
                 lastWidth = UnityEngine.Device.Screen.width;
             }
         }
-
-
+        
         private void StretchParticles()
         {
             if (Camera.main == null || particleSystems.IsNullOrEmpty()) 

@@ -1,5 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
+using Utilities.Disposable;
 
 namespace Common.Widgets
 {
@@ -45,7 +46,7 @@ namespace Common.Widgets
                     .OnComplete(() => {
                         DOVirtual.DelayedCall(randomPause, () => Sway(!toRight))
                             .SetLink(gameObject);
-                    });
+                    }).KillWith(this);
             }
 
             // 2. Анимация Головы
@@ -53,15 +54,20 @@ namespace Common.Widgets
             {
                 headRect.DOLocalRotate(new Vector3(0, 0, targetHeadAngle), randomDuration)
                     .SetEase(swayEase)
-                    .SetLink(gameObject);
+                    .SetLink(gameObject)
+                    .KillWith(this);
             }
         }
 
         private void OnDestroy()
         {
             transform.DOKill();
-            if(bodyRect) bodyRect.DOKill();
-            if(headRect) headRect.DOKill();
+            
+            if (bodyRect) 
+                bodyRect.DOKill();
+            
+            if (headRect)
+                headRect.DOKill();
         }
     }
 }

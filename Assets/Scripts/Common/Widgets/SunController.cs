@@ -1,5 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
+using Utilities.Disposable;
 
 namespace Common.Widgets
 {
@@ -53,11 +54,12 @@ namespace Common.Widgets
             sunTransform.DOMoveX(endX, duration)
                 .SetEase(Ease.Linear)
                 .SetLoops(-1, LoopType.Yoyo)
-                .SetLink(gameObject);
+                .SetLink(gameObject)
+                .KillWith(this);
 
             // 3. Анимация по Y (Вверх-Вниз)
             // Использование Ease.OutQuad/InQuad создаст более естественную параболу
-            Sequence ySequence = DOTween.Sequence();
+            Sequence ySequence = DOTween.Sequence().KillWith(this);
             ySequence.Append(sunTransform.DOMoveY(peakY, duration / 2).SetEase(Ease.OutQuad))
                      .Append(sunTransform.DOMoveY(horizonY, duration / 2).SetEase(Ease.InQuad));
             
@@ -75,14 +77,16 @@ namespace Common.Widgets
             sunTransform.DORotate(new Vector3(0, 0, 360), sunRotDur, RotateMode.FastBeyond360)
                 .SetEase(Ease.Linear)
                 .SetLoops(-1, LoopType.Restart)
-                .SetLink(gameObject);
+                .SetLink(gameObject)
+                .KillWith(this);
 
             if (maybeRayTransform != null)
             {
                 maybeRayTransform.DORotate(new Vector3(0, 0, -360), rayRotDur, RotateMode.FastBeyond360)
                     .SetEase(Ease.Linear)
                     .SetLoops(-1, LoopType.Restart)
-                    .SetLink(gameObject);
+                    .SetLink(gameObject)
+                    .KillWith(this);
             }
         }
     }

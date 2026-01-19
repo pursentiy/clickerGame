@@ -15,6 +15,7 @@ namespace Handlers
         private ScreenOrientation _lastOrientation;
         private int _lastWidth;
         private int _lastHeight;
+        private bool _canUpdate = true;
 
         private void Awake()
         {
@@ -23,34 +24,30 @@ namespace Handlers
             _lastHeight = UnityEngine.Device.Screen.height;
         }
         
-        private void Start()
-        {
-            UpdateWidgets();
-            StarCloudsAnimation();
-        }
-
-        private void StarCloudsAnimation()
-        {
-            if (_cloudFloaters.IsNullOrEmpty())
-                return;
-
-            foreach (var cloudFloater in _cloudFloaters)
-            {
-                if (cloudFloater != null)
-                    cloudFloater.StartAnimation();
-            }
-        }
-        
         private void Update()
         {
-            if (HasScreenChanged())
+            if (HasScreenChanged() && _canUpdate)
             {
                 _lastOrientation = UnityEngine.Device.Screen.orientation;
                 _lastWidth = UnityEngine.Device.Screen.width;
                 _lastHeight = UnityEngine.Device.Screen.height;
                 
-                UpdateWidgets();
+                TryUpdateWidgets();
             }
+        }
+        
+        private void OnDisable() 
+        {
+            _canUpdate = false;
+            TryStopAllAnimations();
+        }
+
+        private void OnEnable()
+        {
+            _canUpdate = true;
+            
+            TryUpdateWidgets();
+            StarCloudsAnimation(true);
         }
 
         private bool HasScreenChanged()
@@ -60,13 +57,35 @@ namespace Handlers
                    UnityEngine.Device.Screen.height != _lastHeight;
         }
 
-        private void UpdateWidgets()
+        private void TryUpdateWidgets()
         {
             _particleStretchWidget.TryUpdateParticlesStretch();
             _particleBurstEmissionScaler.TryUpdateEmissionData();
             _backgroundFitter.ApplyUniversalFill();
             
             LoggerService.LogDebugEditor($"[{GetType().Name}] Widgets updated for resolution: {_lastWidth}x{_lastHeight}");
+        }
+
+        private void TryStopAllAnimations()
+        {
+            StarCloudsAnimation(false);
+        }
+        
+        private void StarCloudsAnimation(bool enable)
+        {
+            if (_cloudFloaters.IsNullOrEmpty())
+                return;
+
+            foreach (var cloudFloater in _cloudFloaters)
+            {
+                if (cloudFloater == null) 
+                    continue;
+                
+                if (enable)
+                    cloudFloater.StartAnimation();
+                else
+                    cloudFloater.StopAnimation();
+            }
         }
     }
 }
