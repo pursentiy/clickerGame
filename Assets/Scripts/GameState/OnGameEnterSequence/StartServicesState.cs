@@ -1,6 +1,5 @@
 using Handlers.UISystem;
 using JetBrains.Annotations;
-using Platform.Common.Utilities.StateMachine;
 using Services;
 using Services.CoroutineServices;
 using Services.Player;
@@ -27,6 +26,7 @@ namespace GameState.OnGameEnterSequence
             _applicationService.RegisterDisposableService<GameConfigurationProvider>();
             _applicationService.RegisterDisposableService<GameParamsManager>();
             _applicationService.RegisterDisposableService<PlayerProfileManager>();
+            _applicationService.RegisterDisposableService<AdsService>();
             _applicationService.SetApplicationInitialized();
             
             LoggerService.LogWarning($"{nameof(StartServicesState)}: Disposable Services  registered");

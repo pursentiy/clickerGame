@@ -40,13 +40,19 @@ namespace Handlers
             
             _musicSource.Stop();
         }
-
-        private IEnumerator AwaitForNextAmbienceSong(Sound soundParams)
+        
+        public void MuteAll()
         {
-            yield return new WaitForSeconds(soundParams.clip.length);
-            StartAmbience();
+            SetMusicVolume(false);
+            SetSoundVolume(false);
         }
 
+        public void UnmuteAll()
+        {
+            SetMusicVolume(true);
+            SetSoundVolume(true);
+        }
+        
         public void PlaySound(string clipName, float volume = 1)
         {
             var clip = _audioStorageData.EffectsPack.GetClipByName(clipName);
@@ -89,6 +95,12 @@ namespace Handlers
         {
             if (_ambientAwaitCoroutine != null)
                 StopCoroutine(_ambientAwaitCoroutine);
+        }
+        
+        private IEnumerator AwaitForNextAmbienceSong(Sound soundParams)
+        {
+            yield return new WaitForSeconds(soundParams.clip.length);
+            StartAmbience();
         }
     }
 }

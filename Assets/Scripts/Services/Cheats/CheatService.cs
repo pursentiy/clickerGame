@@ -15,6 +15,7 @@ namespace Services.Cheats
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly ReloadService _reloadService;
         [Inject] private readonly LocalizationService _localizationService;
+        [Inject] private readonly AdsService _adsService;
 
         public int StarsCount { get; set; } = 5;
         public bool UpdateProfileValues { get; set; }
@@ -64,6 +65,21 @@ namespace Services.Cheats
             
             
             _uiManager.PopupsHandler.ShowPopupImmediately<UniversalPopupMediator>(context);
+        }
+
+        public void AdsCheatShowSuccess()
+        {
+            _adsService.CheatShowSuccess();
+        }
+        
+        public void AdsCheatShowException()
+        {
+            _adsService.CheatShowException();
+        }
+        
+        public void AdsCheatShowTimeout()
+        {
+            _adsService.CheatShowTimeout();
         }
     }
 }

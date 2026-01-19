@@ -32,12 +32,12 @@ namespace GameState
         
         private IEnumerator Start()
         {
-            LoggerService.LogWarning($"[{GetType().Name}] Initialization started...");
+            LoggerService.LogDebug($"[{GetType().Name}] Initialization started...");
             
             yield return BridgeAuthenticationRoutine();
             yield return LocalizationPreloadRoutine();
 
-            LoggerService.LogWarning($"[{GetType().Name}] Initialization finished...");
+            LoggerService.LogDebug($"[{GetType().Name}] Initialization finished...");
             
 #if UNITY_EDITOR
             if (!_skipNextSceneLoading)
@@ -61,7 +61,7 @@ namespace GameState
                 yield return null;
             }
 
-            LoggerService.LogWarning($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Platform detected: {Bridge.platform.id}");
+            LoggerService.LogDebug($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Platform detected: {Bridge.platform.id}");
             
             while (Bridge.platform.id == "unknown") yield return null;
             
@@ -73,7 +73,7 @@ namespace GameState
             {
                 if (success)
                 {
-                    LoggerService.LogWarning($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Successful player authorization.");
+                    LoggerService.LogDebug($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Successful player authorization.");
                 }
                 else
                 {
@@ -92,7 +92,7 @@ namespace GameState
         
         private IEnumerator LocalizationPreloadRoutine()
         {
-            LoggerService.LogWarning($"[{GetType().Name}] [{nameof(LocalizationPreloadRoutine)}]: Waiting for Localization...");
+            LoggerService.LogDebug($"[{GetType().Name}] [{nameof(LocalizationPreloadRoutine)}]: Waiting for Localization...");
             yield return _localizationService.InitializeRoutine();
             
             if (this == null)
@@ -106,7 +106,7 @@ namespace GameState
                 yield break;
             }
             
-            LoggerService.LogWarning($"[{GetType().Name}] [{nameof(LocalizationPreloadRoutine)}]: Successfully loaded Localization.");
+            LoggerService.LogDebug($"[{GetType().Name}] [{nameof(LocalizationPreloadRoutine)}]: Successfully loaded Localization.");
         }
     }
 }
