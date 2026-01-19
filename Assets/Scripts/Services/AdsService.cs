@@ -70,7 +70,7 @@ namespace Services
 
             SetPause(true);
             
-            _coroutinesService.WaitFor(AdTimeoutDuration).Then(() => {
+            _coroutinesService.WaitForRealtime(AdTimeoutDuration).Then(() => {
                 if (!_isResolved && !_hasAdStarted)
                 {
                     LoggerService.LogWarning($"<color=orange>{GetType().Name}</color> Ad Timeout Reached during loading.");
@@ -168,9 +168,9 @@ namespace Services
         public IPromise<bool> CheatShowSuccess()
         {
             return InternalShowAd(() => {
-                _coroutinesService.WaitFor(0.5f).Then(() => {
+                _coroutinesService.WaitForRealtime(0.5f).Then(() => {
                     OnRewardedStateChanged(RewardedState.Opened);
-                    _coroutinesService.WaitFor(0.5f).Then(() => OnRewardedStateChanged(RewardedState.Rewarded));
+                    _coroutinesService.WaitForRealtime(0.5f).Then(() => OnRewardedStateChanged(RewardedState.Rewarded));
                 });
             });
         }
@@ -191,7 +191,7 @@ namespace Services
             _currentAdPromise = promise;
             SetPause(true);
 
-            _coroutinesService.WaitFor(CheatTimeoutDuration).Then(() => FinalizeAd(false));
+            _coroutinesService.WaitForRealtime(CheatTimeoutDuration).Then(() => FinalizeAd(false));
             return promise;
         }
 #endif
