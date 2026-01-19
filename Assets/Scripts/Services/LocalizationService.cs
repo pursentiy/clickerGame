@@ -14,32 +14,32 @@ namespace Services
         public bool IsInitialized { get; private set; }
         
         private readonly Dictionary<string, Dictionary<string, string>> _tablesCache = new ();
-
+        
         public IEnumerator InitializeRoutine()
         {
-            if (IsInitialized) yield break;
+            if (IsInitialized)
+                yield break;
 
             LoggerService.LogDebugEditor("Starting Localization Init...");
-            
-            var initOp = LocalizationSettings.InitializationOperation;
-            while (!initOp.IsDone) yield return null; 
 
+            var initOp = LocalizationSettings.InitializationOperation;
+            while (!initOp.IsDone) 
+                yield return null; 
+            
             if (initOp.Status == AsyncOperationStatus.Failed)
             {
                 LoggerService.LogError($"Localization Init Failed: {initOp.OperationException}");
                 yield break;
             }
 
-            // Загружаем таблицы
             var commonTableOp = LocalizationSettings.StringDatabase.GetTableAsync(TableKey);
-            
             while (!commonTableOp.IsDone) 
                 yield return null;
-
+            
             if (commonTableOp.Status == AsyncOperationStatus.Succeeded)
             {
-                // Наполняем кэш данными из таблиц
-                WarmUpCache(TableKey, commonTableOp.Result);
+                string currentLocaleCode = LocalizationSettings.SelectedLocale.Identifier.Code;
+                WarmUpCache(currentLocaleCode, commonTableOp.Result);
 
                 IsInitialized = true;
                 LoggerService.LogDebugEditor("Localization Tables preloaded and cached successfully.");
@@ -60,23 +60,20 @@ namespace Services
             _tablesCache.Clear();
         }
 
-        private void WarmUpCache(string tableName, StringTable table)
+        private void WarmUpCache(string localeCode, StringTable table)
         {
-            if (!_tablesCache.ContainsKey(tableName))
-                _tablesCache[tableName] = new Dictionary<string, string>();
+            if (!_tablesCache.ContainsKey(localeCode))
+                _tablesCache[localeCode] = new Dictionary<string, string>();
 
-            var cache = _tablesCache[tableName];
+            var cache = _tablesCache[localeCode];
             cache.Clear();
 
-            // Проходим по всем ключам в таблице и сохраняем финальные строки
             foreach (var entry in table.SharedData.Entries)
             {
                 var localizedString = table.GetEntry(entry.Id)?.LocalizedValue;
-                var clearedText = TmpExtensions.RemoveDiacritics(localizedString);
-                
                 if (localizedString != null)
                 {
-                    cache[entry.Key] = clearedText;
+                    cache[entry.Key] = TmpExtensions.RemoveDiacritics(localizedString);
                 }
             }
         }
@@ -86,19 +83,14 @@ namespace Services
         private string GetInternalValue(string key, string tableName)
         {
             if (string.IsNullOrEmpty(key)) return "KEY_EMPTY";
+            
+            var currentLocaleCode = LocalizationSettings.SelectedLocale.Identifier.Code;
 
-            // Пытаемся взять значение из кэша
-            if (_tablesCache.TryGetValue(tableName, out var table) && table.TryGetValue(key, out var value))
+            if (_tablesCache.TryGetValue(currentLocaleCode, out var table) && table.TryGetValue(key, out var value))
             {
                 return value;
             }
-
-            if (!IsInitialized)
-            {
-                LoggerService.LogWarning($"[LocalizationService] Accessing key '{key}' before initialization!");
-            }
-
-            // Fallback (на случай, если ключа нет в кэше, но он есть в системе)
+            
             return TmpExtensions.RemoveDiacritics(LocalizationSettings.StringDatabase.GetLocalizedString(tableName, key));
         }
 

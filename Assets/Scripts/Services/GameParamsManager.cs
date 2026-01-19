@@ -71,7 +71,7 @@ namespace Services
             }
         
             _gameParamsSnapshot.Language = languageCode;
-            _playerProfileManager.SaveProfile();
+            _playerProfileManager.SaveProfile(SavePriority.ImmediateSave);
         }
         
         protected override void OnInitialize()

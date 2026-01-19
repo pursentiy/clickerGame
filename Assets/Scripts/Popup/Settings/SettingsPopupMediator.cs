@@ -1,4 +1,3 @@
-using System.Collections;
 using Attributes;
 using Extensions;
 using Handlers;
@@ -8,16 +7,12 @@ using Popup.Settings;
 using Popup.Universal;
 using Services;
 using Services.Player;
-using UnityEngine;
-using UnityEngine.Localization.Settings;
 using Utilities.Disposable;
 using Zenject;
 
 [AssetKey("UI Popups/SettingsPopupMediator")]
 public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
 {
-    private const float SaveTogglesDelay = 1.0f;
-    
     [Inject] private readonly SoundHandler _soundHandler;
     [Inject] private readonly GameSettingsManager _gameSettingsManager;
     [Inject] private readonly UIManager _uiManager;
@@ -30,7 +25,6 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
     private int _currentLanguageIndex;
     private int _pendingLanguageIndex;
     private int _localesCount;
-    private Coroutine _saveTogglesRoutine;
     
     public override IUIPopupAnimation Animation => new ScalePopupAnimation(View.MainTransform);
 
@@ -65,32 +59,12 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
     {
         _gameParamsManager.SetSoundAvailable(isOn);
         _soundHandler.SetSoundVolume(isOn);
-        
-        RestartSaveTimer();
     }
     
     private void OnMusicToggled(bool isOn)
     {
         _gameParamsManager.SetMusicAvailable(isOn);
         _soundHandler.SetMusicVolume(isOn);
-        
-        RestartSaveTimer();
-    }
-    
-    private void RestartSaveTimer()
-    {
-        if (_saveTogglesRoutine != null)
-            StopCoroutine(_saveTogglesRoutine);
-
-        _saveTogglesRoutine = StartCoroutine(SaveProfileWithDelayRoutine());
-    }
-
-    private IEnumerator SaveProfileWithDelayRoutine()
-    {
-        yield return new WaitForSeconds(SaveTogglesDelay);
-        
-        _playerProfileManager.SaveProfile();
-        _saveTogglesRoutine = null;
     }
 
     private void ChangePendingIndex(int direction)
@@ -132,11 +106,5 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
             _gameParamsManager.UpdateLanguage(_languageConversionService.GetLocaleLanguageCodeByIndex(_currentLanguageIndex));
             _reloadService.SoftRestart();
         }
-    }
-
-    private void OnDestroy()
-    {
-        if (_saveTogglesRoutine != null)
-            StopCoroutine(_saveTogglesRoutine);
     }
 }

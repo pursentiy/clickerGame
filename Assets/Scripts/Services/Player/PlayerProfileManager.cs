@@ -101,7 +101,7 @@ namespace Services.Player
             else
             {
                 _saveDelayPromise?.SafeCancel();
-                _saveDelayPromise = _coroutinesService.WaitFor(SaveDelay).Then(ExecuteSave).CancelWith(this);
+                _saveDelayPromise = _coroutinesService.WaitForRealtime(SaveDelay).Then(ExecuteSave).CancelWith(this);
             }
         }
         
@@ -112,11 +112,10 @@ namespace Services.Player
         
         private void ExecuteSave()
         {
-            _saveDelayPromise?.SafeCancel();
-
             LoggerService.LogDebug(this, "Executing actual profile save to repository...");
 
             _playerRepositoryService.SavePlayerSnapshot(_profileSnapshot);
+            _saveDelayPromise = null;
 
             //TODO CATCH AND THEN LOGGING LOGIC
             // .Then(() => LoggerService.LogDebug(this, "Profile successfully saved."))
