@@ -22,8 +22,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 826b199940e2c410dbca12a17c11297e
-    m_Address: Assets/Sprites/Buttons/Common
+  - m_GUID: d182bf5bdfa364c2cbc05811a992ede1
+    m_Address: Assets/Sprites/Buttons/CommonAtlas.spriteatlas
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

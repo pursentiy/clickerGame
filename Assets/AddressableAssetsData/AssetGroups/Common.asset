@@ -22,6 +22,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7288d99984134a68a358b66e8e8e7a5
+    m_Address: Assets/TextMesh Pro/Fonts/Comic_CAT SDF Small Material Outline Shadow.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b252eae9aa6194659956192c69401ca7
+    m_Address: Assets/TextMesh Pro/Fonts/Comic_CAT SDF Small.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cfda4227690e44613ad349f892e8d818
+    m_Address: Assets/TextMesh Pro/Fonts/Comic_CAT SDF Small Material Outline.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: e24ffa8b9424ddd438d6f352cb603ea5, type: 2}
   m_SchemaSet:

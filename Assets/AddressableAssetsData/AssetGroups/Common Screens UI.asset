@@ -17,13 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: c42de25ce741c46228cf0b0d2f752dbe
   m_SerializeEntries:
-  - m_GUID: 712a4b30d0bfc4ff796c9d09f7ba0ede
-    m_Address: Assets/Sprites/Packs/locked.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ba1b6fdea9829401b80a2bf87a48407f
-    m_Address: Assets/Sprites/Screens/Common/widget.png
+  - m_GUID: a333877627df94edb9004be57d8fb4ab
+    m_Address: Assets/Sprites/Packs/PacksAdditionalItems.spriteatlas
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

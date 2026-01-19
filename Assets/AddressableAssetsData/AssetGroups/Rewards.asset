@@ -16,12 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 93990eee3c1e6438aa95bdaeb6093fc6
-  m_SerializeEntries:
-  - m_GUID: bbe0f3746b5824fd9ad4f84c307d006a
-    m_Address: Assets/Sprites/Screens/Common/star.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: e24ffa8b9424ddd438d6f352cb603ea5, type: 2}
   m_SchemaSet:
