@@ -66,7 +66,7 @@ MonoBehaviour:
     m_Localized: Pack
     m_Metadata:
       m_Items: []
-  - m_Id: 80736421617328128
+  - m_Id: 83939869716373504
     m_Localized: English
     m_Metadata:
       m_Items: []
@@ -143,6 +143,38 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 82251874000953344
     m_Localized: Magic Puzzles
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83939952058949632
+    m_Localized: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83939982463459328
+    m_Localized: "Espa\xF1ol"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83941413312520192
+    m_Localized: Animals
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83941415103488000
+    m_Localized: Deer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83941417418743808
+    m_Localized: Duck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83941727885320192
+    m_Localized: Pig
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83941938946891776
+    m_Localized: Choose a pack you want to play!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83941940561698816
+    m_Localized: Now it's time to choose a level!
     m_Metadata:
       m_Items: []
   references:

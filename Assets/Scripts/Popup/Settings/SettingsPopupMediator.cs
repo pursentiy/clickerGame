@@ -106,7 +106,7 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
         if (View.LanguageFlags.Length > _pendingLanguageIndex)
             View.CountryFlagImage.sprite = View.LanguageFlags[_pendingLanguageIndex];
 
-        View.LanguageLabel.text = _localizationService.GetCommonValue(_languageConversionService.GetLocaleLanguageCodeByIndex(_pendingLanguageIndex));
+        View.LanguageLabel.text = _localizationService.GetValue(_languageConversionService.GetLocaleLanguageCodeByIndex(_pendingLanguageIndex));
     }
 
     private void TrySaveLanguage()
@@ -117,11 +117,11 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
         var spriteAsset = View.LanguageFlagsAssets[_pendingLanguageIndex];
         
         var context = new UniversalPopupContext(
-            _localizationService.GetCommonValue(LocalizationExtensions.ChangeLanguageNotifyKey),
+            _localizationService.GetValue(LocalizationExtensions.ChangeLanguageNotifyKey),
             new[] {
-                new UniversalPopupButtonAction(_localizationService.GetCommonValue(LocalizationExtensions.CancelKey), null, UniversalPopupButtonStyle.Red),
-                new UniversalPopupButtonAction(_localizationService.GetCommonValue(LocalizationExtensions.ChangeKey), ApplyLanguageChanges)
-            }, _localizationService.GetCommonValue(LocalizationExtensions.ChangeLanguageTitle), spriteAsset: spriteAsset);
+                new UniversalPopupButtonAction(_localizationService.GetValue(LocalizationExtensions.CancelKey), null, UniversalPopupButtonStyle.Red),
+                new UniversalPopupButtonAction(_localizationService.GetValue(LocalizationExtensions.ChangeKey), ApplyLanguageChanges)
+            }, _localizationService.GetValue(LocalizationExtensions.ChangeLanguageTitle), spriteAsset: spriteAsset);
 
         _uiManager.PopupsHandler.ShowPopupImmediately<UniversalPopupMediator>(context);
         

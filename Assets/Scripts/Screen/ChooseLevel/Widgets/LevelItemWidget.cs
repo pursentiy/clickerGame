@@ -30,7 +30,7 @@ namespace Screen.ChooseLevel.Widgets
         public void Initialize(string levelName, Sprite levelSprite, int totalEarnedStars, LevelDifficulty levelDifficulty, bool isUnlocked, Action action)
         {
             var levelKey = $"level_{levelName.ToLower()}";
-            _levelText.text = _localization.GetGameValue(levelKey);
+            _levelText.text = _localization.GetValue(levelKey);
             _levelImage.sprite = levelSprite;
             
             _levelEnterButton.interactable = isUnlocked;
@@ -45,8 +45,8 @@ namespace Screen.ChooseLevel.Widgets
 
         private void SetDifficultyText(LevelDifficulty difficulty)
         {
-            var label = _localization.GetCommonValue("difficulty_setup");
-            var value = _localization.GetCommonValue($"difficulty_{difficulty.ToString().ToLower()}");
+            var label = _localization.GetValue("difficulty_setup");
+            var value = _localization.GetValue($"difficulty_{difficulty.ToString().ToLower()}");
             _levelDifficultyText.text = $"{label}: {value}";
         }
         

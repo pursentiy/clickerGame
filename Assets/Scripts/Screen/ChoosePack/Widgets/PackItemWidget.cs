@@ -31,7 +31,7 @@ namespace Screen.ChoosePack.Widgets
         public void Initialize(string packName, GameObject packImagePrefab, int packNumber, bool isUnlocked, Action onClickAction, Action onLockedClickAction, Stars starsRequired)
         {
             var packKey = $"pack_{packName.ToLower()}";
-            _packText.text = _localization.GetGameValue(packKey);
+            _packText.text = _localization.GetValue(packKey);
             _packImageInstance = Instantiate(packImagePrefab, _packImagePrefabContainer);
             _currentPackNumber = packNumber;
             _fadeImage.gameObject.SetActive(!isUnlocked);
@@ -45,7 +45,7 @@ namespace Screen.ChoosePack.Widgets
             }
             else
             {
-                _lockedBlockText.text = _localization.GetFormattedCommonValue("pack_stars_required", $"{starsRequired} <sprite=0>");
+                _lockedBlockText.text = _localization.GetFormattedValue("pack_stars_required", $"{starsRequired} <sprite=0>");
                 _packEnterButton.onClick.MapListenerWithSound(onLockedClickAction.SafeInvoke).DisposeWith(this);
             }
         }

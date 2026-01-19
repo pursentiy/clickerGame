@@ -68,7 +68,7 @@ namespace Popup.CompleteLevelInfoPopup
         {
             if (View.TimeText == null) return;
 
-            var format = _localization.GetCommonValue("result_time");
+            var format = _localization.GetValue("result_time");
             View.TimeText.text = string.Format(format, 0f);
             float displayTime = 0;
     

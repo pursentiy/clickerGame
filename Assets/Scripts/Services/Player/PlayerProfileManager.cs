@@ -4,13 +4,15 @@ using Common.Currency;
 using Extensions;
 using Plugins.FSignal;
 using RSG;
+using Services.Base;
 using Services.CoroutineServices;
 using Storage.Snapshots;
+using Utilities.Disposable;
 using Zenject;
 
 namespace Services.Player
 {
-    public class PlayerProfileManager
+    public class PlayerProfileManager : DisposableService
     {
         [Inject] private readonly PlayerRepositoryService _playerRepositoryService;
         [Inject] private readonly PersistentCoroutinesService _coroutinesService;
@@ -99,7 +101,7 @@ namespace Services.Player
             else
             {
                 _saveDelayPromise?.SafeCancel();
-                _saveDelayPromise = _coroutinesService.WaitFor(SaveDelay).Then(ExecuteSave);
+                _saveDelayPromise = _coroutinesService.WaitFor(SaveDelay).Then(ExecuteSave).CancelWith(this);
             }
         }
         
@@ -119,6 +121,16 @@ namespace Services.Player
             //TODO CATCH AND THEN LOGGING LOGIC
             // .Then(() => LoggerService.LogDebug(this, "Profile successfully saved."))
             // .Catch(e => LoggerService.LogError(this, $"Failed to save profile: {e}"));
+        }
+
+        protected override void OnInitialize()
+        {
+            
+        }
+
+        protected override void OnDisposing()
+        {
+            
         }
     }
     

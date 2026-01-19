@@ -26,6 +26,7 @@ namespace GameState.OnGameEnterSequence
             _applicationService.RegisterDisposableService<GameSettingsManager>();
             _applicationService.RegisterDisposableService<GameConfigurationProvider>();
             _applicationService.RegisterDisposableService<GameParamsManager>();
+            _applicationService.RegisterDisposableService<PlayerProfileManager>();
             _applicationService.SetApplicationInitialized();
             
             LoggerService.LogWarning($"{nameof(StartServicesState)}: Disposable Services  registered");

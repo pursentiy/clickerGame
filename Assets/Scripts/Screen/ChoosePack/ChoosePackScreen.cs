@@ -56,19 +56,19 @@ namespace Screen.ChoosePack
 
         private void InitText()
         {
-            _headerText.text = _localizationService.GetGameValue("choose_pack_header");
+            _headerText.text = _localizationService.GetValue("choose_pack_header");
             
-            _availablePacksText.text = _localizationService.GetFormattedCommonValue("unlocked_sets", 
+            _availablePacksText.text = _localizationService.GetFormattedValue("unlocked_sets", 
                 $"{_progressProvider.GetAllAvailablePacksCount()}/{_progressProvider.GetAllPacksCount()}");
         }
         
         private void OnInfoButtonClicked()
         {
             var context = new UniversalPopupContext(
-                _localizationService.GetCommonValue("unlock_sets_info"),
+                _localizationService.GetValue("unlock_sets_info"),
                 new[] {
-                    new UniversalPopupButtonAction(_localizationService.GetCommonValue(LocalizationExtensions.OkKey), null)
-                }, _localizationService.GetCommonValue(LocalizationExtensions.InfoTitle));
+                    new UniversalPopupButtonAction(_localizationService.GetValue(LocalizationExtensions.OkKey), null)
+                }, _localizationService.GetValue(LocalizationExtensions.InfoTitle));
 
             _uiManager.PopupsHandler.ShowPopupImmediately<UniversalPopupMediator>(context);
         }

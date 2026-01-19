@@ -9,13 +9,11 @@ namespace Services
 {
     public class LocalizationService
     {
-        private const string CommonTable = "LocalizationTableCommon";
-        private const string GameTable = "LocalizationTableGame";
+        private const string TableKey = "LocalizationTableCommon";
         
         public bool IsInitialized { get; private set; }
         
-        private readonly Dictionary<string, Dictionary<string, string>> _tablesCache = 
-            new Dictionary<string, Dictionary<string, string>>();
+        private readonly Dictionary<string, Dictionary<string, string>> _tablesCache = new ();
 
         public IEnumerator InitializeRoutine()
         {
@@ -33,16 +31,15 @@ namespace Services
             }
 
             // Загружаем таблицы
-            var commonTableOp = LocalizationSettings.StringDatabase.GetTableAsync(CommonTable);
-            var gameTableOp = LocalizationSettings.StringDatabase.GetTableAsync(GameTable);
+            var commonTableOp = LocalizationSettings.StringDatabase.GetTableAsync(TableKey);
             
-            while (!commonTableOp.IsDone || !gameTableOp.IsDone) yield return null;
+            while (!commonTableOp.IsDone) 
+                yield return null;
 
-            if (commonTableOp.Status == AsyncOperationStatus.Succeeded && gameTableOp.Status == AsyncOperationStatus.Succeeded)
+            if (commonTableOp.Status == AsyncOperationStatus.Succeeded)
             {
                 // Наполняем кэш данными из таблиц
-                WarmUpCache(CommonTable, commonTableOp.Result);
-                WarmUpCache(GameTable, gameTableOp.Result);
+                WarmUpCache(TableKey, commonTableOp.Result);
 
                 IsInitialized = true;
                 LoggerService.LogDebugEditor("Localization Tables preloaded and cached successfully.");
@@ -52,6 +49,10 @@ namespace Services
                 LoggerService.LogWarning("Failed to preload one or more localization tables.");
             }
         }
+        
+        // Остальные методы (GetFormatted...) используют GetInternalValue, поэтому тоже ускорятся
+        public string GetFormattedValue(string key, params object[] args) 
+            => GetFormattedInternalValue(key, TableKey, args);
         
         // Метод для очистки при смене языка, если вы не используете SoftRestart
         public void ClearCache()
@@ -80,8 +81,7 @@ namespace Services
             }
         }
 
-        public string GetCommonValue(string key) => GetInternalValue(key, CommonTable);
-        public string GetGameValue(string key) => GetInternalValue(key, GameTable);
+        public string GetValue(string key) => GetInternalValue(key, TableKey);
 
         private string GetInternalValue(string key, string tableName)
         {
@@ -101,13 +101,6 @@ namespace Services
             // Fallback (на случай, если ключа нет в кэше, но он есть в системе)
             return TmpExtensions.RemoveDiacritics(LocalizationSettings.StringDatabase.GetLocalizedString(tableName, key));
         }
-
-        // Остальные методы (GetFormatted...) используют GetInternalValue, поэтому тоже ускорятся
-        public string GetFormattedCommonValue(string key, params object[] args) 
-            => GetFormattedInternalValue(key, CommonTable, args);
-
-        public string GetFormattedGameValue(string key, params object[] args) 
-            => GetFormattedInternalValue(key, GameTable, args);
 
         private string GetFormattedInternalValue(string key, string tableName, params object[] args)
         {

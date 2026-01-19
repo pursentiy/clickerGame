@@ -55,10 +55,6 @@ MonoBehaviour:
     m_Key: pack_stars_required
     m_Metadata:
       m_Items: []
-  - m_Id: 80736421617328128
-    m_Key: English (en)
-    m_Metadata:
-      m_Items: []
   - m_Id: 77837471734292480
     m_Key: difficulty_setup
     m_Metadata:
@@ -137,6 +133,42 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 82251874000953344
     m_Key: game_name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83939869716373504
+    m_Key: en
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83939952058949632
+    m_Key: ru
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83939982463459328
+    m_Key: es
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83941413312520192
+    m_Key: pack_animals
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83941415103488000
+    m_Key: level_deer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83941417418743808
+    m_Key: level_duck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83941727885320192
+    m_Key: level_pig
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83941938946891776
+    m_Key: choose_pack_header
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83941940561698816
+    m_Key: choose_level_header
     m_Metadata:
       m_Items: []
   m_Metadata:

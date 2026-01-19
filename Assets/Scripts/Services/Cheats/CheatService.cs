@@ -56,11 +56,11 @@ namespace Services.Cheats
                 return;
             
             var context = new UniversalPopupContext(
-                _localizationService.GetCommonValue(LocalizationExtensions.ChangeLanguageNotifyKey),
+                _localizationService.GetValue(LocalizationExtensions.ChangeLanguageNotifyKey),
                 new[] {
-                    new UniversalPopupButtonAction(_localizationService.GetCommonValue(LocalizationExtensions.CancelKey), null, UniversalPopupButtonStyle.Red),
-                    new UniversalPopupButtonAction(_localizationService.GetCommonValue(LocalizationExtensions.ChangeKey), _reloadService.SoftRestart)
-                }, _localizationService.GetCommonValue(LocalizationExtensions.ChangeLanguageTitle));
+                    new UniversalPopupButtonAction(_localizationService.GetValue(LocalizationExtensions.CancelKey), null, UniversalPopupButtonStyle.Red),
+                    new UniversalPopupButtonAction(_localizationService.GetValue(LocalizationExtensions.ChangeKey), _reloadService.SoftRestart)
+                }, _localizationService.GetValue(LocalizationExtensions.ChangeLanguageTitle));
             
             
             _uiManager.PopupsHandler.ShowPopupImmediately<UniversalPopupMediator>(context);

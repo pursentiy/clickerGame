@@ -67,20 +67,20 @@ namespace Screen.ChooseLevel
 
         private void SetTexts()
         {
-            _headerText.text = _localizationService.GetGameValue("choose_level_header");
+            _headerText.text = _localizationService.GetValue("choose_level_header");
             
-            var localizedName = _localizationService.GetGameValue($"pack_{_currentPackParams.PackName.ToLower()}");
-            var wordPack = _localizationService.GetCommonValue("word_pack");
+            var localizedName = _localizationService.GetValue($"pack_{_currentPackParams.PackName.ToLower()}");
+            var wordPack = _localizationService.GetValue("word_pack");
             _packName.text = $"{localizedName} {wordPack}";
         }
 
         private void OnInfoButtonClicked()
         {
             var context = new UniversalPopupContext(
-                _localizationService.GetCommonValue("unlocked_levels_info"),
+                _localizationService.GetValue("unlocked_levels_info"),
                 new[] {
-                    new UniversalPopupButtonAction(_localizationService.GetCommonValue(LocalizationExtensions.OkKey), null)
-                }, _localizationService.GetCommonValue(LocalizationExtensions.InfoTitle));
+                    new UniversalPopupButtonAction(_localizationService.GetValue(LocalizationExtensions.OkKey), null)
+                }, _localizationService.GetValue(LocalizationExtensions.InfoTitle));
 
             _uiManager.PopupsHandler.ShowPopupImmediately<UniversalPopupMediator>(context);
         }
@@ -90,7 +90,7 @@ namespace Screen.ChooseLevel
             var totalLevels = _progressProvider.GetLevelsCountInPack(_currentPackId);
             var totalAvailableLevels = _progressProvider.GetLevelsCountInPack(_currentPackId, true);
             
-            _availableLevelsText.text = _localizationService.GetFormattedCommonValue("unlocked_levels", $"{totalAvailableLevels}/{totalLevels}");
+            _availableLevelsText.text = _localizationService.GetFormattedValue("unlocked_levels", $"{totalAvailableLevels}/{totalLevels}");
         }
 
         private void InitializeLevelsButton()
