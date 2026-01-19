@@ -76,6 +76,7 @@ MonoBehaviour:
   _goBack: {fileID: 6775991617968931572}
   _settingsButton: {fileID: 2713952476446704214}
   _infoButton: {fileID: 4849245403167287072}
+  _rowPacksCount: 2
 --- !u!225 &3451253803911443857
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -175,7 +176,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 207.90002, y: 210}
+  m_SizeDelta: {x: 0, y: 210}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4192568447401141220
 CanvasRenderer:
@@ -338,7 +339,6 @@ RectTransform:
   m_Children:
   - {fileID: 1315118119901539934}
   - {fileID: 528085329343105842}
-  - {fileID: 1541672269677088013}
   - {fileID: 2812748306557935760}
   m_Father: {fileID: 6731984963712250932}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -368,7 +368,7 @@ MonoBehaviour:
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 0
+  m_ChildControlWidth: 1
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
@@ -444,11 +444,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 904633585681068201}
+  m_Father: {fileID: 6808412472012616216}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1116, y: 150}
   m_SizeDelta: {x: 207.90002, y: 210}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3446537645848477846
@@ -611,6 +611,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6808412472487802491}
+  - {fileID: 1541672269677088013}
   m_Father: {fileID: 574675370528015709}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -903,7 +904,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 207.90002, y: 210}
+  m_SizeDelta: {x: 0, y: 210}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3158625058458995624
 CanvasRenderer:
@@ -1400,7 +1401,7 @@ PrefabInstance:
     - target: {fileID: 2155773720201860556, guid: a3f902d9e9bb74bc483ea62a04344d5d,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 400
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2155773720201860556, guid: a3f902d9e9bb74bc483ea62a04344d5d,
         type: 3}
