@@ -39,23 +39,23 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 77837471734292480
-    m_Localized: "Difficult\xE9"
+    m_Localized: Dificultad
     m_Metadata:
       m_Items: []
   - m_Id: 77838202818256896
-    m_Localized: Difficile
+    m_Localized: "Dif\xEDcil"
     m_Metadata:
       m_Items: []
   - m_Id: 77837477602123776
-    m_Localized: Moyenne
+    m_Localized: Medio
     m_Metadata:
       m_Items: []
   - m_Id: 77837475089735680
-    m_Localized: Facile
+    m_Localized: "F\xE1cil"
     m_Metadata:
       m_Items: []
   - m_Id: 77843398436839424
-    m_Localized: 'Temps: {0:F2}'
+    m_Localized: 'Tiempo: {0:F2}'
     m_Metadata:
       m_Items: []
   - m_Id: 77843401150554112
@@ -68,14 +68,6 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 83939869716373504
     m_Localized: English
-    m_Metadata:
-      m_Items: []
-  - m_Id: 80736472662007808
-    m_Localized: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 80736558745903104
-    m_Localized: "Espa\xF1ola"
     m_Metadata:
       m_Items: []
   - m_Id: 80737493840814080

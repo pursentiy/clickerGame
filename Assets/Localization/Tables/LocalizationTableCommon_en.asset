@@ -70,14 +70,6 @@ MonoBehaviour:
     m_Localized: English
     m_Metadata:
       m_Items: []
-  - m_Id: 80736472662007808
-    m_Localized: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 80736558745903104
-    m_Localized: "Espa\xF1ola"
-    m_Metadata:
-      m_Items: []
   - m_Id: 80737493840814080
     m_Localized: Save language
     m_Metadata:
