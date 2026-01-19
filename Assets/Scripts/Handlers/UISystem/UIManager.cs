@@ -26,6 +26,8 @@ namespace Handlers.UISystem
         public const float MaxAspectRatio = 3f;
 
         private Canvas _uiCanvas;
+        private GraphicRaycaster _uiCanvasRaycaster;
+        private CanvasScaler _uiCanvasScaler;
         private Canvas _popupsCanvas;
         private Canvas _foregroundPopupsCanvas;
         private Canvas _notificationsCanvas;
@@ -76,7 +78,11 @@ namespace Handlers.UISystem
 
         private void SetupCanvases()
         {
-            _uiCanvas = Instantiate(_settings.UICanvasPrefab).GetComponent<Canvas>();
+            var uiCanvas = Instantiate(_settings.UICanvasPrefab);
+            _uiCanvas = uiCanvas.GetComponent<Canvas>();
+            _uiCanvasScaler = uiCanvas.GetComponent<CanvasScaler>();
+            _uiCanvasRaycaster = uiCanvas.GetComponent<GraphicRaycaster>();
+                
             _uiCanvas.gameObject.name = "UICanvas";
             
             InitUIScale();
@@ -151,7 +157,11 @@ namespace Handlers.UISystem
         {
             StopAllCoroutines();
             _popupsHandler.Dispose();
-            Destroy(_uiCanvas);
+            
+            _uiCanvasScaler.enabled = false;
+            _uiCanvasRaycaster.enabled = false;
+            
+            Destroy(_uiCanvas.gameObject);
         }
     }
 }
