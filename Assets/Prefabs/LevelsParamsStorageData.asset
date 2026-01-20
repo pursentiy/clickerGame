@@ -108,7 +108,7 @@ MonoBehaviour:
       LevelName: Armadillo
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 818da6555f9f349beaebac60a83ce282, type: 3}
-      FigureScale: 2
+      FigureScale: 1
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: bb72c7c3a59ee440f89bb77e0fc86168,
@@ -153,7 +153,7 @@ MonoBehaviour:
       LevelName: Eagle
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 64409300076cf43f5b0a3d8127a98989, type: 3}
-      FigureScale: 2
+      FigureScale: 1
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: 9e32f9ac32a564c9095e17e833bea132,
@@ -193,7 +193,7 @@ MonoBehaviour:
       LevelName: Ostrich
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 828d096e112b240349fbbf3f5ee0d75b, type: 3}
-      FigureScale: 2
+      FigureScale: 1
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: b8f0ddeb80ec94677bc2fa6334b7f36f,
@@ -243,7 +243,7 @@ MonoBehaviour:
       LevelName: Owl
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 517e1fe378ee642808f17590ace95970, type: 3}
-      FigureScale: 2
+      FigureScale: 1
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: ec3e7881ef2754d4caa7023a1826b350,
@@ -283,7 +283,7 @@ MonoBehaviour:
       LevelName: Snake
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 781235e8b2ca14225a4d15d5cd7b087d, type: 3}
-      FigureScale: 2
+      FigureScale: 1
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: c4f81af0fcfde4e3db70968099d7076b,
