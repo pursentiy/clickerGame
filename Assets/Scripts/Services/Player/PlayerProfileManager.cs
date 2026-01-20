@@ -33,7 +33,7 @@ namespace Services.Player
                 return;
             
             _profileSnapshot.Stars += amount;
-            SaveProfile();
+            SaveProfile(SavePriority.ImmediateSave);
         }
         
         public PackSnapshot TryGetPackSnapshot(int packId)
@@ -71,6 +71,7 @@ namespace Services.Player
                 return false;
 
             pack.CompletedLevelsSnapshots.Add(levelSnapshot);
+            SaveProfile(SavePriority.ImmediateSave);
             return true;
         }
         

@@ -32,10 +32,12 @@ namespace GameState.OnGameEnterSequence
 
         private IPromise SetupPlayer(ProfileSnapshot loadedProfileSnapshot)
         {
+            var requireProfileSaving = loadedProfileSnapshot == null;
             var finalProfileSnapshot = loadedProfileSnapshot ?? _profileBuilderService.BuildNewProfileSnapshot();
 
             _playerProfileManager.Initialize(finalProfileSnapshot);
-            _playerProfileManager.SaveProfile(SavePriority.ImmediateSave);
+            if (requireProfileSaving)
+                _playerProfileManager.SaveProfile(SavePriority.ImmediateSave);
 
             return Promise.Resolved();
         }

@@ -24,7 +24,6 @@ namespace Popup.CompleteLevelInfoPopup
         [Inject] private readonly SoundHandler _soundHandler;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
         [Inject] private readonly FlyingUIRewardAnimationService _flyingUIRewardAnimationService;
-        [Inject] private readonly PlayerProfileManager _playerProfileManager;
         [Inject] private readonly LocalizationService _localization;
 
         private Camera _textureCamera;
@@ -197,7 +196,6 @@ namespace Popup.CompleteLevelInfoPopup
             if (fast)
             {
                 _playerCurrencyService.TryAddStars(earnedStarsForLevel);
-                _playerProfileManager.SaveProfile();
             }
             else
             {
