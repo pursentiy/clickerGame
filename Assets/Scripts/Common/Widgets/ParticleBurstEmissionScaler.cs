@@ -20,7 +20,6 @@ namespace Common.Widgets
         private void Awake()
         {
             SaveParticlesEmissionData();
-            lastWidth = UnityEngine.Device.Screen.width;
         }
 
         private void SaveParticlesEmissionData()

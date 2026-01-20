@@ -16,11 +16,6 @@ namespace Common.Widgets
         {
             CheckScreenWidthAndUpdateParticles();
         }
-        
-        private void Awake()
-        {
-            lastWidth = UnityEngine.Device.Screen.width;
-        }
 
         private void CheckScreenWidthAndUpdateParticles()
         {

@@ -449,14 +449,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5fd4402f0321cb41994ca8aafc81fdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _levelsParamsStorageData: {fileID: 11400000, guid: ee10b72902a1ab94db068e4883dc8e28,
-    type: 2}
   _screenHandler: {fileID: 1655798618}
   _levelSessionHandler: {fileID: 496767643}
   _levelParamsHandler: {fileID: 1979438337}
   _uiScreenUpdater: {fileID: 2018566234}
   _uiBlockHandler: {fileID: 85632687}
-  _soundHandler: {fileID: 0}
   _uiSystemData: {fileID: 11400000, guid: 1b0df2e0c3e4b4dcab5ff0413b614fe7, type: 2}
 --- !u!114 &237686205
 MonoBehaviour:
@@ -746,7 +743,7 @@ PrefabInstance:
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
       propertyPath: EmissionModule.m_Bursts.Array.data[0].cycleCount
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
@@ -1553,7 +1550,7 @@ PrefabInstance:
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
       propertyPath: EmissionModule.m_Bursts.Array.data[0].cycleCount
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
@@ -1874,7 +1871,7 @@ PrefabInstance:
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
       propertyPath: EmissionModule.m_Bursts.Array.data[0].cycleCount
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
@@ -2204,7 +2201,7 @@ PrefabInstance:
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
       propertyPath: EmissionModule.m_Bursts.Array.data[0].cycleCount
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
@@ -2730,7 +2727,7 @@ PrefabInstance:
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
       propertyPath: EmissionModule.m_Bursts.Array.data[0].cycleCount
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
@@ -3241,7 +3238,7 @@ PrefabInstance:
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
       propertyPath: EmissionModule.m_Bursts.Array.data[0].cycleCount
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
@@ -3534,7 +3531,7 @@ PrefabInstance:
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
       propertyPath: EmissionModule.m_Bursts.Array.data[0].cycleCount
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
