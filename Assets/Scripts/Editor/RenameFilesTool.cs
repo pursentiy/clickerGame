@@ -11,12 +11,18 @@ namespace Editor
         private string _phraseToReplace;
         private string _patternText;
         
-        [MenuItem("Custom Tools/Rename Tool")]
+        [MenuItem("Assets/Custom Tools/Rename Tool")]
         private static void OpenCreateVillagePopup()
         {
             RenameFilesTool window = ScriptableObject.CreateInstance<RenameFilesTool>();
             window.position = new Rect(UnityEngine.Device.Screen.width / 2f, UnityEngine.Device.Screen.height / 2f, 250, 250);
             window.ShowAuxWindow();
+        }
+        
+        [MenuItem("Assets/Custom Tools/Rename Tool", true)]
+        private static bool ValidateOpenTool()
+        {
+            return Selection.activeObject != null;
         }
         
         private void OnGUI()
