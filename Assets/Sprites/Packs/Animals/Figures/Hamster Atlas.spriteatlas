@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Hamster Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: WebGL
+      m_MaxTextureSize: 1024
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 53
+      m_TextureCompression: 1
+      m_CompressionQuality: 45
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_IgnorePlatformSupport: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: a9f9c634c356248d69d84bfa7270ced8, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - 311f094239e5c4133bebd6bc9b23b889: 21300000
+    - 98732735797364670a28e643f8393317: 21300000
+    - b45e00c6444cc45f781728dd3aa26960: 21300000
+    - 5dca754aba8e84ab1b1297cc18474152: 21300000
+    - ddf1bdea25f7a4dc089b4094bbefcc22: 21300000
+    - 4b9b1b9e26ede428887c57b609c9519b: 21300000
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 311f094239e5c4133bebd6bc9b23b889, type: 3}
+  - {fileID: 21300000, guid: 98732735797364670a28e643f8393317, type: 3}
+  - {fileID: 21300000, guid: b45e00c6444cc45f781728dd3aa26960, type: 3}
+  - {fileID: 21300000, guid: 5dca754aba8e84ab1b1297cc18474152, type: 3}
+  - {fileID: 21300000, guid: ddf1bdea25f7a4dc089b4094bbefcc22, type: 3}
+  - {fileID: 21300000, guid: 4b9b1b9e26ede428887c57b609c9519b, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Hamster_2
+  - Hamster_4
+  - Hamster_1
+  - Hamster_6
+  - Hamster_5
+  - Hamster_3
+  m_RenderDataMap: {}
+  m_Tag: Hamster Atlas
+  m_IsVariant: 0
