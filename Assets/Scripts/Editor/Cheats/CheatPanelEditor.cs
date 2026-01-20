@@ -1,11 +1,12 @@
 #if UNITY_EDITOR
 using System.Reflection;
 using Installers;
+using Services.Cheats;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Services.Cheats
+namespace Editor.Cheats
 {
     public class CheatPanelEditor : EditorWindow
     {
