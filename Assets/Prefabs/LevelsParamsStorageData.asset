@@ -104,6 +104,94 @@ MonoBehaviour:
         FastestTime: 5
         MediumTime: 8
         MinimumTime: 12
+    - LevelId: 4
+      LevelName: Armadillo
+      LevelDifficulty: 1
+      LevelImage: {fileID: 21300000, guid: 818da6555f9f349beaebac60a83ce282, type: 3}
+      FigureScale: 2
+      LevelsFiguresParams:
+      - FigureId: 1
+        FigureTarget: {fileID: 8990938680374624279, guid: bb72c7c3a59ee440f89bb77e0fc86168,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: 5f98605679b024a94963523ff49da97b,
+          type: 3}
+      - FigureId: 2
+        FigureTarget: {fileID: 8990938680374624279, guid: aa319cee3b654428192c1c9e67144dc9,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: 687d6ddc44da749be801f7b7b1e9f102,
+          type: 3}
+      - FigureId: 3
+        FigureTarget: {fileID: 8990938680374624279, guid: d6161ffeb60594eebba0e5f3abc1b02e,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: 12cde753bc5174055b6f08fc757ee480,
+          type: 3}
+      - FigureId: 4
+        FigureTarget: {fileID: 8990938680374624279, guid: b67a81ba00eca4ee3925a198c8e97893,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: 344d0cb552f024825ae746e090a7fe50,
+          type: 3}
+      - FigureId: 5
+        FigureTarget: {fileID: 8990938680374624279, guid: f293990b5b40d4193a3d753b1d6931f6,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: f9f6e7b4e3b5f4cc0b5a6b5c28dd9213,
+          type: 3}
+      - FigureId: 6
+        FigureTarget: {fileID: 8990938680374624279, guid: 567330d0fc7e8464d94a1865cc68a913,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: 5998244e45bd84af49ac7e9e88760b28,
+          type: 3}
+      - FigureId: 7
+        FigureTarget: {fileID: 8990938680374624279, guid: 5f6ce00652caf46abb3762379e193350,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: 1cd1114047a414e028b24e4a6a58235a,
+          type: 3}
+      LevelBeatingTimeInfo:
+        FastestTime: 5
+        MediumTime: 8
+        MinimumTime: 12
+    - LevelId: 4
+      LevelName: Armadillo
+      LevelDifficulty: 1
+      LevelImage: {fileID: 21300000, guid: a74249a5be4dc0b43ae69984ed8331df, type: 3}
+      FigureScale: 2
+      LevelsFiguresParams:
+      - FigureId: 1
+        FigureTarget: {fileID: 8990938680374624279, guid: 8414b8e1b6bb19f43a91cac3ac0994a1,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: c4c3ccba7417d4745ae4c5494b87e726,
+          type: 3}
+      - FigureId: 2
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 9180308159367904065, guid: f7d2f7885fde4874aa095e9754f997fe,
+          type: 3}
+      - FigureId: 3
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 0}
+      - FigureId: 4
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 0}
+      - FigureId: 5
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 0}
+      - FigureId: 6
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 0}
+      - FigureId: 7
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 0}
+      - FigureId: 8
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 0}
+      - FigureId: 9
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 0}
+      - FigureId: 10
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 0}
+      LevelBeatingTimeInfo:
+        FastestTime: 5
+        MediumTime: 8
+        MinimumTime: 12
   - PackId: 2
     PackName: Animals
     PackImagePrefab: {fileID: 19882884362880740, guid: a013d6e27e89544059c5d55fb36d9293,
@@ -191,6 +279,49 @@ MonoBehaviour:
           type: 3}
         FigureMenu: {fileID: 9180308159367904065, guid: 64c4042442ab6324ca8422f279acd0f1,
           type: 3}
+      LevelBeatingTimeInfo:
+        FastestTime: 5
+        MediumTime: 8
+        MinimumTime: 12
+    - LevelId: 4
+      LevelName: Armadillo
+      LevelDifficulty: 1
+      LevelImage: {fileID: 21300000, guid: a74249a5be4dc0b43ae69984ed8331df, type: 3}
+      FigureScale: 2
+      LevelsFiguresParams:
+      - FigureId: 1
+        FigureTarget: {fileID: 8990938680374624279, guid: 8414b8e1b6bb19f43a91cac3ac0994a1,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: c4c3ccba7417d4745ae4c5494b87e726,
+          type: 3}
+      - FigureId: 2
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 9180308159367904065, guid: f7d2f7885fde4874aa095e9754f997fe,
+          type: 3}
+      - FigureId: 3
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 0}
+      - FigureId: 4
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 0}
+      - FigureId: 5
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 0}
+      - FigureId: 6
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 0}
+      - FigureId: 7
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 0}
+      - FigureId: 8
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 0}
+      - FigureId: 9
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 0}
+      - FigureId: 10
+        FigureTarget: {fileID: 0}
+        FigureMenu: {fileID: 0}
       LevelBeatingTimeInfo:
         FastestTime: 5
         MediumTime: 8
