@@ -152,20 +152,27 @@ namespace Components.Levels
             if (_levelHudHandler == null || _draggingFigureContainer == null)
                 return;
             
-            var releasedOnFigure = _clickHandlerService.DetectFigureTarget(eventData, _levelHudHandler.FiguresAssemblyCanvasRaycaster);
-            if (releasedOnFigure == null)
+            var releasedOnFigures = _clickHandlerService.DetectFigureTarget(eventData, _levelHudHandler.FiguresAssemblyCanvasRaycaster);
+            if (releasedOnFigures.IsCollectionNullOrEmpty())
+            {
+                ResetDraggingFigure();
+                return;
+            }
+            
+            var maybeFigure = releasedOnFigures.FirstOrDefault(i => i != null && i.FigureId == _draggingFigureContainer.FigureId);
+            if (maybeFigure == null)
             {
                 ResetDraggingFigure();
                 return;
             }
 
-            if (_draggingFigureContainer.FigureId == releasedOnFigure.FigureId)
+            if (_draggingFigureContainer.FigureId == maybeFigure.FigureId)
             {
                 _soundHandler.PlaySound("success");
                 var shiftingAnimationPromise = new Promise();
                 _levelHudHandler.TryShiftAllElementsAfterRemoving(_draggingFigureContainer.FigureId, shiftingAnimationPromise);
                 
-                TrySetFigureInserted(releasedOnFigure.FigureId);
+                TrySetFigureInserted(maybeFigure.FigureId);
                 
                 _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigureImage.transform.DOScale(0, 0.4f))
                     .KillWith(this);
@@ -174,7 +181,7 @@ namespace Components.Levels
                 {
                     _completeDraggingAnimationSequence.OnComplete(() =>
                         {
-                            releasedOnFigure.SetConnected();
+                            maybeFigure.SetConnected();
                             SetMenuFigureConnected();
                             TryHandleLevelCompletion();
                         });

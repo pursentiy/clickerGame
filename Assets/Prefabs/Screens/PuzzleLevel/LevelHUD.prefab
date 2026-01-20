@@ -833,20 +833,20 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3539589581509797867}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.021979094, g: 1, b: 0, a: 0.7019608}
-  m_RaycastTarget: 1
+  m_Color: {r: 1, g: 0.2601107, b: 0, a: 0.4627451}
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 818da6555f9f349beaebac60a83ce282, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 517e1fe378ee642808f17590ace95970, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

@@ -32,7 +32,7 @@ PrefabInstance:
     - target: {fileID: 2213291782804061813, guid: 671eaa2eddeb0284daabfac3a26f1a91,
         type: 3}
       propertyPath: m_Name
-      value: Animals_ _1
+      value: Animals_Ostrich_1
       objectReference: {fileID: 0}
     - target: {fileID: 2213291782804061814, guid: 671eaa2eddeb0284daabfac3a26f1a91,
         type: 3}
@@ -42,12 +42,12 @@ PrefabInstance:
     - target: {fileID: 2213291782804061814, guid: 671eaa2eddeb0284daabfac3a26f1a91,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 261.353
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 2213291782804061814, guid: 671eaa2eddeb0284daabfac3a26f1a91,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 253.461
+      value: 174.35
       objectReference: {fileID: 0}
     - target: {fileID: 2213291782804061814, guid: 671eaa2eddeb0284daabfac3a26f1a91,
         type: 3}
@@ -86,8 +86,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2213291782804061814, guid: 671eaa2eddeb0284daabfac3a26f1a91,
         type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 158.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2213291782804061814, guid: 671eaa2eddeb0284daabfac3a26f1a91,
+        type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 41.6
+      value: -394.3
       objectReference: {fileID: 0}
     - target: {fileID: 2213291782804061814, guid: 671eaa2eddeb0284daabfac3a26f1a91,
         type: 3}

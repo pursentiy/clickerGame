@@ -7,21 +7,23 @@ namespace Services
 {
     public class ClickHandlerService
     {
-        public FigureTarget DetectFigureTarget(PointerEventData eventData, GraphicRaycaster raycaster)
+        public List<FigureTarget> DetectFigureTarget(PointerEventData eventData, GraphicRaycaster raycaster)
         {
             var results = new List<RaycastResult>();
             raycaster.Raycast(eventData, results);
             
+            var figures = new List<FigureTarget>();
             foreach (var result in results)
             {
                 var figure = result.gameObject.GetComponent<FigureTarget>();
 
                 if (figure == null) 
                     continue;
-                return figure;
+                 
+                figures.Add(figure);
             }
 
-            return null;
+            return figures;
         }
     }
 }
