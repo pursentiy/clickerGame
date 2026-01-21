@@ -169,6 +169,70 @@ MonoBehaviour:
     m_Localized: Es hora de elegir un nivel!
     m_Metadata:
       m_Items: []
+  - m_Id: 84644109640261632
+    m_Localized: Armadillo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644111691276288
+    m_Localized: "\xC1guila"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644113905868800
+    m_Localized: Avestruz
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644120314765312
+    m_Localized: "B\xFAho"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644122491609088
+    m_Localized: Serpiente
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644124039307264
+    m_Localized: Lagartija
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644125507313664
+    m_Localized: Tortuga
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644126140653568
+    m_Localized: "Ara\xF1a"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644126790770688
+    m_Localized: Camello
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644127424110592
+    m_Localized: Zorro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644128007118848
+    m_Localized: Jerbo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644128569155584
+    m_Localized: "H\xE1mster"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644129177329664
+    m_Localized: Cascabel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84645059637534720
+    m_Localized: Hormiga
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84645061785018368
+    m_Localized: "Tar\xE1ntula"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84645063630512128
+    m_Localized: "Escorpi\xF3n"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

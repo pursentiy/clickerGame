@@ -169,6 +169,70 @@ MonoBehaviour:
     m_Localized: Now it's time to choose a level!
     m_Metadata:
       m_Items: []
+  - m_Id: 84644109640261632
+    m_Localized: Armadillo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644111691276288
+    m_Localized: Eagle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644113905868800
+    m_Localized: Ostrich
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644120314765312
+    m_Localized: Owl
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644122491609088
+    m_Localized: Snake
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644124039307264
+    m_Localized: Lizard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644125507313664
+    m_Localized: Turtle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644126140653568
+    m_Localized: Spider
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644126790770688
+    m_Localized: Camel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644127424110592
+    m_Localized: Fox
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644128007118848
+    m_Localized: Jerboa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644128569155584
+    m_Localized: Hamster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644129177329664
+    m_Localized: Rattlesnake
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84645059637534720
+    m_Localized: Ant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84645061785018368
+    m_Localized: Tarantula
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84645063630512128
+    m_Localized: Scorpion
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -163,6 +163,70 @@ MonoBehaviour:
     m_Key: choose_level_header
     m_Metadata:
       m_Items: []
+  - m_Id: 84644109640261632
+    m_Key: level_armadillo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644111691276288
+    m_Key: level_eagle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644113905868800
+    m_Key: level_ostrich
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644120314765312
+    m_Key: level_owl
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644122491609088
+    m_Key: level_snake
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644124039307264
+    m_Key: level_lizard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644125507313664
+    m_Key: level_turtle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644126140653568
+    m_Key: level_spider
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644126790770688
+    m_Key: level_camel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644127424110592
+    m_Key: level_fox
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644128007118848
+    m_Key: level_jerboa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644128569155584
+    m_Key: level_hamster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84644129177329664
+    m_Key: level_rattlesnake
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84645059637534720
+    m_Key: level_ant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84645061785018368
+    m_Key: level_tarantula
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84645063630512128
+    m_Key: level_scorpion
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
