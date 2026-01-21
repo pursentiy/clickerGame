@@ -1,4 +1,5 @@
-﻿using Components.Levels;
+﻿using Common.Data.Info;
+using Components.Levels;
 using Extensions;
 using Installers;
 using Plugins.FSignal;
@@ -40,7 +41,7 @@ namespace Handlers
 
         public float AwaitChangeScreenTime => _awaitChangeScreenTime;
 
-        public void ShowChooseLevelScreen(PackParamsData packParamsData, FSignal levelResetSignal = null, bool fast = false)
+        public void ShowChooseLevelScreen(PackInfo packInfo, FSignal levelResetSignal = null, bool fast = false)
         {
             _uiBlockHandler.BlockUserInput(true);
             AnimateTransition(fast).Then(() =>
@@ -48,7 +49,7 @@ namespace Handlers
                 levelResetSignal?.Dispatch();
                 PopupCurrentScreenAndDisposeHandlers();
                 var screen = Instantiate(_chooseLevelScreen, _screenCanvasTransform);
-                screen.Initialize(packParamsData);
+                screen.Initialize(packInfo);
                 
                 _currentScreenBase = screen;
                 _uiBlockHandler.BlockUserInput(false);
@@ -77,14 +78,14 @@ namespace Handlers
             }).CancelWith(this);;
         }
         
-        public void StartNewLevel(int levelId, PackParamsData packParams, LevelParamsData levelParams, bool fast = false)
+        public void StartNewLevel(int levelId, PackInfo packInfo, LevelInfo levelInfo, bool fast = false)
         {
             _uiBlockHandler.BlockUserInput(true);
             AnimateTransition(fast).Then(() =>
             {
                 _progressController.SetCurrentLevelId(levelId);
                 PopupCurrentScreenAndDisposeHandlers();
-                _levelSessionHandler.StartLevel(levelParams.ToSnapshot(), _levelParamsHandler.LevelHudHandlerPrefab, packParams);
+                _levelSessionHandler.StartLevel(levelInfo.ToSnapshot(), _levelParamsHandler.LevelHudHandlerPrefab, packInfo);
                 _uiBlockHandler.BlockUserInput(false);
             }).CancelWith(this);
         }

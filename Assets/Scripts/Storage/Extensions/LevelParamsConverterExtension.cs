@@ -1,4 +1,7 @@
 using System.Linq;
+using Common.Data.Info;
+using Extensions;
+using Services;
 using Storage.Levels;
 using Storage.Snapshots.LevelParams;
 
@@ -6,31 +9,35 @@ namespace Storage.Extensions
 {
     public static class LevelParamsConverterExtension
     {
-        public static LevelParamsSnapshot ToSnapshot(this LevelParamsData levelParams)
+        public static LevelParamsSnapshot ToSnapshot(this LevelInfo levelInfo)
         {
-            if (levelParams.LevelBeatingTimeInfo == null) 
+            if (levelInfo == null) 
                 return null;
 
-            var figuresParams = levelParams.LevelsFiguresParams
+            var figuresParams = levelInfo.LevelsFiguresInfo
                 .Select(i => i.ToSnapshot())
                 .Where(i => i != null)
                 .ToList();
             
-            return new LevelParamsSnapshot(levelParams.LevelId, levelParams.FigureScale,  levelParams.LevelBeatingTimeInfo.ToSnapshot(), figuresParams);
+            return new LevelParamsSnapshot(levelInfo.LevelId, levelInfo.FigureScale,  ToSnapshot(levelInfo.BeatingTime), figuresParams);
         }
 
-        private static LevelBeatingTimeInfoSnapshot ToSnapshot(this LevelBeatingTimeInfo levelBeatingTimeInfo)
+        private static LevelBeatingTimeInfoSnapshot ToSnapshot(float[] beatingTime)
         {
-            if (levelBeatingTimeInfo == null)
-                return null;
+            if (beatingTime.IsCollectionNullOrEmpty() || beatingTime.Length != 3)
+            {
+                LoggerService.LogWarning($"[{nameof(LevelBeatingTimeInfoSnapshot)}]: {nameof(beatingTime)} is empty or does not contain 3 values");
+                return new LevelBeatingTimeInfoSnapshot(3, 6, 9);
+            }
             
+            //TODO POSSIBLE EXCEPTION
             return new LevelBeatingTimeInfoSnapshot(
-                levelBeatingTimeInfo.FastestTime,
-                levelBeatingTimeInfo.MediumTime,
-                levelBeatingTimeInfo.MinimumTime);
+                beatingTime[0],
+                beatingTime[1],
+                beatingTime[2]);
         }
 
-        private static LevelFigureParamsSnapshot ToSnapshot(this LevelFigureParamsData levelFigureParams)
+        private static LevelFigureParamsSnapshot ToSnapshot(this FigureInfo levelFigureParams)
         {
             if (levelFigureParams == null)
                 return null;

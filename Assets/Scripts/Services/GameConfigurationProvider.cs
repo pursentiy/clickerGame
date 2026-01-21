@@ -1,8 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
+using Common.Data.Info;
+using Configurations;
+using Extensions;
 using Services.Base;
 using Storage;
 using Storage.Levels;
+using UnityEngine;
 using Zenject;
 
 namespace Services
@@ -11,38 +15,38 @@ namespace Services
     {
         [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
         
-        private List<PackParamsData> _packParamsList = new();
+        private List<PackInfo> _packInfoList = new();
         
         public bool IsInitialized { get; private set; }
-        public IReadOnlyCollection<PackParamsData> PackParamsData => _packParamsList;
-        public IEnumerable<int> GetPacksIds() => _packParamsList.Select(p => p.PackId);
+        public IReadOnlyCollection<PackInfo> PacksInfo => _packInfoList;
+        public IEnumerable<int> GetPacksIds() => _packInfoList.Select(p => p.PackId);
         public IEnumerable<int> GetLevelsIds(int packId) => GetLevelParamsByPack(packId)?.Select(p => p.LevelId) ?? Enumerable.Empty<int>();
-        public int GetPacksCount() => _packParamsList.Count;
+        public int GetPacksCount() => _packInfoList.Count;
         
-        public PackParamsData GetPackById(int packId)
+        public PackInfo GetPackById(int packId)
         {
-            var pack = _packParamsList.FirstOrDefault(levelParams => levelParams.PackId == packId);
+            var pack = _packInfoList.FirstOrDefault(levelParams => levelParams.PackId == packId);
             if (pack != null)
                 return pack;
             
-            LoggerService.LogWarning(this, $"{nameof(GetPackById)}: {nameof(PackParamsData)} is null for packId {packId}");
+            LoggerService.LogWarning(this, $"{nameof(GetPackById)}: {nameof(PacksInfo)} is null for packId {packId}");
             return null;
         }
         
-        public IReadOnlyList<LevelParamsData> GetLevelParamsByPack(int packId)
+        public IReadOnlyList<LevelInfo> GetLevelParamsByPack(int packId)
         {
             var pack = GetPackById(packId);
             if (pack == null)
                 return null;
             
-            if (pack.LevelsParams != null)
-                return pack.LevelsParams;
+            if (pack.LevelsInfo != null)
+                return pack.LevelsInfo;
             
-            LoggerService.LogWarning(this, $"{nameof(GetLevelParamsByPack)}: {nameof(List<LevelParamsData>)} is null for packId {packId}");
+            LoggerService.LogWarning(this, $"{nameof(GetLevelParamsByPack)}: {nameof(List<LevelInfo>)} is null for packId {packId}");
             return null;
         }
 
-        public LevelParamsData GetLevelByNumber(int packId, int levelId)
+        public LevelInfo GetLevelByNumber(int packId, int levelId)
         {
             var levelParams = GetLevelParamsByPack(packId);
             if (levelParams == null)
@@ -52,13 +56,13 @@ namespace Services
             if (levelParamData != null)
                 return levelParamData;
             
-            LoggerService.LogWarning(this, $"{nameof(GetLevelByNumber)}: {nameof(LevelParamsData)} for packId {packId} and levelId {levelId} in {this}");
+            LoggerService.LogWarning(this, $"{nameof(GetLevelByNumber)}: {nameof(LevelInfo)} for packId {packId} and levelId {levelId} in {this}");
             return null;
         }
         
         protected override void OnInitialize()
         {
-            InitPackParamsList();
+            InitPacksInfoList();
         }
 
         protected override void OnDisposing()
@@ -66,16 +70,16 @@ namespace Services
             
         }
 
-        private void InitPackParamsList()
+        private void InitPacksInfoList()
         {
-            _packParamsList = _levelsParamsStorageData.DefaultPacksParamsList;
-
-            if (_packParamsList == null)
-            {
-                _packParamsList = new();
-                LoggerService.LogWarning("No pack parameters have been set.");
+            //TODO ADD MORE SAFE APPROACH
+            var csvFile = Resources.Load<TextAsset>("GameProgressConfig");
+            if (csvFile == null) 
                 return;
-            }
+    
+            var parsedConfig = ConfigParser.ParseCSV(csvFile.text);
+            var rawStorageData = _levelsParamsStorageData.DefaultPacksParamsList;
+            _packInfoList = rawStorageData.MergeWithConfig(parsedConfig.PacksInfoDictionary);
 
             IsInitialized = true;
         }

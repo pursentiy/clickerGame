@@ -1,4 +1,5 @@
-﻿using Components.UI;
+﻿using Common.Data.Info;
+using Components.UI;
 using Extensions;
 using Handlers;
 using Handlers.UISystem;
@@ -37,12 +38,12 @@ namespace Screen.ChooseLevel
         
         private HorizontalLayoutGroup _horizontalGroup;
         private int _currentPackId;
-        private PackParamsData _currentPackParams;
+        private PackInfo _currentPackInfo;
 
-        public void Initialize(PackParamsData packParams)
+        public void Initialize(PackInfo packInfo)
         {
             _currentPackId = _progressController.CurrentPackId;
-            _currentPackParams = packParams;
+            _currentPackInfo = packInfo;
             
             SetTexts();
             InitializeLevelsButton();
@@ -69,7 +70,7 @@ namespace Screen.ChooseLevel
         {
             _headerText.text = _localizationService.GetValue("choose_level_header");
             
-            var localizedName = _localizationService.GetValue($"pack_{_currentPackParams.PackName.ToLower()}");
+            var localizedName = _localizationService.GetValue($"pack_{_currentPackInfo.PackName.ToLower()}");
             var wordPack = _localizationService.GetValue("word_pack");
             _packName.text = $"{localizedName} {wordPack}";
         }
@@ -96,7 +97,7 @@ namespace Screen.ChooseLevel
         private void InitializeLevelsButton()
         {
             var index = 0;
-            _currentPackParams.LevelsParams.ForEach(levelParams =>
+            _currentPackInfo.LevelsInfo.ForEach(levelParams =>
             {
                 if (_horizontalGroup == null || index % 2 == 0)
                     _horizontalGroup = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
@@ -104,20 +105,20 @@ namespace Screen.ChooseLevel
                 var enterButton = Instantiate(_levelItemWidgetPrefab, _horizontalGroup.transform);
                 var earnedStarsForLevel = _progressProvider.GetEarnedStarsForLevel(_currentPackId, levelParams.LevelId) ?? 0;
                 enterButton.Initialize(levelParams.LevelName, levelParams.LevelImage, earnedStarsForLevel, levelParams.LevelDifficulty, _progressProvider.IsLevelAvailableToPlay(_currentPackId, levelParams.LevelId),
-                    () => StartLevel(_currentPackParams, levelParams));
+                    () => StartLevel(_currentPackInfo, levelParams));
                 index++;
             });
         }
 
-        private void StartLevel(PackParamsData packParams, LevelParamsData levelParams)
+        private void StartLevel(PackInfo packInfo, LevelInfo levelInfo)
         {
-            if (levelParams == null)
+            if (levelInfo == null)
             {
-                LoggerService.LogError($"{nameof(LevelParamsData)} is null");
+                LoggerService.LogError($"{nameof(PackInfo)} is null");
                 return;
             }
 
-            _screenHandler.StartNewLevel(levelParams.LevelId, packParams, levelParams);
+            _screenHandler.StartNewLevel(levelInfo.LevelId, packInfo, levelInfo);
         }
 
         private void OnDestroy()

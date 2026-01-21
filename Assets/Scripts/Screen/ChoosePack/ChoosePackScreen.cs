@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Common.Currency;
+using Common.Data.Info;
 using Components.UI;
 using Extensions;
 using Handlers;
@@ -85,8 +86,8 @@ namespace Screen.ChoosePack
 
         private void InitializePackButtons()
         {
-            var currentPackParams = _progressProvider.GetAllPacks();
-            if (currentPackParams.IsCollectionNullOrEmpty())
+            var packsInfos = _progressProvider.GetAllPacks();
+            if (packsInfos.IsCollectionNullOrEmpty())
             {
                 LoggerService.LogError(this, $"[{nameof(InitializePackButtons)}]: {nameof(ProgressProvider)} packs params are null or empty.");
                 return;
@@ -94,33 +95,33 @@ namespace Screen.ChoosePack
             
             HorizontalLayoutGroup oldHorizontalLayoutGroup = null;
             var index = 0;
-            foreach (var packParams in currentPackParams)
+            foreach (var packInfo in packsInfos)
             {
                 var horizontalLayoutGroup = TryInstantiateHorizontalLayoutGroup(oldHorizontalLayoutGroup, index);
                 oldHorizontalLayoutGroup =  horizontalLayoutGroup;
                 
-                var packId = packParams.PackId;
+                var packId = packInfo.PackId;
                 var enterButton = Instantiate(_packItemWidgetPrefab, horizontalLayoutGroup.transform);
                 var isUnlocked = _progressProvider.IsPackAvailable(packId);
                 
                 var maybeStarsRequired = _progressProvider.GetStarsCountForPackUnlocking(packId);
                 var starsRequired = maybeStarsRequired ?? new Stars(0);
                 
-                enterButton.Initialize(packParams.PackName, packParams.PackImagePrefab, packId, isUnlocked,
-                    () => OnAvailablePackClicked(isUnlocked, packParams), OnUnavailablePackClicked, starsRequired);
+                enterButton.Initialize(packInfo.PackName, packInfo.PackImagePrefab, packId, isUnlocked,
+                    () => OnAvailablePackClicked(isUnlocked, packInfo), OnUnavailablePackClicked, starsRequired);
                 index++;
             }
             
-            void OnAvailablePackClicked(bool isUnlocked, PackParamsData packParams)
+            void OnAvailablePackClicked(bool isUnlocked, PackInfo packInfo)
             {
                 if (!isUnlocked)
                 {
-                    LoggerService.LogWarning(this, $"[{nameof(OnAvailablePackClicked)}] pack {packParams.PackName} {packParams.PackId} is not unlocked.");
+                    LoggerService.LogWarning(this, $"[{nameof(OnAvailablePackClicked)}] pack {packInfo.PackName} {packInfo.PackId} is not unlocked.");
                     return;
                 }
                         
-                _progressController.SetCurrentPackId(packParams.PackId);
-                _screenHandler.ShowChooseLevelScreen(packParams);
+                _progressController.SetCurrentPackId(packInfo.PackId);
+                _screenHandler.ShowChooseLevelScreen(packInfo);
             }
             
             void OnUnavailablePackClicked()

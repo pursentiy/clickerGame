@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Common.Data.Info;
 using Common.Widgets.Animations;
 using Components.Levels.Figures;
 using DG.Tweening;
@@ -49,7 +50,7 @@ namespace Level.Hud
         private List<FigureTarget> _figureAnimalsTargetList = new List<FigureTarget>();
         private float _figuresGroupSpacing;
         private Sequence _shiftingSequence;
-        private PackParamsData _currentPackParams;
+        private PackInfo _currentPackInfo;
         
         
         [SerializeField] private Color[] _colors;
@@ -76,7 +77,7 @@ namespace Level.Hud
             _canvasGroup.interactable = isInteractable;
         }
 
-        public void Initialize(PackParamsData currentPackParams, LevelBeatingTimeInfoSnapshot levelBeatingTime, float assemblyContainerScale)
+        public void Initialize(PackInfo currentPackInfo, LevelBeatingTimeInfoSnapshot levelBeatingTime, float assemblyContainerScale)
         {
             LoggerService.LogDebugEditor($"{nameof(LevelBeatingTimeInfoSnapshot)}: \n" +
                                          $"{nameof(levelBeatingTime.FastestTime)} - {levelBeatingTime.FastestTime}\n" +
@@ -87,7 +88,7 @@ namespace Level.Hud
             _starsProgressWidget.Initialize(levelBeatingTime);
             SetAssemblyContainerScale(assemblyContainerScale);
             OnTimerChanged(_levelInfoTrackerService.CurrentLevelPlayingTime);
-            _currentPackParams = currentPackParams;
+            _currentPackInfo = currentPackInfo;
         }
 
         public void SetupHUDFigures(List<LevelFigureParamsSnapshot> levelFiguresParams)
@@ -190,7 +191,7 @@ namespace Level.Hud
 
         private void GoToMainMenuScreen()
         {
-            _screenHandler.ShowChooseLevelScreen(_currentPackParams, BackToMenuClickSignal);
+            _screenHandler.ShowChooseLevelScreen(_currentPackInfo, BackToMenuClickSignal);
         }
 
         private void ChangeColor()

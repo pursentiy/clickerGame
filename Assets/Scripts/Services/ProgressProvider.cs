@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Common.Currency;
+using Common.Data.Info;
 using Services.Player;
 using Storage;
 using Storage.Levels;
@@ -17,7 +18,7 @@ namespace Services
         [Inject] private GameConfigurationProvider _gameConfigurationProvider;
 
         public int GetAllPacksCount() => _gameConfigurationProvider.IsInitialized ? _gameConfigurationProvider.GetPacksCount() : 0;
-        public IReadOnlyCollection<PackParamsData> GetAllPacks() => _gameConfigurationProvider.IsInitialized ? _gameConfigurationProvider.PackParamsData : Array.Empty<PackParamsData>();
+        public IReadOnlyCollection<PackInfo> GetAllPacks() => _gameConfigurationProvider.IsInitialized ? _gameConfigurationProvider.PacksInfo : Array.Empty<PackInfo>();
         
         public bool IsPackAvailable(int packNumber)
         {

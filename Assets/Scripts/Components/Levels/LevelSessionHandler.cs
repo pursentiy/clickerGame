@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Linq;
+using Common.Data.Info;
 using Components.Levels.Figures;
 using DG.Tweening;
 using Extensions;
@@ -48,12 +49,12 @@ namespace Components.Levels
         private Sequence _resetDraggingAnimationSequence;
         private Sequence _completeDraggingAnimationSequence;
         private Coroutine _finishCoroutine;
-        private PackParamsData _packParamsData;
+        private PackInfo _packInfo;
         
         private bool IsLevelComplete => _currentLevelParams != null && 
                                         _currentLevelParams.LevelFiguresParamsList.TrueForAll(levelFigureParams => levelFigureParams.Completed);
 
-        public void StartLevel(LevelParamsSnapshot levelParamsSnapshot, LevelHudHandler levelHudHandler, PackParamsData packParams)
+        public void StartLevel(LevelParamsSnapshot levelParamsSnapshot, LevelHudHandler levelHudHandler, PackInfo packInfo)
         {
             if (levelParamsSnapshot == null)
             {
@@ -61,7 +62,7 @@ namespace Components.Levels
                 return;
             }
             
-            _packParamsData = packParams;
+            _packInfo = packInfo;
             _currentLevelParams =  levelParamsSnapshot;
             var levelId = $"{_progressController.CurrentPackId}-{_progressController.CurrentLevelId}";
             _levelInfoTrackerService.StartLevelTracking(levelId);
@@ -115,7 +116,7 @@ namespace Components.Levels
         {
             _levelHudHandler = ContainerHolder.CurrentContainer.InstantiatePrefabForComponent<LevelHudHandler>(levelHudHandler, _gameMainCanvasTransform);
             _levelHudHandler.SetupHUDFigures(packParam.LevelFiguresParamsList);
-            _levelHudHandler.Initialize(_packParamsData, packParam.LevelBeatingTimeInfo, packParam.FigureScale);
+            _levelHudHandler.Initialize(_packInfo, packParam.LevelBeatingTimeInfo, packParam.FigureScale);
             
             _levelHudHandler.GetOnBeginDragFiguresSignal().ForEach(signal => signal.MapListener(StartElementDragging).DisposeWith(this));
             _levelHudHandler.GetOnDragEndFiguresSignal().ForEach(signal => signal.MapListener(EndElementDragging).DisposeWith(this));
@@ -253,7 +254,7 @@ namespace Components.Levels
 
         private void GoToLevelsMenu()
         {
-            _screenHandler.ShowChooseLevelScreen(_packParamsData);
+            _screenHandler.ShowChooseLevelScreen(_packInfo);
         }
 
         //TODO ADD RESTART LEVEL FUNCTIONALITY
