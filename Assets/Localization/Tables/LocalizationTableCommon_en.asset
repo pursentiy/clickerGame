@@ -145,8 +145,8 @@ MonoBehaviour:
     m_Localized: "Espa\xF1ol"
     m_Metadata:
       m_Items: []
-  - m_Id: 83941413312520192
-    m_Localized: Animals
+  - m_Id: 84807013194784768
+    m_Localized: Palm Oasis
     m_Metadata:
       m_Items: []
   - m_Id: 83941415103488000
@@ -239,6 +239,22 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 84686908108562432
     m_Localized: Rabbit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84807267793231872
+    m_Localized: Golden Dunes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84807307479736320
+    m_Localized: Hidden Canyon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84807338681163776
+    m_Localized: Rocky Ridge
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84807367546363904
+    m_Localized: Dust Storm
     m_Metadata:
       m_Items: []
   references:

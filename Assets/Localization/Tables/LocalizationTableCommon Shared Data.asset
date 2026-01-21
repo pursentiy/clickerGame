@@ -139,10 +139,6 @@ MonoBehaviour:
     m_Key: es
     m_Metadata:
       m_Items: []
-  - m_Id: 83941413312520192
-    m_Key: pack_animals
-    m_Metadata:
-      m_Items: []
   - m_Id: 83941415103488000
     m_Key: level_deer
     m_Metadata:
@@ -233,6 +229,26 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 84686908108562432
     m_Key: level_rabbit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84807013194784768
+    m_Key: pack_oasis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84807267793231872
+    m_Key: pack_dunes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84807307479736320
+    m_Key: pack_canyon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84807338681163776
+    m_Key: pack_ridge
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84807367546363904
+    m_Key: pack_storm
     m_Metadata:
       m_Items: []
   m_Metadata:

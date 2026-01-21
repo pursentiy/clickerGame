@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2185555572168789479}
   m_Layer: 5
-  m_Name: PackPreviewPrefab
+  m_Name: PalmOasis_PackPreviewPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51,7 +51,7 @@ GameObject:
   - component: {fileID: 6788990721599730089}
   - component: {fileID: 6210380226737796445}
   m_Layer: 5
-  m_Name: Pig
+  m_Name: Far L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 5892085786290027305}
   - component: {fileID: 3672876603173851478}
   m_Layer: 5
-  m_Name: Rabbit
+  m_Name: Front R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -201,7 +201,7 @@ GameObject:
   - component: {fileID: 6495721123788998624}
   - component: {fileID: 2835401318662641725}
   m_Layer: 5
-  m_Name: Panda
+  m_Name: Front L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -276,7 +276,7 @@ GameObject:
   - component: {fileID: 8151726409825250372}
   - component: {fileID: 33535822872994227}
   m_Layer: 5
-  m_Name: Duck
+  m_Name: Far R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
