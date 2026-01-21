@@ -233,6 +233,14 @@ MonoBehaviour:
     m_Localized: Scorpion
     m_Metadata:
       m_Items: []
+  - m_Id: 84686905709420544
+    m_Localized: Panda
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84686908108562432
+    m_Localized: Rabbit
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

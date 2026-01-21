@@ -108,7 +108,7 @@ MonoBehaviour:
       LevelName: Armadillo
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 818da6555f9f349beaebac60a83ce282, type: 3}
-      FigureScale: 1
+      FigureScale: 3
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: bb72c7c3a59ee440f89bb77e0fc86168,
@@ -153,7 +153,7 @@ MonoBehaviour:
       LevelName: Eagle
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 64409300076cf43f5b0a3d8127a98989, type: 3}
-      FigureScale: 1
+      FigureScale: 3
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: 9e32f9ac32a564c9095e17e833bea132,
@@ -193,7 +193,7 @@ MonoBehaviour:
       LevelName: Ostrich
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 828d096e112b240349fbbf3f5ee0d75b, type: 3}
-      FigureScale: 1
+      FigureScale: 3
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: b8f0ddeb80ec94677bc2fa6334b7f36f,
@@ -243,7 +243,7 @@ MonoBehaviour:
       LevelName: Owl
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 517e1fe378ee642808f17590ace95970, type: 3}
-      FigureScale: 1
+      FigureScale: 3
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: ec3e7881ef2754d4caa7023a1826b350,
@@ -283,7 +283,7 @@ MonoBehaviour:
       LevelName: Snake
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 781235e8b2ca14225a4d15d5cd7b087d, type: 3}
-      FigureScale: 1
+      FigureScale: 3
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: c4f81af0fcfde4e3db70968099d7076b,
@@ -318,7 +318,7 @@ MonoBehaviour:
       LevelName: Spider
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 534acc937bde240cdaedb3e48672b68d, type: 3}
-      FigureScale: 1
+      FigureScale: 3
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: 118ff32429da44d5fa9cec635f74dff8,
@@ -353,7 +353,7 @@ MonoBehaviour:
       LevelName: Camel
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 9ea488ce3b7a6495dad6f44497cb7c02, type: 3}
-      FigureScale: 1
+      FigureScale: 3
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: ead1e9b6ac61d4e35a284c630d00699b,
@@ -393,7 +393,7 @@ MonoBehaviour:
       LevelName: Fox
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: fcff9d40b38d146e2aaf40753847f50d, type: 3}
-      FigureScale: 1
+      FigureScale: 3
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: 959df3035b5bb4cda83accc1e999f8cc,
@@ -428,7 +428,7 @@ MonoBehaviour:
       LevelName: Jerboa
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: b868a1e4e0452410381361d4bbfa9f69, type: 3}
-      FigureScale: 1
+      FigureScale: 3
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: 663081995e2214e5fb1cad9133925b06,
@@ -468,7 +468,7 @@ MonoBehaviour:
       LevelName: Hamster
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 3c4c612314b1c4989bf339e3e95ba79f, type: 3}
-      FigureScale: 1
+      FigureScale: 3
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: a3fb7ecee513f4ecea76d33066bf654d,
@@ -508,7 +508,7 @@ MonoBehaviour:
       LevelName: Rattlesnake
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 6f6daecc6692643cabc805f9901d0baf, type: 3}
-      FigureScale: 1
+      FigureScale: 3
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: edfab915dba8b4317a591cae279fd284,
@@ -558,7 +558,7 @@ MonoBehaviour:
       LevelName: Ant
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 1f6b2b9a470604f3ab8bc825e2d9efef, type: 3}
-      FigureScale: 1
+      FigureScale: 3
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: d2f7e42a8586e4485b330df5a5c7ce87,
@@ -608,7 +608,7 @@ MonoBehaviour:
       LevelName: Tarantula
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 39dff7f1e97014037ab2bb111fcb1df7, type: 3}
-      FigureScale: 1
+      FigureScale: 3
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: a8af58dd1cf0f4411b71ca97dfecc6a9,
@@ -658,7 +658,7 @@ MonoBehaviour:
       LevelName: Scorpion
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: 081123096ae974c87a92e00f96b97585, type: 3}
-      FigureScale: 1
+      FigureScale: 3
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: c96c1c6550bcf4d629572630b05eac74,
@@ -708,7 +708,7 @@ MonoBehaviour:
       LevelName: Lizard
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: c9f5fa9aace7c467684f7f39bdcff0cc, type: 3}
-      FigureScale: 1
+      FigureScale: 3
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: 6de89f4242b1d4677bfce050203c4476,
@@ -743,7 +743,7 @@ MonoBehaviour:
       LevelName: Turtle
       LevelDifficulty: 1
       LevelImage: {fileID: 21300000, guid: acddff4a8f6424fdeb3837ee6c912e53, type: 3}
-      FigureScale: 1
+      FigureScale: 3
       LevelsFiguresParams:
       - FigureId: 1
         FigureTarget: {fileID: 8990938680374624279, guid: 0e21e17add69c494e8a81feaa8f69c5a,
@@ -769,6 +769,56 @@ MonoBehaviour:
         FigureTarget: {fileID: 8990938680374624279, guid: 08fc500e463574075916131d27a932a0,
           type: 3}
         FigureMenu: {fileID: 9180308159367904065, guid: 4807bbb5c9fc347ddb62673c75f36687,
+          type: 3}
+      LevelBeatingTimeInfo:
+        FastestTime: 5
+        MediumTime: 8
+        MinimumTime: 12
+    - LevelId: 20
+      LevelName: Panda
+      LevelDifficulty: 1
+      LevelImage: {fileID: 21300000, guid: 5a654ec1cb6392d469defc098f0098d5, type: 3}
+      FigureScale: 3
+      LevelsFiguresParams:
+      - FigureId: 1
+        FigureTarget: {fileID: 8990938680374624279, guid: 93865667733bc41c0a286fe224ad1098,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: ca3a4aced643f4da592667ef5c835c1c,
+          type: 3}
+      - FigureId: 2
+        FigureTarget: {fileID: 8990938680374624279, guid: ca20f4761d35a4b49abd5d6c3fe1f707,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: 2acdd6dfe194b400384868a4d8e9c0c8,
+          type: 3}
+      - FigureId: 3
+        FigureTarget: {fileID: 8990938680374624279, guid: 634a5f07c135843d0ba86d93c43e436f,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: becf08841007a4eb991abca5e0799908,
+          type: 3}
+      LevelBeatingTimeInfo:
+        FastestTime: 5
+        MediumTime: 8
+        MinimumTime: 12
+    - LevelId: 21
+      LevelName: Rabbit
+      LevelDifficulty: 1
+      LevelImage: {fileID: 21300000, guid: 038f943c2450a1f49862b7dca82b2269, type: 3}
+      FigureScale: 1
+      LevelsFiguresParams:
+      - FigureId: 1
+        FigureTarget: {fileID: 8990938680374624279, guid: 32ef61968e4754d3eb48705051fe3110,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: 8086b28ac7f8a45149c0a758ff1f4f29,
+          type: 3}
+      - FigureId: 2
+        FigureTarget: {fileID: 8990938680374624279, guid: c211425b65655451f92f1d26424125d0,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: c2ccf7148230c4e2dbab3c34e3474cc1,
+          type: 3}
+      - FigureId: 3
+        FigureTarget: {fileID: 8990938680374624279, guid: ee8de116d19554109b337c9abc26c59f,
+          type: 3}
+        FigureMenu: {fileID: 9180308159367904065, guid: 2e8a44be6e82f4e519478d139e0e52c7,
           type: 3}
       LevelBeatingTimeInfo:
         FastestTime: 5

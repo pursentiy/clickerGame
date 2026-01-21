@@ -227,6 +227,14 @@ MonoBehaviour:
     m_Key: level_scorpion
     m_Metadata:
       m_Items: []
+  - m_Id: 84686905709420544
+    m_Key: level_panda
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84686908108562432
+    m_Key: level_rabbit
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
