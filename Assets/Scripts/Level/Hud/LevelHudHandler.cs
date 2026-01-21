@@ -13,7 +13,6 @@ using Plugins.FSignal;
 using RSG;
 using Services;
 using Storage;
-using Storage.Levels;
 using Storage.Snapshots.LevelParams;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -51,7 +50,6 @@ namespace Level.Hud
         private float _figuresGroupSpacing;
         private Sequence _shiftingSequence;
         private PackInfo _currentPackInfo;
-        
         
         [SerializeField] private Color[] _colors;
         [SerializeField] private Image _colorImage;

@@ -35,6 +35,7 @@ namespace Components.Levels
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly PlayerProfileManager _playerProfileManager;
         [Inject] private readonly ClickHandlerService _clickHandlerService;
+        [Inject] private readonly UIBlockHandler _uiBlockHandler;
 
         [SerializeField] private RectTransform _gameMainCanvasTransform;
         [SerializeField] private RectTransform _draggingTransform;
@@ -207,6 +208,7 @@ namespace Components.Levels
 
         private void ResetDraggingFigure()
         {
+            _uiBlockHandler.BlockUserInput(true);
             _soundHandler.PlaySound("fail");
             var shiftingAnimationPromise = new Promise();
             _levelHudHandler.ShiftAllElements(true, _draggingFigureContainer.FigureId, shiftingAnimationPromise);
@@ -225,7 +227,8 @@ namespace Components.Levels
                         _levelHudHandler.ReturnFigureBackToScroll(_draggingFigureContainer.FigureId);
                         _draggingFigureContainer.FigureTransform.transform.localPosition = Vector3.zero;
                         ClearDraggingFigure();
-                    });
+                        _uiBlockHandler.BlockUserInput(false);
+                    }).KillWith(this);
             }).CancelWith(this);
         }
 

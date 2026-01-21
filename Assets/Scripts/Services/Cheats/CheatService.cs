@@ -4,6 +4,7 @@ using Extensions;
 using Handlers.UISystem;
 using Popup.CompleteLevelInfoPopup;
 using Popup.Universal;
+using Services.Player;
 using Zenject;
 
 namespace Services.Cheats
@@ -16,6 +17,7 @@ namespace Services.Cheats
         [Inject] private readonly ReloadService _reloadService;
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly AdsService _adsService;
+        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
 
         public int StarsCount { get; set; } = 5;
         public bool UpdateProfileValues { get; set; }
@@ -80,6 +82,18 @@ namespace Services.Cheats
         public void AdsCheatShowTimeout()
         {
             _adsService.CheatShowTimeout();
+        }
+
+        public void AddStars()
+        {
+            if (StarsCount > 0)
+            {
+                _playerCurrencyService.TryAddStars(StarsCount);
+            }
+            else if (StarsCount < 0)
+            {
+                _playerCurrencyService.TrySpendStars(-StarsCount);
+            }
         }
     }
 }

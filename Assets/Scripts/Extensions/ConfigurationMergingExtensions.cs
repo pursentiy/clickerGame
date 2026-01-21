@@ -20,17 +20,15 @@ namespace Extensions
 
             foreach (var storagePack in storagePacks)
             {
-                // Ищем соответствующий конфиг пака по ID
                 if (!configs.TryGetValue(storagePack.PackId, out var configPack))
                 {
-                    LoggerService.LogError($"[Merge] Config not found for PackId: {storagePack.PackId}");
+                    LoggerService.LogError($"[{nameof(MergeWithConfig)}] Config not found for PackId: {storagePack.PackId}");
                     continue;
                 }
 
-                // Мерджим уровни внутри пака
+                // Передаем уровни конкретного пака для мерджа
                 var mergedLevels = MergeLevels(storagePack.LevelsParams, configPack.Levels);
 
-                // Создаем итоговый объект пака
                 var packInfo = new PackInfo(
                     storagePack.PackId,
                     configPack.PackName,
@@ -56,11 +54,13 @@ namespace Extensions
 
             foreach (var storageLevel in storageLevels)
             {
+                // Ищем уровень по ID строго внутри текущего пака (configLevels уже отфильтрованы по паку в MergeWithConfig)
                 var configLevel = configLevels.FirstOrDefault(l => l.LevelId == storageLevel.LevelId);
 
                 if (configLevel == null)
                 {
-                    LoggerService.LogError($"[Merge] Config not found for LevelId: {storageLevel.LevelId}");
+                    // Теперь ошибка будет указывать на конкретный ID уровня, который не найден в конфиге этого пака
+                    LoggerService.LogError($"[{nameof(MergeLevels)}] Level configuration not found for LevelId: {storageLevel.LevelId} in current pack context.");
                     continue;
                 }
                 
