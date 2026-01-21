@@ -51,6 +51,12 @@ namespace Level.Hud
         private Sequence _shiftingSequence;
         private PackParamsData _currentPackParams;
         
+        
+        [SerializeField] private Color[] _colors;
+        [SerializeField] private Image _colorImage;
+        [SerializeField] private Button _changeColorButton;
+        private int _colorIndex;
+        
         public FSignal BackToMenuClickSignal { get; } = new FSignal();
         public GraphicRaycaster FiguresAssemblyCanvasRaycaster => _figuresAssemblyCanvasRaycaster;
 
@@ -99,6 +105,7 @@ namespace Level.Hud
         {
             _fadeWidget.ResetWidget();
             _backButton.onClick.MapListenerWithSound(GoToMainMenuScreen).DisposeWith(this);
+            _changeColorButton.onClick.MapListenerWithSound(ChangeColor).DisposeWith(this);
             _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null)).DisposeWith(this);
 
             _figuresGroupSpacing = _figuresGroup.spacing;
@@ -184,6 +191,15 @@ namespace Level.Hud
         private void GoToMainMenuScreen()
         {
             _screenHandler.ShowChooseLevelScreen(_currentPackParams, BackToMenuClickSignal);
+        }
+
+        private void ChangeColor()
+        {
+            _colorIndex++;
+            if (_colorIndex >= _colors.Length)
+                _colorIndex = 0;
+            
+            _colorImage.color = _colors[_colorIndex];
         }
 
         public void ShiftAllElements(bool isInserting, int figureId, Promise animationPromise)
