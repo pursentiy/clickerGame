@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Rattlesnake Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: WebGL
+      m_MaxTextureSize: 1024
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 48
+      m_TextureCompression: 1
+      m_CompressionQuality: 45
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_IgnorePlatformSupport: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 67b2c4a331b1c449ab7c43712e60c0d5, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - b7326e130980d46bba04d150c1bf623c: 21300000
+    - 076e0d331d4c24f24873a967c7dae0b0: 21300000
+    - b248e2f3ac0c847949d4161b3a657ee1: 21300000
+    - 2d02dfd42ec8549dbb7df028c8c72706: 21300000
+    - 0061e7e6a51cd4c5baa918ef4119369b: 21300000
+    - e58ac339dd47c49f8b4f67224f013eb3: 21300000
+    - 902da01df3bee43c9b2149c5bc2f7919: 21300000
+    - da01596dd4c384594a6601fa2617540a: 21300000
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: b7326e130980d46bba04d150c1bf623c, type: 3}
+  - {fileID: 21300000, guid: 076e0d331d4c24f24873a967c7dae0b0, type: 3}
+  - {fileID: 21300000, guid: b248e2f3ac0c847949d4161b3a657ee1, type: 3}
+  - {fileID: 21300000, guid: 2d02dfd42ec8549dbb7df028c8c72706, type: 3}
+  - {fileID: 21300000, guid: 0061e7e6a51cd4c5baa918ef4119369b, type: 3}
+  - {fileID: 21300000, guid: e58ac339dd47c49f8b4f67224f013eb3, type: 3}
+  - {fileID: 21300000, guid: 902da01df3bee43c9b2149c5bc2f7919, type: 3}
+  - {fileID: 21300000, guid: da01596dd4c384594a6601fa2617540a, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Rattlesnake_5
+  - Rattlesnake_3
+  - Rattlesnake_1
+  - Rattlesnake_6
+  - Rattlesnake_4
+  - Rattlesnake_2
+  - Rattlesnake_7
+  - Rattlesnake_8
+  m_RenderDataMap: {}
+  m_Tag: Rattlesnake Atlas
+  m_IsVariant: 0
