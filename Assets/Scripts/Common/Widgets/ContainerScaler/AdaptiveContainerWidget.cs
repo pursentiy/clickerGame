@@ -7,11 +7,18 @@ namespace Common.Widgets.ContainerScaler
     {
         [SerializeField] private RectTransform _rectTransform;
 
-        [Header("Threshold")]
-        [Tooltip("The aspect ratio below which a screen is considered narrow (e.g. 9/16 = 0.56)")]
-        [SerializeField] float aspectThreshold = 0.6f;
+        [Header("Thresholds")]
+        [Tooltip("Aspect ratio below which a screen is considered Ultra Narrow (e.g. 9/21 ≈ 0.43)")]
+        [SerializeField] float ultraNarrowThreshold = 0.45f;
+        
+        [Tooltip("Aspect ratio below which a screen is considered Narrow (e.g. 9/16 = 0.56)")]
+        [SerializeField] float narrowThreshold = 0.6f;
 
-        [Header("Narrow Screen Settings (e.g. Phone)")]
+        [Header("Ultra Narrow Settings (e.g. 21:9 Phones)")]
+        [SerializeField] Vector2 ultraNarrowAnchorMin = new Vector2(0.05f, 0.1f);
+        [SerializeField] Vector2 ultraNarrowAnchorMax = new Vector2(0.95f, 0.9f);
+
+        [Header("Narrow Screen Settings (e.g. Standard Phone)")]
         [SerializeField] Vector2 narrowAnchorMin = new Vector2(0.1f, 0.1f);
         [SerializeField] Vector2 narrowAnchorMax = new Vector2(0.9f, 0.9f);
 
@@ -24,22 +31,24 @@ namespace Common.Widgets.ContainerScaler
             UpdateAnchors();
         }
 
-        public void AnimateWidget(bool enable)
-        {
-            
-        }
+        public void AnimateWidget(bool enable) { }
 
         private void UpdateAnchors()
         {
             if (_rectTransform == null)
             {
-                LoggerService.LogWarning(this,  $"{nameof(UpdateAnchors)} No rectTransform assigned");
+                LoggerService.LogWarning(this, $"{nameof(UpdateAnchors)} No rectTransform assigned");
                 return;
             }
             
             var currentAspect = (float)UnityEngine.Device.Screen.width / UnityEngine.Device.Screen.height;
 
-            if (currentAspect <= aspectThreshold)
+            // Проверка идет от самого узкого к широкому
+            if (currentAspect <= ultraNarrowThreshold)
+            {
+                ApplyAnchors(ultraNarrowAnchorMin, ultraNarrowAnchorMax);
+            }
+            else if (currentAspect <= narrowThreshold)
             {
                 ApplyAnchors(narrowAnchorMin, narrowAnchorMax);
             }
@@ -56,7 +65,6 @@ namespace Common.Widgets.ContainerScaler
                 _rectTransform.anchorMin = min;
                 _rectTransform.anchorMax = max;
 
-                // Сбрасываем offset, чтобы контейнер точно прилип к анкорам
                 _rectTransform.offsetMin = Vector2.zero;
                 _rectTransform.offsetMax = Vector2.zero;
             }

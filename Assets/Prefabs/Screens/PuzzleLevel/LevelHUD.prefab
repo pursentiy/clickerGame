@@ -403,8 +403,9 @@ GameObject:
   - component: {fileID: 1340718346721186017}
   - component: {fileID: 1322817494686528450}
   - component: {fileID: 8461509400237562173}
+  - component: {fileID: 471899152913318563}
   m_Layer: 5
-  m_Name: Middle AssemplyContainer
+  m_Name: Middle Assemply Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -470,6 +471,27 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &471899152913318563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 570331816947211104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bd26712a4f14a11af84dde76600811c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rectTransform: {fileID: 1340718346721186017}
+  ultraNarrowThreshold: 0.48
+  narrowThreshold: 0.8
+  ultraNarrowAnchorMin: {x: 0, y: 0.135}
+  ultraNarrowAnchorMax: {x: 1, y: 0.885}
+  narrowAnchorMin: {x: 0.05, y: 0.135}
+  narrowAnchorMax: {x: 0.95, y: 0.885}
+  wideAnchorMin: {x: 0.2, y: 0.135}
+  wideAnchorMax: {x: 0.8, y: 0.885}
 --- !u!1 &763665693519540471
 GameObject:
   m_ObjectHideFlags: 0
@@ -866,7 +888,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8828871972798734794}
   m_HandleRect: {fileID: 1443451701447227033}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1466,6 +1488,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4922581532589835353}
   - component: {fileID: 4922581532589835354}
+  - component: {fileID: 5450810692941590410}
   m_Layer: 5
   m_Name: Bottom Dragging Figures Panel
   m_TagString: Untagged
@@ -1502,6 +1525,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4922581532589835352}
   m_CullTransparentMesh: 0
+--- !u!114 &5450810692941590410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4922581532589835352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bd26712a4f14a11af84dde76600811c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rectTransform: {fileID: 4922581532589835353}
+  ultraNarrowThreshold: 0.48
+  narrowThreshold: 0.8
+  ultraNarrowAnchorMin: {x: 0, y: 0}
+  ultraNarrowAnchorMax: {x: 1, y: 0.11}
+  narrowAnchorMin: {x: 0.05, y: 0}
+  narrowAnchorMax: {x: 0.95, y: 0.11}
+  wideAnchorMin: {x: 0.2, y: 0}
+  wideAnchorMax: {x: 0.8, y: 0.11}
 --- !u!1 &4922581533096915530
 GameObject:
   m_ObjectHideFlags: 0
@@ -1633,6 +1677,7 @@ GameObject:
   - component: {fileID: 6055261361001014442}
   - component: {fileID: 8228417023552302274}
   - component: {fileID: 4874529528775170972}
+  - component: {fileID: 3242524622875530605}
   m_Layer: 5
   m_Name: LevelHUD
   m_TagString: Untagged
@@ -1748,6 +1793,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7f43065f89f48c395f216d2d52146da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3242524622875530605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4922581533627459721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4e8a118e2a74b59b42f58ddf397d46d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scalableWidgetsGameObjects:
+  - {fileID: 570331816947211104}
+  - {fileID: 4922581532589835352}
 --- !u!1 &5400428544044334222
 GameObject:
   m_ObjectHideFlags: 0

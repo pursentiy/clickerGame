@@ -507,8 +507,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bd26712a4f14a11af84dde76600811c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rectTransform: {fileID: 0}
-  aspectThreshold: 0.6
+  _rectTransform: {fileID: 2224912218243843655}
+  ultraNarrowThreshold: 0.45
+  narrowThreshold: 0.8
+  ultraNarrowAnchorMin: {x: 0.05, y: 0.6161043}
+  ultraNarrowAnchorMax: {x: 0.95, y: 0.8523191}
   narrowAnchorMin: {x: 0.1, y: 0.6161043}
   narrowAnchorMax: {x: 0.9, y: 0.8523191}
   wideAnchorMin: {x: 0.3, y: 0.6161043}
@@ -717,7 +720,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 804.0061}
+  m_AnchoredPosition: {x: 0, y: 804.00616}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &6808412473636373559
@@ -965,7 +968,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 110
+  m_fontSize: 78.85
   m_fontSizeBase: 156.6
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1136,7 +1139,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 110
+  m_fontSize: 78.85
   m_fontSizeBase: 156.6
   m_fontWeight: 400
   m_enableAutoSizing: 1
