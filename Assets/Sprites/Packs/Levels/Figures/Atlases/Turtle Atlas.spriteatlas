@@ -25,7 +25,7 @@ SpriteAtlas:
       m_BuildTarget: WebGL
       m_MaxTextureSize: 1024
       m_ResizeAlgorithm: 0
-      m_TextureFormat: 48
+      m_TextureFormat: 51
       m_TextureCompression: 1
       m_CompressionQuality: 45
       m_CrunchedCompression: 0
