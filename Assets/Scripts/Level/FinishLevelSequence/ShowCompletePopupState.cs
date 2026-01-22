@@ -32,7 +32,7 @@ namespace Level.FinishLevelSequence
         private IPromise ShowCompletePopup()
         {
             var popupPromise = new Promise();
-            var context = new CompleteLevelInfoPopupContext(Context.EarnedStars, Context.EarnedStars, GoToLevelsMenu);
+            var context = new CompleteLevelInfoPopupContext(Context.EarnedStars, Context.LevelCompletingTime, GoToLevelsMenu);
             _uiManager.PopupsHandler.ShowPopupImmediately<CompleteLevelInfoPopupMediator>(context)
                 .Then(popup => popup.OnHide(popupPromise.SafeResolve))
                 .Catch(OnException)
