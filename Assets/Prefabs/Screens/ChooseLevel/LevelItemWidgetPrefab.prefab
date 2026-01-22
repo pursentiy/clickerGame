@@ -193,7 +193,7 @@ MonoBehaviour:
   - {fileID: 4620876636875049140}
   - {fileID: 444553577860970504}
   - {fileID: 3142337938822068957}
-  _grayScaleStarMaterial: {fileID: 2100000, guid: 610ecc4d165e343e2a016b00f91bffa3,
+  _grayScaleStarMaterial: {fileID: 2100000, guid: ce13bf7b378374e8c9ee2cfd4c63a621,
     type: 2}
   _defaultStareMaterial: {fileID: 2100000, guid: 2d0140163a5f5478fa0f687eaea10630,
     type: 2}
