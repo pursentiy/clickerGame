@@ -41,8 +41,13 @@ namespace Popup.CompleteLevelInfoPopup
             
             AnimateTime(Context.TotalTime);
             AnimateStarsSequence(Context.TotalStars)
-                .OnComplete(OnStarsAnimated)
-                .KillWith(this);
+                .Then(() =>
+                {
+                    StartStarsFloating(Context.TotalStars);
+                    return VisualizeStarsFlight(Context.TotalStars);
+                })
+                .ContinueWithResolved(() => TryAcquireEarnedStars(Context.TotalStars))
+                .CancelWith(this);
             
             TryPlayFireworksParticles(Context.TotalStars);
             
@@ -54,13 +59,7 @@ namespace Popup.CompleteLevelInfoPopup
         private void OnStarsUpdated(Stars earnedStars)
         {
             //TODO REPLACE TO FlyingUIRewardAnimationService AUTOMATICALLY UPDATE
-            View.StarsDisplayWidget.AddCurrency(earnedStars);
-        }
-
-        private void OnStarsAnimated()
-        {
-            StartStarsFloating(Context.TotalStars);
-            TryAcquireEarnedStars(Context.EarnedStars);
+            View.StarsDisplayWidget.SetCurrency(earnedStars, true);
         }
     
         private void AnimateTime(float finalTime)
@@ -84,7 +83,7 @@ namespace Popup.CompleteLevelInfoPopup
             seq.Append(View.TimeText.transform.DOPunchScale(Vector3.one * 0.1f, 0.3f));
         }
         
-        private Sequence AnimateStarsSequence(Stars totalStarsForLevel)
+        private IPromise AnimateStarsSequence(Stars totalStarsForLevel)
         {
             foreach (var s in View.Stars) 
                 s.transform.localScale = Vector3.zero;
@@ -146,7 +145,7 @@ namespace Popup.CompleteLevelInfoPopup
                 }
             }
 
-            return seq;
+            return seq.AsPromise();
         }
         
         private void StartStarsFloating(Stars totalStarsForLevel)
@@ -186,22 +185,6 @@ namespace Popup.CompleteLevelInfoPopup
                 .SetLoops(-1, LoopType.Yoyo)
                 .KillWith(this);
         }
-
-        private void TryAcquireEarnedStars(Stars earnedStarsForLevel, bool fast = false)
-        {
-            if (_currencyAcquired || earnedStarsForLevel <= 0)
-                return;
-
-            _currencyAcquired = true;
-            if (fast)
-            {
-                _playerCurrencyService.TryAddStars(earnedStarsForLevel);
-            }
-            else
-            {
-                VisualizeStarsFlight(earnedStarsForLevel);
-            }
-        }
         
         private IPromise VisualizeStarsFlight(Stars earnedStars, bool updateProfileValues = true)
         {
@@ -226,7 +209,7 @@ namespace Popup.CompleteLevelInfoPopup
         
         private void OnDestroy()
         {
-            TryAcquireEarnedStars(Context.EarnedStars, true);
+            TryAcquireEarnedStars(Context.TotalStars);
             
             if (_particlesCoroutine != null)
                 StopCoroutine(_particlesCoroutine);
@@ -263,6 +246,15 @@ namespace Popup.CompleteLevelInfoPopup
             }
             yield return new WaitForSeconds(Random.Range(1.3f, 3f));
             TryPlayFireworksParticles(totalStars);
+        }
+        
+        private void TryAcquireEarnedStars(Stars earnedStarsForLevel)
+        {
+            if (_currencyAcquired || earnedStarsForLevel <= 0)
+                return;
+
+            _currencyAcquired = true;
+            _playerCurrencyService.TryAddStars(earnedStarsForLevel);
         }
         
 #if UNITY_EDITOR

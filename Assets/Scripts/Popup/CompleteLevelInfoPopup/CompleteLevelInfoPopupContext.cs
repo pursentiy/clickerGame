@@ -8,18 +8,15 @@ namespace Popup.CompleteLevelInfoPopup
     {
         public CompleteLevelInfoPopupContext(
             Stars totalStars,
-            Stars earnedStars,
             float totalTime,
             Action goToMenuAction)
         {
             TotalStars = totalStars;
-            EarnedStars = earnedStars;
             TotalTime = totalTime;
             GoToMenuAction = goToMenuAction;
         }
 
         public Stars TotalStars { get; }
-        public Stars EarnedStars { get; }
         public float TotalTime { get; }
         public Action GoToMenuAction { get; }
     }

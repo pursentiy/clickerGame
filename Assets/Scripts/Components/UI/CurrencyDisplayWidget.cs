@@ -28,24 +28,19 @@ namespace Components.UI
 
         public RectTransform AnimationTarget => animationTarget;
 
-        public void AddCurrency(int amount, bool withAnimation = true)
+        public void SetCurrency(int newValue, bool withAnimation = false)
         {
-            _targetValue += amount;
-            
+            _targetValue = newValue;
+
             if (withAnimation)
+            {
                 TriggerUpdateEffects();
+            }
             else
             {
+                _currentDisplayValue = newValue;
                 UpdateText(_targetValue);
             }
-        }
-
-        public void SetCurrency(int newValue)
-        {
-            _currentDisplayValue = newValue;
-            _targetValue = newValue;
-            
-            UpdateText(_targetValue);
         }
 
         public void Bump()
@@ -56,7 +51,7 @@ namespace Components.UI
         
         // DEBUG
         [ContextMenu("Test Add 100")]
-        public void TestAdd100() => AddCurrency(100);
+        public void TestAdd100() => SetCurrency(100, true);
 
         private void TriggerUpdateEffects()
         {

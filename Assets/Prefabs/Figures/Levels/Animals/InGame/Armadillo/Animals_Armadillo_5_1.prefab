@@ -10,6 +10,12 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1003623509818860900, guid: 671eaa2eddeb0284daabfac3a26f1a91,
         type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 3d48140e45c52448a91506f937a2cbbc,
+        type: 3}
+    - target: {fileID: 1003623509818860900, guid: 671eaa2eddeb0284daabfac3a26f1a91,
+        type: 3}
       propertyPath: m_Color.b
       value: 1
       objectReference: {fileID: 0}
@@ -26,7 +32,7 @@ PrefabInstance:
     - target: {fileID: 2213291782804061813, guid: 671eaa2eddeb0284daabfac3a26f1a91,
         type: 3}
       propertyPath: m_Name
-      value: Animals_Deer_1
+      value: Animals_Armadillo_5_1
       objectReference: {fileID: 0}
     - target: {fileID: 2213291782804061814, guid: 671eaa2eddeb0284daabfac3a26f1a91,
         type: 3}
@@ -36,12 +42,12 @@ PrefabInstance:
     - target: {fileID: 2213291782804061814, guid: 671eaa2eddeb0284daabfac3a26f1a91,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 261.353
+      value: 578.3
       objectReference: {fileID: 0}
     - target: {fileID: 2213291782804061814, guid: 671eaa2eddeb0284daabfac3a26f1a91,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 253.461
+      value: 463.1
       objectReference: {fileID: 0}
     - target: {fileID: 2213291782804061814, guid: 671eaa2eddeb0284daabfac3a26f1a91,
         type: 3}
@@ -80,8 +86,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2213291782804061814, guid: 671eaa2eddeb0284daabfac3a26f1a91,
         type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2213291782804061814, guid: 671eaa2eddeb0284daabfac3a26f1a91,
+        type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 41.6
+      value: 154
       objectReference: {fileID: 0}
     - target: {fileID: 2213291782804061814, guid: 671eaa2eddeb0284daabfac3a26f1a91,
         type: 3}
@@ -908,6 +919,12 @@ PrefabInstance:
       propertyPath: m_Points.m_Paths.Array.data[0].Array.data[76].y
       value: -1.89
       objectReference: {fileID: 0}
+    - target: {fileID: 7956056130952421625, guid: 671eaa2eddeb0284daabfac3a26f1a91,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 3d48140e45c52448a91506f937a2cbbc,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

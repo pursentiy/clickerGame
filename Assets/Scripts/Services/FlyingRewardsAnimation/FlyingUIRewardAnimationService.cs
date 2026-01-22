@@ -15,10 +15,9 @@ namespace Services.FlyingRewardsAnimation
 {
     public class FlyingUIRewardAnimationService
     {
-        [Inject] private FlyingUIRewardDestinationService _destinationService;
-        [Inject] private CurrencyLibraryService _currencyLibraryService;
-        [Inject] private PlayerCurrencyService _playerCurrencyService;
-        [Inject] private readonly PlayerProfileManager _playerProfileManager;
+        [Inject] private readonly FlyingUIRewardDestinationService _destinationService;
+        [Inject] private readonly CurrencyLibraryService _currencyLibraryService;
+        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
         
         public IPromise Play(FlyingUIRewardAnimationContext context)
         {
@@ -116,18 +115,7 @@ namespace Services.FlyingRewardsAnimation
                                                 particleSpacing: particleAppearDistanceScale,
                                                 callbackForEachAnimation: null);
 
-                                        starsRewardAnimationPromises.AllParticlesFinish
-                                            .Then(() =>
-                                            {
-                                                if (context.UpdateProfileValues)
-                                                {
-                                                    _playerCurrencyService.TryAddStars(stars);
-                                                    _playerProfileManager.SaveProfile();
-                                                }
-                                            })
-                                            .CancelWith(disposeProvider);
-
-                                        return starsRewardAnimationPromises.AllParticlesFinish;
+                                        return starsRewardAnimationPromises.AnyParticleFinish;
                                     
 
                                     default:
@@ -139,13 +127,6 @@ namespace Services.FlyingRewardsAnimation
                                                 currency.GetCount(),
                                                 context.RewardsMoveTimeSpeedupFactor,
                                                 particleSpacing: particleAppearDistanceScale)
-                                            .ContinueWithResolved(() =>
-                                            {
-                                                if (context.UpdateProfileValues)
-                                                {
-                                                    //TODO ADD LOGIC HERE
-                                                }
-                                            })
                                             .CancelWith(disposeProvider);
                                 }
                             })

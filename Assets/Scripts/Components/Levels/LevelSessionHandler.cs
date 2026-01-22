@@ -102,14 +102,14 @@ namespace Components.Levels
             
             _levelHudHandler.SetInteractivity(false);
             _levelHudHandler.PlayFinishParticles();
-            _finishCoroutine = StartCoroutine(AwaitFinishLevel(earnedStars, earnedStars, levelPlayedTime));
+            _finishCoroutine = StartCoroutine(AwaitFinishLevel(earnedStars, levelPlayedTime));
         }
 
-        private IEnumerator AwaitFinishLevel(int totalStars, int starsForAccrual, float levelPlayedTime)
+        private IEnumerator AwaitFinishLevel(int totalStars, float levelPlayedTime)
         {
             yield return new WaitForSeconds(_screenHandler.AwaitChangeScreenTime);
             _soundHandler.PlaySound("finished");
-            var context = new CompleteLevelInfoPopupContext(totalStars, starsForAccrual, levelPlayedTime, GoToLevelsMenu);
+            var context = new CompleteLevelInfoPopupContext(totalStars, levelPlayedTime, GoToLevelsMenu);
             _uiManager.PopupsHandler.ShowPopupImmediately<CompleteLevelInfoPopupMediator>(context);
         }
 

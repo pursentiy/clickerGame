@@ -28,7 +28,7 @@ namespace Services.Cheats
                 return;
 
             _uiManager.PopupsHandler.ShowPopupImmediately<CompleteLevelInfoPopupMediator>(
-                new CompleteLevelInfoPopupContext(3, 0, 10, null));
+                new CompleteLevelInfoPopupContext(3, 10, null));
         }
         
         public void VisualizeStarsFlightInCompleteLevelPopup()
