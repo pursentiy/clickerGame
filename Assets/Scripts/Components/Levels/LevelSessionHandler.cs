@@ -5,35 +5,28 @@ using Components.Levels.Figures;
 using DG.Tweening;
 using Extensions;
 using Handlers;
-using Handlers.UISystem;
 using Installers;
+using Level.FinishLevelSequence;
 using Level.Hud;
 using Level.Widgets;
-using Popup.CompleteLevelInfoPopup;
 using RSG;
 using Services;
-using Services.Player;
-using Storage;
-using Storage.Levels;
 using Storage.Snapshots.LevelParams;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Utilities.Disposable;
+using Utilities.StateMachine;
 using Zenject;
 
 namespace Components.Levels
 {
     public class LevelSessionHandler : MonoBehaviour, IDisposableHandlers
     {
-        [Inject] private readonly ProgressProvider _progressProvider;
         [Inject] private readonly ProgressController _progressController;
-        [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private readonly ScreenHandler _screenHandler;
         [Inject] private readonly SoundHandler _soundHandler;
         [Inject] private readonly LevelInfoTrackerService _levelInfoTrackerService;
         [Inject] private readonly LevelHelperService _levelHelperService;
-        [Inject] private readonly UIManager _uiManager;
-        [Inject] private readonly PlayerProfileManager _playerProfileManager;
         [Inject] private readonly ClickHandlerService _clickHandlerService;
         [Inject] private readonly UIBlockHandler _uiBlockHandler;
 
@@ -107,10 +100,14 @@ namespace Components.Levels
 
         private IEnumerator AwaitFinishLevel(int totalStars, float levelPlayedTime)
         {
+            _uiBlockHandler.BlockUserInput(true);
             yield return new WaitForSeconds(_screenHandler.AwaitChangeScreenTime);
-            _soundHandler.PlaySound("finished");
-            var context = new CompleteLevelInfoPopupContext(totalStars, levelPlayedTime, GoToLevelsMenu);
-            _uiManager.PopupsHandler.ShowPopupImmediately<CompleteLevelInfoPopupMediator>(context);
+            _uiBlockHandler.BlockUserInput(false);
+            
+            StateMachine
+                .CreateMachine(new FinishLevelContext(totalStars, levelPlayedTime, _packInfo))
+                .StartSequence<TryShowAdsAfterLevelCompleteState>()
+                .FinishWith(this);
         }
 
         private void SetupHud(LevelParamsSnapshot packParam, LevelHudHandler levelHudHandler)
