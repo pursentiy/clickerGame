@@ -502,6 +502,7 @@ namespace Coffee.UIExtensions
 
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
+            if (this == null || !gameObject) return;
             if (Application.isPlaying) return;
             InitializeIfNeeded();
         }

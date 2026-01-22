@@ -1,16 +1,12 @@
 using System.Collections.Generic;
 using Extensions;
+using Services;
 using UnityEngine;
 
 namespace Common.Widgets.ContainerScaler
 {
-    public class UIScalerWidget : MonoBehaviour
+    public class UIScalerHandler : MonoBehaviour
     {
-        [SerializeField] private ParticleStretchWidget _particleStretchWidget;
-        [SerializeField] private ParticleBurstEmissionScaler _particleBurstEmissionScaler;
-        [SerializeField] private BackgroundFitter _backgroundFitter;
-        [SerializeField] private CloudFloater[] _cloudFloaters;
-        
         [SerializeField] private GameObject[] _scalableWidgetsGameObjects;
         
         private List<IScalableWidget> _scalableWidgets = new ();
@@ -59,6 +55,7 @@ namespace Common.Widgets.ContainerScaler
                 _lastWidth = UnityEngine.Device.Screen.width;
                 _lastHeight = UnityEngine.Device.Screen.height;
                 
+                LoggerService.LogWarning(this, $"Updating screen width: {_lastWidth}, height: {_lastHeight}");
                 TryUpdateWidgets();
             }
         }

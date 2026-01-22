@@ -9,17 +9,15 @@ namespace Common.Widgets.ContainerScaler
 
         [Header("Threshold")]
         [Tooltip("The aspect ratio below which a screen is considered narrow (e.g. 9/16 = 0.56)")]
-        public float aspectThreshold = 0.6f;
+        [SerializeField] float aspectThreshold = 0.6f;
 
         [Header("Narrow Screen Settings (e.g. Phone)")]
-        public Vector2 narrowAnchorMin = new Vector2(0.1f, 0.1f);
-
-        public Vector2 narrowAnchorMax = new Vector2(0.9f, 0.9f);
+        [SerializeField] Vector2 narrowAnchorMin = new Vector2(0.1f, 0.1f);
+        [SerializeField] Vector2 narrowAnchorMax = new Vector2(0.9f, 0.9f);
 
         [Header("Wide Screen Settings (e.g. Tablet/Square)")]
-        public Vector2 wideAnchorMin = new Vector2(0.3f, 0.1f);
-
-        public Vector2 wideAnchorMax = new Vector2(0.7f, 0.9f);
+        [SerializeField] Vector2 wideAnchorMin = new Vector2(0.3f, 0.1f);
+        [SerializeField] Vector2 wideAnchorMax = new Vector2(0.7f, 0.9f);
         
         public void UpdateWidget(bool byForce = false)
         {
