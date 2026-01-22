@@ -1,4 +1,3 @@
-using System;
 using Common.Currency;
 using Handlers.UISystem.Popups;
 
@@ -8,16 +7,13 @@ namespace Popup.CompleteLevelInfoPopup
     {
         public CompleteLevelInfoPopupContext(
             Stars totalStars,
-            float totalTime,
-            Action goToMenuAction)
+            float totalTime)
         {
             TotalStars = totalStars;
             TotalTime = totalTime;
-            GoToMenuAction = goToMenuAction;
         }
 
         public Stars TotalStars { get; }
         public float TotalTime { get; }
-        public Action GoToMenuAction { get; }
     }
 }

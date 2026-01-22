@@ -64,6 +64,7 @@ namespace Common.Widgets
 
                 // Итоговая прозрачность — это пересечение двух условий
                 finalAlpha = angleFade * heightFade;
+                finalAlpha = Mathf.Pow(finalAlpha, _fadeSmoothing / 10f); 
                 finalAlpha = Mathf.SmoothStep(0, 1, finalAlpha);
             }
 

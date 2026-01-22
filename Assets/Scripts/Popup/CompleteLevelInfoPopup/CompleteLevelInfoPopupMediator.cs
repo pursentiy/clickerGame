@@ -51,8 +51,8 @@ namespace Popup.CompleteLevelInfoPopup
             
             TryPlayFireworksParticles(Context.TotalStars);
             
-            View.BackgronudButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
-            View.GoToLevelsChooseScreenButton.onClick.MapListenerWithSound(GoToLevelsMenuScreen).DisposeWith(this);
+            View.BackgronudButton.onClick.MapListenerWithSound(ClosePopup).DisposeWith(this);
+            View.GoToLevelsChooseScreenButton.onClick.MapListenerWithSound(ClosePopup).DisposeWith(this);
             _playerCurrencyService.StarsChangedSignal.MapListener(OnStarsUpdated).DisposeWith(this);
         }
 
@@ -201,9 +201,8 @@ namespace Popup.CompleteLevelInfoPopup
             return _flyingUIRewardAnimationService.PlayAnimation(context).CancelWith(this);
         }
 
-        private void GoToLevelsMenuScreen()
+        private void ClosePopup()
         {
-            Context.GoToMenuAction?.SafeInvoke();
             Hide();
         }
         

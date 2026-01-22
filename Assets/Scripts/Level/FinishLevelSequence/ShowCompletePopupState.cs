@@ -32,7 +32,7 @@ namespace Level.FinishLevelSequence
         private IPromise ShowCompletePopup()
         {
             var popupPromise = new Promise();
-            var context = new CompleteLevelInfoPopupContext(Context.EarnedStars, Context.LevelCompletingTime, GoToLevelsMenu);
+            var context = new CompleteLevelInfoPopupContext(Context.EarnedStars, Context.LevelCompletingTime);
             _uiManager.PopupsHandler.ShowPopupImmediately<CompleteLevelInfoPopupMediator>(context)
                 .Then(popup => popup.OnHide(popupPromise.SafeResolve))
                 .Catch(OnException)
@@ -49,7 +49,7 @@ namespace Level.FinishLevelSequence
         
         private void GoToLevelsMenu()
         {
-            if (Context.PackInfo == null)
+            if (Context.PackInfo != null)
             {
                 LoggerService.LogError(this, $"[{nameof(ShowCompletePopup)}]: {nameof(Context.PackInfo)} is null. Returning to Welcome Screen");
                 _screenHandler.ShowWelcomeScreen();

@@ -5143,8 +5143,8 @@ MonoBehaviour:
   _maxShadowLength: 2
   _minShadowLength: 0.01
   _alphaIntensity: 1
-  _peakAngle: 315
-  _minAngle: 280
+  _peakAngle: 295
+  _minAngle: 240
   _maxAngle: 350
   _fadeSmoothing: 10
 --- !u!1 &1535956583343940237
@@ -6075,9 +6075,9 @@ MonoBehaviour:
   _maxShadowLength: 1.75
   _minShadowLength: 0.05
   _alphaIntensity: 1
-  _peakAngle: 235
+  _peakAngle: 240
   _minAngle: 190
-  _maxAngle: 270
+  _maxAngle: 290
   _fadeSmoothing: 10
 --- !u!1 &3968100392895747535
 GameObject:
