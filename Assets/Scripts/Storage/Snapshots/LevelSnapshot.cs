@@ -4,7 +4,7 @@ namespace Storage.Snapshots
 {
     public class LevelSnapshot
     {
-        public LevelSnapshot(int levelId, float bestCompletedTime, Stars starsEarned, UnlockStatus isUnlocked, int playCount)
+        public LevelSnapshot(int levelId, double bestCompletedTime, Stars starsEarned, UnlockStatus isUnlocked, int playCount)
         {
             LevelId = levelId;
             BestCompletedTime = bestCompletedTime;
@@ -14,7 +14,7 @@ namespace Storage.Snapshots
         }
 
         public int LevelId {get; set;}
-        public float BestCompletedTime {get; set;}
+        public double BestCompletedTime {get; set;}
         public Stars StarsEarned {get; set;}
         public UnlockStatus IsUnlocked {get; set;}
         public int PlayCount {get; set;}
