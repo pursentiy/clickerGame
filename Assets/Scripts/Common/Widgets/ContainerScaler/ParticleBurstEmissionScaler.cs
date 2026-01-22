@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using Extensions;
 using UnityEngine;
 
-namespace Common.Widgets
+namespace Common.Widgets.ContainerScaler
 {
-    public class ParticleBurstEmissionScaler : MonoBehaviour
+    public class ParticleBurstEmissionScaler : MonoBehaviour, IScalableWidget
     {
         [SerializeField] private ParticleSystem[] particleSystems;
         [SerializeField] private int baseScreenWidth = 1388;
@@ -12,14 +12,24 @@ namespace Common.Widgets
         private List<ParticleSystem.Burst[]> initialBursts = new List<ParticleSystem.Burst[]>();
         private int lastWidth;
 
-        public void TryUpdateEmissionData()
+        public void UpdateWidget(bool byForce = false)
         {
-            CheckScreenWidthAndUpdateParticles();
+            TryUpdateEmissionData();
+        }
+
+        public void AnimateWidget(bool enable)
+        {
+            
         }
         
         private void Awake()
         {
             SaveParticlesEmissionData();
+        }
+        
+        private void TryUpdateEmissionData()
+        {
+            CheckScreenWidthAndUpdateParticles();
         }
 
         private void SaveParticlesEmissionData()

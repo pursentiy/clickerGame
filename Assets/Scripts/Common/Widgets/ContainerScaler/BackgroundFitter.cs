@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace Common.Widgets
+namespace Common.Widgets.ContainerScaler
 {
-    public class BackgroundFitter : MonoBehaviour
+    public class BackgroundFitter : MonoBehaviour, IScalableWidget
     {
         [Header("Reference Resolution")]
         [Tooltip("The width of the sprite in pixels (e.g., 1920)")]
@@ -26,14 +26,24 @@ namespace Common.Widgets
         private float _lastTargetHeight;
         private float _lastPpu;
         private bool _lastAlign;
+        
+        public void UpdateWidget(bool byForce = false)
+        {
+            ApplyUniversalFill(byForce);
+        }
+
+        public void AnimateWidget(bool enable)
+        {
+            
+        }
 
         private void Start()
         {
             if (autoFitOnStart)
-                ApplyUniversalFill();
+                UpdateWidget();
         }
 
-        public void ApplyUniversalFill(bool force = false)
+        private void ApplyUniversalFill(bool force = false)
         {
             if (Camera.main == null) return;
 

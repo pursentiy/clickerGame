@@ -1,11 +1,11 @@
-using UnityEngine;
 using DG.Tweening;
 using Extensions;
+using UnityEngine;
 using Utilities.Disposable;
 
-namespace Common.Widgets
+namespace Common.Widgets.ContainerScaler
 {
-    public class CloudFloater: MonoBehaviour
+    public class CloudFloater: MonoBehaviour, IScalableWidget
     {
         [Header("References")]
         [SerializeField] private Transform cloudTransform;
@@ -24,13 +24,26 @@ namespace Common.Widgets
         private float _leftEdge;
         private float _rightEdge;
         private float _targetY;
+        
+        public void UpdateWidget(bool byForce = false)
+        {
+            
+        }
 
-        public void StopAnimation()
+        public void AnimateWidget(bool enable)
+        {
+            if (enable)
+                StartAnimation();
+            else
+                StopAnimation();
+        }
+
+        private void StopAnimation()
         {
             cloudTransform.DOKill(false);
         }
 
-        public void StartAnimation()
+        private void StartAnimation()
         {
             if (Random.Range(0f, 1f) < _disablingChance)
             {

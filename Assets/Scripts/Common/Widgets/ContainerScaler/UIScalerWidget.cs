@@ -1,17 +1,19 @@
-using Common.Widgets;
+using System.Collections.Generic;
 using Extensions;
-using Services;
 using UnityEngine;
 
-namespace Handlers
+namespace Common.Widgets.ContainerScaler
 {
-    public class UIScreenUpdater : MonoBehaviour
+    public class UIScalerWidget : MonoBehaviour
     {
         [SerializeField] private ParticleStretchWidget _particleStretchWidget;
         [SerializeField] private ParticleBurstEmissionScaler _particleBurstEmissionScaler;
         [SerializeField] private BackgroundFitter _backgroundFitter;
         [SerializeField] private CloudFloater[] _cloudFloaters;
-
+        
+        [SerializeField] private GameObject[] _scalableWidgetsGameObjects;
+        
+        private List<IScalableWidget> _scalableWidgets = new ();
         private ScreenOrientation _lastOrientation;
         private int _lastWidth;
         private int _lastHeight;
@@ -19,9 +21,34 @@ namespace Handlers
 
         private void Awake()
         {
+            GetScalableWidgets();
+            
             _lastOrientation = UnityEngine.Device.Screen.orientation;
             _lastWidth = UnityEngine.Device.Screen.width;
             _lastHeight = UnityEngine.Device.Screen.height;
+        }
+
+        private void GetScalableWidgets()
+        {
+            if (_scalableWidgetsGameObjects.IsCollectionNullOrEmpty())
+                return;
+
+            foreach (var scalableWidgetsGameObject in _scalableWidgetsGameObjects)
+            {
+                if (scalableWidgetsGameObject == null)
+                    continue;
+
+                var widgets = scalableWidgetsGameObject.GetComponents<IScalableWidget>();
+                
+                if (widgets.IsCollectionNullOrEmpty()) 
+                    continue;
+                
+                foreach (var scalableWidget in widgets)
+                {
+                    if (scalableWidget != null)
+                        _scalableWidgets.Add(scalableWidget);
+                }
+            }
         }
         
         private void Update()
@@ -39,7 +66,7 @@ namespace Handlers
         private void OnDisable() 
         {
             _canUpdate = false;
-            TryStopAllAnimations();
+            TryAnimateWidget(false);
         }
 
         private void OnEnable()
@@ -47,7 +74,7 @@ namespace Handlers
             _canUpdate = true;
             
             TryUpdateWidgets();
-            StarCloudsAnimation(true);
+            TryAnimateWidget(true);
         }
 
         private bool HasScreenChanged()
@@ -59,32 +86,23 @@ namespace Handlers
 
         private void TryUpdateWidgets()
         {
-            _particleStretchWidget.TryUpdateParticlesStretch();
-            _particleBurstEmissionScaler.TryUpdateEmissionData();
-            _backgroundFitter.ApplyUniversalFill();
-            
-            LoggerService.LogDebugEditor($"[{GetType().Name}] Widgets updated for resolution: {_lastWidth}x{_lastHeight}");
-        }
-
-        private void TryStopAllAnimations()
-        {
-            StarCloudsAnimation(false);
-        }
-        
-        private void StarCloudsAnimation(bool enable)
-        {
-            if (_cloudFloaters.IsNullOrEmpty())
+            if (_scalableWidgets.IsCollectionNullOrEmpty())
                 return;
-
-            foreach (var cloudFloater in _cloudFloaters)
+            
+            foreach (var scalableWidget in _scalableWidgets)
             {
-                if (cloudFloater == null) 
-                    continue;
-                
-                if (enable)
-                    cloudFloater.StartAnimation();
-                else
-                    cloudFloater.StopAnimation();
+                scalableWidget?.UpdateWidget();
+            }
+        }
+
+        private void TryAnimateWidget(bool enable)
+        {
+            if (_scalableWidgets.IsCollectionNullOrEmpty())
+                return;
+            
+            foreach (var scalableWidget in _scalableWidgets)
+            {
+                scalableWidget?.AnimateWidget(enable);
             }
         }
     }

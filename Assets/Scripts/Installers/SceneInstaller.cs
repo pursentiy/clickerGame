@@ -5,7 +5,6 @@ using Level.Widgets;
 using Services;
 using Services.CoroutineServices;
 using Services.FlyingRewardsAnimation;
-using Storage;
 using UnityEngine;
 using Zenject;
 #if UNITY_EDITOR
@@ -19,7 +18,6 @@ namespace Installers
         [SerializeField] private ScreenHandler _screenHandler;
         [SerializeField] private LevelSessionHandler _levelSessionHandler;
         [SerializeField] private LevelParamsHandler _levelParamsHandler;
-        [SerializeField] private UIScreenUpdater _uiScreenUpdater;
         [SerializeField] private UIBlockHandler _uiBlockHandler;
         [SerializeField] private UISystemData _uiSystemData;
 
@@ -34,7 +32,6 @@ namespace Installers
             UIInstaller.DiInstall(ContainerHolder.CurrentContainer, sceneServicesRoot, _uiSystemData);
             
             Container.Bind<UIBlockHandler>().FromInstance(_uiBlockHandler).AsSingle();
-            Container.Bind<UIScreenUpdater>().FromInstance(_uiScreenUpdater).AsSingle();
             Container.Bind<ScreenHandler>().FromInstance(_screenHandler).AsSingle();
             
             Container.BindInterfacesAndSelfTo<LevelSessionHandler>().FromInstance(_levelSessionHandler).AsSingle();

@@ -1,9 +1,9 @@
 using Extensions;
 using UnityEngine;
 
-namespace Common.Widgets
+namespace Common.Widgets.ContainerScaler
 {
-    public class ParticleStretchWidget : MonoBehaviour
+    public class ParticleStretchWidget : MonoBehaviour, IScalableWidget
     {
         [SerializeField] private ParticleSystem[] particleSystems;
         [Range(0.1f, 2f)]
@@ -12,9 +12,14 @@ namespace Common.Widgets
         private ParticleSystem.EmissionModule emission;
         private int lastWidth;
 
-        public void TryUpdateParticlesStretch()
+        public void UpdateWidget(bool byForce = false)
         {
             CheckScreenWidthAndUpdateParticles();
+        }
+
+        public void AnimateWidget(bool enable)
+        {
+            
         }
 
         private void CheckScreenWidthAndUpdateParticles()
