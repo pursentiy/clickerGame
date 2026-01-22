@@ -10,6 +10,7 @@ using Handlers.UISystem;
 using Installers;
 using Level.Widgets;
 using Plugins.FSignal;
+using Popup.Settings;
 using RSG;
 using Services;
 using Storage;
@@ -99,9 +100,15 @@ namespace Level.Hud
         {
             _fadeWidget.ResetWidget();
             _backButton.onClick.MapListenerWithSound(GoToMainMenuScreen).DisposeWith(this);
-            _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null)).DisposeWith(this);
+            _settingsButton.onClick.MapListenerWithSound(ShowSettingsPopup).DisposeWith(this);
 
             _figuresGroupSpacing = _figuresGroup.spacing;
+        }
+
+        private void ShowSettingsPopup()
+        {
+            var context = new SettingsPopupContext(false);
+            _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(context);
         }
         
         private void SetAssemblyContainerScale(float scale)

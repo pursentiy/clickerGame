@@ -258,19 +258,19 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 84807267793231872
-    m_Localized: Dunas Doradas
+    m_Localized: "\u0417\u043E\u043B\u043E\u0442\u044B\u0435 \u0434\u044E\u043D\u044B"
     m_Metadata:
       m_Items: []
   - m_Id: 84807307479736320
-    m_Localized: "Ca\xF1\xF3n Oculto"
+    m_Localized: "\u0421\u043A\u0440\u044B\u0442\u044B\u0439 \u043A\u0430\u043D\u044C\u043E\u043D"
     m_Metadata:
       m_Items: []
   - m_Id: 84807338681163776
-    m_Localized: Cresta Rocosa
+    m_Localized: "\u0421\u043A\u0430\u043B\u044B \u0438 \u0445\u0440\u0435\u0431\u0442\u044B"
     m_Metadata:
       m_Items: []
   - m_Id: 84807367546363904
-    m_Localized: Tormenta de Polvo
+    m_Localized: "\u041F\u044B\u043B\u0435\u0432\u0430\u044F \u0431\u0443\u0440\u044F"
     m_Metadata:
       m_Items: []
   references:

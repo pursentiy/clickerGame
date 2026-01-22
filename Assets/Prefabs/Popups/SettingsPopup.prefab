@@ -1527,6 +1527,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f656541fa5bbf4cb99b9832d073a1f9d, type: 2}
   - {fileID: 11400000, guid: 2aecac877d06045daaa8401526191955, type: 2}
   SaveLanguageButton: {fileID: 119001573344383953}
+  LanguageChangingContainer: {fileID: 2078435917352961355}
 --- !u!114 &6075597891337191011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1741,11 +1742,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8643860828214066137}
-  m_Father: {fileID: 7272768924608608795}
+  m_Father: {fileID: 2078435917352961355}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 536.90796, y: -2028}
+  m_AnchoredPosition: {x: 450.765, y: -799.11914}
   m_SizeDelta: {x: 501.51, y: 185}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6906934930122313247
@@ -2351,7 +2352,6 @@ RectTransform:
   m_Children:
   - {fileID: 5115721086226969464}
   - {fileID: 2078435917352961355}
-  - {fileID: 6797726500641294199}
   m_Father: {fileID: 5537853940069154768}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.046478957, y: 0.05164967}
@@ -3186,6 +3186,7 @@ RectTransform:
   - {fileID: 2280416601965736122}
   - {fileID: 6453266392448439069}
   - {fileID: 5110578891858894759}
+  - {fileID: 6797726500641294199}
   m_Father: {fileID: 7272768924608608795}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.07624382, y: 0.24333659}

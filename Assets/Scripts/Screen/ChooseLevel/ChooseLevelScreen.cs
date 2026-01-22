@@ -3,6 +3,7 @@ using Components.UI;
 using Extensions;
 using Handlers;
 using Handlers.UISystem;
+using Popup.Settings;
 using Popup.Universal;
 using Screen.ChooseLevel.Widgets;
 using Services;
@@ -58,7 +59,8 @@ namespace Screen.ChooseLevel
 
         private void OnSettingsButtonClicked()
         {
-            _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null);
+            var context = new SettingsPopupContext(true);
+            _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(context);
         }
 
         private void OnGoBackButtonClicked()

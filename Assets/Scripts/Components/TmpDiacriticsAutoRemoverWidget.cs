@@ -1,19 +1,29 @@
 using Extensions;
+using Installers;
 using Services;
 using TMPro;
 using UnityEngine;
+using Utilities.Disposable;
+using Zenject;
 
 namespace Components
 {
     //Put on the object only with automatic text replacement
     [RequireComponent(typeof(TMP_Text))]
-    public class TmpDiacriticsAutoRemoverWidget : MonoBehaviour
+    public class TmpDiacriticsAutoRemoverWidget : InjectableMonoBehaviour
     {
+        [Inject] private readonly GameSettingsManager _gameSettingsManager;
+        
         [SerializeField] private TMP_Text _text;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+            
             TrySetTmpText();
+            
+            //TODO ADD LOGIC FOR FIXING WELCOME SCREEN IN SPANISH
+            _gameSettingsManager.OnLanguageChangedSignal.MapListener(TrySetTmpText).DisposeWith(this);
         }
 
         private void Start()

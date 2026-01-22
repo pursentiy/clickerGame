@@ -11,7 +11,7 @@ using Utilities.Disposable;
 using Zenject;
 
 [AssetKey("UI Popups/SettingsPopupMediator")]
-public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
+public class SettingsPopupMediator : UIPopupBase<SettingsPopupView, SettingsPopupContext>
 {
     [Inject] private readonly SoundHandler _soundHandler;
     [Inject] private readonly GameSettingsManager _gameSettingsManager;
@@ -38,12 +38,21 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView>
         
         RefreshLanguageUI();
         SetupToggles();
+        SetupLanguageSettingsGroup();
         
-        View.LeftLanguageButton.onClick.MapListenerWithSound(() => ChangePendingIndex(-1)).DisposeWith(this);
-        View.RightLanguageButton.onClick.MapListenerWithSound(() => ChangePendingIndex(1)).DisposeWith(this);
-        View.SaveLanguageButton.onClick.MapListenerWithSound(TrySaveLanguage).DisposeWith(this);
         View.CloseButton.onClick.MapListenerWithSound(Hide).DisposeWith(this);
         View.BackgroundButton.onClick.MapListenerWithSound(Hide).DisposeWith(this);
+    }
+
+    private void SetupLanguageSettingsGroup()
+    {
+        View.LanguageChangingContainer.TrySetActive(Context.AllowLanguageChanging);
+        if (Context.AllowLanguageChanging)
+        {
+            View.LeftLanguageButton.onClick.MapListenerWithSound(() => ChangePendingIndex(-1)).DisposeWith(this);
+            View.RightLanguageButton.onClick.MapListenerWithSound(() => ChangePendingIndex(1)).DisposeWith(this);
+            View.SaveLanguageButton.onClick.MapListenerWithSound(TrySaveLanguage).DisposeWith(this);
+        }
     }
 
     private void SetupToggles()

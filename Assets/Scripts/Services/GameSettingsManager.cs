@@ -1,5 +1,6 @@
 using Extensions;
 using Handlers;
+using Plugins.FSignal;
 using Services.Base;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -16,6 +17,8 @@ namespace Services
         [Inject] private readonly GameParamsManager _gameParamsManager;
         [Inject] private readonly LanguageConversionService _languageConversionService;
         [Inject] private readonly SoundHandler _soundHandler;
+        
+        public FSignal OnLanguageChangedSignal { get; } = new FSignal();
         
         protected override void OnInitialize()
         {
@@ -72,8 +75,11 @@ namespace Services
                 LoggerService.LogError(this, $"{nameof(SetCurrentLanguage)}: trying to set null locale");
                 return;
             }
-            
+            var localeChanged = LocalizationSettings.SelectedLocale.Identifier.Code != locale.Identifier.Code;
             LocalizationSettings.SelectedLocale = locale;
+            
+            if (localeChanged)
+                OnLanguageChangedSignal.Dispatch();
         }
 
         private void EnableMultiTouch(bool enable)

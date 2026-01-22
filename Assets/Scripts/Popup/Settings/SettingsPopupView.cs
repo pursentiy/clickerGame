@@ -19,5 +19,6 @@ namespace Popup.Settings
         public Sprite[] LanguageFlags;
         public TMP_SpriteAsset[] LanguageFlagsAssets;
         public Button SaveLanguageButton;
+        public RectTransform LanguageChangingContainer;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Extensions;
 using Handlers;
 using Handlers.UISystem;
+using Popup.Settings;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities.Disposable;
@@ -22,7 +23,13 @@ namespace Screen.WelcomeScreen
             base.Start();
             
             _playButton.onClick.MapListenerWithSound(PushNextScreen).DisposeWith(this);
-            _settingsButton.onClick.MapListenerWithSound(()=> _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(null)).DisposeWith(this);
+            _settingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
+        }
+        
+        private void OnSettingsButtonClicked()
+        {
+            var context = new SettingsPopupContext(true);
+            _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(context);
         }
 
         private void PushNextScreen()
