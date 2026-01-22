@@ -1,6 +1,6 @@
-using Installers;
 using Plugins.FSignal;
 using Services;
+using UnityEngine;
 using Zenject;
 
 namespace Level.Widgets
@@ -9,7 +9,7 @@ namespace Level.Widgets
     {
         [Inject] private TimeService _timeService;
         
-        public FSignal<float> CurrentLevelPlayingTimeChangedSignal = new ();
+        public FSignal<double> CurrentLevelPlayingTimeChangedSignal = new ();
         public float CurrentLevelPlayingTime {get; private set;}
         
         private string _levelId;
@@ -36,14 +36,15 @@ namespace Level.Widgets
             CurrentLevelPlayingTime = 0;
         }
 
-        private void OnTimerUpdate(float time)
+        private void OnTimerUpdate(double time)
         {
-            var oldTimeInSeconds = (int)CurrentLevelPlayingTime;
-            CurrentLevelPlayingTime = time;
-            var newTimeInSeconds = (int)CurrentLevelPlayingTime;
+            var roundedTime = (float)System.Math.Round(time, 2);
+
+            if (!(Mathf.Abs(CurrentLevelPlayingTime - roundedTime) >= 0.01f)) 
+                return;
             
-            if (newTimeInSeconds > oldTimeInSeconds)
-                CurrentLevelPlayingTimeChangedSignal.Dispatch(newTimeInSeconds);
+            CurrentLevelPlayingTime = roundedTime;
+            CurrentLevelPlayingTimeChangedSignal.Dispatch(CurrentLevelPlayingTime);
         }
     }
 }

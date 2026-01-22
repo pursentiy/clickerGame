@@ -118,7 +118,7 @@ namespace Level.Hud
             _figuresAssemblyContainer.localScale = new Vector3(scale, scale, scale);
         }
         
-        private void OnTimerChanged(float seconds)
+        private void OnTimerChanged(double seconds)
         {
             _starsProgressWidget.OnTimeUpdate(seconds);
             _levelTimerWidget.UpdateTime(seconds);

@@ -17,20 +17,20 @@ namespace Services
         private Dictionary<string, Timer> _activeTimers = new Dictionary<string, Timer>();
         
         // --- 1. Standard Countdown Timer ---
-        public Timer StartTimer(string id, float duration, Action onComplete = null, Action<float> onUpdate = null)
+        public Timer StartTimer(string id, float duration, Action onComplete = null, Action<double> onUpdate = null)
         {
             return CreateTimerInternal(id, duration, false, onComplete, onUpdate);
         }
 
         // --- 2. Stopwatch (Counts Up) ---
-        public Timer StartStopwatch(string id, Action<float> onUpdate = null)
+        public Timer StartStopwatch(string id, Action<double> onUpdate = null)
         {
             // Stopwatches have no fixed duration, so we pass 0 or ignored value
             return CreateTimerInternal(id, 0f, true, null, onUpdate);
         }
 
         private Timer CreateTimerInternal(string id, float duration, bool isStopwatch, Action onComplete,
-            Action<float> onUpdate)
+            Action<double> onUpdate)
         {
             if (_activeTimers.ContainsKey(id))
             {
@@ -140,11 +140,11 @@ namespace Services
         public bool IsDisposed { get; private set; }
 
         public Action OnComplete;
-        public Action<float> OnUpdate; // Timer = Remaining, Stopwatch = Elapsed
+        public Action<double> OnUpdate; // Timer = Remaining, Stopwatch = Elapsed
 
         public Coroutine Coroutine;
 
-        public Timer(string id, float duration, bool isStopwatch, Action onComplete, Action<float> onUpdate)
+        public Timer(string id, float duration, bool isStopwatch, Action onComplete, Action<double> onUpdate)
         {
             Id = id;
             Duration = duration;

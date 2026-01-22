@@ -39,7 +39,7 @@ namespace Level.Widgets
             SetupStarsInitialState();
         }
 
-        public void OnTimeUpdate(float currentTime)
+        public void OnTimeUpdate(double currentTime)
         {
             if (_isStarActive == null) 
                 return;

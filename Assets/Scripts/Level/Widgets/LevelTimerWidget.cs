@@ -9,9 +9,9 @@ namespace Level.Widgets
     {
         [SerializeField] private TMP_Text _timerText;
 
-        public void UpdateTime(float seconds)
+        public void UpdateTime(double seconds)
         {
-            _timerText.text = DateTimeExtensions.ToClockTime(seconds);
+            _timerText.text = DateTimeExtensions.ToStopwatchTime(seconds);
         }
     }
 }

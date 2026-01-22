@@ -29,7 +29,7 @@ namespace GameState.OnGameEnterSequence
             _applicationService.RegisterDisposableService<AdsService>();
             _applicationService.SetApplicationInitialized();
             
-            LoggerService.LogWarning($"{nameof(StartServicesState)}: Disposable Services  registered");
+            LoggerService.LogDebug($"{nameof(StartServicesState)}: Disposable Services  registered");
 
             NextState();
         }
