@@ -132,24 +132,21 @@ namespace Handlers.UISystem
         {
             var canvas = Instantiate(prefab, parent).GetComponent<Canvas>();
             canvas.gameObject.name = canvasName;
+    
+            var rt = canvas.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(1, 1);
+            rt.offsetMin = Vector2.zero; // Лево и Низ
+            rt.offsetMax = Vector2.zero; // Право и Верх
             
-            var size = new Vector2(parent.sizeDelta.x, parent.sizeDelta.y);
-            var aspectRatio = size.x / size.y;
-            
-            if (aspectRatio > MaxAspectRatio)
-            {
-                size.x = size.y * MaxAspectRatio;
-            }
-            else if (aspectRatio < MinAspectRatio)
-            {
-                size.x = size.y * MinAspectRatio;
-            }
-            
-            var rt = canvas.GetRectTransform();
-            rt.sizeDelta = size;
+            rt.anchoredPosition = Vector2.zero;
+            rt.sizeDelta = Vector2.zero;
             rt.localScale = Vector3.one * UIScale;
+            rt.localPosition = Vector3.zero;
             
-            Destroy(canvas.GetComponent<CanvasScaler>());
+            var scaler = canvas.GetComponent<CanvasScaler>();
+            if (scaler != null) Destroy(scaler);
+
             return canvas;
         }
 

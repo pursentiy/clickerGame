@@ -55,7 +55,6 @@ namespace Common.Widgets.ContainerScaler
                 _lastWidth = UnityEngine.Device.Screen.width;
                 _lastHeight = UnityEngine.Device.Screen.height;
                 
-                LoggerService.LogWarning(this, $"Updating screen width: {_lastWidth}, height: {_lastHeight}");
                 TryUpdateWidgets();
             }
         }
