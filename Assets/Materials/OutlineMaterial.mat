@@ -97,6 +97,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
+    - _AlphaCutoff: 0.1
     - _AlphaToMask: 0
     - _BaseAlpha: 0
     - _Blend: 0
@@ -110,6 +111,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
+    - _EdgeSmoothing: 0.243
     - _EnvironmentReflections: 1
     - _Falloff: 0.3
     - _FillAlpha: 0.832
