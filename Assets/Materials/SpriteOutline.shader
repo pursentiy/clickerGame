@@ -1,4 +1,4 @@
-Shader "Custom/SpriteFill_Pro_Spiral_Colored"
+Shader "Custom/SpriteFill_Pro_Spiral_Colored_Clean"
 {
     Properties
     {
@@ -6,6 +6,10 @@ Shader "Custom/SpriteFill_Pro_Spiral_Colored"
         _ShadowColor ("Shadow Color", Color) = (0,0,0,1)
         _ShadowWidth ("Shadow Width", Range(0, 30)) = 2
         _Falloff ("Shadow Softness", Range(0.1, 4)) = 1.0
+
+        [Header(Artifact Fix)]
+        _AlphaCutoff ("Alpha Cutoff (Erosion)", Range(0, 1)) = 0.1
+        _EdgeSmoothing ("Edge Smoothing", Range(0.01, 0.5)) = 0.1
 
         [Header(Base Settings)]
         _PaleIntensity ("Pale Intensity (0-1)", Range(0, 1)) = 0.5
@@ -55,6 +59,7 @@ Shader "Custom/SpriteFill_Pro_Spiral_Colored"
             float _ShadowWidth, _Falloff, _FillAlpha, _PaleIntensity, _BaseAlpha;
             float _WaveSpeed, _WaveFreq, _WaveStrength;
             float _SpiralSpeed, _SpiralArms, _SpiralTightness;
+            float _AlphaCutoff, _EdgeSmoothing;
 
             v2f vert(appdata_base v) {
                 v2f o;
@@ -66,41 +71,46 @@ Shader "Custom/SpriteFill_Pro_Spiral_Colored"
             fixed4 frag(v2f i) : SV_Target
             {
                 fixed4 mainTex = tex2D(_MainTex, i.uv);
-                if (mainTex.a <= 0.05) discard;
+                
+                // --- 1. АНТИ-АРТЕФАКТ ЛОГИКА ---
+                // Создаем чистую маску. smoothstep отрезает значения ниже _AlphaCutoff
+                // Это убирает полупрозрачные блоки сжатия.
+                float cleanMask = smoothstep(_AlphaCutoff, _AlphaCutoff + _EdgeSmoothing, mainTex.a);
+                
+                // Применяем маску к исходному цвету, чтобы "грязные" края не подмешивались
+                mainTex.a *= cleanMask;
 
-                // --- 1. PALE & BASE ALPHA LOGIC ---
+                // --- 2. PALE & BASE ALPHA ---
                 float luminance = dot(mainTex.rgb, float3(0.2126, 0.7152, 0.0722));
                 float3 grayscale = float3(luminance, luminance, luminance);
                 mainTex.rgb = lerp(mainTex.rgb, grayscale, _PaleIntensity);
                 
-                // Set the starting alpha based on the property
                 float currentAlpha = mainTex.a * _BaseAlpha;
 
-                // --- 2. SHADOW LOGIC ---
+                // --- 3. SHADOW LOGIC ---
                 float totalAlpha = 0;
-                int sampleCount = 0;
                 float2 baseOffset = _MainTex_TexelSize.xy * _ShadowWidth;
 
-                for (float angle = 0; angle < 6.28; angle += 0.4)
+                // Берем чуть больше выборок для плавности, раз сжатие сильное
+                for (float angle = 0; angle < 6.28; angle += 0.6)
                 {
                     float2 offset = float2(cos(angle), sin(angle)) * baseOffset;
-                    totalAlpha += tex2D(_MainTex, i.uv + offset).a;
-                    sampleCount++; 
+                    float sampleA = tex2D(_MainTex, i.uv + offset).a;
+                    // Тень тоже фильтруем от мусора
+                    totalAlpha += smoothstep(_AlphaCutoff, _AlphaCutoff + _EdgeSmoothing, sampleA);
                 }
 
-                float avgAlpha = totalAlpha / max(sampleCount, 1);
+                float avgAlpha = totalAlpha / 11.0; // 6.28 / 0.6 ~= 11
                 float shadowMask = pow(saturate(1.0 - avgAlpha), _Falloff);
 
-                // --- 3. ANIMATION & COLOR LOGIC ---
+                // --- 4. ANIMATION LOGIC ---
                 float3 effectColorMix = mainTex.rgb;
                 float animationAlphaBonus = 0.0;
 
                 #ifdef ENABLE_LINEAR
                     float lWave = sin((i.uv.y + i.uv.x) * _WaveFreq + (_Time.g * _WaveSpeed));
-                    float lIntensity = lWave * 0.5 + 0.5;
-                    
+                    float lIntensity = saturate(lWave * 0.5 + 0.5);
                     effectColorMix = lerp(effectColorMix, _LinearColor.rgb, lIntensity * _WaveStrength);
-                    // Additive alpha logic: waves can make the image more opaque
                     animationAlphaBonus = max(animationAlphaBonus, lIntensity * _WaveStrength);
                 #endif
 
@@ -113,18 +123,15 @@ Shader "Custom/SpriteFill_Pro_Spiral_Colored"
                     float sIntensity = saturate(sWave * 0.5 + 0.5);
                     
                     effectColorMix = lerp(effectColorMix, _SpiralColor.rgb, sIntensity);
-                    // Additive alpha logic
                     animationAlphaBonus = max(animationAlphaBonus, sIntensity);
                 #endif
 
-                // Combine base alpha with the animation "glow"
-                // This ensures the image is visible where the base alpha says OR where waves are
-                float finalAlpha = saturate(currentAlpha + animationAlphaBonus);
-
-                // --- 4. FINAL COMPOSITION ---
+                // --- 5. FINAL COMPOSITION ---
                 fixed4 finalCol;
                 finalCol.rgb = lerp(effectColorMix, _ShadowColor.rgb, shadowMask);
-                finalCol.a = finalAlpha * _FillAlpha;
+                
+                // Итоговая прозрачность: (База + Анимация) * Общий множитель * Наша чистая маска
+                finalCol.a = saturate(currentAlpha + animationAlphaBonus * cleanMask) * _FillAlpha * cleanMask;
 
                 return finalCol;
             }

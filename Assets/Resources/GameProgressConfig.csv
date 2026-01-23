@@ -1,6 +1,6 @@
 PackId;PackName;StarsToUnlockPack;LevelId;LevelName;TimeA;TimeB;TimeC;FigureScale;Difficulty
-1;oasis;0;1;Duck;3.23;4.31;6.47;2.8;1
-1;oasis;0;2;Panda;3.75;5.0;7.5;2.3;1
+1;oasis;0;1;Duck;3.55;4.31;6.47;2.8;1
+1;oasis;0;2;Panda;3.52;5.0;7.5;2.3;1
 1;oasis;0;3;Rabbit;3.45;4.6;6.9;2.56;1
 1;oasis;0;4;Deer;5.0;6.66;9.99;3;2
 1;oasis;0;5;Pig;4.5;6.5;9.5;2.7;2

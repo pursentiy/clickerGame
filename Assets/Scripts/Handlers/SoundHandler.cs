@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using Installers;
 using Storage.Audio;
 using UnityEngine;
 using Zenject;
@@ -19,14 +17,16 @@ namespace Handlers
         [SerializeField] private float _musicVolume = 0.25f;
 
         private Coroutine _ambientAwaitCoroutine;
-        private bool _isMusicOn;
 
         //TODO FIX EXCEPT CLIP CHOOSING
-        //TODO ADD VOLUME SETTING
+        //TODO ADD VOLUME SETTING AND PLAYING LOGIC
         public void StartAmbience(string exceptClipName = "")
         {
             var clip = _audioStorageData.MusicPack.GetRandomSoundExceptSpecific(exceptClipName);
             if (clip == null)
+                return;
+
+            if (_musicSource.isPlaying)
                 return;
             
             _musicSource.PlayOneShot(clip.clip, 0.7f);
