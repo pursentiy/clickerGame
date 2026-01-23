@@ -5,6 +5,7 @@ using Handlers.UISystem;
 using Popup.CompleteLevelInfoPopup;
 using Popup.Universal;
 using Services.Player;
+using UnityEngine;
 using Zenject;
 
 namespace Services.Cheats
@@ -20,6 +21,7 @@ namespace Services.Cheats
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
 
         public int StarsCount { get; set; } = 5;
+        public int GameTimeScale { get; set; } = 10;
         public bool UpdateProfileValues { get; set; }
 
         public void ShowCompleteLevelInfoPopupMediator()
@@ -94,6 +96,11 @@ namespace Services.Cheats
             {
                 _playerCurrencyService.TrySpendStars(-StarsCount);
             }
+        }
+
+        public void SetGameTimeScale()
+        {
+            Time.timeScale = GameTimeScale;
         }
     }
 }
