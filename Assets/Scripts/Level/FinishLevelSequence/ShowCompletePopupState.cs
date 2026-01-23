@@ -49,9 +49,9 @@ namespace Level.FinishLevelSequence
         
         private void GoToLevelsMenu()
         {
-            if (Context.PackInfo != null)
+            if (Context.PackInfo == null)
             {
-                LoggerService.LogError(this, $"[{nameof(ShowCompletePopup)}]: {nameof(Context.PackInfo)} is null. Returning to Welcome Screen");
+                LoggerService.LogWarning(this, $"[{nameof(ShowCompletePopup)}]: {nameof(Context.PackInfo)} is null. Returning to Welcome Screen");
                 _screenHandler.ShowWelcomeScreen();
                 return;
             }

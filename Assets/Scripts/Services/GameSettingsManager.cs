@@ -50,7 +50,8 @@ namespace Services
             
             _soundHandler.SetMusicVolume(_gameParamsManager.IsMusicOn);
             _soundHandler.SetSoundVolume(_gameParamsManager.IsSoundOn);
-            _soundHandler.StartAmbience();
+            if (_gameParamsManager.IsMusicOn)
+                _soundHandler.StartAmbience();
         }
         
         private void OnMusicChangedSignal(bool isOn)

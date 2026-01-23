@@ -98,7 +98,7 @@ namespace Services
             }
             catch (Exception e)
             {
-                LoggerService.LogError($"{GetType().Name} SDK Exception: {e.Message}");
+                LoggerService.LogWarning($"{GetType().Name} SDK Exception: {e.Message}");
                 FinalizeAd(false);
             }
 

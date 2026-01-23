@@ -74,6 +74,11 @@ public class SettingsPopupMediator : UIPopupBase<SettingsPopupView, SettingsPopu
     {
         _gameParamsManager.SetMusicAvailable(isOn);
         _soundHandler.SetMusicVolume(isOn);
+        
+        if (isOn)
+            _soundHandler.StartAmbience();
+        else
+            _soundHandler.StopAmbience();
     }
 
     private void ChangePendingIndex(int direction)

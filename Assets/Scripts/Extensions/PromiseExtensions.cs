@@ -32,13 +32,27 @@ namespace Extensions
         
         public static IPromise AsNonGenericPromise<T>(this IPromise<T> promise)
         {
-            var nonGenericPromise = new Promise(promise.Name);
+            if (promise == null)
+                return Promise.Resolved();
+            
+            var name = promise.Name ?? "DefaultNonGenericPromise";
+            var nonGenericPromise = new Promise(name);
 
-            promise.Then(_ => nonGenericPromise.Resolve());
-            promise.Catch(exception => nonGenericPromise.RejectSilent(exception));
-            promise.OnCancel(() => nonGenericPromise.Cancel());
+            promise.Then(_ => nonGenericPromise.SafeResolve());
+            promise.Catch(exception => nonGenericPromise.SafeReject(exception));
+            promise.OnCancel(() => nonGenericPromise.SafeCancel());
 
             return nonGenericPromise;
+        }
+        
+        public static void SafeReject(this IPendingPromise promise, Exception exception)
+        {
+            if (promise is not { CanBeRejected: true })
+            {
+                return;
+            }
+
+            promise.Reject(exception);
         }
         
         public static void SafeResolve<PromisedT>(this IPendingPromise<PromisedT> promise, PromisedT value)

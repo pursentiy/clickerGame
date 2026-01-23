@@ -32,7 +32,7 @@ namespace Level.FinishLevelSequence
 
         private IPromise ShowInterstitialAds()
         {
-            return _adsService.ShowInterstitial().AsNonGenericPromise();
+            return _adsService.ShowInterstitial().AsNonGenericPromise().CancelWith(this);
         }
 
         private void NextState()
