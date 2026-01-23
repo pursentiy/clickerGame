@@ -1412,7 +1412,7 @@ RectTransform:
   m_Father: {fileID: 4922581532116615226}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.057718266}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0.5}
@@ -1474,11 +1474,11 @@ MonoBehaviour:
   m_ChildAlignment: 3
   m_Spacing: 100
   m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
+  m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
+  m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
+  m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
 --- !u!114 &4922581533096915575
 MonoBehaviour:
@@ -1564,7 +1564,7 @@ MonoBehaviour:
   _scrollRect: {fileID: 4922581532116615206}
   _backButton: {fileID: 4472184699997703039}
   _settingsButton: {fileID: 5021699771832273885}
-  _figuresGroup: {fileID: 4922581533096915572}
+  _figuresLayoutGroup: {fileID: 4922581533096915572}
   _canvasGroup: {fileID: 6055261361001014442}
   _starsProgressWidget: {fileID: 2115776750611169318}
   _levelTimerWidget: {fileID: 6215761390008440264}

@@ -13,6 +13,7 @@ using Plugins.FSignal;
 using Popup.Settings;
 using RSG;
 using Services;
+using Services.CoroutineServices;
 using Storage;
 using Storage.Snapshots.LevelParams;
 using UnityEngine;
@@ -32,13 +33,14 @@ namespace Level.Hud
         [Inject] private readonly SoundHandler _soundHandler;
         [Inject] private readonly LevelInfoTrackerService _levelInfoTrackerService;
         [Inject] private readonly UIManager _uiManager;
+        [Inject] private readonly CoroutineService _coroutineService;
 
         [SerializeField] private RectTransform _figuresDraggingContainer;
         [SerializeField] private RectTransform _figuresAssemblyContainer;
         [SerializeField] private ScrollRect _scrollRect;
         [SerializeField] private Button _backButton;
         [SerializeField] private Button _settingsButton;
-        [SerializeField] private HorizontalLayoutGroup _figuresGroup;
+        [SerializeField] private HorizontalLayoutGroup _figuresLayoutGroup;
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private StarsProgressWidget _starsProgressWidget;
         [SerializeField] private LevelTimerWidget _levelTimerWidget;
@@ -89,6 +91,9 @@ namespace Level.Hud
         {
             levelFiguresParams.ForEach(SetDraggingFigure);
             levelFiguresParams.ForEach(SetAssemblyContainerFigure);
+            
+            _coroutineService.WaitFrame().Then(() => LayoutRebuilder.ForceRebuildLayoutImmediate(_figuresDraggingContainer))
+                .CancelWith(this);
         }
         
         private void Start()
@@ -102,7 +107,7 @@ namespace Level.Hud
             _backButton.onClick.MapListenerWithSound(GoToMainMenuScreen).DisposeWith(this);
             _settingsButton.onClick.MapListenerWithSound(ShowSettingsPopup).DisposeWith(this);
 
-            _figuresGroupSpacing = _figuresGroup.spacing;
+            _figuresGroupSpacing = _figuresLayoutGroup.spacing;
         }
 
         private void ShowSettingsPopup()
@@ -205,7 +210,6 @@ namespace Level.Hud
                 _shiftingSequence.Complete();
 
             _shiftingSequence = DOTween.Sequence();
-            _figuresGroup.enabled = false;
 
             _figureAnimalsForAssemblyList.ForEach(figure =>
             {
