@@ -209,7 +209,7 @@ namespace Level.Hud
             if(_shiftingSequence != null && _shiftingSequence.IsActive())
                 _shiftingSequence.Complete();
 
-            _shiftingSequence = DOTween.Sequence();
+            _shiftingSequence = DOTween.Sequence().KillWith(this);
 
             _figureAnimalsForAssemblyList.ForEach(figure =>
             {
@@ -233,14 +233,15 @@ namespace Level.Hud
                 return;
             }
             
-            var shiftingSequence = DOTween.Sequence();
+            var shiftingSequence = DOTween.Sequence().KillWith(this);
             _figureAnimalsForAssemblyList.ForEach(figure =>
             {
                 if (figure.FigureId <= figureId)
                     return;
                 
                 var position = figure.ContainerTransform.localPosition;
-                shiftingSequence.Join(figure.ContainerTransform.DOLocalMove(new Vector2(position.x - _figuresGroupSpacing, position.y), 0.15f));
+                shiftingSequence
+                    .Join(figure.ContainerTransform.DOLocalMove(new Vector2(position.x - _figuresGroupSpacing, position.y), 0.15f));
             });
             
             shiftingSequence.OnComplete(animationPromise.Resolve);
@@ -286,7 +287,22 @@ namespace Level.Hud
         public void ReturnFigureBackToScroll(int figureId)
         {
             var figure = GetFigureById(figureId);
+            if (figure == null)
+            {
+                LoggerService.LogWarning($"[{nameof(ReturnFigureBackToScroll)}]: No figure found with id " + figureId);
+                return;
+            }
+            
             figure.FigureTransform.SetParent(figure.ContainerTransform);
+            _coroutineService.WaitFrame().Then(ResetFigureOffset).CancelWith(this);
+            void ResetFigureOffset()
+            {
+                if (figure == null ||  figure.ContainerTransform == null)
+                    return;
+                
+                figure.FigureTransform.offsetMin = Vector2.zero;
+                figure.FigureTransform.offsetMax = Vector2.zero;
+            }
         }
 
         public void Dispose()
