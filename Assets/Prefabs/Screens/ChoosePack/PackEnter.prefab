@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71bb55f7cf864682810fa649f2caa64f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _holder: {fileID: 1803877355706238534}
   _fadeImage: {fileID: 488405301101980088}
   _packImagePrefabContainer: {fileID: 8776278023291523590}
   _packText: {fileID: 1803877355841150641}

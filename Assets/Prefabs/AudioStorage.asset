@@ -30,6 +30,10 @@ MonoBehaviour:
       clip: {fileID: 8300000, guid: e4514a9b5d7e25a4fa6edec12a5a6cc7, type: 3}
       volume: 0
       pitch: 0
+    - name: pack_unlocked
+      clip: {fileID: 8300000, guid: 03d26d9c6e8d94812be028c062434a97, type: 3}
+      volume: 0
+      pitch: 0
   _musicPacks:
     sounds:
     - name: theme_1

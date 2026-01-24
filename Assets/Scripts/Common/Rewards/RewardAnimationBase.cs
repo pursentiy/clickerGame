@@ -41,19 +41,19 @@ namespace Common.Rewards
             float delaySpeedupFactor = 1f
         );
 
-        public (IPromise AllParticlesFinish, IPromise AnyParticleFinish) AnimateAndWaitFor(Vector2 startingPos, Vector2 targetPos, float? maybeParticleSize, long count, float rewardsMoveTimeSpeedupFactor = 1f, RectTransform targetContainer = null, Transform endWidget = null, Transform endWidgetParent = null, float particleSpacing = 1f, UnityAction callbackForEachAnimation = null, float delaySpeedupFactor = 1f)
+        public (IPromise AllParticlesFinish, IPromise AnyParticleFinish) AnimateAndWaitFor(Vector2 startingPos, Vector2 targetPos, float? maybeParticleSize, long count, float rewardsMoveTimeSpeedupFactor = 1f, RectTransform targetContainer = null, Transform endWidget = null, Transform endWidgetParent = null, float appearDistanceScale = 1f, UnityAction callbackForEachAnimation = null, float delaySpeedupFactor = 1f)
         {
-            return PerformAnimation(startingPos, targetPos, maybeParticleSize, count, rewardsMoveTimeSpeedupFactor, targetContainer, endWidget, endWidgetParent, particleSpacing, callbackForEachAnimation, delaySpeedupFactor);
+            return PerformAnimation(startingPos, targetPos, maybeParticleSize, count, rewardsMoveTimeSpeedupFactor, targetContainer, endWidget, endWidgetParent, appearDistanceScale, callbackForEachAnimation, delaySpeedupFactor);
         }
 
-        public IPromise AnimateAndWaitAll(Vector2 startingPos, Vector2 targetPos, float? maybeParticleSize, long count, float rewardsMoveTimeSpeedupFactor = 1f, RectTransform targetContainer = null, Transform endWidget = null, Transform endWidgetParent = null, float particleSpacing = 1f, float delaySpeedupFactor = 1f)
+        public IPromise AnimateAndWaitAll(Vector2 startingPos, Vector2 targetPos, float? maybeParticleSize, long count, float rewardsMoveTimeSpeedupFactor = 1f, RectTransform targetContainer = null, Transform endWidget = null, Transform endWidgetParent = null, float appearDistanceScale = 1f, float delaySpeedupFactor = 1f)
         {
-            return PerformAnimation(startingPos, targetPos, maybeParticleSize, count, rewardsMoveTimeSpeedupFactor, targetContainer, endWidget, endWidgetParent, particleSpacing, delaySpeedupFactor: delaySpeedupFactor).AllParticlesFinish;
+            return PerformAnimation(startingPos, targetPos, maybeParticleSize, count, rewardsMoveTimeSpeedupFactor, targetContainer, endWidget, endWidgetParent, appearDistanceScale, delaySpeedupFactor: delaySpeedupFactor).AllParticlesFinish;
         }
 
-        public IPromise AnimateAndWaitOnlyFirst(Vector2 startingPos, Vector2 targetPos, float? maybeParticleSize, long count, float rewardsMoveTimeSpeedupFactor = 1f, RectTransform targetContainer = null, Transform endWidget = null, Transform endWidgetParent = null, float particleSpacing = 1f, float delaySpeedupFactor = 1f)
+        public IPromise AnimateAndWaitOnlyFirst(Vector2 startingPos, Vector2 targetPos, float? maybeParticleSize, long count, float rewardsMoveTimeSpeedupFactor = 1f, RectTransform targetContainer = null, Transform endWidget = null, Transform endWidgetParent = null, float appearDistanceScale = 1f, float delaySpeedupFactor = 1f)
         {
-            return PerformAnimation(startingPos, targetPos, maybeParticleSize, count, rewardsMoveTimeSpeedupFactor, targetContainer, endWidget, endWidgetParent, particleSpacing, delaySpeedupFactor: delaySpeedupFactor).AnyParticleFinish;
+            return PerformAnimation(startingPos, targetPos, maybeParticleSize, count, rewardsMoveTimeSpeedupFactor, targetContainer, endWidget, endWidgetParent, appearDistanceScale, delaySpeedupFactor: delaySpeedupFactor).AnyParticleFinish;
         }
 
         protected void CreateCoinsPool(GameObject prefab)

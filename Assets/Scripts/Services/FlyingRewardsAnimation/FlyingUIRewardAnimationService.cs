@@ -112,7 +112,7 @@ namespace Services.FlyingRewardsAnimation
                                                 particlesScale,
                                                 stars,
                                                 context.RewardsMoveTimeSpeedupFactor,
-                                                particleSpacing: particleAppearDistanceScale,
+                                                appearDistanceScale: particleAppearDistanceScale,
                                                 callbackForEachAnimation: null);
 
                                         return starsRewardAnimationPromises.AllParticlesFinish;
@@ -126,7 +126,7 @@ namespace Services.FlyingRewardsAnimation
                                                 particlesScale,
                                                 currency.GetCount(),
                                                 context.RewardsMoveTimeSpeedupFactor,
-                                                particleSpacing: particleAppearDistanceScale)
+                                                appearDistanceScale: particleAppearDistanceScale)
                                             .CancelWith(disposeProvider);
                                 }
                             })

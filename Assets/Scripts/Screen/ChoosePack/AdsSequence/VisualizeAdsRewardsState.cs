@@ -1,3 +1,4 @@
+using System;
 using Common.Currency;
 using Extensions;
 using Handlers;
@@ -44,7 +45,9 @@ namespace Screen.ChoosePack.AdsSequence
                 new [] {totalStars}, 
                 Context.AdsRewardsVisualizationContainer, 
                 new [] {Context.AdsButtonTransform.position},
-                new [] {Context.CurrencyDisplayWidget.AnimationTarget.position});
+                new [] {Context.CurrencyDisplayWidget.AnimationTarget.position},
+                rewardsMoveTimeSpeedupFactor: 2.5f,
+                spawnSettings: new ValueTuple<float, float>(1f, 2f));
 
             return _flyingUIRewardAnimationService.PlayAnimation(context)
                 .CancelWith(this);

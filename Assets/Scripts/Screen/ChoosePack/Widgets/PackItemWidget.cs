@@ -17,6 +17,7 @@ namespace Screen.ChoosePack.Widgets
         [Inject] private SoundHandler _soundHandler;
         [Inject] private LocalizationService _localization;
 
+        [SerializeField] private RectTransform _holder;
         [SerializeField] private Image _fadeImage;
         [SerializeField] private RectTransform _packImagePrefabContainer;
         [SerializeField] private TMP_Text _packText;
@@ -92,22 +93,31 @@ namespace Screen.ChoosePack.Widgets
             _lockedBlockText.gameObject.SetActive(false);
             _packImagePrefabContainer.localScale = Vector3.one;
         }
-
+        
         private void UnlockWithAnimation()
         {
             _lockedBlockHolder.gameObject.SetActive(true);
-
-            
-            _fadeImage.DOFade(0, _unlockDuration).OnComplete(() => _fadeImage.gameObject.SetActive(false));
-            _lockedBlockHolder.DOScale(0, _unlockDuration).SetEase(Ease.InBack).OnComplete(() => _lockedBlockHolder.gameObject.SetActive(false))
+            _soundHandler.PlaySound("pack_unlocked");
+    
+            _fadeImage.DOFade(0, _unlockDuration).SetEase(Ease.Linear)
+                .OnComplete(() => _fadeImage.gameObject.SetActive(false))
                 .KillWith(this);
 
-            _packImagePrefabContainer.localScale = Vector3.one * 0.8f;
-            _packImagePrefabContainer.DOScale(1f, _unlockDuration).SetEase(_unlockEase).KillWith(this);
-            
+            _lockedBlockHolder.DOScale(0, _unlockDuration).SetEase(Ease.InBack)
+                .OnComplete(() => _lockedBlockHolder.gameObject.SetActive(false))
+                .KillWith(this);
+    
+            _holder.DOComplete();
+    
+            Sequence unlockSequence = DOTween.Sequence().KillWith(gameObject);
+
+            unlockSequence.Append(_holder.DOLocalMoveY(30f, _unlockDuration * 0.3f).SetEase(Ease.OutCubic));
+            unlockSequence.AppendInterval(_unlockDuration * 0.7f);
+            unlockSequence.Append(_holder.DOLocalMoveY(0f, _unlockDuration * 0.7f).SetEase(Ease.OutBounce));
+    
             if (_unlockParticles != null)
             {
-                _unlockParticles.Play();
+                DOVirtual.DelayedCall(_unlockDuration * 0.3f, () => _unlockParticles.Play()).KillWith(this);
             }
         }
     }
