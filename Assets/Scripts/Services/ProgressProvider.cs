@@ -19,6 +19,14 @@ namespace Services
 
         public int GetAllPacksCount() => _gameConfigurationProvider.IsInitialized ? _gameConfigurationProvider.GetPacksCount() : 0;
         public IReadOnlyCollection<PackInfo> GetAllPacks() => _gameConfigurationProvider.IsInitialized ? _gameConfigurationProvider.PacksInfo : Array.Empty<PackInfo>();
+
+        public PackInfo GetPackInfo(int packId)
+        {
+            if (!_gameConfigurationProvider.IsInitialized)
+                return null;
+            
+            return _gameConfigurationProvider.PacksInfo.FirstOrDefault(i => i.PackId == packId);
+        }
         
         public bool IsPackAvailable(int packNumber)
         {

@@ -74,8 +74,33 @@ namespace Screen.ChoosePack
         {
             if (_packItems.IsCollectionNullOrEmpty())
                 return;
-            
-            //TODO ADD LOGIC
+
+            foreach (var packItemWidget in _packItems)
+            {
+                if (packItemWidget == null)
+                {
+                    LoggerService.LogWarning(this, $"[{nameof(UpdatePacksState)}]: {nameof(PackItemWidget)} is null");
+                    continue;
+                }
+                
+                var packId = packItemWidget.PackId;
+                var packInfo = _progressProvider.GetPackInfo(packId);
+                if (packInfo == null)
+                {
+                    LoggerService.LogWarning(this, $"[{nameof(UpdatePacksState)}]: {nameof(PackInfo)} is null for pack id {packId}");
+                    continue;
+                }
+                
+                var isUnlocked = _progressProvider.IsPackAvailable(packId);
+                var maybeStarsRequired = _progressProvider.GetStarsCountForPackUnlocking(packId);
+                if (!maybeStarsRequired.HasValue)
+                {
+                    LoggerService.LogWarning(this, $"[{nameof(UpdatePacksState)}]: cannot get stars for unlocking pack with id {packId}");
+                }
+                
+                var starsRequired = maybeStarsRequired ?? new Stars(0);
+                packItemWidget.UpdateState(isUnlocked, () => OnAvailablePackClicked(packInfo), OnUnavailablePackClicked, starsRequired);
+            }
         }
 
         private void InitText()
@@ -125,35 +150,18 @@ namespace Screen.ChoosePack
                 oldHorizontalLayoutGroup =  horizontalLayoutGroup;
                 
                 var packId = packInfo.PackId;
-                var enterButton = Instantiate(_packItemWidgetPrefab, horizontalLayoutGroup.transform);
-                _packItems.Add(enterButton);
+                var packItemWidget = Instantiate(_packItemWidgetPrefab, horizontalLayoutGroup.transform);
+                _packItems.Add(packItemWidget);
                 var isUnlocked = _progressProvider.IsPackAvailable(packId);
                 
                 var maybeStarsRequired = _progressProvider.GetStarsCountForPackUnlocking(packId);
                 var starsRequired = maybeStarsRequired ?? new Stars(0);
                 
-                enterButton.Initialize(packInfo.PackName, packInfo.PackImagePrefab, packId, isUnlocked,
-                    () => OnAvailablePackClicked(isUnlocked, packInfo), OnUnavailablePackClicked, starsRequired);
+                packItemWidget.Initialize(packInfo.PackName, packInfo.PackImagePrefab, packId, isUnlocked,
+                    () => OnAvailablePackClicked(packInfo), OnUnavailablePackClicked, starsRequired);
                 index++;
             }
             
-            void OnAvailablePackClicked(bool isUnlocked, PackInfo packInfo)
-            {
-                if (!isUnlocked)
-                {
-                    LoggerService.LogWarning(this, $"[{nameof(OnAvailablePackClicked)}] pack {packInfo.PackName} {packInfo.PackId} is not unlocked.");
-                    return;
-                }
-                        
-                _progressController.SetCurrentPackId(packInfo.PackId);
-                _screenHandler.ShowChooseLevelScreen(packInfo);
-            }
-            
-            void OnUnavailablePackClicked()
-            {
-                _starsDisplayWidget.Bump();
-            }
-
             HorizontalLayoutGroup TryInstantiateHorizontalLayoutGroup(HorizontalLayoutGroup maybeHorizontalLayoutGroup, int itemIndex)
             {
                 if (maybeHorizontalLayoutGroup == null || itemIndex % _rowPacksCount == 0)
@@ -165,6 +173,17 @@ namespace Screen.ChoosePack
 
                 return maybeHorizontalLayoutGroup;
             }
+        }
+        
+        private void OnAvailablePackClicked(PackInfo packInfo)
+        {
+            _progressController.SetCurrentPackId(packInfo.PackId);
+            _screenHandler.ShowChooseLevelScreen(packInfo);
+        }
+            
+        private void OnUnavailablePackClicked()
+        {
+            _starsDisplayWidget.Bump();
         }
         
         private void OnDestroy()

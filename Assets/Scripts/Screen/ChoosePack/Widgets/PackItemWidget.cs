@@ -23,19 +23,21 @@ namespace Screen.ChoosePack.Widgets
         [SerializeField] private Button _packEnterButton;
         [SerializeField] private TMP_Text _lockedBlockText;
         [SerializeField] private RectTransform _lockedBlockHolder;
+        [SerializeField] private ParticleSystem _unlockParticles;
 
         [Header("Unlock Animation Settings")]
         [SerializeField] private float _unlockDuration = 0.6f;
         [SerializeField] private Ease _unlockEase = Ease.OutBack;
 
         private GameObject _packImageInstance;
-        private int _currentPackNumber;
+        private int _packId;
         private bool _isUnlocked;
         private bool _isInitialized;
 
         public bool IsUnlocked => _isUnlocked;
+        public int PackId => _packId;
 
-        public void Initialize(string packName, GameObject packImagePrefab, int packNumber, bool isUnlocked, 
+        public void Initialize(string packName, GameObject packImagePrefab, int packId, bool isUnlocked, 
             Action onClickAction, Action onLockedClickAction, int starsRequired)
         {
             var packKey = $"pack_{packName.ToLower()}";
@@ -44,7 +46,7 @@ namespace Screen.ChoosePack.Widgets
             if (_packImageInstance == null)
                 _packImageInstance = Instantiate(packImagePrefab, _packImagePrefabContainer);
 
-            _currentPackNumber = packNumber;
+            _packId = packId;
 
             _isInitialized = true;
             UpdateState(isUnlocked, onClickAction, onLockedClickAction, starsRequired, immediate: true);
@@ -102,6 +104,11 @@ namespace Screen.ChoosePack.Widgets
 
             _packImagePrefabContainer.localScale = Vector3.one * 0.8f;
             _packImagePrefabContainer.DOScale(1f, _unlockDuration).SetEase(_unlockEase).KillWith(this);
+            
+            if (_unlockParticles != null)
+            {
+                _unlockParticles.Play();
+            }
         }
     }
 }
