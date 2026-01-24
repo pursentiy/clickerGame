@@ -46,20 +46,14 @@ namespace Popup.CompleteLevelInfoPopup
                     StartStarsFloating(Context.TotalStars);
                     return VisualizeStarsFlight(Context.TotalStars);
                 })
-                .ContinueWithResolved(() => TryAcquireEarnedStars(Context.TotalStars))
+                .Then(() => TryAcquireEarnedStars(Context.TotalStars))
+                .Then(() => View.StarsDisplayWidget.SetCurrency(Context.TotalStars.GetCount(), true))
                 .CancelWith(this);
             
             TryPlayFireworksParticles(Context.TotalStars);
             
             View.BackgronudButton.onClick.MapListenerWithSound(ClosePopup).DisposeWith(this);
             View.GoToLevelsChooseScreenButton.onClick.MapListenerWithSound(ClosePopup).DisposeWith(this);
-            _playerCurrencyService.StarsChangedSignal.MapListener(OnStarsUpdated).DisposeWith(this);
-        }
-
-        private void OnStarsUpdated(Stars earnedStars)
-        {
-            //TODO REPLACE TO FlyingUIRewardAnimationService AUTOMATICALLY UPDATE
-            View.StarsDisplayWidget.SetCurrency(earnedStars, true);
         }
     
         private void AnimateTime(float finalTime)
@@ -195,8 +189,7 @@ namespace Popup.CompleteLevelInfoPopup
                 new ICurrency[]{earnedStars}, 
                 View.FlyingRewardsContainer, 
                 new Vector3[] {View.StarsFlightStartPlace.position},
-                new Vector3[] {View.StarsDisplayWidget.AnimationTarget.position},
-                updateProfileValues: updateProfileValues);
+                new Vector3[] {View.StarsDisplayWidget.AnimationTarget.position});
             
             return _flyingUIRewardAnimationService.PlayAnimation(context).CancelWith(this);
         }
@@ -253,7 +246,7 @@ namespace Popup.CompleteLevelInfoPopup
                 return;
 
             _currencyAcquired = true;
-            _playerCurrencyService.TryAddStars(earnedStarsForLevel);
+            _playerCurrencyService.TryAddStars(earnedStarsForLevel, CurrencyChangeMode.Animated);
         }
         
 #if UNITY_EDITOR

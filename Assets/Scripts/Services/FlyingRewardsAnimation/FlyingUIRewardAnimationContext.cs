@@ -13,7 +13,6 @@ namespace Services.FlyingRewardsAnimation
         public float RewardsMoveTimeSpeedupFactor { get; } 
         public Promise RewardStartFlyPromise { get; }
         public (float ParticlesScale, float ParticleAppearDistanceScale)? SpawnSettings { get; }
-        public bool UpdateProfileValues { get; private set; } = true;
 
 
         public FlyingUIRewardAnimationContext(
@@ -22,8 +21,7 @@ namespace Services.FlyingRewardsAnimation
             Vector3[] rewardPlaces,
             Vector3[] targetsPlaces, float rewardsMoveTimeSpeedupFactor = 1f,
             (float ParticlesScale, float ParticleAppearDistanceScale)? spawnSettings = null,
-            Promise rewardStartFlyPromise = null,
-            bool updateProfileValues = true)
+            Promise rewardStartFlyPromise = null)
         {
             Rewards = rewards;
             ParentTransform = parentTransform;
@@ -32,7 +30,6 @@ namespace Services.FlyingRewardsAnimation
             SpawnSettings = spawnSettings;
             RewardsMoveTimeSpeedupFactor = rewardsMoveTimeSpeedupFactor;
             RewardStartFlyPromise = rewardStartFlyPromise;
-            UpdateProfileValues = updateProfileValues;
 
         }
     }

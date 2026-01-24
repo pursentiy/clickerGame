@@ -115,7 +115,7 @@ namespace Services.FlyingRewardsAnimation
                                                 particleSpacing: particleAppearDistanceScale,
                                                 callbackForEachAnimation: null);
 
-                                        return starsRewardAnimationPromises.AnyParticleFinish;
+                                        return starsRewardAnimationPromises.AllParticlesFinish;
                                     
 
                                     default:
@@ -186,8 +186,7 @@ namespace Services.FlyingRewardsAnimation
                     context.RewardPlaces.ToArray(),
                     targetsPlaces: context.TargetsPlaces,
                     context.RewardsMoveTimeSpeedupFactor,
-                    (particleScale, particleDistanceScale),
-                    updateProfileValues: context.UpdateProfileValues);
+                    (particleScale, particleDistanceScale));
                 
                 var spawnPromise = PlayAnimation(animContext)
                     .CancelWith(context.ParentTransform.gameObject.GetDisposeProvider());

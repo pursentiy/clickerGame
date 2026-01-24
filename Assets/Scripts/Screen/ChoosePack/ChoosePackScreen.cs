@@ -7,6 +7,7 @@ using Handlers;
 using Handlers.UISystem;
 using Popup.Settings;
 using Popup.Universal;
+using Screen.ChoosePack.AdsSequence;
 using Screen.ChoosePack.Widgets;
 using Services;
 using Services.Player;
@@ -15,6 +16,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities.Disposable;
+using Utilities.StateMachine;
 using Zenject;
 
 namespace Screen.ChoosePack
@@ -27,6 +29,7 @@ namespace Screen.ChoosePack
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly LocalizationService _localizationService;
+        [Inject] private readonly AdsService _adsService;
         
         [SerializeField] private PackItemWidget _packItemWidgetPrefab;
         [SerializeField] private RectTransform _levelEnterPopupsParentTransform;
@@ -37,10 +40,12 @@ namespace Screen.ChoosePack
         [SerializeField] private Button _goBack;
         [SerializeField] private Button _settingsButton;
         [SerializeField] private Button _infoButton;
+        [SerializeField] private Button _adsButton;
         [Range(1, 5)]
         [SerializeField] private int _rowPacksCount = 2;
 
         private List<HorizontalLayoutGroup> _horizontalGroups = new();
+        private List<PackItemWidget> _packItems = new();
 
         protected override void Start()
         {
@@ -54,6 +59,23 @@ namespace Screen.ChoosePack
             _infoButton.onClick.MapListenerWithSound(OnInfoButtonClicked).DisposeWith(this);
             _goBack.onClick.MapListenerWithSound(OnGoBackButtonClicked).DisposeWith(this);
             _settingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
+            _adsButton.onClick.MapListenerWithSound(OnAdsButtonClicked).DisposeWith(this);
+        }
+
+        private void OnAdsButtonClicked()
+        {
+            StateMachine
+                .CreateMachine(new RewardedAdsSequenceContext(_starsDisplayWidget, UpdatePacksState, _adsButton.GetRectTransform(), this.GetRectTransform()))
+                .StartSequence<TryShowAdsRewardState>()
+                .FinishWith(this);
+        }
+
+        private void UpdatePacksState()
+        {
+            if (_packItems.IsCollectionNullOrEmpty())
+                return;
+            
+            //TODO ADD LOGIC
         }
 
         private void InitText()
@@ -104,6 +126,7 @@ namespace Screen.ChoosePack
                 
                 var packId = packInfo.PackId;
                 var enterButton = Instantiate(_packItemWidgetPrefab, horizontalLayoutGroup.transform);
+                _packItems.Add(enterButton);
                 var isUnlocked = _progressProvider.IsPackAvailable(packId);
                 
                 var maybeStarsRequired = _progressProvider.GetStarsCountForPackUnlocking(packId);

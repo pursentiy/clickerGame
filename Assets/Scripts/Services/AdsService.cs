@@ -61,7 +61,7 @@ namespace Services
             return InternalShowAd(() => Bridge.advertisement.ShowInterstitial());
         }
 
-        public IPromise<bool> ShowRewarded(string placement = "default")
+        public IPromise<bool> ShowRewardedAd(string placement = "default")
         {
             if (!AppConfigService.IsProduction())
             {

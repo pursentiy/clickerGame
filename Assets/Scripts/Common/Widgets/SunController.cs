@@ -12,13 +12,9 @@ namespace Common.Widgets
 
         [Header("Movement Settings")]
         [Tooltip("Точка пика солнца относительно центра экрана по Y")]
-        [SerializeField] private float peakYOffset = 5f;
         [SerializeField] private Vector2 leftPosition;
         [SerializeField] private Vector2 peakPosition;
         [SerializeField] private Vector2 rightPosition;
-        
-        [Tooltip("На сколько далеко солнце уходит за края экрана по X")]
-        [SerializeField] private float horizontalMargin = 2f;
 
         [SerializeField] private Vector2 cycleDurationRange = new Vector2(12f, 20f);
 

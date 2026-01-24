@@ -1,12 +1,20 @@
+using System;
+using Common.Currency;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using Extensions;
+using Installers;
+using Services.Player;
 using Utilities.Disposable;
+using Zenject;
 
 namespace Components.UI
 {
-    public class CurrencyDisplayWidget : MonoBehaviour
+    public class CurrencyDisplayWidget : InjectableMonoBehaviour
     {
+        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        
         [Header("UI References")] [SerializeField]
         private TextMeshProUGUI currencyText;
 
@@ -22,13 +30,26 @@ namespace Components.UI
         [SerializeField] private float elasticity = 1f; // Bounciness
         [SerializeField] private string numberFormat = "N0";
 
-        private int _currentDisplayValue;
-        private int _targetValue;
+        private long _currentDisplayValue;
+        private long _targetValue;
         private Tween _countTween;
 
         public RectTransform AnimationTarget => animationTarget;
 
-        public void SetCurrency(int newValue, bool withAnimation = false)
+        public void Start()
+        {
+            _playerCurrencyService.StarsChangedSignal.MapListener(OnCurrencyChanged).DisposeWith(this);
+        }
+
+        private void OnCurrencyChanged(ICurrency newValue, CurrencyChangeMode mode)
+        {
+            if (mode != CurrencyChangeMode.Instant)
+                return;
+            
+            SetCurrency(newValue.GetCount(), false);
+        }
+
+        public void SetCurrency(long newValue, bool withAnimation = false)
         {
             _targetValue = newValue;
 
@@ -77,7 +98,7 @@ namespace Components.UI
             ).SetEase(Ease.OutQuad).KillWith(this);
         }
 
-        private void UpdateText(int value)
+        private void UpdateText(long value)
         {
             if (currencyText != null)
             {

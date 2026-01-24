@@ -8,10 +8,10 @@ namespace Services.Player
     {
         [Inject] private readonly PlayerProfileManager _playerProfileManager;
         
-        public FSignal<Stars> StarsChangedSignal = new ();
+        public FSignal<ICurrency, CurrencyChangeMode> StarsChangedSignal = new ();
         public Stars Stars => _playerProfileManager.Stars;
         
-        public bool TryAddStars(int amount)
+        public bool TryAddStars(Stars amount, CurrencyChangeMode mode = CurrencyChangeMode.Instant)
         {
             if (!_playerProfileManager.IsInitialized)
             {
@@ -24,12 +24,13 @@ namespace Services.Player
                 return false;
             }
             
+            
             _playerProfileManager.UpdateStarsAndSave(amount);
-            StarsChangedSignal.Dispatch(Stars);
+            StarsChangedSignal.Dispatch(Stars, mode);
             return true;
         }
         
-        public bool TrySpendStars(int amount)
+        public bool TrySpendStars(Stars amount, CurrencyChangeMode mode = CurrencyChangeMode.Instant)
         {
             if (!_playerProfileManager.IsInitialized)
             {
@@ -43,8 +44,14 @@ namespace Services.Player
             }
     
             _playerProfileManager.UpdateStarsAndSave(-amount);
-            StarsChangedSignal.Dispatch(Stars);
+            StarsChangedSignal.Dispatch(Stars, mode);
             return true;
         }
+    }
+    
+    public enum CurrencyChangeMode
+    {
+        Instant,
+        Animated
     }
 }

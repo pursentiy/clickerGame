@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Common.Currency;
 using Common.Data.Info;
 using Configurations;
 using Extensions;
@@ -22,6 +23,8 @@ namespace Services
         public IEnumerable<int> GetPacksIds() => _packInfoList.Select(p => p.PackId);
         public IEnumerable<int> GetLevelsIds(int packId) => GetLevelParamsByPack(packId)?.Select(p => p.LevelId) ?? Enumerable.Empty<int>();
         public int GetPacksCount() => _packInfoList.Count;
+        //TODO MOVE TO CONFIG
+        public Stars StarsRewardForAds => new (15);
         
         public PackInfo GetPackById(int packId)
         {
