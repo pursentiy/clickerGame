@@ -225,6 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74d186a4b5e54339b009bc39fc943cb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PopupHolder: {fileID: 2096183616699605794}
   PopupTransform: {fileID: 2096183616699605794}
   BubbleTransform: {fileID: 4247449547160259564}
   CornerTransform: {fileID: 2268056704819937673}

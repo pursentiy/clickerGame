@@ -21,12 +21,11 @@ namespace UI.Popups.CommonPopup
         private readonly RectTransform _popupRootTransform;
 
         private readonly float _showDuration;
-        private readonly string _easingShowAnimationName;
         private readonly float _hideDuration;
-        private readonly string _easingHideAnimationName;
 
         private readonly float _scale;
         private readonly float _hideScale;
+        private readonly float _moveOffset = 10f;
 
         public ScalePopupAnimation(RectTransform popupRootTransform, float duration = DefaultDuration, float scale = 1,
             float hideScale = 0) :
@@ -45,8 +44,6 @@ namespace UI.Popups.CommonPopup
 
             _showDuration = showDuration;
             _hideDuration = hideDuration;
-            _easingShowAnimationName = DefaultAnimShowCurveName;
-            _easingHideAnimationName = DefaultAnimHideCurveName;
         }
 
         public void SetShowedState()
@@ -61,37 +58,40 @@ namespace UI.Popups.CommonPopup
         public IPromise AnimateShow(object context)
         {
             var promise = new Promise();
+            
+            _popupRootTransform.DOKill();
             _popupRootTransform.localScale = Vector3.one * _hideScale;
+            var localPosition = _popupRootTransform.localPosition;
+            _popupRootTransform.localPosition = new Vector2(localPosition.x, localPosition.y - _moveOffset);
 
-            if (_easingShowAnimationName == DefaultAnimShowCurveName)
-            {
-                //TODO ADD Serialized Dictionary Lite
-                //_popupRootTransform.DOScale(_scale, _showDuration).SetEase(_animationCurvesLibrary.GetCurve(DefaultAnimShowCurveName)).OnComplete(promise.Resolve);
-                
-                _popupRootTransform.DOScale(_scale, _showDuration).SetEase(Ease.InQuad).OnComplete(() => promise.SafeResolve());
-            }
-            else
-            {
-                Enum.TryParse(_easingShowAnimationName, out Ease type);
-                _popupRootTransform.DOScale(_scale, _showDuration).SetEase(type).OnComplete(promise.Resolve);
-            }
+            Sequence showSequence = DOTween.Sequence().KillWith(_popupRootTransform.gameObject);
+
+            showSequence.Append(_popupRootTransform.DOScale(_scale, _showDuration).SetEase(Ease.OutBack, 1.2f));
+            showSequence.Join(_popupRootTransform.DOLocalMove(localPosition, _showDuration).SetEase(Ease.OutCubic));
+            
+            showSequence.OnComplete(() => promise.SafeResolve());
 
             return promise;
         }
 
         public IPromise AnimateHide(object context)
         {
-            if (_popupRootTransform == null || _popupRootTransform.gameObject == null)
-            {
-                LoggerService.LogError($"[{nameof(ScalePopupAnimation)}] {nameof(_popupRootTransform)} is null");
+            if (_popupRootTransform == null || _popupRootTransform.gameObject == null) 
                 return Promise.Resolved();
-            }
+            
+            var promise = new Promise();
 
-            _popupRootTransform.localScale = Vector3.one * _scale;
-            Enum.TryParse(_easingHideAnimationName, out Ease type);
-            return _popupRootTransform.DOScale(_hideScale, _hideDuration).SetEase(type)
-                .KillWith(_popupRootTransform.gameObject)
-                .AsPromiseWithKillOnCancel();
+            _popupRootTransform.DOKill();
+
+            var hideSequence = DOTween.Sequence().KillWith(_popupRootTransform.gameObject);
+
+            var localPosition = _popupRootTransform.localPosition;
+            hideSequence.Append(_popupRootTransform.DOScale(_hideScale, _hideDuration).SetEase(Ease.InBack));
+            hideSequence.Join(_popupRootTransform.DOLocalMove(new Vector2(localPosition.x, localPosition.y - _moveOffset), _hideDuration).SetEase(Ease.InQuad));
+
+            hideSequence.OnComplete(() => promise.SafeResolve());
+
+            return promise;
         }
     }
 }
