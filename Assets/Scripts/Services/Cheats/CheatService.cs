@@ -2,9 +2,9 @@
 using System.Linq;
 using Extensions;
 using Handlers.UISystem;
-using Popup.CompleteLevelInfoPopup;
-using Popup.Universal;
 using Services.Player;
+using UI.Popups.CompleteLevelInfoPopup;
+using UI.Popups.UniversalPopup;
 using UnityEngine;
 using Zenject;
 

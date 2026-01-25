@@ -6,12 +6,15 @@ using Plugins.FSignal;
 using RSG;
 using Screen.ChooseLevel;
 using Screen.ChoosePack;
-using Screen.WelcomeScreen;
 using Services;
 using Services.CoroutineServices;
 using Services.Player;
 using Storage.Extensions;
 using Storage.Levels;
+using UI.Screens;
+using UI.Screens.ChooseLevel;
+using UI.Screens.ChoosePack;
+using UI.Screens.WelcomeScreen;
 using UnityEngine;
 using Utilities.Disposable;
 using Zenject;
@@ -35,7 +38,7 @@ namespace Handlers
         [SerializeField] private ParticleSystem[] _changeScreenParticles;
         [SerializeField] private AnimationCurve _popupAnimationCurve;
         
-        private Screen.ScreenBase _currentScreenBase;
+        private ScreenBase _currentScreenBase;
         GameObject _backgroundGameObject;
         private const float _awaitChangeScreenTime = 0.9f;
 
