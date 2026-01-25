@@ -21,19 +21,14 @@ namespace UI.Screens.ChoosePack.AdsSequence
         {
             base.OnEnter(arguments);
 
-            PrepareForState();
+            PrepareEnvironment();
             
             ShowRewardedAds()
                 .Then(EvaluateResult)
-                .Then(earnedStars =>
-                {
-                    ResetState();
-                    NextState(earnedStars);
-                })
+                .Then(NextState)
                 .Catch(e =>
                 {
                     LoggerService.LogWarning(this, $"[{nameof(Exception)}]: {e.Message}");
-                    ResetState();
                     NextState(0);
                 })
                 .CancelWith(this);
@@ -64,14 +59,9 @@ namespace UI.Screens.ChoosePack.AdsSequence
             Sequence.ActivateState<VisualizeAdsRewardsState>(new RewardsEarnedInfo(_playerCurrencyService.Stars, stars));
         }
 
-        private void PrepareForState()
+        private void PrepareEnvironment()
         {
             _uiBlockHandler.BlockUserInput(true);
-        }
-
-        private void ResetState()
-        {
-            _uiBlockHandler.BlockUserInput(false);
         }
     }
 }

@@ -3,6 +3,7 @@ using Common.Currency;
 using Extensions;
 using Handlers;
 using RSG;
+using Services.CoroutineServices;
 using Services.FlyingRewardsAnimation;
 using Utilities.Disposable;
 using Utilities.StateMachine;
@@ -14,6 +15,7 @@ namespace UI.Screens.ChoosePack.AdsSequence
     {
         [Inject] private readonly UIBlockHandler _uiBlockHandler;
         [Inject] private readonly FlyingUIRewardAnimationService _flyingUIRewardAnimationService;
+        [Inject] private readonly CoroutineService _coroutineService;
 
         private bool HaveAnyAdsRewards => TypedArgument.EarnedCurrency != null && TypedArgument.EarnedCurrency.GetCount() > 0 && TypedArgument.NewTotalCurrency.GetCount() > 0;
 
@@ -27,13 +29,11 @@ namespace UI.Screens.ChoosePack.AdsSequence
                 return;
             }
 
-            PrepareForState();
-            
             VisualizeRewardsFlight(TypedArgument.EarnedCurrency)
                 .Then(() => VisualizeRewardsUpdate(TypedArgument.NewTotalCurrency))
                 .ContinueWithResolved(() =>
                 {
-                    ResetState();
+                    RevertEnvironment();
                     FinishSequence();
                 })
                 .CancelWith(this);
@@ -56,8 +56,10 @@ namespace UI.Screens.ChoosePack.AdsSequence
         private IPromise VisualizeRewardsUpdate(ICurrency totalStars)
         {
             Context.CurrencyDisplayWidget.SetCurrency(totalStars.GetCount(), true);
-            Context.UpdatePacksAction.SafeInvoke();
-            return Promise.Resolved();
+
+            return _coroutineService.WaitFor(0.2f) 
+                .Then(Context.UpdatePacksAction.SafeInvoke)
+                .CancelWith(this);
         }
 
         private void FinishSequence()
@@ -65,12 +67,7 @@ namespace UI.Screens.ChoosePack.AdsSequence
             Sequence.Finish();
         }
 
-        private void PrepareForState()
-        {
-            _uiBlockHandler.BlockUserInput(true);
-        }
-
-        private void ResetState()
+        private void RevertEnvironment()
         {
             _uiBlockHandler.BlockUserInput(false);
         }

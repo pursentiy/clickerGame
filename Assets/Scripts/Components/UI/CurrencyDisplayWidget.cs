@@ -5,6 +5,7 @@ using TMPro;
 using DG.Tweening;
 using Extensions;
 using Installers;
+using RSG;
 using Services.Player;
 using Utilities.Disposable;
 using Zenject;
@@ -64,10 +65,13 @@ namespace Components.UI
             }
         }
 
-        public void Bump()
+        public IPromise Bump()
         {
             bumpTransform.DOComplete();
-            bumpTransform.DOPunchScale(Vector3.one * punchStrength, animationDuration, vibrato, elasticity).KillWith(this);
+            
+            return bumpTransform.DOPunchScale(Vector3.one * punchStrength, animationDuration, vibrato, elasticity)
+                .KillWith(this)
+                .AsPromise();
         }
         
         // DEBUG

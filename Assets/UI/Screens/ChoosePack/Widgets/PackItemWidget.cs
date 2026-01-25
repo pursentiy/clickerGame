@@ -28,7 +28,6 @@ namespace UI.Screens.ChoosePack.Widgets
 
         [Header("Unlock Animation Settings")]
         [SerializeField] private float _unlockDuration = 0.6f;
-        [SerializeField] private Ease _unlockEase = Ease.OutBack;
 
         private GameObject _packImageInstance;
         private int _packId;
@@ -109,7 +108,7 @@ namespace UI.Screens.ChoosePack.Widgets
     
             _holder.DOComplete();
     
-            Sequence unlockSequence = DOTween.Sequence().KillWith(gameObject);
+            var unlockSequence = DOTween.Sequence().KillWith(gameObject);
 
             unlockSequence.Append(_holder.DOLocalMoveY(30f, _unlockDuration * 0.3f).SetEase(Ease.OutCubic));
             unlockSequence.AppendInterval(_unlockDuration * 0.7f);

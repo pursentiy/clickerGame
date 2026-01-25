@@ -22,6 +22,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 388ffa6137610c0448f054cb4d9881c6
+    m_Address: UI Popups/MessagePopupMediator
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9eb8d4d10e946b848b02cf732383e8bb
     m_Address: UI Popups/CompleteLevelInfoPopupMediator
     m_ReadOnly: 0

@@ -5,14 +5,14 @@ namespace UI.Popups.MessagePopup
 {
     public class MessagePopupContext : IPopupContext
     {
-        public MessagePopupContext(string text, RectTransform anchor, ClanPopupFacing facing = ClanPopupFacing.Left)
+        public MessagePopupContext(string text, RectTransform anchor, PopupFacing facing = PopupFacing.Left)
         {
             Text = text;
             Anchor = anchor;
             Facing = facing;
         }
 
-        public MessagePopupContext(string text, RectTransform anchor, Color textColor, ClanPopupFacing facing = ClanPopupFacing.Left)
+        public MessagePopupContext(string text, RectTransform anchor, Color textColor, PopupFacing facing = PopupFacing.Left)
         {
             Text = text;
             Anchor = anchor;
@@ -22,11 +22,11 @@ namespace UI.Popups.MessagePopup
 
         public string Text { get; }
         public RectTransform Anchor { get; }
-        public ClanPopupFacing Facing { get; }
+        public PopupFacing Facing { get; }
         public Color TextColor { get; }
     }
 
-    public enum ClanPopupFacing
+    public enum PopupFacing
     {
         Right,
         Left

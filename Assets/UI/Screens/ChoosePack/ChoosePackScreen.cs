@@ -11,6 +11,7 @@ using TMPro;
 using UI.Popups.SettingsPopup;
 using UI.Popups.UniversalPopup;
 using UI.Screens.ChoosePack.AdsSequence;
+using UI.Screens.ChoosePack.NoCurrencySequence;
 using UI.Screens.ChoosePack.Widgets;
 using UnityEngine;
 using UnityEngine.UI;
@@ -39,7 +40,7 @@ namespace UI.Screens.ChoosePack
         [SerializeField] private Button _goBack;
         [SerializeField] private Button _settingsButton;
         [SerializeField] private Button _infoButton;
-        [SerializeField] private Button _adsButton;
+        [SerializeField] private AdsButtonWidget _adsButton;
         [Range(1, 5)]
         [SerializeField] private int _rowPacksCount = 2;
 
@@ -58,15 +59,7 @@ namespace UI.Screens.ChoosePack
             _infoButton.onClick.MapListenerWithSound(OnInfoButtonClicked).DisposeWith(this);
             _goBack.onClick.MapListenerWithSound(OnGoBackButtonClicked).DisposeWith(this);
             _settingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
-            _adsButton.onClick.MapListenerWithSound(OnAdsButtonClicked).DisposeWith(this);
-        }
-
-        private void OnAdsButtonClicked()
-        {
-            StateMachine
-                .CreateMachine(new RewardedAdsSequenceContext(_starsDisplayWidget, UpdatePacksState, _adsButton.GetRectTransform(), this.GetRectTransform()))
-                .StartSequence<TryShowAdsRewardState>()
-                .FinishWith(this);
+            _adsButton.Button.onClick.MapListenerWithSound(OnAdsButtonClicked).DisposeWith(this);
         }
 
         private void UpdatePacksState()
@@ -174,6 +167,14 @@ namespace UI.Screens.ChoosePack
             }
         }
         
+        private void OnAdsButtonClicked()
+        {
+            StateMachine
+                .CreateMachine(new RewardedAdsSequenceContext(_starsDisplayWidget, UpdatePacksState, _adsButton.RectTransform, this.GetRectTransform()))
+                .StartSequence<TryShowAdsRewardState>()
+                .FinishWith(this);
+        }
+        
         private void OnAvailablePackClicked(PackInfo packInfo)
         {
             _progressController.SetCurrentPackId(packInfo.PackId);
@@ -182,7 +183,10 @@ namespace UI.Screens.ChoosePack
             
         private void OnUnavailablePackClicked()
         {
-            _starsDisplayWidget.Bump();
+            StateMachine
+                .CreateMachine(new VisualizeNotEnoughCurrencyContext(_starsDisplayWidget, _adsButton))
+                .StartSequence<VisualizeNotEnoughCurrencyState>()
+                .FinishWith(this);
         }
         
         private void OnDestroy()

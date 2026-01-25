@@ -19,7 +19,7 @@ namespace UI.Popups.MessagePopup
             var cornerAnchor = View.CornerTransform.anchoredPosition;
             switch (Context.Facing)
             {
-                case ClanPopupFacing.Right:
+                case PopupFacing.Right:
                     bubbleAnchor = new Vector2(-1f * bubbleAnchor.x, bubbleAnchor.y);
                     bubblePivot = new Vector2(1f - bubblePivot.x, bubblePivot.y);
                     cornerAnchor = new Vector2(-1f * cornerAnchor.x, cornerAnchor.y);
