@@ -38,8 +38,8 @@ namespace UI.Popups.MessagePopup
             ApplyContextFacing();
 
             View.Text.text = Context.Text;
-            if (Context.TextColor != default(Color))
-                View.Text.color = Context.TextColor;
+            View.Text.spriteAsset = Context.SpriteAsset;
+
             View.BackgroundCloseButton.onClick.MapListenerWithSound(Hide).DisposeWith(this);
         }
     }

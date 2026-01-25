@@ -8,6 +8,7 @@ using Handlers.UISystem;
 using Services;
 using Services.Player;
 using TMPro;
+using UI.Popups.MessagePopup;
 using UI.Popups.SettingsPopup;
 using UI.Popups.UniversalPopup;
 using UI.Screens.ChoosePack.AdsSequence;
@@ -105,13 +106,10 @@ namespace UI.Screens.ChoosePack
         
         private void OnInfoButtonClicked()
         {
-            var context = new UniversalPopupContext(
-                _localizationService.GetValue("unlock_sets_info"),
-                new[] {
-                    new UniversalPopupButtonAction(_localizationService.GetValue(LocalizationExtensions.OkKey), null)
-                }, _localizationService.GetValue(LocalizationExtensions.InfoTitle));
-
-            _uiManager.PopupsHandler.ShowPopupImmediately<UniversalPopupMediator>(context);
+            var fontSize = 150;
+            var context = new MessagePopupContext(_localizationService.GetValue("unlock_sets_info"), _infoButton.GetRectTransform(), fontSize);
+            _uiManager.PopupsHandler.ShowPopupImmediately<MessagePopupMediator>(context)
+                .CancelWith(this);
         }
 
         private void OnSettingsButtonClicked()

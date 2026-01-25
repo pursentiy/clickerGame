@@ -251,6 +251,10 @@ MonoBehaviour:
     m_Key: pack_storm
     m_Metadata:
       m_Items: []
+  - m_Id: 86099273848971264
+    m_Key: ads_info
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

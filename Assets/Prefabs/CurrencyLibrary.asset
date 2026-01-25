@@ -41,6 +41,7 @@ MonoBehaviour:
     - Stars
     _values:
     - MainIcon: {fileID: 21300000, guid: bbe0f3746b5824fd9ad4f84c307d006a, type: 3}
+      SpriteAsset: {fileID: 11400000, guid: 7e7d03adbb35241cd99a8f69778557f0, type: 2}
   _rewardAnimationItem:
     m_AssetGUID: b228df3f5d6d04f168ef38d83a1fa13b
     m_SubObjectName: 

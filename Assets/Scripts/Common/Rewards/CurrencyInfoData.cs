@@ -1,5 +1,6 @@
 using System;
 using Plugins.RotaryHeart;
+using TMPro;
 using UnityEngine;
 
 namespace Common.Rewards
@@ -8,6 +9,7 @@ namespace Common.Rewards
     public class CurrencyInfoData
     {
         public Sprite MainIcon;
+        public TMP_SpriteAsset SpriteAsset;
     }
     
     [Serializable]

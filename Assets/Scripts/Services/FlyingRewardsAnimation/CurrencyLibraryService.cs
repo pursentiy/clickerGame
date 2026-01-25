@@ -1,6 +1,7 @@
 using Common.Rewards;
 using RSG;
 using Services.ContentDeliveryService;
+using TMPro;
 using UnityEngine;
 using Zenject;
 
@@ -22,17 +23,30 @@ namespace Services.FlyingRewardsAnimation
             
             if (currencyData.MainIcon == null)
             {
-                LoggerService.LogError($"CurrencyLibrary: MainIcon of {currencyName} not found. Default MainIcon was used");
+                LoggerService.LogError($"[{GetType().Name}]: MainIcon of {currencyName} not found. Default MainIcon was used");
                 return _currencyLibrary.DefaultCurrencyData.MainIcon;
             }
 
             return currencyData.MainIcon;
         }
         
-        public CurrencyInfoData GetCurrencyData(string currencyName)
+        public TMP_SpriteAsset GetSpriteAsset(string currencyName)
+        {
+            var currencyData = GetCurrencyData(currencyName);
+            
+            if (currencyData.MainIcon == null)
+            {
+                LoggerService.LogError($"[{GetType().Name}]: {nameof(TMP_SpriteAsset)} of {currencyName} not found. Default {nameof(TMP_SpriteAsset)} was used");
+                return _currencyLibrary.DefaultCurrencyData.SpriteAsset;
+            }
+
+            return currencyData.SpriteAsset;
+        }
+        
+        private CurrencyInfoData GetCurrencyData(string currencyName)
         {
             if (!TryGetCurrencyData(currencyName, out var data))
-                LoggerService.LogError($"CurrencyLibrary: {nameof(CurrencyInfoData)} of {currencyName} not found. Default {nameof(CurrencyInfoData)} was used");      
+                LoggerService.LogError($"[{GetType().Name}]: {nameof(CurrencyInfoData)} of {currencyName} not found. Default {nameof(CurrencyInfoData)} was used");      
             
             return data;
         }

@@ -257,6 +257,10 @@ MonoBehaviour:
     m_Localized: Dust Storm
     m_Metadata:
       m_Items: []
+  - m_Id: 86099273848971264
+    m_Localized: Watch an ad to get {0} <sprite=0>
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

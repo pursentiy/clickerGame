@@ -1,8 +1,10 @@
+using Extensions;
 using Handlers;
 using Handlers.UISystem;
 using RSG;
 using Services;
 using Services.CoroutineServices;
+using Services.FlyingRewardsAnimation;
 using Services.Player;
 using UI.Popups.MessagePopup;
 using Utilities.Disposable;
@@ -19,6 +21,8 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
         [Inject] private readonly GameConfigurationProvider _gameConfigurationProvider;
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly CoroutineService _coroutineService;
+        [Inject] private readonly LocalizationService _localizationService;
+        [Inject] private readonly CurrencyLibraryService _currencyLibraryService;
 
 
         public override void OnEnter(params object[] arguments)
@@ -48,7 +52,10 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
 
         private IPromise ShowMessagePopup()
         {
-            var context = new MessagePopupContext("За просмотр рекламы вы можете получить 10 монет!", Context.AdsButtonWidget.RectTransform);
+            var currencyToEarnViaAds = _gameConfigurationProvider.StarsRewardForAds;
+            var spriteAsset = _currencyLibraryService.GetSpriteAsset(CurrencyExtensions.StarsCurrencyName);
+            var fontSize = 175;
+            var context = new MessagePopupContext(_localizationService.GetFormattedValue(LocalizationExtensions.AdsInfo, currencyToEarnViaAds), Context.AdsButtonWidget.RectTransform, fontSize, spriteAsset);
             _uiManager.PopupsHandler.ShowPopupImmediately<MessagePopupMediator>(context)
                 .CancelWith(this);
 
