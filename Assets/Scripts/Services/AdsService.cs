@@ -99,7 +99,10 @@ namespace Services
             catch (Exception e)
             {
                 LoggerService.LogWarning($"{GetType().Name} SDK Exception: {e.Message}");
+                
+                var failPromise = _currentAdPromise; 
                 FinalizeAd(false);
+                return failPromise;
             }
 
             return _currentAdPromise;

@@ -1,4 +1,5 @@
-﻿using Extensions;
+﻿using DG.Tweening;
+using Extensions;
 using Handlers;
 using Handlers.UISystem;
 using Services;
@@ -22,7 +23,21 @@ namespace UI.Screens.WelcomeScreen
         
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _settingsButton;
+        [SerializeField] private RectTransform _headerText;
+        [SerializeField] private CanvasGroup _headerTextCanvasGroup;
         [SerializeField] private Button RESET;
+        
+        [Header("Animation Settings")]
+        [SerializeField] private float _duration = 0.8f;
+        [SerializeField] private float _startScale = 0.5f;
+        [SerializeField] private float _flyOffset = 50f;
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            PrepareForAnimation();
+        }
 
         protected override void Start()
         {
@@ -31,6 +46,8 @@ namespace UI.Screens.WelcomeScreen
             _playButton.onClick.MapListenerWithSound(PushNextScreen).DisposeWith(this);
             _settingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
             RESET.onClick.MapListenerWithSound(Reset).DisposeWith(this);
+            
+            AnimateShow();
         }
 
         private void Reset()
@@ -49,6 +66,26 @@ namespace UI.Screens.WelcomeScreen
         private void PushNextScreen()
         {
             _screenHandler.ShowChoosePackScreen();
+        }
+        
+        public void PrepareForAnimation()
+        {
+            _headerText.transform.localScale = Vector3.one * _startScale;
+            _headerText.transform.localPosition += new Vector3(0, -_flyOffset, 0);
+            if (_headerTextCanvasGroup != null) 
+                _headerTextCanvasGroup.alpha = 0;
+        }
+        
+        private void AnimateShow()
+        {
+            _headerText.transform.DOKill();
+            _headerTextCanvasGroup?.DOKill();
+            
+            _headerTextCanvasGroup?.DOFade(1f, _duration * 0.5f).KillWith(this);
+            _headerText.transform.DOScale(1f, _duration)
+                .SetEase(Ease.OutBack).KillWith(this);
+            _headerText.transform.DOLocalMoveY(_headerText.transform.localPosition.y + _flyOffset, _duration)
+                .SetEase(Ease.OutQuart).KillWith(this);
         }
     }
 }

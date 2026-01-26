@@ -4,6 +4,7 @@ using Extensions;
 using Platform.Common.Utilities.StateMachine;
 using Plugins.RSG.Promise;
 using RSG;
+using Services;
 using UnityEngine;
 
 namespace Utilities.Disposable
@@ -91,12 +92,24 @@ namespace Utilities.Disposable
         
         public static T CancelWith<T>(this T cancelable, IDisposeProvider provider) where T : ICancellablePromise
         {
+            if (cancelable == null)
+            {
+                LoggerService.LogWarning($"{nameof(cancelable)} is null");
+                return default;
+            }
+            
             new DeferredDisposable(cancelable.Cancel).DisposeWith(provider);
             return cancelable;
         }
         
         public static T CancelWith<T>(this T cancelable, MonoBehaviour provider) where T : ICancellablePromise
         {
+            if (cancelable == null)
+            {
+                LoggerService.LogWarning($"{nameof(cancelable)} is null");
+                return default;
+            }
+            
             new DeferredDisposable(cancelable.Cancel).DisposeWith(provider);
             return cancelable;
         }
