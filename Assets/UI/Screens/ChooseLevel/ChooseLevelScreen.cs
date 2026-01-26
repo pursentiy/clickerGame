@@ -5,6 +5,7 @@ using Handlers;
 using Handlers.UISystem;
 using Services;
 using Services.Player;
+using Services.ScreenObserver;
 using TMPro;
 using UI.Popups.MessagePopup;
 using UI.Popups.SettingsPopup;
@@ -25,6 +26,7 @@ namespace UI.Screens.ChooseLevel
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
         [Inject] private readonly LocalizationService _localizationService;
+        [Inject] private readonly ScreenObserverService _screenObserverService;
         
         [SerializeField] private LevelItemWidget _levelItemWidgetPrefab;
         [SerializeField] private RectTransform _levelEnterPopupsParentTransform;
@@ -55,6 +57,9 @@ namespace UI.Screens.ChooseLevel
             _goBack.onClick.MapListenerWithSound(OnGoBackButtonClicked).DisposeWith(this);
             _infoButton.onClick.MapListenerWithSound(OnInfoButtonClicked).DisposeWith(this);
             _settingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
+            
+            _screenObserverService.OnOrientationChangeSignal.MapListener(_ => HideAllInfoMessagesPopups()).DisposeWith(this);
+            _screenObserverService.OnResolutionChangeSignal.MapListener(HideAllInfoMessagesPopups).DisposeWith(this);
         }
 
         private void OnSettingsButtonClicked()
@@ -122,7 +127,12 @@ namespace UI.Screens.ChooseLevel
 
         private void OnDestroy()
         {
-            _uiManager.PopupsHandler.HideAllPopups<UniversalPopupMediator>();
+            HideAllInfoMessagesPopups();
+        }
+        
+        private void HideAllInfoMessagesPopups()
+        {
+            _uiManager.PopupsHandler.HideAllPopups<MessagePopupMediator>();
         }
     }
 }

@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using Services;
 using Services.CoroutineServices;
 using Services.Player;
+using Services.ScreenObserver;
 using Utilities.StateMachine;
 using Zenject;
 
@@ -27,6 +28,7 @@ namespace GameState.OnGameEnterSequence
             _applicationService.RegisterDisposableService<GameParamsManager>();
             _applicationService.RegisterDisposableService<PlayerProfileManager>();
             _applicationService.RegisterDisposableService<AdsService>();
+            _applicationService.RegisterDisposableService<ScreenObserverService>();
             _applicationService.SetApplicationInitialized();
             
             LoggerService.LogDebug($"{nameof(StartServicesState)}: Disposable Services  registered");

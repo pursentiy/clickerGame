@@ -1,27 +1,41 @@
 using System.Collections.Generic;
 using Extensions;
+using Installers;
 using Services;
+using Services.ScreenObserver;
 using UnityEngine;
+using Utilities.Disposable;
+using Zenject;
 
 namespace Common.Widgets.ContainerScaler
 {
-    public class UIScalerHandler : MonoBehaviour
+    public class UIScalerHandler : InjectableMonoBehaviour
     {
+        [Inject] private ScreenObserverService _screenObserverService;
+        
         [SerializeField] private GameObject[] _scalableWidgetsGameObjects;
         
         private List<IScalableWidget> _scalableWidgets = new ();
-        private ScreenOrientation _lastOrientation;
-        private int _lastWidth;
-        private int _lastHeight;
         private bool _canUpdate = true;
 
-        private void Awake()
+        protected override void Awake()
         {
-            GetScalableWidgets();
+            base.Awake();
+
+            _screenObserverService.OnOrientationChangeSignal.MapListener(OnOrientationChanged).DisposeWith(this);
+            _screenObserverService.OnResolutionChangeSignal.MapListener(OnResolutionChanged).DisposeWith(this);
             
-            _lastOrientation = UnityEngine.Device.Screen.orientation;
-            _lastWidth = UnityEngine.Device.Screen.width;
-            _lastHeight = UnityEngine.Device.Screen.height;
+            GetScalableWidgets();
+        }
+
+        private void OnOrientationChanged(ScreenOrientation orientation)
+        {
+            TryUpdateWidgets();
+        }
+
+        private void OnResolutionChanged()
+        {
+            TryUpdateWidgets();
         }
 
         private void GetScalableWidgets()
@@ -47,18 +61,6 @@ namespace Common.Widgets.ContainerScaler
             }
         }
         
-        private void Update()
-        {
-            if (HasScreenChanged() && _canUpdate)
-            {
-                _lastOrientation = UnityEngine.Device.Screen.orientation;
-                _lastWidth = UnityEngine.Device.Screen.width;
-                _lastHeight = UnityEngine.Device.Screen.height;
-                
-                TryUpdateWidgets();
-            }
-        }
-        
         private void OnDisable() 
         {
             _canUpdate = false;
@@ -73,16 +75,11 @@ namespace Common.Widgets.ContainerScaler
             TryAnimateWidget(true);
         }
 
-        private bool HasScreenChanged()
-        {
-            return UnityEngine.Device.Screen.orientation != _lastOrientation ||
-                   UnityEngine.Device.Screen.width != _lastWidth ||
-                   UnityEngine.Device.Screen.height != _lastHeight;
-        }
+       
 
         private void TryUpdateWidgets()
         {
-            if (_scalableWidgets.IsCollectionNullOrEmpty())
+            if (!_canUpdate || _scalableWidgets.IsCollectionNullOrEmpty())
                 return;
             
             foreach (var scalableWidget in _scalableWidgets)

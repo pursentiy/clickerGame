@@ -5,6 +5,7 @@ using Services.ContentDeliveryService;
 using Services.CoroutineServices;
 using Services.FlyingRewardsAnimation;
 using Services.Player;
+using Services.ScreenObserver;
 using Storage;
 using Storage.Audio;
 using UnityEngine;
@@ -29,6 +30,7 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<AddressableContentDeliveryService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<TimeService>().AsSingle();
             Container.BindInterfacesAndSelfTo<ReloadService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<ScreenObserverService>().AsSingle().NonLazy();
 
             // DATA AND PLAYER PROGRESS
             Container.BindInterfacesAndSelfTo<ProfileStorageService>().AsSingle().NonLazy();

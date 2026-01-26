@@ -10,7 +10,7 @@ namespace Services.CoroutineServices
 	{
 		public PersistentCoroutinesService()
 		{
-			var runner = new GameObject("-PersistentCoroutinesService");
+			var runner = new GameObject("[PersistentCoroutinesService]");
 			Object.DontDestroyOnLoad(runner);
 			MonoBehaviour = runner.AddComponent<EmptyMonoBehaviour>();
 		}
