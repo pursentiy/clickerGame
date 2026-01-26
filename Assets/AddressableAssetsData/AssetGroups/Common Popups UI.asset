@@ -17,6 +17,11 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: ef7044852122240748c6516e8f2d4dcf
   m_SerializeEntries:
+  - m_GUID: 4e55d1d2267584302b58ffe5677cb3f0
+    m_Address: Assets/Sprites/Popups/PopupsAtlas.spriteatlas
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 87d0ad4b03a84734eb42403ae6f49be2
     m_Address: Assets/Sprites/Popups/popupBackgroundVertical.png
     m_ReadOnly: 0
