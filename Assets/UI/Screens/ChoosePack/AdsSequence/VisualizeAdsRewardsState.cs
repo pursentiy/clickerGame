@@ -46,8 +46,8 @@ namespace UI.Screens.ChoosePack.AdsSequence
                 Context.AdsRewardsVisualizationContainer, 
                 new [] {Context.AdsButtonTransform.position},
                 new [] {Context.CurrencyDisplayWidget.AnimationTarget.position},
-                rewardsMoveTimeSpeedupFactor: 2.5f,
-                spawnSettings: new ValueTuple<float, float>(1f, 2f));
+                rewardsMoveTimeSpeedupFactor: 2f,
+                spawnSettings: new ValueTuple<float, float>(1f, 3.5f));
 
             return _flyingUIRewardAnimationService.PlayAnimation(context)
                 .CancelWith(this);

@@ -19,7 +19,7 @@ namespace Services.FlyingRewardsAnimation
             ICurrency[] rewards,
             RectTransform parentTransform,
             Vector3[] rewardPlaces,
-            Vector3[] targetsPlaces, float rewardsMoveTimeSpeedupFactor = 1f,
+            Vector3[] targetsPlaces, float rewardsMoveTimeSpeedupFactor = 2f,
             (float ParticlesScale, float ParticleAppearDistanceScale)? spawnSettings = null,
             Promise rewardStartFlyPromise = null)
         {
