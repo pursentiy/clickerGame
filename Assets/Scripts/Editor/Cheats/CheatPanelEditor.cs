@@ -18,7 +18,7 @@ namespace Editor.Cheats
         {
             GetWindow<CheatPanelEditor>("Cheat Panel");
         }
-        
+
         private void OnEnable()
         {
             // Подписываемся на событие загрузки сцены в редакторе
@@ -32,7 +32,7 @@ namespace Editor.Cheats
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            Close(); 
+            Close();
         }
 
         private void OnGUI()
@@ -43,7 +43,7 @@ namespace Editor.Cheats
                 EditorGUILayout.HelpBox("Enter Play Mode to use Cheats.", MessageType.Info);
                 return;
             }
-            
+
             if (_service == null)
             {
                 _service = ContainerHolder.CurrentContainer.TryResolve<CheatService>();
@@ -56,11 +56,10 @@ namespace Editor.Cheats
             GUILayout.Label("Cheat Settings", EditorStyles.boldLabel);
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-            // Get public properties
             var props = _service.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
             foreach (var prop in props)
             {
-                if (!prop.CanWrite) continue; // Skip read-only properties
+                if (!prop.CanWrite) continue;
 
                 if (prop.PropertyType == typeof(int))
                 {
@@ -74,15 +73,22 @@ namespace Editor.Cheats
                     bool newVal = EditorGUILayout.Toggle(prop.Name, val);
                     if (val != newVal) prop.SetValue(_service, newVal);
                 }
-                // Add more types here (float, string, etc.) if needed
+                // ДОБАВЛЕНО: Обработка Enum
+                else if (prop.PropertyType.IsEnum)
+                {
+                    System.Enum val = (System.Enum)prop.GetValue(_service);
+                    System.Enum newVal = EditorGUILayout.EnumPopup(prop.Name, val);
+                    if (!Equals(val, newVal)) prop.SetValue(_service, newVal);
+                }
             }
+
             EditorGUILayout.EndVertical();
 
             EditorGUILayout.Space(10);
 
             // --- SECTION 2: METHODS (Actions) ---
             GUILayout.Label("Actions", EditorStyles.boldLabel);
-            
+
             MethodInfo[] methods = _service.GetType()
                 .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
 
@@ -90,7 +96,7 @@ namespace Editor.Cheats
             {
                 // Ignore property getters/setters (they start with get_ or set_)
                 if (method.IsSpecialName) continue;
-                
+
                 ParameterInfo[] parameters = method.GetParameters();
 
                 if (parameters.Length == 0)

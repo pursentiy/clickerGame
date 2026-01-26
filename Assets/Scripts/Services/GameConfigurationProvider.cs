@@ -24,7 +24,7 @@ namespace Services
         public IEnumerable<int> GetLevelsIds(int packId) => GetLevelParamsByPack(packId)?.Select(p => p.LevelId) ?? Enumerable.Empty<int>();
         public int GetPacksCount() => _packInfoList.Count;
         //TODO MOVE TO CONFIG
-        public Stars StarsRewardForAds => new (15);
+        public Stars StarsRewardForAds => new (10);
         
         public PackInfo GetPackById(int packId)
         {

@@ -20,9 +20,41 @@ namespace Services.Cheats
         [Inject] private readonly AdsService _adsService;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
 
-        public int StarsCount { get; set; } = 5;
-        public int GameTimeScale { get; set; } = 10;
-        public bool UpdateProfileValues { get; set; }
+        private const string StarsCountKey = "CheatService_StarsCount";
+        private const string EarnedStarsKey = "CheatService_EarnedStars";
+        private const string TimeScaleKey = "CheatService_TimeScale";
+        private const string UpdateProfileKey = "CheatService_UpdateProfile";
+        private const string LevelStatusKey = "CheatService_LevelStatus";
+
+        public int StarsCount
+        {
+            get => PlayerPrefs.GetInt(StarsCountKey, 5);
+            set => PlayerPrefs.SetInt(StarsCountKey, value);
+        }
+
+        public int EarnedStars
+        {
+            get => PlayerPrefs.GetInt(EarnedStarsKey, 5);
+            set => PlayerPrefs.SetInt(EarnedStarsKey, value);
+        }
+
+        public int GameTimeScale
+        {
+            get => PlayerPrefs.GetInt(TimeScaleKey, 1);
+            set => PlayerPrefs.SetInt(TimeScaleKey, value);
+        }
+
+        public bool UpdateProfileValues
+        {
+            get => PlayerPrefs.GetInt(UpdateProfileKey, 0) == 1;
+            set => PlayerPrefs.SetInt(UpdateProfileKey, value ? 1 : 0);
+        }
+
+        public CompletedLevelStatus LevelStatus
+        {
+            get => (CompletedLevelStatus)PlayerPrefs.GetInt(LevelStatusKey, (int)CompletedLevelStatus.InitialCompletion);
+            set => PlayerPrefs.SetInt(LevelStatusKey, (int)value);
+        }
 
         public void ShowCompleteLevelInfoPopupMediator()
         {
@@ -30,7 +62,7 @@ namespace Services.Cheats
                 return;
 
             _uiManager.PopupsHandler.ShowPopupImmediately<CompleteLevelInfoPopupMediator>(
-                new CompleteLevelInfoPopupContext(3, 10));
+                new CompleteLevelInfoPopupContext(EarnedStars, StarsCount, 10, LevelStatus));
         }
         
         public void VisualizeStarsFlightInCompleteLevelPopup()
@@ -43,7 +75,7 @@ namespace Services.Cheats
             if (popup == null)
                 return;
             
-            popup.PlayStarsAnimation(StarsCount,  UpdateProfileValues);
+            popup.PlayStarsAnimation(StarsCount, UpdateProfileValues);
         }
         
         public void ResetProgress()
@@ -51,7 +83,6 @@ namespace Services.Cheats
             var snapshot = _profileBuilderService.BuildNewProfileSnapshot();
             _playerRepositoryService.SavePlayerSnapshot(snapshot);
             
-
             UnityEditor.EditorApplication.isPlaying = false;
         }
         
@@ -67,24 +98,12 @@ namespace Services.Cheats
                     new UniversalPopupButtonAction(_localizationService.GetValue(LocalizationExtensions.ChangeKey), _reloadService.SoftRestart)
                 }, _localizationService.GetValue(LocalizationExtensions.ChangeLanguageTitle));
             
-            
             _uiManager.PopupsHandler.ShowPopupImmediately<UniversalPopupMediator>(context);
         }
 
-        public void AdsCheatShowSuccess()
-        {
-            _adsService.CheatShowSuccess();
-        }
-        
-        public void AdsCheatShowException()
-        {
-            _adsService.CheatShowException();
-        }
-        
-        public void AdsCheatShowTimeout()
-        {
-            _adsService.CheatShowTimeout();
-        }
+        public void AdsCheatShowSuccess() => _adsService.CheatShowSuccess();
+        public void AdsCheatShowException() => _adsService.CheatShowException();
+        public void AdsCheatShowTimeout() => _adsService.CheatShowTimeout();
 
         public void AddStars()
         {
@@ -102,6 +121,8 @@ namespace Services.Cheats
         {
             Time.timeScale = GameTimeScale;
         }
+        
+        public void SaveAll() => PlayerPrefs.Save();
     }
 }
 #endif

@@ -36,26 +36,33 @@ namespace UI.Popups.CompleteLevelInfoPopup
         public override void OnCreated()
         {
             base.OnCreated();
+
+            var initialStarsCount = _playerCurrencyService.Stars;
+            var finalStarsCount = _playerCurrencyService.Stars + Context.EarnedStars;
+            var totalStarsForTheLevel = Context.EarnedStars + Context.PreviousStarsForLevel;
             
-            View.StarsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
+            View.StarsDisplayWidget.SetCurrency(initialStarsCount);
             
             AnimateTime(Context.TotalTime);
-            AnimateStarsSequence(Context.TotalStars)
+            Promise.All(AnimateNewStarText(Context.EarnedStars, Context.CompletedLevelStatus), AnimateStarsSequence(Context.PreviousStarsForLevel, Context.EarnedStars))
                 .Then(() =>
                 {
-                    StartStarsFloating(Context.TotalStars);
-                    return VisualizeStarsFlight(Context.TotalStars);
+                    TryPlayFireworksParticles(totalStarsForTheLevel);
+                    StartStarsFloating(totalStarsForTheLevel);
+                    return VisualizeStarsFlight(Context.EarnedStars);
                 })
-                .Then(() => TryAcquireEarnedStars(Context.TotalStars))
-                .Then(() => View.StarsDisplayWidget.SetCurrency(Context.TotalStars.GetCount(), true))
+                .Then(() => TryAcquireEarnedStars(Context.EarnedStars))
+                .Then(() =>
+                {
+                    if (finalStarsCount > initialStarsCount)
+                        View.StarsDisplayWidget.SetCurrency(finalStarsCount, true);
+                })
                 .CancelWith(this);
-            
-            TryPlayFireworksParticles(Context.TotalStars);
             
             View.BackgronudButton.onClick.MapListenerWithSound(ClosePopup).DisposeWith(this);
             View.GoToLevelsChooseScreenButton.onClick.MapListenerWithSound(ClosePopup).DisposeWith(this);
         }
-    
+
         private void AnimateTime(float finalTime)
         {
             if (View.TimeText == null) return;
@@ -69,7 +76,7 @@ namespace UI.Popups.CompleteLevelInfoPopup
             seq.Append(DOTween.To(() => displayTime, x => displayTime = x, finalTime, 1.5f)
                 .OnUpdate(() => 
                 {
-                    if (View.TimeText != null) // Дополнительная проверка внутри цикла
+                    if (View.TimeText != null)
                         View.TimeText.text = string.Format(format, displayTime);
                 })
                 .SetEase(Ease.OutQuad));
@@ -77,65 +84,85 @@ namespace UI.Popups.CompleteLevelInfoPopup
             seq.Append(View.TimeText.transform.DOPunchScale(Vector3.one * 0.1f, 0.3f));
         }
         
-        private IPromise AnimateStarsSequence(Stars totalStarsForLevel)
+        private IPromise AnimateNewStarText(int earnedStars, CompletedLevelStatus status)
         {
-            foreach (var s in View.Stars) 
+            if (earnedStars <= 0 || status == CompletedLevelStatus.InitialCompletion)
+            {
+                View.NewStarTextCanvasGroup.alpha = 0;
+                return Promise.Resolved();
+            }
+
+            var promise = new Promise();
+            var textTransform = View.NewStarText.rectTransform;
+            
+            textTransform.DOKill();
+            View.NewStarTextCanvasGroup.DOKill();
+    
+            View.NewStarText.text = $"+ {earnedStars}!";
+            textTransform.localScale = Vector3.one * 0.5f;
+            View.NewStarTextCanvasGroup.alpha = 0;
+
+            var seq = DOTween.Sequence().KillWith(View.NewStarText.gameObject);
+            
+            seq.AppendInterval(0.3f);
+            seq.Append(textTransform.DOScale(1.2f, 0.4f).SetEase(Ease.OutBack));
+            seq.Join(View.NewStarTextCanvasGroup.DOFade(1f, 0.2f));
+            seq.Append(textTransform.DOScale(1f, 0.2f).SetEase(Ease.InOutSine));
+            seq.AppendInterval(1.2f);
+            seq.Append(View.NewStarTextCanvasGroup.DOFade(0f, 0.3f));
+
+            seq.OnComplete(() => promise.SafeResolve());
+
+            return promise;
+        }
+
+        private IPromise AnimateStarsSequence(int previousEarnedStars, int earnedStars)
+        {
+            foreach (var s in View.Stars)
                 s.transform.localScale = Vector3.zero;
 
             var seq = DOTween.Sequence().KillWith(this);
+            int totalStarsAfterWin = previousEarnedStars + earnedStars;
 
-            // --- ПЕРВАЯ ЗВЕЗДА (Слева, индекс 0) ---
-            if (View.Stars.Length > 0)
+            if (previousEarnedStars > 0)
             {
-                var star = View.Stars[0];
-                var isStarEarned = totalStarsForLevel >= 1;
-                star.material = isStarEarned ? View.DefaultStareMaterial : View.GrayScaleStarMaterial;
-
-                if (isStarEarned)
-                {
-                    seq.Append(star.transform.DOScale(1f, 0.5f)
-                        .SetEase(Ease.OutBack));
-                }
-                else
-                {
-                    seq.Append(star.transform.DOScale(0.8f, 0.3f).SetEase(Ease.OutQuad));
-                }
+                seq.AppendInterval(0.5f);
             }
 
-            // --- ВТОРАЯ ЗВЕЗДА (Справа, индекс 2) ---
-            if (View.Stars.Length > 2)
-            {
-                var star = View.Stars[2];
-                var isStarEarned = totalStarsForLevel >= 3;
-                star.material = isStarEarned ? View.DefaultStareMaterial : View.GrayScaleStarMaterial;
-        
-                if (isStarEarned)
-                {
-                    seq.Append(star.transform.DOScale(1f, 0.5f)
-                        .SetEase(Ease.OutBack, 3.0f)); 
-                }
-                else
-                {
-                    seq.Append(star.transform.DOScale(0.8f, 0.3f).SetEase(Ease.OutQuad));
-                }
-            }
+            int[] animationOrder = { 0, 2, 1 };
 
-            // --- ТРЕТЬЯ ЗВЕЗДА (Центр, индекс 1) ---
-            if (View.Stars.Length > 1)
+            for (int i = 0; i < animationOrder.Length; i++)
             {
-                var star = View.Stars[1];
-                var isStarEarned = totalStarsForLevel >= 2;
-                star.material = isStarEarned ? View.DefaultStareMaterial : View.GrayScaleStarMaterial;
-        
-                if (isStarEarned)
+                int starIndex = animationOrder[i];
+                if (starIndex >= View.Stars.Length) continue;
+
+                var starImage = View.Stars[starIndex].GetComponent<UnityEngine.UI.Image>();
+                int starThreshold = (starIndex == 1) ? 2 : (starIndex == 0 ? 1 : 3);
+
+                bool isOldStar = starThreshold <= previousEarnedStars;
+                bool isNewStar = starThreshold > previousEarnedStars && starThreshold <= totalStarsAfterWin;
+                
+                if (isOldStar)
                 {
-                    seq.Append(star.transform.DOScale(1.3f, 0.6f)
-                        .SetEase(Ease.OutBack, 5.0f));
-                    seq.Join(star.transform.DOPunchRotation(new Vector3(0, 0, 15), 0.6f, 10, 1));
+                    starImage.color = View.AlreadyEarnedStarColor;
+                    starImage.transform.localScale = Vector3.one * (starIndex == 1 ? 1.3f : 1f);
+                }
+                else if (isNewStar)
+                {
+                    float targetScale = (starIndex == 1 ? 1.3f : 1f);
+                    float overshoot = (starIndex == 1 ? 5.0f : 3.0f);
+
+                    seq.Append(starImage.transform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack, overshoot));
+
+                    if (starIndex == 1)
+                        seq.Join(starImage.transform.DOPunchRotation(new Vector3(0, 0, 15), 0.6f, 10, 1));
+
+                    seq.AppendInterval(0.1f);
                 }
                 else
                 {
-                    seq.Append(star.transform.DOScale(0.8f, 0.3f).SetEase(Ease.OutQuad));
+                    starImage.material = View.GrayScaleStarMaterial;
+                    seq.Append(starImage.transform.DOScale(0.7f, 0.2f).SetEase(Ease.OutQuad));
                 }
             }
 
@@ -201,7 +228,7 @@ namespace UI.Popups.CompleteLevelInfoPopup
         
         private void OnDestroy()
         {
-            TryAcquireEarnedStars(Context.TotalStars);
+            TryAcquireEarnedStars(Context.PreviousStarsForLevel);
             
             if (_particlesCoroutine != null)
                 StopCoroutine(_particlesCoroutine);

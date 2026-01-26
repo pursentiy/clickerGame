@@ -12,6 +12,7 @@ using Level.Widgets;
 using RSG;
 using Services;
 using Storage.Snapshots.LevelParams;
+using UI.Popups.CompleteLevelInfoPopup;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Utilities.Disposable;
@@ -29,6 +30,7 @@ namespace Components.Levels
         [Inject] private readonly LevelHelperService _levelHelperService;
         [Inject] private readonly ClickHandlerService _clickHandlerService;
         [Inject] private readonly UIBlockHandler _uiBlockHandler;
+        [Inject] private readonly ProgressProvider _progressProvider;
 
         [SerializeField] private RectTransform _gameMainCanvasTransform;
         [SerializeField] private RectTransform _draggingTransform;
@@ -90,22 +92,30 @@ namespace Components.Levels
             _levelInfoTrackerService.StopLevelTracking();
             _levelInfoTrackerService.ClearData();
 
-            var earnedStars = _levelHelperService.EvaluateEarnedStars(_currentLevelParams, levelPlayedTime);
-            _progressController.SetLevelCompleted(_progressController.CurrentPackId, _progressController.CurrentLevelId, levelPlayedTime, earnedStars);
+            var levelStatus = _progressProvider.IsLevelCompleted(_progressController.CurrentPackId, _currentLevelParams.LevelId)
+                    ? CompletedLevelStatus.Replayed
+                    : CompletedLevelStatus.InitialCompletion;
+            
+            var maybeOldEarnedStars = _progressProvider.GetEarnedStarsForLevel(_progressController.CurrentPackId, _currentLevelParams.LevelId);
+            var previousEarnedStars = maybeOldEarnedStars ?? 0;
+            var starsByTime = _levelHelperService.EvaluateEarnedStars(_currentLevelParams, levelPlayedTime);
+            var earnedStarsForLevel = _levelHelperService.EvaluateStarsProgress(starsByTime, maybeOldEarnedStars);
+            
+            _progressController.SetLevelCompleted(_progressController.CurrentPackId, _progressController.CurrentLevelId, levelPlayedTime, starsByTime);
             
             _levelHudHandler.SetInteractivity(false);
             _levelHudHandler.PlayFinishParticles();
-            _finishCoroutine = StartCoroutine(AwaitFinishLevel(earnedStars, levelPlayedTime));
+            _finishCoroutine = StartCoroutine(AwaitFinishLevel(earnedStarsForLevel, previousEarnedStars, levelPlayedTime, levelStatus));
         }
 
-        private IEnumerator AwaitFinishLevel(int totalStars, float levelPlayedTime)
+        private IEnumerator AwaitFinishLevel(int earnedStars, int previousStarsForLevel, float levelPlayedTime, CompletedLevelStatus completedLevelStatus)
         {
             _uiBlockHandler.BlockUserInput(true);
             yield return new WaitForSeconds(_screenHandler.AwaitChangeScreenTime);
             _uiBlockHandler.BlockUserInput(false);
             
             StateMachine
-                .CreateMachine(new FinishLevelContext(totalStars, levelPlayedTime, _packInfo))
+                .CreateMachine(new FinishLevelContext(earnedStars, previousStarsForLevel, levelPlayedTime, _packInfo, completedLevelStatus))
                 .StartSequence<TryShowAdsAfterLevelCompleteState>()
                 .FinishWith(this);
         }

@@ -52,6 +52,9 @@ namespace Components.UI
 
         public void SetCurrency(long newValue, bool withAnimation = false)
         {
+            if (newValue == _targetValue)
+                return;
+            
             _targetValue = newValue;
 
             if (withAnimation)
