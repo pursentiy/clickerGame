@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4750247492754030051}
   - component: {fileID: 1662736372921588011}
   - component: {fileID: 4764469257271908289}
+  - component: {fileID: 5539612927330093974}
   m_Layer: 0
   m_Name: FallingAnimals
   m_TagString: Untagged
@@ -4946,8 +4947,22 @@ MonoBehaviour:
   m_IsTrail: 0
   m_IgnoreCanvasScaler: 0
   m_Scale: 3
-  m_Scale3D: {x: 4, y: 4, z: 4}
+  m_Scale3D: {x: 0.25, y: 0.25, z: 0.25}
   m_AnimatableProperties: []
   m_Particles:
   - {fileID: 7392640766984335477}
   m_ShrinkByMaterial: 0
+--- !u!114 &5539612927330093974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8024995517554134883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91213f400ec742918e5e74788298a82a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _uiParticle: {fileID: 4764469257271908289}
+  _baseScale: 0.25

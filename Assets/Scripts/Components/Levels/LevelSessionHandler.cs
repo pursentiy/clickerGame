@@ -11,6 +11,7 @@ using Level.Hud;
 using Level.Widgets;
 using RSG;
 using Services;
+using Services.CoroutineServices;
 using Storage.Snapshots.LevelParams;
 using UI.Popups.CompleteLevelInfoPopup;
 using UnityEngine;
@@ -31,6 +32,7 @@ namespace Components.Levels
         [Inject] private readonly ClickHandlerService _clickHandlerService;
         [Inject] private readonly UIBlockHandler _uiBlockHandler;
         [Inject] private readonly ProgressProvider _progressProvider;
+        [Inject] private readonly CoroutineService _coroutineService;
 
         [SerializeField] private RectTransform _gameMainCanvasTransform;
         [SerializeField] private RectTransform _draggingTransform;
@@ -105,6 +107,7 @@ namespace Components.Levels
             
             _levelHudHandler.SetInteractivity(false);
             _levelHudHandler.PlayFinishParticles();
+            
             if (gameObject != null && gameObject.activeInHierarchy)
                 _finishCoroutine = StartCoroutine(AwaitFinishLevel(packId, levelId, earnedStarsForLevel, initialStarsForLevel, levelPlayedTime, levelStatus));
         }
@@ -178,6 +181,7 @@ namespace Components.Levels
 
             if (_draggingFigureContainer.FigureId == maybeFigure.FigureId)
             {
+                _uiBlockHandler.BlockUserInput(true);
                 _soundHandler.PlaySound("success");
                 var shiftingAnimationPromise = new Promise();
                 _levelHudHandler.TryShiftAllElementsAfterRemoving(_draggingFigureContainer.FigureId, shiftingAnimationPromise);
@@ -191,6 +195,7 @@ namespace Components.Levels
                 {
                     _completeDraggingAnimationSequence.OnComplete(() =>
                         {
+                            _uiBlockHandler.BlockUserInput(false);
                             maybeFigure.SetConnected();
                             SetMenuFigureConnected();
                             TryHandleLevelCompletion();
@@ -235,7 +240,10 @@ namespace Components.Levels
                         _levelHudHandler.ReturnFigureBackToScroll(_draggingFigureContainer.FigureId);
                         _draggingFigureContainer.FigureTransform.transform.localPosition = Vector3.zero;
                         ClearDraggingFigure();
-                        _uiBlockHandler.BlockUserInput(false);
+                        
+                        _coroutineService.WaitFor(0.15f)
+                            .Then(() => _uiBlockHandler.BlockUserInput(false))
+                            .CancelWith(this);
                     }).KillWith(this);
             }).CancelWith(this);
         }
