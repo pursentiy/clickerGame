@@ -58,7 +58,7 @@ namespace Services.Player
             return true;
         }
         
-        public bool CreateLevel(int packId, LevelSnapshot levelSnapshot)
+        public bool CreateLevel(int packId, LevelSnapshot levelSnapshot, SavePriority savePriority)
         {
             if (_profileSnapshot == null || levelSnapshot == null)
                 return false;
@@ -71,7 +71,7 @@ namespace Services.Player
                 return false;
 
             pack.CompletedLevelsSnapshots.Add(levelSnapshot);
-            SaveProfile(SavePriority.ImmediateSave);
+            SaveProfile(savePriority);
             return true;
         }
         

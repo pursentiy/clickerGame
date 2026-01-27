@@ -92,31 +92,31 @@ namespace Components.Levels
             _levelInfoTrackerService.StopLevelTracking();
             _levelInfoTrackerService.ClearData();
 
-            var levelStatus = _progressProvider.IsLevelCompleted(_progressController.CurrentPackId, _currentLevelParams.LevelId)
+            var packId = _progressController.CurrentPackId;
+            var levelId = _currentLevelParams.LevelId;
+            
+            var levelStatus = _progressProvider.IsLevelCompleted(packId, levelId)
                     ? CompletedLevelStatus.Replayed
                     : CompletedLevelStatus.InitialCompletion;
             
-            var maybeOldEarnedStars = _progressProvider.GetEarnedStarsForLevel(_progressController.CurrentPackId, _currentLevelParams.LevelId);
-            var previousEarnedStars = maybeOldEarnedStars ?? 0;
-            var starsByTime = _levelHelperService.EvaluateEarnedStars(_currentLevelParams, levelPlayedTime);
-            var earnedStarsForLevel = _levelHelperService.EvaluateStarsProgress(starsByTime, maybeOldEarnedStars);
-            
-            _progressController.SetLevelCompleted(_progressController.CurrentPackId, _progressController.CurrentLevelId, levelPlayedTime, starsByTime);
+            var maybeOldEarnedStars = _progressProvider.GetEarnedStarsForLevel(packId, levelId);
+            var initialStarsForLevel = maybeOldEarnedStars ?? 0;
+            var earnedStarsForLevel = _levelHelperService.EvaluateEarnedStars(_currentLevelParams, levelPlayedTime);
             
             _levelHudHandler.SetInteractivity(false);
             _levelHudHandler.PlayFinishParticles();
             if (gameObject != null && gameObject.activeInHierarchy)
-                _finishCoroutine = StartCoroutine(AwaitFinishLevel(earnedStarsForLevel, previousEarnedStars, levelPlayedTime, levelStatus));
+                _finishCoroutine = StartCoroutine(AwaitFinishLevel(packId, levelId, earnedStarsForLevel, initialStarsForLevel, levelPlayedTime, levelStatus));
         }
 
-        private IEnumerator AwaitFinishLevel(int earnedStars, int previousStarsForLevel, float levelPlayedTime, CompletedLevelStatus completedLevelStatus)
+        private IEnumerator AwaitFinishLevel(int packId, int levelId, int currentStarsForLevel, int initialStarsForLevel, float levelPlayedTime, CompletedLevelStatus completedLevelStatus)
         {
             _uiBlockHandler.BlockUserInput(true);
             yield return new WaitForSeconds(_screenHandler.AwaitChangeScreenTime);
             _uiBlockHandler.BlockUserInput(false);
             
             StateMachine
-                .CreateMachine(new FinishLevelContext(earnedStars, previousStarsForLevel, levelPlayedTime, _packInfo, completedLevelStatus))
+                .CreateMachine(new FinishLevelContext(packId, levelId, currentStarsForLevel, initialStarsForLevel, levelPlayedTime, _packInfo, completedLevelStatus))
                 .StartSequence<TryShowAdsAfterLevelCompleteState>()
                 .FinishWith(this);
         }
