@@ -4935,7 +4935,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uiParticle: {fileID: 659165032728061568}
-  _baseScale: 2
+  _baseScale: 3
 --- !u!1 &8935549693429071562
 GameObject:
   m_ObjectHideFlags: 0

@@ -87,7 +87,7 @@ namespace Common.Widgets.ContainerScaler
 
                     if (mode == ParticleSystemCurveMode.Constant)
                     {
-                        currentBursts[j].count = initialBursts[i][j].count.constant * coefficient;
+                        currentBursts[j].count = Mathf.Clamp(initialBursts[i][j].count.constant * coefficient, 1, 100);
                     }
                     else if (mode == ParticleSystemCurveMode.TwoConstants)
                     {

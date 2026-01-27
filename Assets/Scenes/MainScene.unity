@@ -406,7 +406,7 @@ MonoBehaviour:
   - {fileID: 536753539}
   - {fileID: 2108430701}
   - {fileID: 1103673966}
-  offsetMultiplier: 1.8
+  offsetMultiplier: 1.3
 --- !u!114 &48305191
 MonoBehaviour:
   m_ObjectHideFlags: 0

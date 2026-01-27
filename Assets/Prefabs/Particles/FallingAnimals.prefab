@@ -4947,7 +4947,7 @@ MonoBehaviour:
   m_IsTrail: 0
   m_IgnoreCanvasScaler: 0
   m_Scale: 3
-  m_Scale3D: {x: 0.25, y: 0.25, z: 0.25}
+  m_Scale3D: {x: 2, y: 2, z: 2}
   m_AnimatableProperties: []
   m_Particles:
   - {fileID: 7392640766984335477}
@@ -4965,4 +4965,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uiParticle: {fileID: 4764469257271908289}
-  _baseScale: 0.25
+  _baseScale: 1
