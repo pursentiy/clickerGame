@@ -62,7 +62,7 @@ namespace Services.Cheats
                 return;
 
             _uiManager.PopupsHandler.ShowPopupImmediately<CompleteLevelInfoPopupMediator>(
-                new CompleteLevelInfoPopupContext(EarnedStars, StarsCount, 10, LevelStatus));
+                new CompleteLevelInfoPopupContext(EarnedStars, StarsCount, 1, 10, LevelStatus));
         }
         
         public void VisualizeStarsFlightInCompleteLevelPopup()
