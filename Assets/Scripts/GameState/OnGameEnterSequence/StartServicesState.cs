@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using Services;
 using Services.CoroutineServices;
 using Services.Player;
+using Services.ScreenBlocker;
 using Services.ScreenObserver;
 using Utilities.StateMachine;
 using Zenject;
@@ -29,6 +30,8 @@ namespace GameState.OnGameEnterSequence
             _applicationService.RegisterDisposableService<PlayerProfileManager>();
             _applicationService.RegisterDisposableService<AdsService>();
             _applicationService.RegisterDisposableService<ScreenObserverService>();
+            _applicationService.RegisterDisposableService<UIScreenBlocker>();
+            _applicationService.RegisterDisposableService<UIGlobalBlocker>();
             _applicationService.SetApplicationInitialized();
             
             LoggerService.LogDebug($"{nameof(StartServicesState)}: Disposable Services  registered");
