@@ -3,7 +3,7 @@ namespace Services.Static
 {
     public static class AppConfigService
     {
-        private static readonly Environment _currentEnv = Environment.Production;
+        private static readonly Environment _currentEnv = Environment.Debugs;
         
         public static string Version = "1.0.0";
         
