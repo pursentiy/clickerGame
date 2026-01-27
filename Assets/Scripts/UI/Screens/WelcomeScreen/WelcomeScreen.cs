@@ -4,6 +4,7 @@ using Handlers;
 using Handlers.UISystem;
 using Services;
 using Services.CoroutineServices;
+using Services.Player;
 using UI.Popups.SettingsPopup;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,12 +21,14 @@ namespace UI.Screens.WelcomeScreen
         [Inject] private readonly ProfileBuilderService _profileBuilderService;
         [Inject] private readonly PlayerRepositoryService _playerRepositoryService;
         [Inject] private readonly CoroutineService _coroutineService;
+        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
         
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _settingsButton;
         [SerializeField] private RectTransform _headerText;
         [SerializeField] private CanvasGroup _headerTextCanvasGroup;
         [SerializeField] private Button RESET;
+        [SerializeField] private Button CURRENCY;
         
         [Header("Animation Settings")]
         [SerializeField] private float _duration = 0.8f;
@@ -46,6 +49,7 @@ namespace UI.Screens.WelcomeScreen
             _playButton.onClick.MapListenerWithSound(PushNextScreen).DisposeWith(this);
             _settingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
             RESET.onClick.MapListenerWithSound(Reset).DisposeWith(this);
+            CURRENCY.onClick.MapListenerWithSound(Currency).DisposeWith(this);
             
             AnimateShow();
         }
@@ -55,6 +59,11 @@ namespace UI.Screens.WelcomeScreen
             var snapshot = _profileBuilderService.BuildNewProfileSnapshot();
             _playerRepositoryService.SavePlayerSnapshot(snapshot);
             _coroutineService.WaitFor(0.5f).Then(() => Application.Quit()).CancelWith(this);
+        }
+        
+        private void Currency()
+        {
+            _playerCurrencyService.TryAddStars(10);
         }
 
         private void OnSettingsButtonClicked()

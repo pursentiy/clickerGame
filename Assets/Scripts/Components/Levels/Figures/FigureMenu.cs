@@ -80,6 +80,9 @@ namespace Components.Levels.Figures
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+                return;
+            
             if (!(eventData.delta.y < YDeltaDispersion) )
             {
                 _particleSystem.Simulate(0);
@@ -95,6 +98,9 @@ namespace Components.Levels.Figures
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+                return;
+            
             _particleSystem.Stop();
             
             OnEndDragSignal.Dispatch(eventData);

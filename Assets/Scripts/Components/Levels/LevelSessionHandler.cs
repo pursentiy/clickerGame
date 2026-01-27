@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
 using Common.Data.Info;
 using Components.Levels.Figures;
@@ -11,6 +12,7 @@ using Level.Hud;
 using Level.Widgets;
 using RSG;
 using Services;
+using Services.CoroutineServices;
 using Storage.Snapshots.LevelParams;
 using UI.Popups.CompleteLevelInfoPopup;
 using UnityEngine;
@@ -31,6 +33,7 @@ namespace Components.Levels
         [Inject] private readonly ClickHandlerService _clickHandlerService;
         [Inject] private readonly UIBlockHandler _uiBlockHandler;
         [Inject] private readonly ProgressProvider _progressProvider;
+        [Inject] private readonly CoroutineService _coroutineService;
 
         [SerializeField] private RectTransform _gameMainCanvasTransform;
         [SerializeField] private RectTransform _draggingTransform;
@@ -89,8 +92,7 @@ namespace Components.Levels
             }
 
             var levelPlayedTime = _levelInfoTrackerService.CurrentLevelPlayingTime;
-            _levelInfoTrackerService.StopLevelTracking();
-            _levelInfoTrackerService.ClearData();
+            ResetLevelParams();
 
             var packId = _progressController.CurrentPackId;
             var levelId = _currentLevelParams.LevelId;
@@ -105,6 +107,7 @@ namespace Components.Levels
             
             _levelHudHandler.SetInteractivity(false);
             _levelHudHandler.PlayFinishParticles();
+            
             if (gameObject != null && gameObject.activeInHierarchy)
                 _finishCoroutine = StartCoroutine(AwaitFinishLevel(packId, levelId, earnedStarsForLevel, initialStarsForLevel, levelPlayedTime, levelStatus));
         }
@@ -161,56 +164,76 @@ namespace Components.Levels
         {
             if (_levelHudHandler == null || _draggingFigureContainer == null)
                 return;
-            
-            var releasedOnFigures = _clickHandlerService.DetectFigureTarget(eventData, _levelHudHandler.FiguresAssemblyCanvasRaycaster);
-            if (releasedOnFigures.IsCollectionNullOrEmpty())
-            {
-                ResetDraggingFigure();
-                return;
-            }
-            
-            var maybeFigure = releasedOnFigures.FirstOrDefault(i => i != null && i.FigureId == _draggingFigureContainer.FigureId);
-            if (maybeFigure == null)
-            {
-                ResetDraggingFigure();
-                return;
-            }
 
-            if (_draggingFigureContainer.FigureId == maybeFigure.FigureId)
+            try
             {
-                _soundHandler.PlaySound("success");
-                var shiftingAnimationPromise = new Promise();
-                _levelHudHandler.TryShiftAllElementsAfterRemoving(_draggingFigureContainer.FigureId, shiftingAnimationPromise);
-                
-                TrySetFigureInserted(maybeFigure.FigureId);
-                
-                _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigureImage.transform.DOScale(0, 0.4f))
-                    .KillWith(this);
-
-                shiftingAnimationPromise.Then(() =>
+                var releasedOnFigures = _clickHandlerService.DetectFigureTarget(eventData, _levelHudHandler.FiguresAssemblyCanvasRaycaster);
+                if (releasedOnFigures.IsCollectionNullOrEmpty())
                 {
-                    _completeDraggingAnimationSequence.OnComplete(() =>
+                    ResetDraggingFigure();
+                    return;
+                }
+            
+                var maybeFigure = releasedOnFigures.FirstOrDefault(i => i != null && i.FigureId == _draggingFigureContainer.FigureId);
+                if (maybeFigure == null)
+                {
+                    ResetDraggingFigure();
+                    return;
+                }
+                
+                if (_draggingFigureContainer.FigureId == maybeFigure.FigureId)
+                {
+                    _uiBlockHandler.BlockUserInput(true);
+                    _soundHandler.PlaySound("success");
+                    var shiftingAnimationPromise = new Promise();
+                    _levelHudHandler.TryShiftAllElementsAfterRemoving(_draggingFigureContainer.FigureId, shiftingAnimationPromise);
+                
+                    TrySetFigureInserted(maybeFigure.FigureId);
+                
+                    _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigureImage.transform.DOScale(0, 0.4f))
+                        .KillWith(this);
+
+                    shiftingAnimationPromise.Then(() =>
                         {
-                            maybeFigure.SetConnected();
-                            SetMenuFigureConnected();
-                            TryHandleLevelCompletion();
-                        });
-                }).CancelWith(this);
+                            _completeDraggingAnimationSequence.OnComplete(() =>
+                            {
+                                maybeFigure.SetConnected();
+                                TryHandleLevelCompletion();
+                            
+                                SetMenuFigureConnected()
+                                    .Then(() => _uiBlockHandler.BlockUserInput(false))
+                                    .CancelWith(this);
+                            });
+                        })
+                        .Catch(e =>
+                        {
+                            LoggerService.LogWarning(this, e.Message);
+                            _uiBlockHandler.BlockUserInput(false);
+                        })
+                        .CancelWith(this);
+                }
+                else
+                {
+                    ResetDraggingFigure();
+                }
             }
-            else
+            catch (Exception e)
             {
-                ResetDraggingFigure();
+                LoggerService.LogWarning(this, e.Message);
+                _uiBlockHandler.BlockUserInput(false);
             }
         }
 
-        private void SetMenuFigureConnected()
+        private IPromise SetMenuFigureConnected()
         {
             var menuFigurePromise = new Promise();
             _menuFigure.SetConnected(menuFigurePromise);
-            menuFigurePromise.Then(() =>
+            
+            return menuFigurePromise.Then(() =>
             {
                 _levelHudHandler.DestroyFigure(_draggingFigureContainer.FigureId);
                 ClearDraggingFigure();
+                return _coroutineService.WaitFrame();
             }).CancelWith(this);
         }
 
@@ -232,12 +255,24 @@ namespace Components.Levels
             {
                 _resetDraggingAnimationSequence.OnComplete(() =>
                     {
-                        _levelHudHandler.ReturnFigureBackToScroll(_draggingFigureContainer.FigureId);
-                        _draggingFigureContainer.FigureTransform.transform.localPosition = Vector3.zero;
-                        ClearDraggingFigure();
-                        _uiBlockHandler.BlockUserInput(false);
+                        _levelHudHandler.ReturnFigureBackToScroll(_draggingFigureContainer.FigureId)
+                            .Then(() =>
+                            {
+                                _draggingFigureContainer.FigureTransform.transform.localPosition = Vector3.zero;
+                                ClearDraggingFigure();
+
+                                _coroutineService.WaitFor(0.2f)
+                                    .Then(() => _uiBlockHandler.BlockUserInput(false))
+                                    .CancelWith(this);
+                            }).CancelWith(this);
                     }).KillWith(this);
-            }).CancelWith(this);
+            })
+            .Catch(e =>
+            {
+                LoggerService.LogWarning(this, e.Message);
+                _uiBlockHandler.BlockUserInput(false);
+            })
+            .CancelWith(this);
         }
 
         private void ClearDraggingFigure()
@@ -319,6 +354,12 @@ namespace Components.Levels
                 _levelHudHandler.Dispose();
                 Destroy(_levelHudHandler.gameObject);
             }
+        }
+        
+        private void ResetLevelParams()
+        {
+            _levelInfoTrackerService.StopLevelTracking();
+            _levelInfoTrackerService.ClearData();
         }
     }
 }

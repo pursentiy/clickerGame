@@ -1,4 +1,3 @@
-using System.Collections;
 using Storage.Audio;
 using UnityEngine;
 using Zenject;
@@ -18,21 +17,18 @@ namespace Handlers
 
         private Coroutine _ambientAwaitCoroutine;
 
-        //TODO FIX EXCEPT CLIP CHOOSING
+        //TODO FIX RANDOM CLIPS CHOOSING
         //TODO ADD VOLUME SETTING AND PLAYING LOGIC
         public void StartAmbience(string exceptClipName = "")
         {
-            var clip = _audioStorageData.MusicPack.GetRandomSoundExceptSpecific(exceptClipName);
-            if (clip == null)
-                return;
-
-            if (_musicSource.isPlaying)
+            var clipData = _audioStorageData.MusicPack.GetRandomSoundExceptSpecific(exceptClipName);
+            if (clipData == null || clipData.clip == null)
                 return;
             
-            _musicSource.PlayOneShot(clip.clip, 0.7f);
-            
-            if (gameObject != null && gameObject.activeInHierarchy)
-                _ambientAwaitCoroutine = StartCoroutine(AwaitForNextAmbienceSong(clip));
+            _musicSource.clip = clipData.clip;
+            _musicSource.volume = 0.5f;
+            _musicSource.loop = true;
+            _musicSource.Play();
         }
 
         public void StopAmbience()
@@ -97,12 +93,6 @@ namespace Handlers
         {
             if (_ambientAwaitCoroutine != null)
                 StopCoroutine(_ambientAwaitCoroutine);
-        }
-        
-        private IEnumerator AwaitForNextAmbienceSong(Sound soundParams)
-        {
-            yield return new WaitForSeconds(soundParams.clip.length);
-            StartAmbience();
         }
     }
 }

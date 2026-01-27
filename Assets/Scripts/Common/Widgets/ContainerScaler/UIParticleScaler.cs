@@ -22,12 +22,15 @@ namespace Common.Widgets.ContainerScaler
         
         private void UpdateScale()
         {
-            if (_scaler == null || _uiParticle == null)
-                return;
+            if (_uiParticle == null) return;
+            
+            var rt = GetComponent<RectTransform>();
+            if (rt == null) return;
 
-            // Рассчитываем коэффициент масштабирования Canvas
-            var screenScale = Screen.width / _scaler.referenceResolution.x;
-            _uiParticle.scale = _baseScale * screenScale;
+            var canvas = GetComponentInParent<Canvas>();
+            if (canvas == null) return;
+    
+            _uiParticle.scale = _baseScale * canvas.scaleFactor;
         }
     }
 }

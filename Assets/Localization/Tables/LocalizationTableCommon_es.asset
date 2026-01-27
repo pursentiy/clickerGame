@@ -104,8 +104,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 81790477022519296
-    m_Localized: To unlock new levels, you must complete the ones already unlocked.
-      You will receive stars for completing levels quickly!
+    m_Localized: "Para desbloquear nuevos niveles, debes completar los que ya est\xE1n
+      disponibles. Recibir\xE1s estrellas por completar los niveles r\xE1pidamente!"
     m_Metadata:
       m_Items: []
   - m_Id: 81790485121720320
