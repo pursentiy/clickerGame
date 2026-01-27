@@ -195,6 +195,8 @@ namespace Level.Hud
 
         private void GoToMainMenuScreen()
         {
+            _levelInfoTrackerService.StopLevelTracking();
+            _levelInfoTrackerService.ClearData();
             _screenHandler.ShowChooseLevelScreen(_currentPackInfo, BackToMenuClickSignal);
         }
 
@@ -284,17 +286,18 @@ namespace Level.Hud
             return _figureAnimalsForAssemblyList.Select(figure => figure.OnEndDragSignal).ToList();
         }
 
-        public void ReturnFigureBackToScroll(int figureId)
+        public IPromise ReturnFigureBackToScroll(int figureId)
         {
             var figure = GetFigureById(figureId);
             if (figure == null)
             {
                 LoggerService.LogWarning($"[{nameof(ReturnFigureBackToScroll)}]: No figure found with id " + figureId);
-                return;
+                return Promise.Resolved();
             }
             
             figure.FigureTransform.SetParent(figure.ContainerTransform);
-            _coroutineService.WaitFrame().Then(ResetFigureOffset).CancelWith(this);
+            
+            return _coroutineService.WaitFrame().Then(ResetFigureOffset).CancelWith(this);
             void ResetFigureOffset()
             {
                 if (figure == null ||  figure.ContainerTransform == null)

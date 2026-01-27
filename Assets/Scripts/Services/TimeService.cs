@@ -38,11 +38,24 @@ namespace Services
                 StopTimer(id);
             }
 
+            if (HasMultipleActiveStopwatches())
+            {
+                LoggerService.LogWarning(this, $"[{nameof(CreateTimerInternal)}] Multiple active stopwatches detected.");
+            }
+
             Timer newTimer = new Timer(id, duration, isStopwatch, onComplete, onUpdate);
             _activeTimers.Add(id, newTimer);
 
             newTimer.Coroutine = _persistentCoroutinesService.StartCoroutine(RunTimerRoutine(newTimer));
             return newTimer;
+        }
+
+        private bool HasMultipleActiveStopwatches()
+        {
+            if (_activeTimers.IsCollectionNullOrEmpty())
+                return false;
+
+            return _activeTimers.Count(i => i.Value is { IsStopwatch: true, IsDisposed: false }) > 1;
         }
 
         public Timer GetTimer(string id)
