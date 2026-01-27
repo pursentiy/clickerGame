@@ -1,8 +1,8 @@
 using Extensions;
-using Handlers;
 using JetBrains.Annotations;
 using RSG;
 using Services;
+using Services.ScreenBlocker;
 using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
@@ -12,8 +12,12 @@ namespace Level.FinishLevelSequence
     [UsedImplicitly]
     public sealed class TryShowAdsAfterLevelCompleteState : InjectableStateBase<FinishLevelContext>
     {
+        private const float ScreenBlockTime = 300;
+        
         [Inject] private readonly AdsService _adsService;
-        [Inject] private readonly UIBlockHandler _uiBlockHandler;
+        [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
+
+        private IUIBlockRef _uiBlockRef;
 
         public override void OnEnter(params object[] arguments)
         {
@@ -42,12 +46,12 @@ namespace Level.FinishLevelSequence
 
         private void PrepareForState()
         {
-            _uiBlockHandler.BlockUserInput(true);
+            _uiBlockRef = _uiScreenBlocker.Block(ScreenBlockTime);
         }
 
         private void ResetState()
         {
-            _uiBlockHandler.BlockUserInput(false);
+            _uiBlockRef?.Dispose();
         }
     }
 }

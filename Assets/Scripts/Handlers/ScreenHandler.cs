@@ -5,6 +5,7 @@ using Plugins.FSignal;
 using RSG;
 using Services;
 using Services.CoroutineServices;
+using Services.ScreenBlocker;
 using Storage.Extensions;
 using UI.Screens;
 using UI.Screens.ChooseLevel;
@@ -18,7 +19,7 @@ namespace Handlers
 {
     public class ScreenHandler : MonoBehaviour
     {
-        [Inject] private UIBlockHandler _uiBlockHandler;
+        [Inject] private UIScreenBlocker _uiScreenBlocker;
         [Inject] private ProgressProvider _progressProvider;
         [Inject] private ProgressController _progressController;
         [Inject] private LevelSessionHandler _levelSessionHandler;
@@ -41,7 +42,7 @@ namespace Handlers
 
         public void ShowChooseLevelScreen(PackInfo packInfo, FSignal levelResetSignal = null, bool fast = false)
         {
-            _uiBlockHandler.BlockUserInput(true);
+            var blockRef = _uiScreenBlocker.Block();
             AnimateTransition(fast).Then(() =>
             {
                 levelResetSignal?.Dispatch();
@@ -50,41 +51,41 @@ namespace Handlers
                 screen.Initialize(packInfo);
                 
                 _currentScreenBase = screen;
-                _uiBlockHandler.BlockUserInput(false);
+                blockRef?.Dispose();
             }).CancelWith(this);
         }
         
         public void ShowChoosePackScreen(bool fast = false)
         {
-            _uiBlockHandler.BlockUserInput(true);
+            var blockRef = _uiScreenBlocker.Block();
             AnimateTransition(fast).Then(() =>
             {
                 PopupCurrentScreenAndDisposeHandlers();
                 _currentScreenBase = Instantiate(_choosePackScreen, _screenCanvasTransform);
-                _uiBlockHandler.BlockUserInput(false);
+                blockRef?.Dispose();
             }).CancelWith(this);;
         }
 
         public void ShowWelcomeScreen(bool fast = false)
         {
-            _uiBlockHandler.BlockUserInput(true);
+            var blockRef = _uiScreenBlocker.Block();
             AnimateTransition(fast).Then(() =>
             {
                 PopupCurrentScreenAndDisposeHandlers();
                 _currentScreenBase = Instantiate(_welcomeScreen, _screenCanvasTransform);
-                _uiBlockHandler.BlockUserInput(false);
+                blockRef?.Dispose();
             }).CancelWith(this);;
         }
         
         public void StartNewLevel(int levelId, PackInfo packInfo, LevelInfo levelInfo, bool fast = false)
         {
-            _uiBlockHandler.BlockUserInput(true);
+            var blockRef = _uiScreenBlocker.Block();
             AnimateTransition(fast).Then(() =>
             {
                 _progressController.SetCurrentLevelId(levelId);
                 PopupCurrentScreenAndDisposeHandlers();
                 _levelSessionHandler.StartLevel(levelInfo.ToSnapshot(), _levelParamsHandler.LevelHudHandlerPrefab, packInfo);
-                _uiBlockHandler.BlockUserInput(false);
+                blockRef?.Dispose();
             }).CancelWith(this);
         }
 

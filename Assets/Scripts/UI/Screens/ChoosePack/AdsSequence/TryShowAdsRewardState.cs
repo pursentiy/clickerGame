@@ -1,9 +1,9 @@
 using System;
 using Common.Currency;
-using Handlers;
 using RSG;
 using Services;
 using Services.Player;
+using Services.ScreenBlocker;
 using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
@@ -12,10 +12,14 @@ namespace UI.Screens.ChoosePack.AdsSequence
 {
     public class TryShowAdsRewardState : InjectableStateBase<RewardedAdsSequenceContext>
     {
+        private const float ScreenBlockTime = 300;
+        
         [Inject] private readonly AdsService _adsService;
-        [Inject] private readonly UIBlockHandler _uiBlockHandler;
+        [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
         [Inject] private readonly GameConfigurationProvider _gameConfigurationProvider;
+        
+        private IUIBlockRef _uiBlockRef;
 
         public override void OnEnter(params object[] arguments)
         {
@@ -56,12 +60,18 @@ namespace UI.Screens.ChoosePack.AdsSequence
 
         private void NextState(Stars stars)
         {
+            RevertEnvironment();
             Sequence.ActivateState<VisualizeAdsRewardsState>(new RewardsEarnedInfo(_playerCurrencyService.Stars, stars));
         }
 
         private void PrepareEnvironment()
         {
-            _uiBlockHandler.BlockUserInput(true);
+            _uiBlockRef = _uiScreenBlocker.Block(ScreenBlockTime);
+        }
+
+        private void RevertEnvironment()
+        {
+            _uiBlockRef?.Dispose();
         }
     }
 }

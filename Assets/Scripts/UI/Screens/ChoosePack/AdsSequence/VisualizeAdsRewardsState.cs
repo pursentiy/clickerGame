@@ -1,10 +1,10 @@
 using System;
 using Common.Currency;
 using Extensions;
-using Handlers;
 using RSG;
 using Services.CoroutineServices;
 using Services.FlyingRewardsAnimation;
+using Services.ScreenBlocker;
 using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
@@ -13,10 +13,14 @@ namespace UI.Screens.ChoosePack.AdsSequence
 {
     public class VisualizeAdsRewardsState : InjectableStateBase<RewardedAdsSequenceContext, RewardsEarnedInfo>
     {
-        [Inject] private readonly UIBlockHandler _uiBlockHandler;
+        private const float ScreenBlockTime = 300;
+        
+        [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
         [Inject] private readonly FlyingUIRewardAnimationService _flyingUIRewardAnimationService;
         [Inject] private readonly CoroutineService _coroutineService;
 
+        private IUIBlockRef _uiBlockRef;
+        
         private bool HaveAnyAdsRewards => TypedArgument.EarnedCurrency != null && TypedArgument.EarnedCurrency.GetCount() > 0 && TypedArgument.NewTotalCurrency.GetCount() > 0;
 
         public override void OnEnter(params object[] arguments)
@@ -29,6 +33,8 @@ namespace UI.Screens.ChoosePack.AdsSequence
                 return;
             }
 
+            PrepareEnvironment();
+            
             VisualizeRewardsFlight(TypedArgument.EarnedCurrency)
                 .Then(() => VisualizeRewardsUpdate(TypedArgument.NewTotalCurrency))
                 .ContinueWithResolved(FinishSequence)
@@ -64,9 +70,14 @@ namespace UI.Screens.ChoosePack.AdsSequence
             Sequence.Finish();
         }
 
+        private void PrepareEnvironment()
+        {
+            _uiBlockRef = _uiScreenBlocker.Block(ScreenBlockTime);
+        }
+
         private void RevertEnvironment()
         {
-            _uiBlockHandler.BlockUserInput(false);
+            _uiBlockRef?.Dispose();
         }
     }
 

@@ -1,11 +1,11 @@
 using Extensions;
-using Handlers;
 using Handlers.UISystem;
 using RSG;
 using Services;
 using Services.CoroutineServices;
 using Services.FlyingRewardsAnimation;
 using Services.Player;
+using Services.ScreenBlocker;
 using UI.Popups.MessagePopup;
 using Utilities.Disposable;
 using Utilities.StateMachine;
@@ -16,7 +16,7 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
     public class VisualizeNotEnoughCurrencyState : InjectableStateBase<VisualizeNotEnoughCurrencyContext>
     {
         [Inject] private readonly AdsService _adsService;
-        [Inject] private readonly UIBlockHandler _uiBlockHandler;
+        [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
         [Inject] private readonly GameConfigurationProvider _gameConfigurationProvider;
         [Inject] private readonly UIManager _uiManager;
@@ -24,7 +24,8 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly CurrencyLibraryService _currencyLibraryService;
 
-
+        private IUIBlockRef _uiBlockRef;
+        
         public override void OnEnter(params object[] arguments)
         {
             base.OnEnter(arguments);
@@ -69,12 +70,12 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
 
         private void PrepareEnvironment()
         {
-            _uiBlockHandler.BlockUserInput(true);
+            _uiBlockRef = _uiScreenBlocker.Block();
         }
 
         private void ResetEnvironment()
         {
-            _uiBlockHandler.BlockUserInput(false);
+            _uiBlockRef?.Dispose();
         }
         
         private void FinishSequence()

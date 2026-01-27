@@ -18,7 +18,6 @@ namespace Installers
         [SerializeField] private ScreenHandler _screenHandler;
         [SerializeField] private LevelSessionHandler _levelSessionHandler;
         [SerializeField] private LevelParamsHandler _levelParamsHandler;
-        [SerializeField] private UIBlockHandler _uiBlockHandler;
         [SerializeField] private UISystemData _uiSystemData;
 
         private GameObject _servicesRoot;
@@ -31,7 +30,6 @@ namespace Installers
 
             UIInstaller.DiInstall(ContainerHolder.CurrentContainer, sceneServicesRoot, _uiSystemData);
             
-            Container.Bind<UIBlockHandler>().FromInstance(_uiBlockHandler).AsSingle();
             Container.Bind<ScreenHandler>().FromInstance(_screenHandler).AsSingle();
             
             Container.BindInterfacesAndSelfTo<LevelSessionHandler>().FromInstance(_levelSessionHandler).AsSingle();
