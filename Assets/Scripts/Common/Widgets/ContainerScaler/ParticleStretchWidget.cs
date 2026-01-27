@@ -36,10 +36,14 @@ namespace Common.Widgets.ContainerScaler
             if (Camera.main == null || particleSystems.IsNullOrEmpty()) 
                 return;
 
+            var scale = UnityEngine.Device.Screen.width * offsetMultiplier;
             foreach (var system in particleSystems)
             {
+                if (system == null)
+                    continue;
+                
                 var shape = system.shape;
-                shape.scale = new Vector3(UnityEngine.Device.Screen.width * offsetMultiplier, 0, 0);
+                shape.scale = new Vector3(scale, 0, 0);
             }
         }
     }
