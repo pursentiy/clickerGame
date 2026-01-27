@@ -252,7 +252,8 @@ namespace UI.Popups.CompleteLevelInfoPopup
                 fireworksParticlesArray[i] = i;
             }
             
-            _particlesCoroutine = StartCoroutine(PlayParticles(CollectionExtensions.ShuffleCopy(fireworksParticlesArray), countToPlay, totalStars));
+            if (gameObject != null && gameObject.activeInHierarchy)
+                _particlesCoroutine = StartCoroutine(PlayParticles(CollectionExtensions.ShuffleCopy(fireworksParticlesArray), countToPlay, totalStars));
         }
 
         private IEnumerator PlayParticles(int[] shuffledPositions, int countToPlay, int totalStars)

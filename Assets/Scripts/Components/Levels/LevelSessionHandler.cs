@@ -105,7 +105,8 @@ namespace Components.Levels
             
             _levelHudHandler.SetInteractivity(false);
             _levelHudHandler.PlayFinishParticles();
-            _finishCoroutine = StartCoroutine(AwaitFinishLevel(earnedStarsForLevel, previousEarnedStars, levelPlayedTime, levelStatus));
+            if (gameObject != null && gameObject.activeInHierarchy)
+                _finishCoroutine = StartCoroutine(AwaitFinishLevel(earnedStarsForLevel, previousEarnedStars, levelPlayedTime, levelStatus));
         }
 
         private IEnumerator AwaitFinishLevel(int earnedStars, int previousStarsForLevel, float levelPlayedTime, CompletedLevelStatus completedLevelStatus)

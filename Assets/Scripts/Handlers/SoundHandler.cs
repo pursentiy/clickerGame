@@ -31,7 +31,8 @@ namespace Handlers
             
             _musicSource.PlayOneShot(clip.clip, 0.7f);
             
-            _ambientAwaitCoroutine = StartCoroutine(AwaitForNextAmbienceSong(clip));
+            if (gameObject != null && gameObject.activeInHierarchy)
+                _ambientAwaitCoroutine = StartCoroutine(AwaitForNextAmbienceSong(clip));
         }
 
         public void StopAmbience()
