@@ -201,13 +201,18 @@ namespace Components.Levels
                                 TryHandleLevelCompletion();
                             
                                 SetMenuFigureConnected()
-                                    .Then(() => _uiBlockHandler.BlockUserInput(false))
+                                    .Then(() =>
+                                    {
+                                        ClearDraggingFigure();
+                                        _uiBlockHandler.BlockUserInput(false);
+                                    })
                                     .CancelWith(this);
                             });
                         })
                         .Catch(e =>
                         {
                             LoggerService.LogWarning(this, e.Message);
+                            ClearDraggingFigure();
                             _uiBlockHandler.BlockUserInput(false);
                         })
                         .CancelWith(this);
@@ -232,7 +237,6 @@ namespace Components.Levels
             return menuFigurePromise.Then(() =>
             {
                 _levelHudHandler.DestroyFigure(_draggingFigureContainer.FigureId);
-                ClearDraggingFigure();
                 return _coroutineService.WaitFrame();
             }).CancelWith(this);
         }
@@ -259,10 +263,14 @@ namespace Components.Levels
                             .Then(() =>
                             {
                                 _draggingFigureContainer.FigureTransform.transform.localPosition = Vector3.zero;
-                                ClearDraggingFigure();
+                                
 
                                 _coroutineService.WaitFor(0.2f)
-                                    .Then(() => _uiBlockHandler.BlockUserInput(false))
+                                    .Then(() =>
+                                    {
+                                        ClearDraggingFigure();
+                                        _uiBlockHandler.BlockUserInput(false);
+                                    })
                                     .CancelWith(this);
                             }).CancelWith(this);
                     }).KillWith(this);
@@ -271,6 +279,7 @@ namespace Components.Levels
             {
                 LoggerService.LogWarning(this, e.Message);
                 _uiBlockHandler.BlockUserInput(false);
+                ClearDraggingFigure();
             })
             .CancelWith(this);
         }
