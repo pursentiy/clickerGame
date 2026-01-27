@@ -4893,6 +4893,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 320327307464090079}
+  - component: {fileID: 5664096873140414045}
   m_Layer: 5
   m_Name: CommonRewardItem
   m_TagString: Untagged
@@ -4921,6 +4922,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5664096873140414045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8459060460264245834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91213f400ec742918e5e74788298a82a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _uiParticle: {fileID: 659165032728061568}
+  _baseScale: 2
 --- !u!1 &8935549693429071562
 GameObject:
   m_ObjectHideFlags: 0

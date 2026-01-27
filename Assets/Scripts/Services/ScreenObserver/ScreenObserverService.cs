@@ -50,8 +50,6 @@ namespace Services.ScreenObserver
         
         private void CheckScreenParams()
         {
-            LoggerService.LogWarning("Screen changed");
-            
             if (HasScreenResolutionChanged())
             {
                 _lastWidth = UnityEngine.Device.Screen.width;
