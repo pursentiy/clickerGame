@@ -23,6 +23,7 @@ namespace Services
         private bool _isAdShowing;
         private bool _isResolved;
         private bool _hasAdStarted;
+        private IPromise _timeoutPromise;
         private Promise<bool> _currentAdPromise;
 
         public AdsService(
@@ -77,14 +78,16 @@ namespace Services
             if (_isAdShowing) 
                 return Promise<bool>.Resolved(false);
             
-            _currentAdPromise = new Promise<bool>();
+            var localAdPromise = new Promise<bool>();
+            _currentAdPromise = localAdPromise;
+            _timeoutPromise?.SafeCancel();
             _isResolved = false;
             _hasAdStarted = false; 
             _isAdShowing = true;
 
             SetPause(true);
             
-            _coroutinesService.WaitForRealtime(AdTimeoutDuration).Then(() => {
+            _timeoutPromise = _coroutinesService.WaitForRealtime(AdTimeoutDuration).Then(() => {
                 if (!_isResolved && !_hasAdStarted)
                 {
                     LoggerService.LogWarning($"<color=orange>{GetType().Name}</color> Ad Timeout Reached during loading.");
@@ -105,7 +108,7 @@ namespace Services
                 return failPromise;
             }
 
-            return _currentAdPromise;
+            return localAdPromise;
         }
 
         private void OnInterstitialStateChanged(InterstitialState state)
@@ -159,9 +162,8 @@ namespace Services
 
             SetPause(false);
             
-            var promiseToResolve = _currentAdPromise;
-            _currentAdPromise = null;
-            promiseToResolve?.SafeResolve(result);
+            _timeoutPromise?.SafeCancel();
+            _currentAdPromise?.SafeResolve(result);
         }
 
         private void SetPause(bool isPaused)
@@ -178,6 +180,12 @@ namespace Services
 
         protected override void OnDisposing()
         {
+            if (Bridge.advertisement != null)
+            {
+                Bridge.advertisement.interstitialStateChanged -= OnInterstitialStateChanged;
+                Bridge.advertisement.rewardedStateChanged -= OnRewardedStateChanged;
+            }
+            
             FinalizeAd(false);
         }
         
