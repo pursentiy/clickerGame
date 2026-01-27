@@ -12,6 +12,7 @@ namespace Services.FlyingRewardsAnimation
         public Vector3[] TargetsPlaces { get; } 
         public float RewardsMoveTimeSpeedupFactor { get; } 
         public Promise RewardStartFlyPromise { get; }
+        //TODO FIX APPEAR DISTANCE ON SMALL SCREENS
         public (float ParticlesScale, float ParticleAppearDistanceScale)? SpawnSettings { get; }
 
 
