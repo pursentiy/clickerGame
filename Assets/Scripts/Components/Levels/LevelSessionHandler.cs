@@ -198,12 +198,12 @@ namespace Components.Levels
                             _completeDraggingAnimationSequence.OnComplete(() =>
                             {
                                 maybeFigure.SetConnected();
+                                SetMenuFigureConnected();
                                 TryHandleLevelCompletion();
-                            
-                                SetMenuFigureConnected()
+                                _coroutineService.WaitFor(0.15f)
                                     .Then(() =>
                                     {
-                                        ClearDraggingFigure();
+                                        SetDraggingFinished();
                                         _uiBlockHandler.BlockUserInput(false);
                                     })
                                     .CancelWith(this);
@@ -212,7 +212,6 @@ namespace Components.Levels
                         .Catch(e =>
                         {
                             LoggerService.LogWarning(this, e.Message);
-                            ClearDraggingFigure();
                             _uiBlockHandler.BlockUserInput(false);
                         })
                         .CancelWith(this);
@@ -237,6 +236,7 @@ namespace Components.Levels
             return menuFigurePromise.Then(() =>
             {
                 _levelHudHandler.DestroyFigure(_draggingFigureContainer.FigureId);
+                ClearDraggingFigure();
                 return _coroutineService.WaitFrame();
             }).CancelWith(this);
         }
@@ -259,37 +259,37 @@ namespace Components.Levels
             {
                 _resetDraggingAnimationSequence.OnComplete(() =>
                     {
-                        _levelHudHandler.ReturnFigureBackToScroll(_draggingFigureContainer.FigureId)
+                        _levelHudHandler.ReturnFigureBackToScroll(_draggingFigureContainer.FigureId);
+                        _draggingFigureContainer.FigureTransform.transform.localPosition = Vector3.zero;
+                        ClearDraggingFigure();
+                        
+                        _coroutineService.WaitFor(0.2f)
                             .Then(() =>
                             {
-                                _draggingFigureContainer.FigureTransform.transform.localPosition = Vector3.zero;
-                                
-
-                                _coroutineService.WaitFor(0.2f)
-                                    .Then(() =>
-                                    {
-                                        ClearDraggingFigure();
-                                        _uiBlockHandler.BlockUserInput(false);
-                                    })
-                                    .CancelWith(this);
-                            }).CancelWith(this);
+                                SetDraggingFinished();
+                                _uiBlockHandler.BlockUserInput(false);
+                            })
+                            .CancelWith(this);
                     }).KillWith(this);
             })
             .Catch(e =>
             {
                 LoggerService.LogWarning(this, e.Message);
                 _uiBlockHandler.BlockUserInput(false);
-                ClearDraggingFigure();
             })
             .CancelWith(this);
         }
 
         private void ClearDraggingFigure()
         {
-            _isDraggable = false;
             _levelHudHandler.LockScroll(false);
             _draggingFigureContainer = null;
             _draggingFigureImage = null;
+        }
+
+        private void SetDraggingFinished()
+        {
+            _isDraggable = false;
         }
 
         private void Update()
