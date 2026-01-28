@@ -933,8 +933,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae7d3a2106eca044e82f5e91b8168cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gameMainCanvasTransform: {fileID: 0}
-  _draggingTransform: {fileID: 0}
+  _gameMainCanvasTransform: {fileID: 810554863}
+  _draggingTransform: {fileID: 810554863}
 --- !u!4 &496767645
 Transform:
   m_ObjectHideFlags: 0
@@ -1244,7 +1244,7 @@ GameObject:
   - component: {fileID: 810554863}
   - component: {fileID: 810554864}
   m_Layer: 5
-  m_Name: ScreenPanel
+  m_Name: Screen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
