@@ -14,7 +14,7 @@ namespace Services
 {
     public class AdsService : DisposableService
     {
-        private const float AdTimeoutDuration = 10f; 
+        private const float AdTimeoutDuration = 4f; 
         private const float CheatTimeoutDuration = 2f;
 
         private readonly SoundHandler _soundHandler;

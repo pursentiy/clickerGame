@@ -1,9 +1,12 @@
 using System.Collections;
 using Common;
+using Extensions;
 using Installers;
 using Playgama;
+using RSG;
 using Services;
 using UnityEngine;
+using Utilities.Disposable;
 using Zenject;
 
 namespace GameState
@@ -15,6 +18,7 @@ namespace GameState
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly ScenesManagerService _scenesManagerService;
         [Inject] private readonly GlobalSettingsManager _globalSettingsManager;
+        [Inject] private readonly AdsService _adsService;
         
 #if UNITY_EDITOR
         [SerializeField] private bool _skipNextSceneLoading = false;
@@ -28,13 +32,6 @@ namespace GameState
             
             _globalSettingsManager.SetMaxFrameRate();
             _globalSettingsManager.DisableMultitouch();
-            
-#if UNITY_EDITOR
-            if (_skipNextSceneLoading)
-            {
-                LoggerService.LogWarning($"!!!ALERT: {nameof(AppBootstrapper)}: {nameof(_skipNextSceneLoading)} field is set to true, so you will not proceed to the next scene!!!");
-            }
-#endif
         }
         
         private IEnumerator Start()
@@ -45,20 +42,10 @@ namespace GameState
             yield return LocalizationPreloadRoutine();
 
             LoggerService.LogDebug($"[{GetType().Name}] Initialization finished...");
-            
-#if UNITY_EDITOR
-            if (!_skipNextSceneLoading)
-            {
-                LoadNextScene();
-            }
-#else
-            LoadNextScene();
-#endif
-        }
 
-        private void LoadNextScene()
-        {
-            _scenesManagerService.LoadScene(SceneTypes.MainScene);
+            ShowPrerollInterstitialAd()
+                .ContinueWithResolved(LoadNextScene)
+                .CancelWith(this);
         }
         
         private IEnumerator BridgeAuthenticationRoutine()
@@ -124,6 +111,16 @@ namespace GameState
             }
             
             LoggerService.LogDebug($"[{GetType().Name}] [{nameof(LocalizationPreloadRoutine)}]: Successfully loaded Localization.");
+        }
+        
+        private IPromise ShowPrerollInterstitialAd()
+        {
+            return _adsService.ShowInterstitial().AsNonGenericPromise().CancelWith(this);
+        }
+        
+        private void LoadNextScene()
+        {
+            _scenesManagerService.LoadScene(SceneTypes.MainScene);
         }
     }
 }
