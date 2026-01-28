@@ -4894,6 +4894,7 @@ GameObject:
   m_Component:
   - component: {fileID: 320327307464090079}
   - component: {fileID: 5664096873140414045}
+  - component: {fileID: 4454996529669922182}
   m_Layer: 5
   m_Name: CommonRewardItem
   m_TagString: Untagged
@@ -4935,7 +4936,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uiParticle: {fileID: 659165032728061568}
-  _baseScale: 2
+  _baseScale: 3
+--- !u!114 &4454996529669922182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8459060460264245834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bbb911ca5fe43599753425a5e2e91df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mainTransform: {fileID: 320327307464090079}
+  _particlesTransform: {fileID: 7473151156932615015}
 --- !u!1 &8935549693429071562
 GameObject:
   m_ObjectHideFlags: 0

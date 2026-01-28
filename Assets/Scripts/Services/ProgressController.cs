@@ -9,7 +9,7 @@ namespace Services
 {
     public class ProgressController
     {
-        [Inject] private readonly GameParamsManager _gameParamsManager;
+        [Inject] private readonly UserSettingsService _userSettingsService;
         [Inject] private readonly PlayerProfileManager _playerProfileManager;
         [Inject] private readonly ProgressProvider _progressProvider;
 
@@ -26,7 +26,7 @@ namespace Services
             CurrentPackId = currentPackId;
         }
         
-        public bool SetLevelCompleted(int packId, int levelId, float levelCompletedTime, Stars starsEarned)
+        public bool SetLevelCompleted(int packId, int levelId, float levelCompletedTime, Stars starsEarned, SavePriority savePriority)
         {
             if (levelCompletedTime < 0)
             {
@@ -56,7 +56,7 @@ namespace Services
             }
             else
             {
-                var result = TryAddLevelToProfile(packId, levelId, levelCompletedTime, starsEarned, UnlockStatus.UnlockedByProgress);
+                var result = TryAddLevelToProfile(packId, levelId, levelCompletedTime, starsEarned, UnlockStatus.UnlockedByProgress, savePriority);
                 if (result) 
                     return true;
                 
@@ -94,7 +94,7 @@ namespace Services
             return true;
         }
         
-        private bool TryAddLevelToProfile(int packId, int levelId, float completedTime, Stars starsEarned, UnlockStatus unlockStatus)
+        private bool TryAddLevelToProfile(int packId, int levelId, float completedTime, Stars starsEarned, UnlockStatus unlockStatus, SavePriority savePriority)
         {
             if (!_playerProfileManager.IsInitialized)
             {
@@ -117,7 +117,7 @@ namespace Services
             }
             
             var newLevel = new LevelSnapshot(levelId, completedTime, starsEarned, unlockStatus, 1);
-            var result = _playerProfileManager.CreateLevel(packId, newLevel);
+            var result = _playerProfileManager.CreateLevel(packId, newLevel, savePriority);
             if (!result)
             {
                 LoggerService.LogError(this, $"[{nameof(TryAddLevelToProfile)}]: Failed to add level for {packId} and levelId {levelId}");

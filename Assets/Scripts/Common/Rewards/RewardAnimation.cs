@@ -12,7 +12,7 @@ namespace Common.Rewards
 {
     public class RewardAnimation : RewardAnimationBase
     {
-        [SerializeField] private RectTransform _itemPrefab;
+        [SerializeField] private RewardAnimationItem _itemPrefab;
         [SerializeField] private int _poolCount = 15;
         [SerializeField] private float _particlesScale = 1;
 
@@ -54,14 +54,18 @@ namespace Common.Rewards
             var index = 0;
             var promises = ItemsPool.Take(elementsCount).Map((item) =>
             {
-                var itemTransform = item.GetRectTransform();
-                if (itemTransform == null) return Promise.Resolved();
+                var itemTransform = item.MainTransform;
+                if (itemTransform == null) 
+                    return Promise.Resolved();
 
                 // --- Initial Reset ---
                 itemTransform.position = startingPos;
                 itemTransform.localScale = Vector3.zero;
                 itemTransform.TrySetActive(true);
                 itemTransform.DOKill();
+                
+                if (item.ParticlesTransform != null)
+                    item.ParticlesTransform.localScale = Vector3.one;
 
                 var particleScale = _particlesScale * (maybeParticleSize ?? 1f);
                 var totalDuration = MoveTime / moveTimeSpeedupFactor;
@@ -84,19 +88,26 @@ namespace Common.Rewards
 
                 // STEP 1: POP OUT (The explosion)
                 // Individualized stagger makes it look like a shower of stars
-                float individualDelay = index * 0.02f * delaySpeedupFactor;
+                var individualDelay = index * 0.02f * delaySpeedupFactor;
                 seq.AppendInterval(individualDelay);
 
-                seq.Append(itemTransform.DOMove(poppedPos, 0.3f).SetEase(Ease.OutBack))
-                    .Join(itemTransform.DOScale(particleScale, 0.3f).SetEase(Ease.OutBack));
+                var moveDuration = 0.3f;
+                seq.Append(itemTransform.DOMove(poppedPos, moveDuration).SetEase(Ease.OutBack))
+                    .Join(itemTransform.DOScale(particleScale, moveDuration).SetEase(Ease.OutBack));
 
                 // STEP 2: BRIEF HOVER (Optional "weightless" feel)
-                seq.AppendInterval(UnityEngine.Random.Range(0f, 0.1f));
+                var additionalDelay = UnityEngine.Random.Range(0f, 0.1f);
+                seq.AppendInterval(additionalDelay);
 
                 // STEP 3: THE SUCK (Accelerating to target)
                 seq.Append(itemTransform.DOPath(flyingPath, totalDuration * 0.8f, PathType.CatmullRom)
                         .SetEase(Ease.InBack))
                     .Join(itemTransform.DOScale(particleScale * 0.6f, totalDuration * 0.8f).SetEase(Ease.InCubic));
+
+                if (item.ParticlesTransform != null)
+                {
+                    seq.Insert(individualDelay + additionalDelay + totalDuration + totalDuration * 0.25f, item.ParticlesTransform.DOScale(0, totalDuration * 0.1f).SetEase(Ease.InCubic));
+                }
 
                 // STEP 4: IMPACT
                 seq.AppendCallback(() =>
@@ -132,7 +143,6 @@ namespace Common.Rewards
             if (container != null)
             {
                 container.DOKill(true);
-                // Container "jiggles" slightly to show weight of the reward
                 container.DOShakeAnchorPos(0.2f, 15f, 30, 90, false, true);
                 container.DOPunchScale(new Vector3(0.1f, 0.1f, 0), 0.2f, 10, 0.5f).KillWith(this);
             }
@@ -140,7 +150,7 @@ namespace Common.Rewards
 
         private void Awake()
         {
-            CreateCoinsPool(_itemPrefab.gameObject);
+            CreateCoinsPool(_itemPrefab);
         }
     }
 }

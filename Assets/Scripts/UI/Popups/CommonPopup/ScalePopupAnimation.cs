@@ -12,7 +12,7 @@ namespace UI.Popups.CommonPopup
 {
     public class ScalePopupAnimation : IUIPopupAnimation
     {
-        private const float DefaultDuration = 0.2f;
+        private const float DefaultDuration = 0.3f;
         private const string DefaultAnimShowCurveName = "popup_open";
         private const string DefaultAnimHideCurveName = "InBack";
 

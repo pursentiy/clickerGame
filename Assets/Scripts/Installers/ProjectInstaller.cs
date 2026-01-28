@@ -34,6 +34,7 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<ScreenObserverService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<UIScreenBlocker>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<UIGlobalBlocker>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<GlobalSettingsManager>().AsSingle().NonLazy();
 
             // DATA AND PLAYER PROGRESS
             Container.BindInterfacesAndSelfTo<ProfileStorageService>().AsSingle().NonLazy();
@@ -43,10 +44,10 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<ProgressProvider>().AsSingle();
             Container.BindInterfacesAndSelfTo<ProgressController>().AsSingle();
             Container.BindInterfacesAndSelfTo<ProfileBuilderService>().AsSingle();
-            Container.BindInterfacesAndSelfTo<GameSettingsManager>().AsSingle();
+            Container.BindInterfacesAndSelfTo<GameSoundManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<LanguageConversionService>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameConfigurationProvider>().AsSingle();
-            Container.BindInterfacesAndSelfTo<GameParamsManager>().AsSingle();
+            Container.BindInterfacesAndSelfTo<UserSettingsService>().AsSingle();
             Container.BindInterfacesAndSelfTo<AdsService>().AsSingle();
             
             Container.BindInterfacesAndSelfTo<SoundHandler>().FromInstance(_soundHandler).AsSingle();

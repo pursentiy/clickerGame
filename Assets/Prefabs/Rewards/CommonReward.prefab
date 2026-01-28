@@ -121,7 +121,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _canvas: {fileID: 0}
-  _itemPrefab: {fileID: 320327307464090079, guid: 1fda25be7a7ea4c2c9e98bbbda3cea81,
+  _itemPrefab: {fileID: 4454996529669922182, guid: 1fda25be7a7ea4c2c9e98bbbda3cea81,
     type: 3}
   _poolCount: 15
   _particlesScale: 1

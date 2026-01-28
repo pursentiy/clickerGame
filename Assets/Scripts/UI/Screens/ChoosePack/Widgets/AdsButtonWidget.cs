@@ -50,8 +50,8 @@ namespace UI.Screens.ChoosePack.Widgets
             _floatingSequence?.Kill();
             
             _floatingSequence = DOTween.Sequence()
-                .SetUpdate(true) // Чтобы работало даже при паузе, если нужно
-                .SetLoops(-1, LoopType.Yoyo) // Бесконечно туда-обратно
+                .SetUpdate(true)
+                .SetLoops(-1, LoopType.Yoyo)
                 .KillWith(this);
             
             _floatingSequence.Append(_floatingAnimationContainer.DOAnchorPosY(_floatAmplitude, _floatDuration)

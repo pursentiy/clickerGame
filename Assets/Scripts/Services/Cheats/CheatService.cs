@@ -38,10 +38,10 @@ namespace Services.Cheats
             set => PlayerPrefs.SetInt(EarnedStarsKey, value);
         }
 
-        public int GameTimeScale
+        public float GameTimeScale
         {
-            get => PlayerPrefs.GetInt(TimeScaleKey, 1);
-            set => PlayerPrefs.SetInt(TimeScaleKey, value);
+            get => PlayerPrefs.GetFloat(TimeScaleKey, 1);
+            set => PlayerPrefs.SetFloat(TimeScaleKey, value);
         }
 
         public bool UpdateProfileValues
@@ -62,7 +62,7 @@ namespace Services.Cheats
                 return;
 
             _uiManager.PopupsHandler.ShowPopupImmediately<CompleteLevelInfoPopupMediator>(
-                new CompleteLevelInfoPopupContext(EarnedStars, StarsCount, 10, LevelStatus));
+                new CompleteLevelInfoPopupContext(EarnedStars, StarsCount, 1, 10, LevelStatus));
         }
         
         public void VisualizeStarsFlightInCompleteLevelPopup()

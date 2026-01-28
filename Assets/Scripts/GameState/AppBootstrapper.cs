@@ -1,16 +1,24 @@
 using System.Collections;
+using Common;
+using Extensions;
 using Installers;
 using Playgama;
+using RSG;
 using Services;
 using UnityEngine;
+using Utilities.Disposable;
 using Zenject;
 
 namespace GameState
 {
     public class AppBootstrapper: InjectableMonoBehaviour
     {
+        private const float BridgePlatformAwaitTimeout = 5f;
+        
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly ScenesManagerService _scenesManagerService;
+        [Inject] private readonly GlobalSettingsManager _globalSettingsManager;
+        [Inject] private readonly AdsService _adsService;
         
 #if UNITY_EDITOR
         [SerializeField] private bool _skipNextSceneLoading = false;
@@ -22,12 +30,8 @@ namespace GameState
         {
             DontDestroyOnLoad(gameObject);
             
-#if UNITY_EDITOR
-            if (_skipNextSceneLoading)
-            {
-                LoggerService.LogWarning($"!!!ALERT: {nameof(AppBootstrapper)}: {nameof(_skipNextSceneLoading)} field is set to true, so you will not proceed to the next scene!!!");
-            }
-#endif
+            _globalSettingsManager.SetMaxFrameRate();
+            _globalSettingsManager.DisableMultitouch();
         }
         
         private IEnumerator Start()
@@ -38,32 +42,32 @@ namespace GameState
             yield return LocalizationPreloadRoutine();
 
             LoggerService.LogDebug($"[{GetType().Name}] Initialization finished...");
-            
-#if UNITY_EDITOR
-            if (!_skipNextSceneLoading)
-            {
-                LoadNextScene();
-            }
-#else
-            LoadNextScene();
-#endif
-        }
 
-        private void LoadNextScene()
-        {
-            _scenesManagerService.LoadScene(SceneTypes.MainScene);
+            ShowPrerollInterstitialAd()
+                .ContinueWithResolved(LoadNextScene)
+                .CancelWith(this);
         }
         
         private IEnumerator BridgeAuthenticationRoutine()
         {
-            while (Bridge.platform.id == "unknown")
+            var timeout = BridgePlatformAwaitTimeout; 
+            while (Bridge.platform.id == GlobalConstants.BridgeUnknown && timeout > 0)
             {
+                timeout -= Time.deltaTime;
                 yield return null;
+            }
+
+            LoggerService.LogDebug($"Platform detected: {Bridge.platform.id}");
+
+            if (Bridge.platform.id == GlobalConstants.BridgeGDId)
+            {
+                _isBridgeAuthComplete = true;
+                yield break;
             }
 
             LoggerService.LogDebug($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Platform detected: {Bridge.platform.id}");
             
-            while (Bridge.platform.id == "unknown") yield return null;
+            while (Bridge.platform.id == GlobalConstants.BridgeUnknown) yield return null;
             
 #if UNITY_EDITOR
             LoggerService.LogDebug($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Editor detected: Automatic authorization bypass");
@@ -107,6 +111,16 @@ namespace GameState
             }
             
             LoggerService.LogDebug($"[{GetType().Name}] [{nameof(LocalizationPreloadRoutine)}]: Successfully loaded Localization.");
+        }
+        
+        private IPromise ShowPrerollInterstitialAd()
+        {
+            return _adsService.ShowInterstitial().AsNonGenericPromise().CancelWith(this);
+        }
+        
+        private void LoadNextScene()
+        {
+            _scenesManagerService.LoadScene(SceneTypes.MainScene);
         }
     }
 }

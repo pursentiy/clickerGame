@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
 using Common.Data.Info;
 using Components.Levels.Figures;
@@ -11,6 +12,7 @@ using Level.Hud;
 using Level.Widgets;
 using RSG;
 using Services;
+using Services.CoroutineServices;
 using Services.ScreenBlocker;
 using Storage.Snapshots.LevelParams;
 using UI.Popups.CompleteLevelInfoPopup;
@@ -32,6 +34,7 @@ namespace Components.Levels
         [Inject] private readonly ClickHandlerService _clickHandlerService;
         [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
         [Inject] private readonly ProgressProvider _progressProvider;
+        [Inject] private readonly CoroutineService _coroutineService;
 
         [SerializeField] private RectTransform _gameMainCanvasTransform;
         [SerializeField] private RectTransform _draggingTransform;
@@ -90,33 +93,29 @@ namespace Components.Levels
             }
 
             var levelPlayedTime = _levelInfoTrackerService.CurrentLevelPlayingTime;
-            _levelInfoTrackerService.StopLevelTracking();
-            _levelInfoTrackerService.ClearData();
+            ResetLevelParams();
 
-            var levelStatus = _progressProvider.IsLevelCompleted(_progressController.CurrentPackId, _currentLevelParams.LevelId)
+            var packId = _progressController.CurrentPackId;
+            var levelId = _currentLevelParams.LevelId;
+            
+            var levelStatus = _progressProvider.IsLevelCompleted(packId, levelId)
                     ? CompletedLevelStatus.Replayed
                     : CompletedLevelStatus.InitialCompletion;
             
-            var maybeOldEarnedStars = _progressProvider.GetEarnedStarsForLevel(_progressController.CurrentPackId, _currentLevelParams.LevelId);
-            var previousEarnedStars = maybeOldEarnedStars ?? 0;
-            var starsByTime = _levelHelperService.EvaluateEarnedStars(_currentLevelParams, levelPlayedTime);
-            var earnedStarsForLevel = _levelHelperService.EvaluateStarsProgress(starsByTime, maybeOldEarnedStars);
-            
-            _progressController.SetLevelCompleted(_progressController.CurrentPackId, _progressController.CurrentLevelId, levelPlayedTime, starsByTime);
+            var maybeOldEarnedStars = _progressProvider.GetEarnedStarsForLevel(packId, levelId);
+            var initialStarsForLevel = maybeOldEarnedStars ?? 0;
+            var earnedStarsForLevel = _levelHelperService.EvaluateEarnedStars(_currentLevelParams, levelPlayedTime);
             
             _levelHudHandler.SetInteractivity(false);
             _levelHudHandler.PlayFinishParticles();
-            _finishCoroutine = StartCoroutine(AwaitFinishLevel(earnedStarsForLevel, previousEarnedStars, levelPlayedTime, levelStatus));
+            
+            StartLevelCompletionSequence(packId, levelId, earnedStarsForLevel, initialStarsForLevel, levelPlayedTime, levelStatus);
         }
 
-        private IEnumerator AwaitFinishLevel(int earnedStars, int previousStarsForLevel, float levelPlayedTime, CompletedLevelStatus completedLevelStatus)
+        private void StartLevelCompletionSequence(int packId, int levelId, int currentStarsForLevel, int initialStarsForLevel, float levelPlayedTime, CompletedLevelStatus completedLevelStatus)
         {
-            var blockRef = _uiScreenBlocker.Block();
-            yield return new WaitForSeconds(_screenHandler.AwaitChangeScreenTime);
-            blockRef?.Dispose();
-            
             StateMachine
-                .CreateMachine(new FinishLevelContext(earnedStars, previousStarsForLevel, levelPlayedTime, _packInfo, completedLevelStatus))
+                .CreateMachine(new FinishLevelContext(packId, levelId, currentStarsForLevel, initialStarsForLevel, levelPlayedTime, _packInfo, completedLevelStatus))
                 .StartSequence<TryShowAdsAfterLevelCompleteState>()
                 .FinishWith(this);
         }
@@ -161,91 +160,121 @@ namespace Components.Levels
         {
             if (_levelHudHandler == null || _draggingFigureContainer == null)
                 return;
-            
-            var releasedOnFigures = _clickHandlerService.DetectFigureTarget(eventData, _levelHudHandler.FiguresAssemblyCanvasRaycaster);
-            if (releasedOnFigures.IsCollectionNullOrEmpty())
-            {
-                ResetDraggingFigure();
-                return;
-            }
-            
-            var maybeFigure = releasedOnFigures.FirstOrDefault(i => i != null && i.FigureId == _draggingFigureContainer.FigureId);
-            if (maybeFigure == null)
-            {
-                ResetDraggingFigure();
-                return;
-            }
 
-            if (_draggingFigureContainer.FigureId == maybeFigure.FigureId)
+            try
             {
-                _soundHandler.PlaySound("success");
-                var shiftingAnimationPromise = new Promise();
-                _levelHudHandler.TryShiftAllElementsAfterRemoving(_draggingFigureContainer.FigureId, shiftingAnimationPromise);
-                
-                TrySetFigureInserted(maybeFigure.FigureId);
-                
-                _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigureImage.transform.DOScale(0, 0.4f))
-                    .KillWith(this);
-
-                shiftingAnimationPromise.Then(() =>
+                var releasedOnFigures = _clickHandlerService.DetectFigureTarget(eventData, _levelHudHandler.FiguresAssemblyCanvasRaycaster);
+                if (releasedOnFigures.IsCollectionNullOrEmpty())
                 {
-                    _completeDraggingAnimationSequence.OnComplete(() =>
+                    ResetDraggingFigure();
+                    return;
+                }
+            
+                var figure = releasedOnFigures.FirstOrDefault(i => i != null && i.FigureId == _draggingFigureContainer.FigureId);
+                if (figure == null)
+                {
+                    ResetDraggingFigure();
+                    return;
+                }
+                
+                if (_draggingFigureContainer.FigureId == figure.FigureId)
+                {
+                    var blockRef = _uiScreenBlocker.Block(15);
+                    _soundHandler.PlaySound("success");
+                    var shiftingAnimationPromise = new Promise();
+                    _levelHudHandler.TryShiftAllElementsAfterRemoving(_draggingFigureContainer.FigureId, shiftingAnimationPromise);
+                
+                    TrySetFigureInserted(figure.FigureId);
+                
+                    _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigureImage.transform.DOScale(0, 0.3f))
+                        .KillWith(this);
+
+                    Promise.All(shiftingAnimationPromise, _completeDraggingAnimationSequence.AsPromise(), figure.SetConnected())
+                        .Then(SetMenuFigureConnected)
+                        .Then(() => _coroutineService.WaitFor(0.05f))
+                        .Then(() =>
                         {
-                            maybeFigure.SetConnected();
-                            SetMenuFigureConnected();
+                            SetDraggingFinished();
+                            blockRef?.Dispose();
                             TryHandleLevelCompletion();
-                        });
-                }).CancelWith(this);
+                        })
+                        .Catch(e =>
+                        {
+                            LoggerService.LogWarning(this, e.Message);
+                            blockRef?.Dispose();
+                        })
+                        .CancelWith(this);
+                }
+                else
+                {
+                    ResetDraggingFigure();
+                }
             }
-            else
+            catch (Exception e)
             {
-                ResetDraggingFigure();
+                LoggerService.LogWarning(this, e.Message);
             }
         }
 
-        private void SetMenuFigureConnected()
+        private IPromise SetMenuFigureConnected()
         {
             var menuFigurePromise = new Promise();
             _menuFigure.SetConnected(menuFigurePromise);
-            menuFigurePromise.Then(() =>
+            
+            return menuFigurePromise.Then(() =>
             {
                 _levelHudHandler.DestroyFigure(_draggingFigureContainer.FigureId);
                 ClearDraggingFigure();
+                return _coroutineService.WaitFrame();
             }).CancelWith(this);
         }
 
         private void ResetDraggingFigure()
         {
-            var blockRef = _uiScreenBlocker.Block();
+            var blockRef = _uiScreenBlocker.Block(15);
             _soundHandler.PlaySound("fail");
             var shiftingAnimationPromise = new Promise();
             _levelHudHandler.ShiftAllElements(true, _draggingFigureContainer.FigureId, shiftingAnimationPromise);
 
             _resetDraggingAnimationSequence = DOTween.Sequence()
-                .Append(_draggingFigureImage.transform.DOMove(_draggingFigureContainer.transform.position, 0.4f))
+                .Append(_draggingFigureImage.transform.DOMove(_draggingFigureContainer.InitialPosition, 0.4f))
                 .Join(_draggingFigureContainer.transform.DOScale(1, 0.3f))
                 .Join(_draggingFigureContainer.ContainerTransform.DOSizeDelta
                     (new Vector2(_draggingFigureContainer.InitialWidth, _draggingFigureContainer.InitialHeight), 0.3f))
                 .KillWith(this);
-            
-            shiftingAnimationPromise.Then(() =>
-            {
-                _resetDraggingAnimationSequence.OnComplete(() =>
-                    {
-                        _levelHudHandler.ReturnFigureBackToScroll(_draggingFigureContainer.FigureId);
-                        _draggingFigureContainer.FigureTransform.transform.localPosition = Vector3.zero;
-                        ClearDraggingFigure();
-                        blockRef?.Dispose();
-                    }).KillWith(this);
-            }).CancelWith(this);
+
+            Promise.All(shiftingAnimationPromise, _resetDraggingAnimationSequence.AsPromise())
+                .Then(() => _levelHudHandler.ReturnFigureBackToScroll(_draggingFigureContainer.FigureId))
+                .Then(() =>
+                {
+                    _draggingFigureContainer.FigureTransform.transform.localPosition = Vector3.zero;
+                    ClearDraggingFigure();
+                    return Promise.Resolved();
+                })
+                .Then(() => _coroutineService.WaitFor(0.15f))
+                .Then(() =>
+                {
+                    SetDraggingFinished();
+                    blockRef?.Dispose();
+                })
+                .Catch(e =>
+                {
+                    LoggerService.LogWarning(this, e.Message);
+                    blockRef?.Dispose();
+                })
+                .CancelWith(this);
         }
 
         private void ClearDraggingFigure()
         {
-            _isDraggable = false;
             _levelHudHandler.LockScroll(false);
             _draggingFigureContainer = null;
             _draggingFigureImage = null;
+        }
+
+        private void SetDraggingFinished()
+        {
+            _isDraggable = false;
         }
 
         private void Update()
@@ -319,6 +348,12 @@ namespace Components.Levels
                 _levelHudHandler.Dispose();
                 Destroy(_levelHudHandler.gameObject);
             }
+        }
+        
+        private void ResetLevelParams()
+        {
+            _levelInfoTrackerService.StopLevelTracking();
+            _levelInfoTrackerService.ClearData();
         }
     }
 }

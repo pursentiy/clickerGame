@@ -112,7 +112,7 @@ namespace UI.Screens.ChoosePack
         private void OnInfoButtonClicked()
         {
             var fontSize = 150;
-            var context = new MessagePopupContext(_localizationService.GetValue("unlock_sets_info"), _infoButton.GetRectTransform(), fontSize);
+            var context = new MessagePopupContext(_localizationService.GetValue("unlock_sets_info"), _infoButton.GetRectTransform(), fontSize, facing: PopupFacing.Right);
             _uiManager.PopupsHandler.ShowPopupImmediately<MessagePopupMediator>(context)
                 .CancelWith(this);
         }

@@ -12,7 +12,7 @@ namespace Components
     [RequireComponent(typeof(TMP_Text))]
     public class TmpDiacriticsAutoRemoverWidget : InjectableMonoBehaviour
     {
-        [Inject] private readonly GameSettingsManager _gameSettingsManager;
+        [Inject] private readonly GameSoundManager _gameSoundManager;
         
         [SerializeField] private TMP_Text _text;
 
@@ -23,7 +23,7 @@ namespace Components
             TrySetTmpText();
             
             //TODO ADD LOGIC FOR FIXING WELCOME SCREEN IN SPANISH
-            _gameSettingsManager.OnLanguageChangedSignal.MapListener(TrySetTmpText).DisposeWith(this);
+            _gameSoundManager.OnLanguageChangedSignal.MapListener(TrySetTmpText).DisposeWith(this);
         }
 
         private void Start()

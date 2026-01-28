@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Attributes;
 using Common.Currency;
@@ -8,7 +9,6 @@ using Handlers.UISystem;
 using RSG;
 using Services;
 using Services.FlyingRewardsAnimation;
-using Services.Player;
 using UI.Popups.CommonPopup;
 using UnityEngine;
 using Utilities.Disposable;
@@ -20,9 +20,7 @@ namespace UI.Popups.CompleteLevelInfoPopup
     [AssetKey("UI Popups/CompleteLevelInfoPopupMediator")]
     public class CompleteLevelInfoPopupMediator : UIPopupBase<CompleteLevelInfoPopupView, CompleteLevelInfoPopupContext>
     {
-        [Inject] private readonly ProgressProvider _progressProvider;
         [Inject] private readonly SoundHandler _soundHandler;
-        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
         [Inject] private readonly FlyingUIRewardAnimationService _flyingUIRewardAnimationService;
         [Inject] private readonly LocalizationService _localization;
 
@@ -36,25 +34,23 @@ namespace UI.Popups.CompleteLevelInfoPopup
         public override void OnCreated()
         {
             base.OnCreated();
-
-            var initialStarsCount = _playerCurrencyService.Stars;
-            var finalStarsCount = _playerCurrencyService.Stars + Context.EarnedStars;
-            var totalStarsForTheLevel = Context.EarnedStars + Context.PreviousStarsForLevel;
             
-            View.StarsDisplayWidget.SetCurrency(initialStarsCount);
+            var starsEarned = Math.Max(0, Context.CurrentStars - Context.InitialStars);
+            var finalStarsCount = Context.PreRewardBalance + starsEarned;
             
-            AnimateTime(Context.TotalTime);
-            Promise.All(AnimateNewStarText(Context.EarnedStars, Context.CompletedLevelStatus), AnimateStarsSequence(Context.PreviousStarsForLevel, Context.EarnedStars))
+            View.StarsDisplayWidget.SetCurrency(Context.PreRewardBalance);
+            
+            AnimateTime(Context.BeatTime);
+            Promise.All(AnimateNewStarText(starsEarned, Context.LevelStatus), AnimateStarsSequence(Context.InitialStars, starsEarned))
                 .Then(() =>
                 {
-                    TryPlayFireworksParticles(totalStarsForTheLevel);
-                    StartStarsFloating(totalStarsForTheLevel);
-                    return VisualizeStarsFlight(Context.EarnedStars);
+                    TryPlayFireworksParticles(Context.CurrentStars);
+                    StartStarsFloating(Context.CurrentStars);
+                    return VisualizeStarsFlight(starsEarned);
                 })
-                .Then(() => TryAcquireEarnedStars(Context.EarnedStars))
                 .Then(() =>
                 {
-                    if (finalStarsCount > initialStarsCount)
+                    if (finalStarsCount > Context.PreRewardBalance)
                         View.StarsDisplayWidget.SetCurrency(finalStarsCount, true);
                 })
                 .CancelWith(this);
@@ -116,15 +112,15 @@ namespace UI.Popups.CompleteLevelInfoPopup
             return promise;
         }
 
-        private IPromise AnimateStarsSequence(int previousEarnedStars, int earnedStars)
+        private IPromise AnimateStarsSequence(int initialsStars, int earnedStars)
         {
             foreach (var s in View.Stars)
                 s.transform.localScale = Vector3.zero;
 
             var seq = DOTween.Sequence().KillWith(this);
-            int totalStarsAfterWin = previousEarnedStars + earnedStars;
+            int totalStarsAfterWin = initialsStars + earnedStars;
 
-            if (previousEarnedStars > 0)
+            if (initialsStars > 0)
             {
                 seq.AppendInterval(0.5f);
             }
@@ -139,8 +135,8 @@ namespace UI.Popups.CompleteLevelInfoPopup
                 var starImage = View.Stars[starIndex].GetComponent<UnityEngine.UI.Image>();
                 int starThreshold = (starIndex == 1) ? 2 : (starIndex == 0 ? 1 : 3);
 
-                bool isOldStar = starThreshold <= previousEarnedStars;
-                bool isNewStar = starThreshold > previousEarnedStars && starThreshold <= totalStarsAfterWin;
+                bool isOldStar = starThreshold <= initialsStars;
+                bool isNewStar = starThreshold > initialsStars && starThreshold <= totalStarsAfterWin;
                 
                 if (isOldStar)
                 {
@@ -228,8 +224,6 @@ namespace UI.Popups.CompleteLevelInfoPopup
         
         private void OnDestroy()
         {
-            TryAcquireEarnedStars(Context.PreviousStarsForLevel);
-            
             if (_particlesCoroutine != null)
                 StopCoroutine(_particlesCoroutine);
         }
@@ -252,7 +246,8 @@ namespace UI.Popups.CompleteLevelInfoPopup
                 fireworksParticlesArray[i] = i;
             }
             
-            _particlesCoroutine = StartCoroutine(PlayParticles(CollectionExtensions.ShuffleCopy(fireworksParticlesArray), countToPlay, totalStars));
+            if (gameObject != null && gameObject.activeInHierarchy)
+                _particlesCoroutine = StartCoroutine(PlayParticles(CollectionExtensions.ShuffleCopy(fireworksParticlesArray), countToPlay, totalStars));
         }
 
         private IEnumerator PlayParticles(int[] shuffledPositions, int countToPlay, int totalStars)
@@ -267,14 +262,7 @@ namespace UI.Popups.CompleteLevelInfoPopup
             TryPlayFireworksParticles(totalStars);
         }
         
-        private void TryAcquireEarnedStars(Stars earnedStarsForLevel)
-        {
-            if (_currencyAcquired || earnedStarsForLevel <= 0)
-                return;
-
-            _currencyAcquired = true;
-            _playerCurrencyService.TryAddStars(earnedStarsForLevel, CurrencyChangeMode.Animated);
-        }
+        
         
 #if UNITY_EDITOR
         public void PlayStarsAnimation(Stars earnedStarsForLevel, bool updateProfileValues)

@@ -8,7 +8,7 @@ using Zenject;
 
 namespace Services
 {
-    public class GameParamsManager : DisposableService
+    public class UserSettingsService : DisposableService
     {
         [Inject] private PlayerProfileManager _playerProfileManager;
         [Inject] private readonly LanguageConversionService _languageConversionService;

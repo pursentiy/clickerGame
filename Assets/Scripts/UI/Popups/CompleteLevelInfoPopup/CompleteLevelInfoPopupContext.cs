@@ -6,20 +6,25 @@ namespace UI.Popups.CompleteLevelInfoPopup
     public class CompleteLevelInfoPopupContext : IPopupContext
     {
         public CompleteLevelInfoPopupContext(
-            Stars earnedStars,
-            Stars previousStarsForLevel,
-            float totalTime, CompletedLevelStatus completedLevelStatus)
+            Stars currentStars,
+            Stars initialStars,
+            Stars preRewardBalance,
+            float beatTime, 
+            CompletedLevelStatus levelStatus)
         {
-            EarnedStars = earnedStars;
-            PreviousStarsForLevel = previousStarsForLevel;
-            TotalTime = totalTime;
-            CompletedLevelStatus = completedLevelStatus;
+
+            CurrentStars = currentStars;
+            InitialStars = initialStars;
+            PreRewardBalance = preRewardBalance;
+            BeatTime = beatTime;
+            LevelStatus = levelStatus;
         }
         
-        public Stars EarnedStars { get; }
-        public Stars PreviousStarsForLevel { get; }
-        public float TotalTime { get; }
-        public CompletedLevelStatus CompletedLevelStatus { get; }
+        public Stars CurrentStars { get; }
+        public Stars InitialStars { get; }
+        public Stars PreRewardBalance { get; }
+        public float BeatTime { get; }
+        public CompletedLevelStatus LevelStatus { get; }
     }
 
     public enum CompletedLevelStatus

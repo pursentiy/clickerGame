@@ -21,7 +21,7 @@ namespace Common.Rewards
         [SerializeField] protected AnimationCurve _moveInCurve;
         [SerializeField] protected Canvas _canvas;
         
-        protected GameObject[] ItemsPool;
+        protected RewardAnimationItem[] ItemsPool;
         protected Transform ThisRT;
         protected readonly float DelayCoef = 0.033f;
         
@@ -56,17 +56,17 @@ namespace Common.Rewards
             return PerformAnimation(startingPos, targetPos, maybeParticleSize, count, rewardsMoveTimeSpeedupFactor, targetContainer, endWidget, endWidgetParent, appearDistanceScale, delaySpeedupFactor: delaySpeedupFactor).AnyParticleFinish;
         }
 
-        protected void CreateCoinsPool(GameObject prefab)
+        protected void CreateCoinsPool(RewardAnimationItem prefab)
         {
             if (ItemsPool?.Length > 0)
             {
                 ItemsPool.Foreach(rt => Destroy(rt.gameObject));
             }
 
-            ItemsPool = new GameObject[PoolCount];
+            ItemsPool = new RewardAnimationItem[PoolCount];
             PoolCount.Times(i =>
             {
-                var rt = Instantiate(prefab.gameObject, transform);
+                var rt = Instantiate(prefab, transform);
                 rt.TrySetActive(false);
                 ItemsPool[i] = rt;
             });

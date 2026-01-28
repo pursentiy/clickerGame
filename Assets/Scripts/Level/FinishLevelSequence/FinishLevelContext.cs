@@ -8,21 +8,27 @@ namespace Level.FinishLevelSequence
     public class FinishLevelContext : IStateContext
     {
         public FinishLevelContext(
-            Stars earnedStars,
-            Stars previousStarsForLevel,
+            int packId, 
+            int levelId,
+            Stars currentStars,
+            Stars initialStars,
             float levelCompletingTime,
             PackInfo packInfo,
             CompletedLevelStatus completedLevelStatus)
         {
-            EarnedStars = earnedStars;
-            PreviousStarsForLevel = previousStarsForLevel;
+            PackId = packId;
+            LevelId = levelId;
+            CurrentStars = currentStars;
+            InitialStars = initialStars;
             LevelCompletingTime = levelCompletingTime;
             PackInfo = packInfo;
             CompletedLevelStatus = completedLevelStatus;
         }
         
-        public Stars EarnedStars { get; }
-        public Stars PreviousStarsForLevel { get; }
+        public int PackId { get; }
+        public int LevelId { get; }
+        public Stars CurrentStars { get; }
+        public Stars InitialStars { get; }
         public float LevelCompletingTime { get; }
         public PackInfo PackInfo { get; }
         public CompletedLevelStatus CompletedLevelStatus { get; }

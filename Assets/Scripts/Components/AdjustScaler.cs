@@ -31,7 +31,8 @@ namespace Components
             }
             else
             {
-                _adjustScaleCoroutine = StartCoroutine(AdjustCoroutine());
+                if (gameObject != null && gameObject.activeInHierarchy)
+                    _adjustScaleCoroutine = StartCoroutine(AdjustCoroutine());
             }
         }
 

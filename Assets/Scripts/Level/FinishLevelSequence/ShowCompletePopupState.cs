@@ -1,9 +1,11 @@
 using System;
+using Common.Currency;
 using Extensions;
 using Handlers;
 using Handlers.UISystem;
 using RSG;
 using Services;
+using Services.Player;
 using UI.Popups.CompleteLevelInfoPopup;
 using Utilities.Disposable;
 using Utilities.StateMachine;
@@ -16,23 +18,43 @@ namespace Level.FinishLevelSequence
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly ScreenHandler _screenHandler;
         [Inject] private readonly SoundHandler _soundHandler;
+        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        [Inject] private readonly ProgressController _progressController;
 
         public override void OnEnter(params object[] arguments)
         {
             base.OnEnter(arguments);
 
             _soundHandler.PlaySound("finished");
+
+            var preRewardsBalance = _playerCurrencyService.Stars;
+            var starsEarned = Math.Max(0, Context.CurrentStars - Context.InitialStars);
+            SetLevelCompleted(Context.PackId, Context.LevelId, Context.LevelCompletingTime, Context.CurrentStars);
+            AcquireEarnedStars(starsEarned);
             
-            ShowCompletePopup()
+            ShowCompletePopup(Context.CurrentStars, Context.InitialStars, preRewardsBalance, Context.LevelCompletingTime, Context.CompletedLevelStatus)
                 .Then(GoToLevelsMenu)
                 .ContinueWithResolved(FinishSequence)
                 .CancelWith(this);
         }
+        
+        private void AcquireEarnedStars(Stars earnedStarsForLevel)
+        {
+            if (Context.CurrentStars <= 0)
+                return;
+            
+            _playerCurrencyService.TryAddStars(earnedStarsForLevel, CurrencyChangeMode.Animated);
+        }
 
-        private IPromise ShowCompletePopup()
+        private void SetLevelCompleted(int packId, int levelId, float levelCompletedTime, Stars starsEarned)
+        {
+            _progressController.SetLevelCompleted(packId, levelId, levelCompletedTime, starsEarned, SavePriority.Default);
+        }
+
+        private IPromise ShowCompletePopup(Stars currentStars, Stars initialStars, Stars preRewardBalance, float beatTime, CompletedLevelStatus levelStatus)
         {
             var popupPromise = new Promise();
-            var context = new CompleteLevelInfoPopupContext(Context.EarnedStars, Context.PreviousStarsForLevel, Context.LevelCompletingTime, Context.CompletedLevelStatus);
+            var context = new CompleteLevelInfoPopupContext(currentStars, initialStars, preRewardBalance, beatTime, levelStatus);
             _uiManager.PopupsHandler.ShowPopupImmediately<CompleteLevelInfoPopupMediator>(context)
                 .Then(popup => popup.OnHide(popupPromise.SafeResolve))
                 .Catch(OnException)
@@ -61,7 +83,6 @@ namespace Level.FinishLevelSequence
 
         private void FinishSequence()
         {
-            //TODO UPDATE STARS PROGRESS IF FAILED
             Sequence.Finish();
         }
     }
