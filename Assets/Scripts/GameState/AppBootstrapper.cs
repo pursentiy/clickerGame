@@ -1,4 +1,5 @@
 using System.Collections;
+using Common;
 using Installers;
 using Playgama;
 using Services;
@@ -9,6 +10,8 @@ namespace GameState
 {
     public class AppBootstrapper: InjectableMonoBehaviour
     {
+        private const float BridgePlatformAwaitTimeout = 5f;
+        
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly ScenesManagerService _scenesManagerService;
         [Inject] private readonly GlobalSettingsManager _globalSettingsManager;
@@ -60,14 +63,24 @@ namespace GameState
         
         private IEnumerator BridgeAuthenticationRoutine()
         {
-            while (Bridge.platform.id == "unknown")
+            var timeout = BridgePlatformAwaitTimeout; 
+            while (Bridge.platform.id == GlobalConstants.BridgeUnknown && timeout > 0)
             {
+                timeout -= Time.deltaTime;
                 yield return null;
+            }
+
+            LoggerService.LogDebug($"Platform detected: {Bridge.platform.id}");
+
+            if (Bridge.platform.id == GlobalConstants.BridgeGDId)
+            {
+                _isBridgeAuthComplete = true;
+                yield break;
             }
 
             LoggerService.LogDebug($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Platform detected: {Bridge.platform.id}");
             
-            while (Bridge.platform.id == "unknown") yield return null;
+            while (Bridge.platform.id == GlobalConstants.BridgeUnknown) yield return null;
             
 #if UNITY_EDITOR
             LoggerService.LogDebug($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Editor detected: Automatic authorization bypass");
