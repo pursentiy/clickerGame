@@ -38,10 +38,10 @@ namespace Services.Cheats
             set => PlayerPrefs.SetInt(EarnedStarsKey, value);
         }
 
-        public int GameTimeScale
+        public float GameTimeScale
         {
-            get => PlayerPrefs.GetInt(TimeScaleKey, 1);
-            set => PlayerPrefs.SetInt(TimeScaleKey, value);
+            get => PlayerPrefs.GetFloat(TimeScaleKey, 1);
+            set => PlayerPrefs.SetFloat(TimeScaleKey, value);
         }
 
         public bool UpdateProfileValues

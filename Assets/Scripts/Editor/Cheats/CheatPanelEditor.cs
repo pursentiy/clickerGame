@@ -73,6 +73,12 @@ namespace Editor.Cheats
                     bool newVal = EditorGUILayout.Toggle(prop.Name, val);
                     if (val != newVal) prop.SetValue(_service, newVal);
                 }
+                else if (prop.PropertyType == typeof(float))
+                {
+                    var val = (float)prop.GetValue(_service);
+                    var newVal = EditorGUILayout.FloatField(prop.Name, val);
+                    if (!Mathf.Approximately(val, newVal)) prop.SetValue(_service, newVal);
+                }
                 // ДОБАВЛЕНО: Обработка Enum
                 else if (prop.PropertyType.IsEnum)
                 {
