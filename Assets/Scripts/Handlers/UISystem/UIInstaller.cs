@@ -1,5 +1,6 @@
 using System;
 using Handlers.UISystem.Popups;
+using Handlers.UISystem.Screens;
 using UnityEngine;
 using Zenject;
 
@@ -16,6 +17,7 @@ namespace Handlers.UISystem
             container.Bind<IUIView>().FromComponentSibling().AsTransient();
             container.Bind<UISystemData>().FromScriptableObject(uiSystemData).AsSingle();
             container.BindInterfacesAndSelfTo<UIPopupsHandler>().FromNew().AsSingle();
+            container.BindInterfacesAndSelfTo<UIScreensHandler>().FromNew().AsSingle();
             container.Bind<UIPopupBase>().ToSelf().FromComponentSibling().AsTransient();
             _lastContainer = container;
         }

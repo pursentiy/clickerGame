@@ -1,7 +1,7 @@
-using Handlers;
+using Handlers.UISystem;
 using JetBrains.Annotations;
-using Platform.Common.Utilities.StateMachine;
 using Services;
+using UI.Screens.WelcomeScreen;
 using Utilities.StateMachine;
 using Zenject;
 
@@ -10,17 +10,19 @@ namespace GameState.OnGameEnterSequence
     [UsedImplicitly]
     public class ShowScreenOnGameFullyLoadedState : InjectableStateBase<DefaultStateContext>
     {
-        [Inject] private readonly ScreenHandler _screenHandler;
         [Inject] private readonly AdsService _adsService;
+        [Inject] private readonly UIManager _uiManager;
         
         public override void OnEnter(params object[] arguments)
         {
             base.OnEnter(arguments);
             
-            _adsService.ShowBanner();
-            _screenHandler.ShowWelcomeScreen(true);
-
-            NextState();
+            _uiManager.ScreensHandler.PushFirstScreen<WelcomeScreenScreenMediator>()
+                .Then(() =>
+                {
+                    _adsService.ShowBanner();
+                    NextState();
+                });
         }
         
         private void NextState()

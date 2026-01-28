@@ -209,11 +209,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1496618069183132049}
   - component: {fileID: 1496618069183132051}
-  - component: {fileID: 1496618069183132052}
   - component: {fileID: 7921471923265396243}
   - component: {fileID: 3474397992489960418}
   - component: {fileID: 8346604982936261098}
   - component: {fileID: 7843852020325913108}
+  - component: {fileID: 3700751770552987628}
+  - component: {fileID: 1309702091506326918}
   m_Layer: 5
   m_Name: WelcomeScreen
   m_TagString: Untagged
@@ -249,28 +250,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1496618069183132048}
   m_CullTransparentMesh: 0
---- !u!114 &1496618069183132052
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1496618069183132048}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7a4a1fc79074f17990eef7de8e68e9d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scaleWidget: {fileID: 7921471923265396243}
-  _fadeWidget: {fileID: 8346604982936261098}
-  _screenAnimationType: 1
-  _playButton: {fileID: 1496618069684825166}
-  _settingsButton: {fileID: 614988029759736858}
-  _headerText: {fileID: 8028511914697556046}
-  _headerTextCanvasGroup: {fileID: 7538456212922396887}
-  _duration: 0.8
-  _startScale: 0.5
-  _flyOffset: 50
 --- !u!114 &7921471923265396243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -331,6 +310,37 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7f43065f89f48c395f216d2d52146da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3700751770552987628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496618069183132048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 081d732c3c094a188ea6f5c906ee100c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayButton: {fileID: 1496618069684825166}
+  SettingsButton: {fileID: 614988029759736858}
+  HeaderText: {fileID: 8028511914697556046}
+  HeaderTextCanvasGroup: {fileID: 7538456212922396887}
+  Duration: 0.8
+  StartScale: 0.5
+  FlyOffset: 50
+--- !u!114 &1309702091506326918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496618069183132048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc5b78e78dfb428c8e890b66f93d11af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1496618069537809096

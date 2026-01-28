@@ -523,14 +523,15 @@ GameObject:
   m_Component:
   - component: {fileID: 2254273223443519544}
   - component: {fileID: 2254273223443519543}
-  - component: {fileID: 8154923252068788368}
+  - component: {fileID: 7696129570211938874}
+  - component: {fileID: 8856191506991724745}
   - component: {fileID: 3451253803911443857}
   - component: {fileID: 5206088070734728881}
   - component: {fileID: 5193978019325408058}
   - component: {fileID: 1670062774961349019}
   - component: {fileID: 6274523441344146927}
   m_Layer: 5
-  m_Name: ChoosePack
+  m_Name: ChoosePackScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -564,7 +565,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2254273223443519547}
   m_CullTransparentMesh: 0
---- !u!114 &8154923252068788368
+--- !u!114 &7696129570211938874
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -573,25 +574,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 2254273223443519547}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 773ec0294be0484ba6fccbf3fc84b873, type: 3}
+  m_Script: {fileID: 11500000, guid: 8fbf3af853d94f7a94e5dbf26043d7ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scaleWidget: {fileID: 5193978019325408058}
-  _fadeWidget: {fileID: 5206088070734728881}
-  _screenAnimationType: 0
-  _packItemWidgetPrefab: {fileID: 4610776258104028812, guid: 6878609189f7d834cb7f18aaa6b206ac,
+--- !u!114 &8856191506991724745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2254273223443519547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31527af64416451ab420e02689337132, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PackItemWidgetPrefab: {fileID: 4610776258104028812, guid: 6878609189f7d834cb7f18aaa6b206ac,
     type: 3}
-  _levelEnterPopupsParentTransform: {fileID: 6808412473636373514}
-  _horizontalLayoutGroupPrefab: {fileID: 8399391387326885449, guid: 038723734860dbc4aa9918f525815788,
+  LevelEnterPopupsParentTransform: {fileID: 6808412473636373514}
+  HorizontalLayoutGroupPrefab: {fileID: 8399391387326885449, guid: 038723734860dbc4aa9918f525815788,
     type: 3}
-  _starsDisplayWidget: {fileID: 569682460304773617}
-  _headerText: {fileID: 5870720989226935585}
-  _availablePacksText: {fileID: 4310048746956419853}
-  _goBack: {fileID: 780076110673656907}
-  _settingsButton: {fileID: 8175069110129753321}
-  _infoButton: {fileID: 2128853769501641773}
-  _adsButton: {fileID: 2763976902507579019}
-  _rowPacksCount: 2
+  StarsDisplayWidget: {fileID: 569682460304773617}
+  HeaderText: {fileID: 5870720989226935585}
+  AvailablePacksText: {fileID: 4310048746956419853}
+  GoBack: {fileID: 780076110673656907}
+  SettingsButton: {fileID: 8175069110129753321}
+  InfoButton: {fileID: 2128853769501641773}
+  AdsButton: {fileID: 2763976902507579019}
+  RowPacksCount: 2
 --- !u!225 &3451253803911443857
 CanvasGroup:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System.Collections;
 using Extensions;
 using Handlers.UISystem.Popups;
+using Handlers.UISystem.Screens;
 using Services;
 using Services.Base;
 using UnityEngine;
@@ -13,10 +14,12 @@ namespace Handlers.UISystem
     {
         [Inject] private readonly UISystemData _settings;
         [Inject] private readonly UIPopupsHandler _popupsHandler;
+        [Inject] private readonly UIScreensHandler _screensHandler;
         //TODO ADD UIScreensHander
 
         public Canvas RootCanvas => _uiCanvas;
         public UIPopupsHandler PopupsHandler => _popupsHandler;
+        public UIScreensHandler ScreensHandler => _screensHandler;
         public Canvas ScreensCanvas => _screensCanvas;
         public Canvas PreloaderCanvas => _preloaderCanvas;
 
@@ -63,6 +66,7 @@ namespace Handlers.UISystem
         public void SetupHandlers()
         {
             _popupsHandler.Initialize(_popupsCanvas);
+            _screensHandler.Initialize(_screensCanvas, CoroutineProviderCallback);
         }
 
         private void SetScreensUIVisibility(bool isVisible)
@@ -154,6 +158,7 @@ namespace Handlers.UISystem
         {
             StopAllCoroutines();
             _popupsHandler.Dispose();
+            _screensHandler.Dispose();
             
             _uiCanvasScaler.enabled = false;
             _uiCanvasRaycaster.enabled = false;
