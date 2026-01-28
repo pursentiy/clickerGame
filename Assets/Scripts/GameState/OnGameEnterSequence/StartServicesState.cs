@@ -23,9 +23,9 @@ namespace GameState.OnGameEnterSequence
             _applicationService.RegisterDisposableService<TimeService>();
             _applicationService.RegisterDisposableService<PersistentCoroutinesService>();
             _applicationService.RegisterDisposableService<CoroutineService>();
-            _applicationService.RegisterDisposableService<GameSettingsManager>();
+            _applicationService.RegisterDisposableService<GameSoundManager>();
             _applicationService.RegisterDisposableService<GameConfigurationProvider>();
-            _applicationService.RegisterDisposableService<GameParamsManager>();
+            _applicationService.RegisterDisposableService<UserSettingsService>();
             _applicationService.RegisterDisposableService<PlayerProfileManager>();
             _applicationService.RegisterDisposableService<AdsService>();
             _applicationService.RegisterDisposableService<ScreenObserverService>();

@@ -9,7 +9,7 @@ namespace Services
 {
     public class ProgressController
     {
-        [Inject] private readonly GameParamsManager _gameParamsManager;
+        [Inject] private readonly UserSettingsService _userSettingsService;
         [Inject] private readonly PlayerProfileManager _playerProfileManager;
         [Inject] private readonly ProgressProvider _progressProvider;
 

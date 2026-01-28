@@ -11,7 +11,7 @@ namespace GameState
     {
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly ScenesManagerService _scenesManagerService;
-        [Inject] private readonly GameParamsManager _gameParamsManager;
+        [Inject] private readonly GlobalSettingsManager _globalSettingsManager;
         
 #if UNITY_EDITOR
         [SerializeField] private bool _skipNextSceneLoading = false;
@@ -22,6 +22,9 @@ namespace GameState
         protected override void Awake()
         {
             DontDestroyOnLoad(gameObject);
+            
+            _globalSettingsManager.SetMaxFrameRate();
+            _globalSettingsManager.DisableMultitouch();
             
 #if UNITY_EDITOR
             if (_skipNextSceneLoading)
@@ -34,8 +37,6 @@ namespace GameState
         private IEnumerator Start()
         {
             LoggerService.LogDebug($"[{GetType().Name}] Initialization started...");
-            
-            _gameParamsManager.DisableMultitouch();
             
             yield return BridgeAuthenticationRoutine();
             yield return LocalizationPreloadRoutine();

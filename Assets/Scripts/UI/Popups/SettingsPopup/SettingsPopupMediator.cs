@@ -15,13 +15,13 @@ namespace UI.Popups.SettingsPopup
     public class SettingsPopupMediator : UIPopupBase<SettingsPopupView, SettingsPopupContext>
     {
         [Inject] private readonly SoundHandler _soundHandler;
-        [Inject] private readonly GameSettingsManager _gameSettingsManager;
+        [Inject] private readonly GameSoundManager _gameSoundManager;
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly ReloadService _reloadService;
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly PlayerProfileManager _playerProfileManager;
         [Inject] private readonly LanguageConversionService _languageConversionService;
-        [Inject] private readonly GameParamsManager _gameParamsManager;
+        [Inject] private readonly UserSettingsService _userSettingsService;
 
         private int _currentLanguageIndex;
         private int _pendingLanguageIndex;
@@ -58,8 +58,8 @@ namespace UI.Popups.SettingsPopup
 
         private void SetupToggles()
         {
-            View.MusicToggle.SetIsOnWithoutNotify(_gameParamsManager.IsMusicOn);
-            View.SoundToggle.SetIsOnWithoutNotify(_gameParamsManager.IsSoundOn);
+            View.MusicToggle.SetIsOnWithoutNotify(_userSettingsService.IsMusicOn);
+            View.SoundToggle.SetIsOnWithoutNotify(_userSettingsService.IsSoundOn);
 
             View.MusicToggle.onValueChanged.MapListenerWithSound(OnMusicToggled).DisposeWith(this);
             View.SoundToggle.onValueChanged.MapListenerWithSound(OnSoundToggled).DisposeWith(this);
@@ -67,13 +67,13 @@ namespace UI.Popups.SettingsPopup
 
         private void OnSoundToggled(bool isOn)
         {
-            _gameParamsManager.SetSoundAvailable(isOn);
+            _userSettingsService.SetSoundAvailable(isOn);
             _soundHandler.SetSoundVolume(isOn);
         }
     
         private void OnMusicToggled(bool isOn)
         {
-            _gameParamsManager.SetMusicAvailable(isOn);
+            _userSettingsService.SetMusicAvailable(isOn);
             _soundHandler.SetMusicVolume(isOn);
         
             if (isOn)
@@ -118,7 +118,7 @@ namespace UI.Popups.SettingsPopup
             {
                 _currentLanguageIndex = _pendingLanguageIndex;
                 //TODO SAVE PROFILE AFTER UPDATING LANGUAGE
-                _gameParamsManager.UpdateLanguage(_languageConversionService.GetLocaleLanguageCodeByIndex(_currentLanguageIndex));
+                _userSettingsService.UpdateLanguage(_languageConversionService.GetLocaleLanguageCodeByIndex(_currentLanguageIndex));
                 _reloadService.SoftRestart();
             }
         }

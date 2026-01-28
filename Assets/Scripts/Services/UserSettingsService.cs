@@ -3,13 +3,12 @@ using Plugins.FSignal;
 using Services.Base;
 using Services.Player;
 using Storage.Snapshots;
-using UnityEngine;
 using Utilities.Disposable;
 using Zenject;
 
 namespace Services
 {
-    public class GameParamsManager : DisposableService
+    public class UserSettingsService : DisposableService
     {
         [Inject] private PlayerProfileManager _playerProfileManager;
         [Inject] private readonly LanguageConversionService _languageConversionService;
@@ -39,11 +38,6 @@ namespace Services
             _gameParamsSnapshot.IsMusicOn = isOn;
             _playerProfileManager.SaveProfile();
             MusicChangedSignal.Dispatch(isOn);
-        }
-
-        public void DisableMultitouch()
-        {
-            Input.multiTouchEnabled = false;
         }
         
         public void SetSoundAvailable(bool isOn)
