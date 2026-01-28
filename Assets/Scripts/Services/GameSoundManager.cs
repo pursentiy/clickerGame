@@ -2,7 +2,6 @@ using Extensions;
 using Handlers;
 using Plugins.FSignal;
 using Services.Base;
-using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using Utilities.Disposable;
@@ -10,11 +9,10 @@ using Zenject;
 
 namespace Services
 {
-    public class GameSettingsManager : DisposableService
+    //TODO MOVE LANGUAGE OUT OF HERE
+    public class GameSoundManager : DisposableService
     {
-        private const bool MultiTouchEnabled = true;
-        
-        [Inject] private readonly GameParamsManager _gameParamsManager;
+        [Inject] private readonly UserSettingsService _userSettingsService;
         [Inject] private readonly LanguageConversionService _languageConversionService;
         [Inject] private readonly SoundHandler _soundHandler;
         
@@ -22,11 +20,9 @@ namespace Services
         
         protected override void OnInitialize()
         {
-            EnableMultiTouch(MultiTouchEnabled);
-            
-            _gameParamsManager.GameParamsSnapshotInitializedSignal.MapListener(OnGameParamsSnapshotInitialized).DisposeWith(this);
-            _gameParamsManager.MusicChangedSignal.MapListener(OnMusicChangedSignal).DisposeWith(this);
-            _gameParamsManager.SoundChangedSignal.MapListener(OnSoundChangedSignal).DisposeWith(this);
+            _userSettingsService.GameParamsSnapshotInitializedSignal.MapListener(OnGameParamsSnapshotInitialized).DisposeWith(this);
+            _userSettingsService.MusicChangedSignal.MapListener(OnMusicChangedSignal).DisposeWith(this);
+            _userSettingsService.SoundChangedSignal.MapListener(OnSoundChangedSignal).DisposeWith(this);
         }
         
         protected override void OnDisposing()
@@ -42,15 +38,15 @@ namespace Services
 
         private void InitializeSounds()
         {
-            if (!_gameParamsManager.IsInitialized)
+            if (!_userSettingsService.IsInitialized)
             {
-                LoggerService.LogWarning(this, $"{nameof(InitializeSounds)}: {nameof(GameParamsManager)} is not initialized");
+                LoggerService.LogWarning(this, $"{nameof(InitializeSounds)}: {nameof(UserSettingsService)} is not initialized");
                 return;
             }
             
-            _soundHandler.SetMusicVolume(_gameParamsManager.IsMusicOn);
-            _soundHandler.SetSoundVolume(_gameParamsManager.IsSoundOn);
-            if (_gameParamsManager.IsMusicOn)
+            _soundHandler.SetMusicVolume(_userSettingsService.IsMusicOn);
+            _soundHandler.SetSoundVolume(_userSettingsService.IsSoundOn);
+            if (_userSettingsService.IsMusicOn)
                 _soundHandler.StartAmbience();
         }
         
@@ -66,7 +62,7 @@ namespace Services
 
         private void InitializeLanguage()
         {
-            SetCurrentLanguage(_languageConversionService.GetLocale(_gameParamsManager.LanguageCode));
+            SetCurrentLanguage(_languageConversionService.GetLocale(_userSettingsService.LanguageCode));
         }
         
         private void SetCurrentLanguage(Locale locale)
@@ -81,11 +77,6 @@ namespace Services
             
             if (localeChanged)
                 OnLanguageChangedSignal.Dispatch();
-        }
-
-        private void EnableMultiTouch(bool enable)
-        {
-            Input.multiTouchEnabled = enable;
         }
     }
 }
