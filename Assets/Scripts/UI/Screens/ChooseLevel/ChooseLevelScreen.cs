@@ -1,4 +1,5 @@
-﻿using Common.Data.Info;
+﻿using System.Collections;
+using Common.Data.Info;
 using Components.UI;
 using Extensions;
 using Handlers;
@@ -9,7 +10,6 @@ using Services.ScreenObserver;
 using TMPro;
 using UI.Popups.MessagePopup;
 using UI.Popups.SettingsPopup;
-using UI.Popups.UniversalPopup;
 using UI.Screens.ChooseLevel.Widgets;
 using UnityEngine;
 using UnityEngine.UI;
@@ -75,11 +75,11 @@ namespace UI.Screens.ChooseLevel
 
         private void SetTexts()
         {
-            _headerText.text = _localizationService.GetValue("choose_level_header");
+            _headerText.SetText(_localizationService.GetValue("choose_level_header"));
             
             var localizedName = _localizationService.GetValue($"pack_{_currentPackInfo.PackName.ToLower()}");
             var wordPack = _localizationService.GetValue("word_pack");
-            _packName.text = $"{localizedName} {wordPack}";
+            _packName.SetText($"{localizedName} {wordPack}");
         }
 
         private void OnInfoButtonClicked()
@@ -95,23 +95,45 @@ namespace UI.Screens.ChooseLevel
             var totalLevels = _progressProvider.GetLevelsCountInPack(_currentPackId);
             var totalAvailableLevels = _progressProvider.GetLevelsCountInPack(_currentPackId, true);
             
-            _availableLevelsText.text = _localizationService.GetFormattedValue("unlocked_levels", $"{totalAvailableLevels}/{totalLevels}");
+            _availableLevelsText.SetText(_localizationService.GetFormattedValue("unlocked_levels", $"{totalAvailableLevels}/{totalLevels}"));
         }
 
         private void InitializeLevelsButton()
         {
+            StartCoroutine(InitializeLevelsRoutine());
+        }
+
+        private IEnumerator InitializeLevelsRoutine()
+        {
             var index = 0;
-            _currentPackInfo.LevelsInfo.ForEach(levelParams =>
+            _horizontalGroup = null;
+
+            foreach (var levelParams in _currentPackInfo.LevelsInfo)
             {
+                if (this == null || gameObject == null)
+                    yield break;
+
                 if (_horizontalGroup == null || index % 2 == 0)
+                {
                     _horizontalGroup = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
+                }
 
                 var enterButton = Instantiate(_levelItemWidgetPrefab, _horizontalGroup.transform);
                 var earnedStarsForLevel = _progressProvider.GetEarnedStarsForLevel(_currentPackId, levelParams.LevelId) ?? 0;
-                enterButton.Initialize(levelParams.LevelName, levelParams.LevelImage, earnedStarsForLevel, levelParams.LevelDifficulty, _progressProvider.IsLevelAvailableToPlay(_currentPackId, levelParams.LevelId),
-                    () => StartLevel(_currentPackInfo, levelParams));
+
+                enterButton.Initialize(
+                    levelParams.LevelName, 
+                    levelParams.LevelImage, 
+                    earnedStarsForLevel, 
+                    levelParams.LevelDifficulty, 
+                    _progressProvider.IsLevelAvailableToPlay(_currentPackId, levelParams.LevelId),
+                    () => StartLevel(_currentPackInfo, levelParams)
+                );
+
                 index++;
-            });
+                
+                yield return new WaitForSecondsRealtime(0.05f);
+            }
         }
 
         private void StartLevel(PackInfo packInfo, LevelInfo levelInfo)

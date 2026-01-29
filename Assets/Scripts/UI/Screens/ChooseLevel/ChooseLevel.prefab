@@ -631,6 +631,8 @@ GameObject:
   - component: {fileID: 6808412472487802469}
   - component: {fileID: 6808412472487802490}
   - component: {fileID: 7625853352157185673}
+  - component: {fileID: 2741743144457371929}
+  - component: {fileID: 4767734621336323803}
   m_Layer: 5
   m_Name: Scroll
   m_TagString: Untagged
@@ -741,6 +743,46 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+--- !u!223 &2741743144457371929
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6808412472487802488}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 1
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!114 &4767734621336323803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6808412472487802488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &6808412473636373515
 GameObject:
   m_ObjectHideFlags: 0
@@ -995,6 +1037,7 @@ GameObject:
   - component: {fileID: 963380085704961715}
   - component: {fileID: 3230703583942058684}
   - component: {fileID: 1053538075466030670}
+  - component: {fileID: 538673554175625740}
   m_Layer: 5
   m_Name: TextContainer
   m_TagString: Untagged
@@ -1071,6 +1114,29 @@ MonoBehaviour:
   narrowAnchorMax: {x: 0.9, y: 0.852}
   wideAnchorMin: {x: 0.3, y: 0.616}
   wideAnchorMax: {x: 0.7, y: 0.852}
+--- !u!223 &538673554175625740
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6871073646470684574}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 1
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &7298622732084407473
 GameObject:
   m_ObjectHideFlags: 0
@@ -1468,6 +1534,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5418925464215003109, guid: 34b5778d1c59548f9a2ea9aa52941544,
+        type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 6192249279282597177, guid: 34b5778d1c59548f9a2ea9aa52941544,
         type: 3}

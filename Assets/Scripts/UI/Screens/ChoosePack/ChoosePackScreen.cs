@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Common.Currency;
 using Common.Data.Info;
@@ -104,9 +105,8 @@ namespace UI.Screens.ChoosePack
         private void InitText()
         {
             _headerText.text = _localizationService.GetValue("choose_pack_header");
-            
-            _availablePacksText.text = _localizationService.GetFormattedValue("unlocked_sets", 
-                $"{_progressProvider.GetAllAvailablePacksCount()}/{_progressProvider.GetAllPacksCount()}");
+            _availablePacksText.SetText(_localizationService.GetFormattedValue("unlocked_sets", 
+                $"{_progressProvider.GetAllAvailablePacksCount()}/{_progressProvider.GetAllPacksCount()}"));
         }
         
         private void OnInfoButtonClicked()
@@ -127,7 +127,7 @@ namespace UI.Screens.ChoosePack
         {
             _screenHandler.ShowWelcomeScreen();
         }
-
+        
         private void InitializePackButtons()
         {
             var packsInfos = _progressProvider.GetAllPacks();
@@ -137,37 +137,49 @@ namespace UI.Screens.ChoosePack
                 return;
             }
             
+            StartCoroutine(InitializePacksRoutine(packsInfos));
+        }
+        
+        private IEnumerator InitializePacksRoutine(IEnumerable<PackInfo> packsInfos)
+        {
             HorizontalLayoutGroup oldHorizontalLayoutGroup = null;
             var index = 0;
+
             foreach (var packInfo in packsInfos)
             {
+                if (this == null || gameObject == null)
+                    yield break;
+
                 var horizontalLayoutGroup = TryInstantiateHorizontalLayoutGroup(oldHorizontalLayoutGroup, index);
-                oldHorizontalLayoutGroup =  horizontalLayoutGroup;
-                
+                oldHorizontalLayoutGroup = horizontalLayoutGroup;
+
                 var packId = packInfo.PackId;
                 var packItemWidget = Instantiate(_packItemWidgetPrefab, horizontalLayoutGroup.transform);
                 _packItems.Add(packItemWidget);
+        
                 var isUnlocked = _progressProvider.IsPackAvailable(packId);
-                
                 var maybeStarsRequired = _progressProvider.GetStarsCountForPackUnlocking(packId);
                 var starsRequired = maybeStarsRequired ?? new Stars(0);
                 
                 packItemWidget.Initialize(packInfo.PackName, packInfo.PackImagePrefab, packId, isUnlocked,
                     () => OnAvailablePackClicked(packInfo), OnUnavailablePackClicked, starsRequired);
+        
                 index++;
-            }
-            
-            HorizontalLayoutGroup TryInstantiateHorizontalLayoutGroup(HorizontalLayoutGroup maybeHorizontalLayoutGroup, int itemIndex)
-            {
-                if (maybeHorizontalLayoutGroup == null || itemIndex % _rowPacksCount == 0)
-                {
-                    var group = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
-                    _horizontalGroups.Add(group);
-                    return group;
-                }
 
-                return maybeHorizontalLayoutGroup;
+                yield return new WaitForSecondsRealtime(0.05f);
             }
+        }
+        
+        private HorizontalLayoutGroup TryInstantiateHorizontalLayoutGroup(HorizontalLayoutGroup maybeHorizontalLayoutGroup, int itemIndex)
+        {
+            if (maybeHorizontalLayoutGroup == null || itemIndex % _rowPacksCount == 0)
+            {
+                var group = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
+                _horizontalGroups.Add(group);
+                return group;
+            }
+
+            return maybeHorizontalLayoutGroup;
         }
         
         private void OnAdsButtonClicked()
