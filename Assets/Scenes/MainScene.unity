@@ -2206,7 +2206,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _position: 1
-  _bannerHeight: 100
+  _bannerHeight: 300
   _rectTransform: {fileID: 1494755880}
 --- !u!1 &1655798613
 GameObject:

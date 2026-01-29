@@ -182,7 +182,6 @@ RectTransform:
   - {fileID: 5947431703167582259}
   - {fileID: 1195511738945235003}
   - {fileID: 8028511914697556046}
-  - {fileID: 927614471157536721}
   - {fileID: 694255411016755143}
   m_Father: {fileID: 1496618069183132049}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1015,6 +1014,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8028511914697556046}
   - component: {fileID: 7538456212922396887}
+  - component: {fileID: 1192871554847591796}
   m_Layer: 5
   m_Name: HeaderContainer
   m_TagString: Untagged
@@ -1035,6 +1035,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3656408537238868487}
+  - {fileID: 927614471157536721}
   m_Father: {fileID: 6817978088746886115}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.36091882}
@@ -1054,6 +1055,29 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!223 &1192871554847591796
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992425786631804189}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &2018371127191873683
 GameObject:
   m_ObjectHideFlags: 0
@@ -1614,6 +1638,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8805961467226003315}
+  - component: {fileID: 9154601329456300396}
   m_Layer: 0
   m_Name: Container
   m_TagString: Untagged
@@ -1646,6 +1671,29 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0}
+--- !u!223 &9154601329456300396
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3128212359248976109}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &3195700871133532667
 GameObject:
   m_ObjectHideFlags: 0
@@ -3385,7 +3433,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 6817978088746886115}
+    m_TransformParent: {fileID: 8028511914697556046}
     m_Modifications:
     - target: {fileID: 8909313493971320963, guid: 6b0d789cfbd954883af6ef28f544785a,
         type: 3}
@@ -3650,17 +3698,17 @@ PrefabInstance:
     - target: {fileID: 8909313493971320975, guid: 6b0d789cfbd954883af6ef28f544785a,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8909313493971320975, guid: 6b0d789cfbd954883af6ef28f544785a,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8909313493971320975, guid: 6b0d789cfbd954883af6ef28f544785a,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8909313493971320975, guid: 6b0d789cfbd954883af6ef28f544785a,
         type: 3}
@@ -3670,7 +3718,7 @@ PrefabInstance:
     - target: {fileID: 8909313493971320975, guid: 6b0d789cfbd954883af6ef28f544785a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 283
+      value: 405.21094
       objectReference: {fileID: 0}
     - target: {fileID: 8909313493971320975, guid: 6b0d789cfbd954883af6ef28f544785a,
         type: 3}
