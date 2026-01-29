@@ -37,7 +37,7 @@ namespace UI.Popups.MessagePopup
             View.PopupTransform.position = Context.Anchor.position;
             ApplyContextFacing();
 
-            View.Text.text = Context.Text;
+            View.Text.SetText(Context.Text);
             View.Text.spriteAsset = Context.SpriteAsset;
 
             View.BackgroundCloseButton.onClick.MapListenerWithSound(Hide).DisposeWith(this);

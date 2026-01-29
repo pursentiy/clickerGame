@@ -88,6 +88,8 @@ GameObject:
   - component: {fileID: 980463320655953494}
   - component: {fileID: 401770376168379129}
   - component: {fileID: 252421654806522332}
+  - component: {fileID: 1952644796899789958}
+  - component: {fileID: 8313386592982820461}
   m_Layer: 5
   m_Name: LevelItemWidgetPrefab
   m_TagString: Untagged
@@ -257,6 +259,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7f43065f89f48c395f216d2d52146da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!223 &1952644796899789958
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1803877355706238529}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 1
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!114 &8313386592982820461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1803877355706238529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &1803877355841150643
 GameObject:
   m_ObjectHideFlags: 0
