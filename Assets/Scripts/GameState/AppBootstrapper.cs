@@ -1,11 +1,8 @@
 using System.Collections;
-using Common;
 using Extensions;
 using Installers;
-using Playgama;
 using RSG;
 using Services;
-using UnityEngine;
 using Utilities.Disposable;
 using Zenject;
 
@@ -13,18 +10,11 @@ namespace GameState
 {
     public class AppBootstrapper: InjectableMonoBehaviour
     {
-        private const float BridgePlatformAwaitTimeout = 5f;
-        
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly ScenesManagerService _scenesManagerService;
         [Inject] private readonly GlobalSettingsManager _globalSettingsManager;
         [Inject] private readonly AdsService _adsService;
-        
-#if UNITY_EDITOR
-        [SerializeField] private bool _skipNextSceneLoading = false;
-#endif
-        
-        private bool _isBridgeAuthComplete = false;
+        [Inject] private readonly BridgeService _bridgeService;
         
         protected override void Awake()
         {
@@ -38,7 +28,7 @@ namespace GameState
         {
             LoggerService.LogDebug($"[{GetType().Name}] Initialization started...");
             
-            yield return BridgeAuthenticationRoutine();
+            yield return _bridgeService.AuthenticationRoutine();
             yield return LocalizationPreloadRoutine();
 
             LoggerService.LogDebug($"[{GetType().Name}] Initialization finished...");
@@ -46,52 +36,6 @@ namespace GameState
             ShowPrerollInterstitialAd()
                 .ContinueWithResolved(LoadNextScene)
                 .CancelWith(this);
-        }
-        
-        private IEnumerator BridgeAuthenticationRoutine()
-        {
-            var timeout = BridgePlatformAwaitTimeout; 
-            while (Bridge.platform.id == GlobalConstants.BridgeUnknown && timeout > 0)
-            {
-                timeout -= Time.deltaTime;
-                yield return null;
-            }
-
-            LoggerService.LogDebug($"Platform detected: {Bridge.platform.id}");
-
-            if (Bridge.platform.id == GlobalConstants.BridgeGDId)
-            {
-                _isBridgeAuthComplete = true;
-                yield break;
-            }
-
-            LoggerService.LogDebug($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Platform detected: {Bridge.platform.id}");
-            
-            while (Bridge.platform.id == GlobalConstants.BridgeUnknown) yield return null;
-            
-#if UNITY_EDITOR
-            LoggerService.LogDebug($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Editor detected: Automatic authorization bypass");
-            _isBridgeAuthComplete = true;
-#else
-        Bridge.player.Authorize(null, success =>
-            {
-                if (success)
-                {
-                    LoggerService.LogDebug($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Successful player authorization.");
-                }
-                else
-                {
-                    LoggerService.LogWarning($"[{GetType().Name}] [{nameof(BridgeAuthenticationRoutine)}] Guest mode.");
-                }
-                
-                _isBridgeAuthComplete = true;
-            });
-#endif
-
-            while (!_isBridgeAuthComplete)
-            {
-                yield return null;
-            }
         }
         
         private IEnumerator LocalizationPreloadRoutine()

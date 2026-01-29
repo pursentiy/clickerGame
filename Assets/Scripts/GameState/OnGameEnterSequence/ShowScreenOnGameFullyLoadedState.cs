@@ -1,6 +1,5 @@
 using Handlers;
 using JetBrains.Annotations;
-using Platform.Common.Utilities.StateMachine;
 using Services;
 using Utilities.StateMachine;
 using Zenject;
@@ -12,11 +11,13 @@ namespace GameState.OnGameEnterSequence
     {
         [Inject] private readonly ScreenHandler _screenHandler;
         [Inject] private readonly AdsService _adsService;
+        [Inject] private readonly BridgeService _bridgeService;
         
         public override void OnEnter(params object[] arguments)
         {
             base.OnEnter(arguments);
             
+            _bridgeService.SetGameReady();
             _adsService.ShowBanner();
             _screenHandler.ShowWelcomeScreen(true);
 

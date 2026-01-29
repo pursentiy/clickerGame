@@ -1,16 +1,12 @@
 {
-    "$schema": "https://bridge.playgama.com/v1.27.0/schema.json",
-    "advertisement": {
-        "interstitial": {
-            "preloadOnStart": true
-        },
-        "rewarded": {
-            "preloadOnStart": true
-        },
-        "useBuiltInErrorPopup": true,
-        "backfillId": ""
-    },
-    "payments": [],
-    "leaderboards": [],
-    "sendAnalyticsEvents": true
+  "advertisement": {
+    "useBuiltInErrorPopup": true
+  },
+  "sendAnalyticsEvents": false,
+  "showFullLoadingLogo": true,
+  "platforms": {
+    "game_distribution": {
+      "gameId": "257aa166261d437ab3a85b275983fc3f"
+    }
+  }
 }

@@ -1,5 +1,4 @@
 using JetBrains.Annotations;
-using Platform.Common.Utilities.StateMachine;
 using Utilities.StateMachine;
 
 namespace GameState.OnGameEnterSequence
