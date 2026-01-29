@@ -1,0 +1,50 @@
+using Common.Data.Info;
+using Handlers.UISystem;
+using Handlers.UISystem.Screens;
+using Handlers.UISystem.Screens.Transitions;
+using RSG;
+using UI.Screens.ChooseLevel;
+using UI.Screens.ChoosePack;
+using UI.Screens.WelcomeScreen;
+using Zenject;
+
+namespace Controllers
+{
+    public sealed class FlowScreenController : FlowControllerBase
+    {
+        [Inject] private readonly UIManager _uiManager;
+
+        public MediatorFlowInfo GoToChoosePackScreen()
+        {
+            var screenPromise = GoToScreenInternal(new FadeScreenTransition(typeof(ChoosePackScreenMediator), null));
+            return ToFlowInfo(screenPromise);
+        }
+        
+        public MediatorFlowInfo GoToChooseLevelScreen(PackInfo packInfo)
+        {
+            var screenPromise = GoToScreenInternal(new FadeScreenTransition(typeof(ChooseLevelScreenMediator), new ChooseLevelScreenContext(packInfo)));
+            return ToFlowInfo(screenPromise);
+        }
+        
+        public MediatorFlowInfo GoToWelcomeScreen()
+        {
+            var screenPromise = GoToScreenInternal(new FadeScreenTransition(typeof(WelcomeScreenMediator), null));
+            return ToFlowInfo(screenPromise);
+        }
+        
+        private IPromise<UIScreenBase> GoToScreenInternal(UIScreenTransition transition)
+        {
+            return _uiManager.ScreensHandler.PushScreen(transition);
+        }
+
+        protected override void OnInitialize()
+        {
+            
+        }
+
+        protected override void OnDisposing()
+        {
+            
+        }
+    }
+}

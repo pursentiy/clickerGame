@@ -1,4 +1,5 @@
 using Components.Levels;
+using Controllers;
 using Handlers;
 using Handlers.UISystem;
 using Level.Widgets;
@@ -35,6 +36,8 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<LevelSessionHandler>().FromInstance(_levelSessionHandler).AsSingle();
             Container.Bind<LevelParamsHandler>().FromInstance(_levelParamsHandler).AsSingle();
             
+            Container.BindInterfacesAndSelfTo<FlowScreenController>().AsSingle();
+            Container.BindInterfacesAndSelfTo<FlowPopupController>().AsSingle();
             Container.BindInterfacesAndSelfTo<ClickHandlerService>().AsSingle();
             Container.BindInterfacesAndSelfTo<LevelHelperService>().AsSingle();
             Container.BindInterfacesAndSelfTo<LevelInfoTrackerService>().AsSingle();

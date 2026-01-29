@@ -1,12 +1,8 @@
 using Attributes;
+using Controllers;
 using DG.Tweening;
 using Extensions;
-using Handlers;
-using Handlers.UISystem;
 using Handlers.UISystem.Screens;
-using Handlers.UISystem.Screens.Transitions;
-using UI.Popups.SettingsPopup;
-using UI.Screens.ChoosePack;
 using UnityEngine;
 using Utilities.Disposable;
 using Zenject;
@@ -14,11 +10,10 @@ using Zenject;
 namespace UI.Screens.WelcomeScreen
 {
     [AssetKey("UI Screens/WelcomeScreenScreenMediator")]
-    public sealed class WelcomeScreenScreenMediator : UIScreenBase<WelcomeScreenView>
+    public sealed class WelcomeScreenMediator : UIScreenBase<WelcomeScreenView>
     {
-        [Inject] private ScreenHandler _screenHandler;
-        [Inject] private SoundHandler _soundHandler;
-        [Inject] private UIManager _uiManager;
+        [Inject] private readonly FlowScreenController _flowScreenController;
+        [Inject] private readonly FlowPopupController _flowPopupController;
         
         public override void OnCreated()
         {
@@ -27,19 +22,26 @@ namespace UI.Screens.WelcomeScreen
             View.PlayButton.onClick.MapListenerWithSound(PushNextScreen).DisposeWith(this);
             View.SettingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
         }
-        
+
+        public override void OnBeginShow()
+        {
+            base.OnBeginShow();
+
+            PrepareHeaderForAnimation();
+            AnimateHeader();
+        }
+
         private void OnSettingsButtonClicked()
         {
-            var context = new SettingsPopupContext(true);
-            _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(context);
+            _flowPopupController.ShowSettingsPopup(true);
         }
 
         private void PushNextScreen()
         {
-            _uiManager.ScreensHandler.PushScreen(new InstantScreenTransition(typeof(ChoosePackScreenMediator), null));
+            _flowScreenController.GoToChoosePackScreen();
         }
         
-        public void PrepareForAnimation()
+        private void PrepareHeaderForAnimation()
         {
             View.HeaderText.transform.localScale = Vector3.one * View.StartScale;
             View.HeaderText.transform.localPosition += new Vector3(0, -View.FlyOffset, 0);
@@ -47,7 +49,7 @@ namespace UI.Screens.WelcomeScreen
                 View.HeaderTextCanvasGroup.alpha = 0;
         }
         
-        private void AnimateShow()
+        private void AnimateHeader()
         {
             View.HeaderText.transform.DOKill();
             View.HeaderTextCanvasGroup?.DOKill();

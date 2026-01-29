@@ -10,11 +10,12 @@ namespace UI.Screens.ChoosePack
     public class ChoosePackScreenView : MonoBehaviour, IUIView
     {
         public PackItemWidget PackItemWidgetPrefab;
-        public RectTransform LevelEnterPopupsParentTransform;
+        public RectTransform PacksContainer;
         public HorizontalLayoutGroup HorizontalLayoutGroupPrefab;
         public CurrencyDisplayWidget StarsDisplayWidget;
         public TextMeshProUGUI HeaderText;
         public TextMeshProUGUI AvailablePacksText;
+        public PacksWidget PacksWidget;
         public Button GoBack;
         public Button SettingsButton;
         public Button InfoButton;

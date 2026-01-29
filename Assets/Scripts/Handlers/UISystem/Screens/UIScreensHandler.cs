@@ -944,7 +944,7 @@ namespace Handlers.UISystem.Screens
         
         private UIScreen GetDefaultScreen()
         {
-            return _screenStack.FirstOrDefault(trans => trans.Screen.ScreenBase is WelcomeScreenScreenMediator)?.Screen;
+            return _screenStack.FirstOrDefault(trans => trans.Screen.ScreenBase is WelcomeScreenMediator)?.Screen;
         }
         
         private string ScreensStackStringify(IEnumerable<ScreenTransitionInfo> screens)

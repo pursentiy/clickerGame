@@ -13,7 +13,6 @@ namespace UI.Screens.WelcomeScreen
     public class WelcomeScreen : ScreenBase
     {
         [Inject] private ScreenHandler _screenHandler;
-        [Inject] private SoundHandler _soundHandler;
         [Inject] private UIManager _uiManager;
         
         [SerializeField] private Button _playButton;
@@ -41,6 +40,11 @@ namespace UI.Screens.WelcomeScreen
             _settingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
             
             AnimateShow();
+        }
+
+        private void OnBeginShow()
+        {
+            
         }
 
         private void OnSettingsButtonClicked()

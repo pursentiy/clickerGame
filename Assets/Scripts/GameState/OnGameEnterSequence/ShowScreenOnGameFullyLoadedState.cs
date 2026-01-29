@@ -19,7 +19,7 @@ namespace GameState.OnGameEnterSequence
             base.OnEnter(arguments);
             
             _bridgeService.SetGameReady();
-            _uiManager.ScreensHandler.PushFirstScreen<WelcomeScreenScreenMediator>()
+            _uiManager.ScreensHandler.PushFirstScreen<WelcomeScreenMediator>()
                 .Then(() =>
                 {
                     _adsService.ShowBanner();

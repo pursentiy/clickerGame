@@ -42,6 +42,11 @@ namespace Services
             LogWarning(@object.GetType().Name +  ": " + message);
         }
         
+        public static void LogWarning(Exception exception)
+        {
+            LogWarning(exception.Message);
+        }
+        
         public static void LogError(Object @object, string message)
         {
             Debug.LogError(@object.GetType().Name +  ": " + message);
