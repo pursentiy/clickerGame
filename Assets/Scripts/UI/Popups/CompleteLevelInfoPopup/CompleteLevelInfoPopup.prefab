@@ -430,7 +430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _position: 1
-  _bannerHeight: 100
+  _bannerHeight: 300
   _rectTransform: {fileID: 8588149607850765593}
 --- !u!1 &3335999719539141739
 GameObject:
@@ -33972,6 +33972,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1594956967345595004, guid: a3f902d9e9bb74bc483ea62a04344d5d,
+        type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 2155773720201860556, guid: a3f902d9e9bb74bc483ea62a04344d5d,
         type: 3}
