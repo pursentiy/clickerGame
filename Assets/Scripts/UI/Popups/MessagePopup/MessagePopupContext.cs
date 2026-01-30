@@ -6,7 +6,7 @@ namespace UI.Popups.MessagePopup
 {
     public class MessagePopupContext : IPopupContext
     {
-        public MessagePopupContext(string text, RectTransform anchor, int fontSize = 100, TMP_SpriteAsset spriteAsset = null, PopupFacing facing = PopupFacing.Left)
+        public MessagePopupContext(string text, RectTransform anchor, float fontSize = 100, TMP_SpriteAsset spriteAsset = null, PopupFacing facing = PopupFacing.Left)
         {
             Text = text;
             Anchor = anchor;
@@ -18,7 +18,7 @@ namespace UI.Popups.MessagePopup
         public string Text { get; }
         public RectTransform Anchor { get; }
         public PopupFacing Facing { get; }
-        public int FontSize { get; }
+        public float FontSize { get; }
         public TMP_SpriteAsset SpriteAsset { get; }
     }
 

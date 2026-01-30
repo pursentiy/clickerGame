@@ -4,17 +4,19 @@ using Handlers.UISystem;
 using Handlers.UISystem.Screens;
 using RSG;
 using Services.Base;
+using Utilities;
 using Utilities.Disposable;
 
 namespace Controllers
 {
     public abstract class FlowControllerBase : DisposableService
     {
-        protected MediatorFlowInfo ToFlowInfo<T>(IPromise<T> showPromise) where T : class
+        protected MediatorFlowInfo ToFlowInfo<T>(IPromise<T> showPromise, IDisposeProvider overrideDisposeProvider = null) where T : IMediator
         {
             var loadPromise = new Promise();
             var hidePromise = new Promise();
 
+            var disposeProvider = overrideDisposeProvider ?? this;
             showPromise
                 .Then(uiElement => 
                 {
@@ -32,7 +34,12 @@ namespace Controllers
                     loadPromise.SafeReject(e);
                     hidePromise.SafeReject(e);
                 })
-                .CancelWith(this);
+                .CancelWith(disposeProvider)
+                .OnCancel(() =>
+                {
+                    loadPromise.SafeResolve();
+                    hidePromise.SafeResolve();
+                });
 
             return new MediatorFlowInfo(loadPromise, hidePromise);
         }

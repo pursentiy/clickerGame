@@ -6,7 +6,6 @@ using Handlers.UISystem.Screens;
 using Services;
 using Services.Player;
 using UI.Popups.MessagePopup;
-using UI.Popups.SettingsPopup;
 using UI.Screens.ChoosePack.AdsSequence;
 using Utilities.Disposable;
 using Utilities.StateMachine;
@@ -27,41 +26,35 @@ namespace UI.Screens.ChoosePack
         public override void OnCreated()
         {
             base.OnCreated();
-
-            View.StarsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
-
-            InitText();
             
-            View.PacksWidget.Initialize(View.StarsDisplayWidget, View.AdsButton);
-            View.PacksWidget.InitializePackButtons(View.PacksContainer);
+            InitWidgets();
+            InitText();
             
             View.InfoButton.onClick.MapListenerWithSound(OnInfoButtonClicked).DisposeWith(this);
             View.GoBack.onClick.MapListenerWithSound(OnGoBackButtonClicked).DisposeWith(this);
             View.SettingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
             View.AdsButton.Button.onClick.MapListenerWithSound(OnAdsButtonClicked).DisposeWith(this);
         }
-        
-        public override void OnEndHide()
+
+        private void InitWidgets()
         {
-            base.OnEndHide();
-            
-            HideAllInfoMessagesPopups();
+            View.StarsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
+            View.PacksWidget.Initialize(View.StarsDisplayWidget, View.AdsButton);
         }
 
         private void InitText()
         {
             View.HeaderText.SetText(_localizationService.GetValue("choose_pack_header"));
-            
-            View.AvailablePacksText.SetText(_localizationService.GetFormattedValue("unlocked_sets", 
-                $"{_progressProvider.GetAllAvailablePacksCount()}/{_progressProvider.GetAllPacksCount()}"));
+
+            var text = _localizationService.GetFormattedValue("unlocked_sets",
+                $"{_progressProvider.GetAllAvailablePacksCount()}/{_progressProvider.GetAllPacksCount()}");
+            View.AvailablePacksText.SetText(text);
         }
         
         private void OnInfoButtonClicked()
         {
-            var fontSize = 150;
-            var context = new MessagePopupContext(_localizationService.GetValue("unlock_sets_info"), View.InfoButton.GetRectTransform(), fontSize, facing: PopupFacing.Right);
-            _uiManager.PopupsHandler.ShowPopupImmediately<MessagePopupMediator>(context)
-                .CancelWith(this);
+            var context = new MessagePopupContext(_localizationService.GetValue("unlock_sets_info"), View.InfoButton.GetRectTransform(), View.InfoMessageFontSize, facing: PopupFacing.Right);
+            _flowPopupController.ShowMessagePopup(context, overrideDisposeProvider: this.GetDisposeProvider());
         }
 
         private void OnSettingsButtonClicked()
@@ -82,9 +75,5 @@ namespace UI.Screens.ChoosePack
                 .FinishWith(this);
         }
 
-        private void HideAllInfoMessagesPopups()
-        {
-            _uiManager.PopupsHandler.HideAllPopups<MessagePopupMediator>();
-        }
     }
 }

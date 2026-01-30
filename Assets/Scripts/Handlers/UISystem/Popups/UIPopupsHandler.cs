@@ -53,17 +53,16 @@ namespace Handlers.UISystem.Popups
         public IPromise<UIPopupBase> ShowPopupImmediately(Type type, IPopupContext context)
         {
             LoggerService.LogDebug(this, $"ShowPopupImmediately with {nameof(Type)} = {type.Name}");
-            //TODO ADD UI BLOCKER
-            //var blockRef = _uiBlocker.Block();
+            var blockRef = _uiGlobalBlocker.Block();
             IsProcessingImmediatePopup = true;
             var promise = ShowPopup(type, context);
             promise.Finally(() =>
             {
                 IsProcessingImmediatePopup = false;
-                // if (blockRef?.IsDisposed == false)
-                // {
-                //     blockRef.Dispose();
-                // }
+                if (blockRef?.IsDisposed == false)
+                {
+                    blockRef.Dispose();
+                }
             });
             return promise;
         }

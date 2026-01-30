@@ -164,11 +164,11 @@ namespace Handlers.UISystem.Screens
 
         public IPromise<UIScreenBase> PushScreen(UIScreenTransition transition, bool fromScreenInactive = true, bool isScreenCalledManually = true)
         {
-            if (_screenStack.Count > 0 && _screenStack.Peek().Screen == _startScreen)
-            {
-                LoggerService.LogWarningEditor($"{nameof(PushScreen)}: Attempt to PushScreen over start screen");
-                return ChangeScreen(transition, isScreenCalledManually);
-            }
+            // if (_screenStack.Count > 0 && _screenStack.Peek().Screen == _startScreen)
+            // {
+            //     LoggerService.LogWarningEditor($"{nameof(PushScreen)}: Attempt to PushScreen over start screen");
+            //     return ChangeScreen(transition, isScreenCalledManually);
+            // }
             
             if (TransitionInProgress)
             {

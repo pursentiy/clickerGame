@@ -25,7 +25,7 @@ namespace UI.Screens.ChoosePack.Widgets
         [Inject] private readonly UIManager _uiManager;
         
         [SerializeField] private PackItemWidget _packItemWidgetPrefab;
-        [SerializeField] private RectTransform _levelEnterPopupsParentTransform;
+        [SerializeField] private RectTransform _packsContainer;
         [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroupPrefab;
         [Range(1, 5)]
         [SerializeField] private int _rowPacksCount = 2;
@@ -39,6 +39,8 @@ namespace UI.Screens.ChoosePack.Widgets
         {
             _currencyDisplayWidget =  currencyDisplayWidget;
             _adsButtonWidget =  adsButtonWidget;
+            
+            InitializePackButtons();
         }
         
         public void UpdatePacksState()
@@ -74,7 +76,7 @@ namespace UI.Screens.ChoosePack.Widgets
             }
         }
         
-        public void InitializePackButtons(RectTransform packsContainer)
+        private void InitializePackButtons()
         {
             if (_packItemWidgetPrefab == null)
             {
@@ -89,7 +91,7 @@ namespace UI.Screens.ChoosePack.Widgets
                 return;
             }
             
-            StartCoroutine(InitializePacksRoutine(_packItemWidgetPrefab, packsContainer, packsInfos));
+            StartCoroutine(InitializePacksRoutine(_packItemWidgetPrefab, _packsContainer, packsInfos));
         }
         
         private IEnumerator InitializePacksRoutine(PackItemWidget packItemWidgetPrefab, RectTransform packsContainer, IEnumerable<PackInfo> packsInfos)
@@ -126,7 +128,7 @@ namespace UI.Screens.ChoosePack.Widgets
         {
             if (maybeHorizontalLayoutGroup == null || itemIndex % _rowPacksCount == 0)
             {
-                var group = Instantiate(_horizontalLayoutGroupPrefab, _levelEnterPopupsParentTransform);
+                var group = Instantiate(_horizontalLayoutGroupPrefab, _packsContainer);
                 _horizontalGroups.Add(group);
                 return group;
             }

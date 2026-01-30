@@ -46,7 +46,7 @@ namespace Handlers.UISystem.Screens
         }
     }
     
-    public abstract class UIScreenBase : MonoBehaviour, IUIMediator
+    public abstract class UIScreenBase : MonoBehaviour, IUIMediator, IMediator
     {
         [Inject] private DiContainer _container;
         [Inject] private List<IWidget> _widgets;

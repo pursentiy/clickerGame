@@ -20,6 +20,7 @@ namespace UI.Screens.ChoosePack
         public Button SettingsButton;
         public Button InfoButton;
         public AdsButtonWidget AdsButton;
+        public float InfoMessageFontSize = 150f;
         [Range(1, 5)]
         public int RowPacksCount = 2;
     }

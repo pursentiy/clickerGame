@@ -6,6 +6,7 @@ using RSG;
 using UI.Screens.ChooseLevel;
 using UI.Screens.ChoosePack;
 using UI.Screens.WelcomeScreen;
+using Utilities.Disposable;
 using Zenject;
 
 namespace Controllers
@@ -34,7 +35,7 @@ namespace Controllers
         
         private IPromise<UIScreenBase> GoToScreenInternal(UIScreenTransition transition)
         {
-            return _uiManager.ScreensHandler.PushScreen(transition);
+            return _uiManager.ScreensHandler.PushScreen(transition).CancelWith(this);
         }
 
         protected override void OnInitialize()
