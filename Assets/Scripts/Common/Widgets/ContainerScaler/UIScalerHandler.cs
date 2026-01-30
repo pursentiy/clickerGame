@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Extensions;
 using Installers;
-using Services;
 using Services.ScreenObserver;
 using UnityEngine;
 using Utilities.Disposable;
@@ -74,8 +73,6 @@ namespace Common.Widgets.ContainerScaler
             TryUpdateWidgets();
             TryAnimateWidget(true);
         }
-
-       
 
         private void TryUpdateWidgets()
         {

@@ -4,14 +4,22 @@ using UnityEngine;
 
 namespace Common.Widgets.ContainerScaler
 {
-    public class ParticleBurstEmissionScaler : MonoBehaviour, IScalableWidget
+    public class ParticleBurstEmissionScalerWidget : MonoBehaviour
     {
-        [SerializeField] private ParticleSystem[] particleSystems;
         [SerializeField] private int baseScreenWidth = 1388;
         
-        private List<ParticleSystem.Burst[]> initialBursts = new List<ParticleSystem.Burst[]>();
-        private int lastWidth;
+        private List<ParticleSystem.Burst[]> _initialBursts = new ();
+        private int _lastWidth;
+        private List<ParticleSystem> _particleSystems;
+        private bool _initialized;
 
+        public void InitializeWidget(List<ParticleSystem> particleSystems)
+        {
+            _particleSystems =  particleSystems;
+            _initialized = true;
+            SaveParticlesEmissionData();
+        }
+        
         public void UpdateWidget(bool byForce = false)
         {
             TryUpdateEmissionData();
@@ -22,11 +30,6 @@ namespace Common.Widgets.ContainerScaler
             
         }
         
-        private void Awake()
-        {
-            SaveParticlesEmissionData();
-        }
-        
         private void TryUpdateEmissionData()
         {
             CheckScreenWidthAndUpdateParticles();
@@ -34,66 +37,69 @@ namespace Common.Widgets.ContainerScaler
 
         private void SaveParticlesEmissionData()
         {
-            if (particleSystems == null || particleSystems.Length == 0)
+            if (!_initialized || _particleSystems.IsNullOrEmpty())
                 return;
 
-            foreach (var ps in particleSystems)
+            foreach (var ps in _particleSystems)
             {
                 if (ps == null)
                     continue;
                 
                 if (ps.emission.burstCount <= 0)
                 {
-                    initialBursts.Add(null);
+                    _initialBursts.Add(null);
                     continue;
                 }
                 var emission = ps.emission;
                 ParticleSystem.Burst[] bursts = new ParticleSystem.Burst[emission.burstCount];
                 emission.GetBursts(bursts);
-                initialBursts.Add(bursts);
+                _initialBursts.Add(bursts);
             }
         }
 
         private void CheckScreenWidthAndUpdateParticles()
         {
-            if (UnityEngine.Device.Screen.width != lastWidth)
+            if (!_initialized)
+                return;
+            
+            if (UnityEngine.Device.Screen.width != _lastWidth)
             {
                 UpdateParticlesEmissionData();
-                lastWidth = UnityEngine.Device.Screen.width;
+                _lastWidth = UnityEngine.Device.Screen.width;
             }
         }
 
         private void UpdateParticlesEmissionData()
         {
-            if (particleSystems.IsNullOrEmpty() || initialBursts.IsNullOrEmpty() || initialBursts.Count != particleSystems.Length) 
+            if (!_initialized || _particleSystems.IsNullOrEmpty() || _initialBursts.IsNullOrEmpty() || _initialBursts.Count != _particleSystems.Count) 
                 return;
 
             var coefficient = (float)UnityEngine.Device.Screen.width / baseScreenWidth;
 
-            for (var i = 0; i < particleSystems.Length; i++)
+            for (var i = 0; i < _particleSystems.Count; i++)
             {
-                var ps = particleSystems[i];
+                var ps = _particleSystems[i];
                 if (ps == null)
                     continue;
                 
                 var emission = ps.emission;
             
-                var currentBursts = new ParticleSystem.Burst[initialBursts[i].Length];
-                System.Array.Copy(initialBursts[i], currentBursts, initialBursts[i].Length);
+                var currentBursts = new ParticleSystem.Burst[_initialBursts[i].Length];
+                System.Array.Copy(_initialBursts[i], currentBursts, _initialBursts[i].Length);
             
                 for (var j = 0; j < currentBursts.Length; j++)
                 {
-                    var mode = initialBursts[i][j].count.mode;
+                    var mode = _initialBursts[i][j].count.mode;
 
                     if (mode == ParticleSystemCurveMode.Constant)
                     {
-                        currentBursts[j].count = Mathf.Clamp(initialBursts[i][j].count.constant * coefficient, 1, 100);
+                        currentBursts[j].count = Mathf.Clamp(_initialBursts[i][j].count.constant * coefficient, 1, 100);
                     }
                     else if (mode == ParticleSystemCurveMode.TwoConstants)
                     {
                         currentBursts[j].count = new ParticleSystem.MinMaxCurve(
-                            initialBursts[i][j].count.constantMin * coefficient,
-                            initialBursts[i][j].count.constantMax * coefficient
+                            _initialBursts[i][j].count.constantMin * coefficient,
+                            _initialBursts[i][j].count.constantMax * coefficient
                         );
                     }
                 }

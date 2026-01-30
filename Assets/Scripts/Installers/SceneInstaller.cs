@@ -20,6 +20,7 @@ namespace Installers
         [SerializeField] private LevelSessionHandler _levelSessionHandler;
         [SerializeField] private LevelParamsHandler _levelParamsHandler;
         [SerializeField] private UISystemData _uiSystemData;
+        [SerializeField] private ScreenTransitionParticlesHandler _screenTransitionParticlesHandler;
 
         private GameObject _servicesRoot;
 
@@ -35,6 +36,8 @@ namespace Installers
             
             Container.BindInterfacesAndSelfTo<LevelSessionHandler>().FromInstance(_levelSessionHandler).AsSingle();
             Container.Bind<LevelParamsHandler>().FromInstance(_levelParamsHandler).AsSingle();
+            Container.BindInterfacesAndSelfTo<ScreenTransitionParticlesHandler>().FromComponentInNewPrefab(_screenTransitionParticlesHandler).WithGameObjectName("[ScreenTransition]")
+                .UnderTransform(sceneServicesRoot).AsSingle().NonLazy();
             
             Container.BindInterfacesAndSelfTo<FlowScreenController>().AsSingle();
             Container.BindInterfacesAndSelfTo<FlowPopupController>().AsSingle();

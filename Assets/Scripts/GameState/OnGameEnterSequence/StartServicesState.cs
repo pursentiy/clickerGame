@@ -1,4 +1,5 @@
 using Controllers;
+using Handlers;
 using Handlers.UISystem;
 using JetBrains.Annotations;
 using Services;
@@ -35,6 +36,7 @@ namespace GameState.OnGameEnterSequence
             _applicationService.RegisterDisposableService<UIGlobalBlocker>();
             _applicationService.RegisterDisposableService<FlowScreenController>();
             _applicationService.RegisterDisposableService<FlowPopupController>();
+            _applicationService.RegisterDisposableService<ScreenTransitionParticlesHandler>();
             _applicationService.SetApplicationInitialized();
             
             LoggerService.LogDebug($"{nameof(StartServicesState)}: Disposable Services  registered");

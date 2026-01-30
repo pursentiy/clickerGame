@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Extensions;
 using UnityEngine;
 
@@ -5,12 +6,19 @@ namespace Common.Widgets.ContainerScaler
 {
     public class ParticleStretchWidget : MonoBehaviour, IScalableWidget
     {
-        [SerializeField] private ParticleSystem[] particleSystems;
         [Range(0.1f, 2f)]
         [SerializeField] private float offsetMultiplier = 0f;
         
-        private ParticleSystem.EmissionModule emission;
-        private int lastWidth;
+        private ParticleSystem.EmissionModule _emission;
+        private int _lastWidth;
+        private List<ParticleSystem> _particleSystems;
+        private bool _initialized;
+
+        public void InitializeWidget(List<ParticleSystem> particleSystems)
+        {
+            _particleSystems =  particleSystems;
+            _initialized = true;
+        }
 
         public void UpdateWidget(bool byForce = false)
         {
@@ -24,20 +32,23 @@ namespace Common.Widgets.ContainerScaler
 
         private void CheckScreenWidthAndUpdateParticles()
         {
-            if (UnityEngine.Device.Screen.width != lastWidth)
+            if (!_initialized)
+                return;
+            
+            if (UnityEngine.Device.Screen.width != _lastWidth)
             {
                 StretchParticles();
-                lastWidth = UnityEngine.Device.Screen.width;
+                _lastWidth = UnityEngine.Device.Screen.width;
             }
         }
         
         private void StretchParticles()
         {
-            if (Camera.main == null || particleSystems.IsNullOrEmpty()) 
+            if (!_initialized || Camera.main == null || _particleSystems.IsNullOrEmpty()) 
                 return;
 
             var scale = UnityEngine.Device.Screen.width * offsetMultiplier;
-            foreach (var system in particleSystems)
+            foreach (var system in _particleSystems)
             {
                 if (system == null)
                     continue;

@@ -1,12 +1,18 @@
 using System;
+using Extensions;
 using UnityEngine;
+using Zenject;
 
 namespace Handlers.UISystem.Screens.Transitions
 {
     public class FadeScreenTransition : UIScreenTimeBasedTransitionBase
     {
-        private const float Duration = 0.35f; // Увеличил чуть-чуть для плавности
-        private const float MoveOffset = 40f;
+        [Inject] private ScreenTransitionParticlesHandler _particlesHandler;
+        
+        private const float Duration = 0.55f; 
+        private const float MoveOffset = 120f; // Величина заезда
+        private const float ScaleEffect = 0.05f;
+        private const float ParticlesStartTime = 0.01f;
 
         private CanvasGroup _fromCanvas;
         private CanvasGroup _toCanvas;
@@ -15,11 +21,15 @@ namespace Handlers.UISystem.Screens.Transitions
     
         private Vector2 _fromInitialPos;
         private Vector2 _toInitialPos;
+        private bool _particlesPlayed;
 
         public override float TransitionTime => Duration;
 
-        public FadeScreenTransition(Type toScreenType, IScreenContext context) 
-            : base(toScreenType, context, false) { }
+        public FadeScreenTransition(Type toScreenType, IScreenContext context)
+            : base(toScreenType, context, false)
+        {
+            this.Inject();
+        }
 
         public override void Prepare(UIScreenBase fromScreen, UIScreenBase toScreen, bool forward)
         {
@@ -32,52 +42,46 @@ namespace Handlers.UISystem.Screens.Transitions
             _fromInitialPos = _fromRect.anchoredPosition;
             _toInitialPos = _toRect.anchoredPosition;
 
-            // Блокируем клики на старте
+            _toCanvas.alpha = 0f;
             _toCanvas.blocksRaycasts = false;
             _fromCanvas.blocksRaycasts = false;
+            
+            // Важно: новый экран должен быть над старым
+            toScreen.transform.SetAsLastSibling();
         }
 
         public override void DoTransition(float t, bool forward)
         {
-            // 1. Применяем Easing к входящему значению t (0..1)
-            // Для появления лучше всего подходит EaseOutSine или EaseOutCubic
-            float easedT = EaseOutSine(t);
-        
-            // 2. Рассчитываем прогресс для каждого экрана
-            if (forward)
+            if (t > ParticlesStartTime && !_particlesPlayed)
             {
-                // Уходящий экран (просто затухает линейно или по Sine)
-                _fromCanvas.alpha = 1f - t; 
-
-                // Появляющийся экран (Fade + Move)
-                _toCanvas.alpha = easedT;
-                var yOffset = Mathf.Lerp(-MoveOffset, 0, easedT);
-                _toRect.anchoredPosition = _toInitialPos + new Vector2(0, yOffset);
+                _particlesHandler.PlayParticles();
+                _particlesPlayed = true;
             }
-            else
-            {
-                // Обратная анимация (возврат назад)
-                _toCanvas.alpha = 1f - t;
             
-                _fromCanvas.alpha = easedT;
-                var yOffset = Mathf.Lerp(MoveOffset, 0, easedT); // При возврате можно ехать сверху вниз
-                _fromRect.anchoredPosition = _fromInitialPos + new Vector2(0, yOffset);
-            }
+            // Используем разные кривые для ухода и появления
+            float outEased = EaseInQuart(t);
+            float inEased = EaseOutBack(t);
+            
+            // 1. Старый экран плавно уходит вниз и затухает
+            _fromCanvas.alpha = Mathf.Lerp(1f, 0f, t * 1.5f);
+            var fromY = Mathf.Lerp(0, -MoveOffset * 0.5f, outEased);
+            _fromRect.anchoredPosition = _fromInitialPos + new Vector2(0, fromY);
+            _fromRect.localScale = Vector3.one * (1f - ScaleEffect * outEased);
+
+            // 2. Новый экран выезжает сверху с сочным "отскоком"
+            _toCanvas.alpha = Mathf.Clamp01(t * 2f); // Проявляется быстрее
+            var toY = Mathf.Lerp(MoveOffset, 0, inEased);
+            _toRect.anchoredPosition = _toInitialPos + new Vector2(0, toY);
+            _toRect.localScale = Vector3.one * ( (1f - ScaleEffect) + ScaleEffect * inEased);
         }
 
         public override void OnComplete(UIScreenBase fromScreen, UIScreenBase toScreen, bool forward)
         {
-            // Устанавливаем финальные состояния без погрешностей float
-            if (forward)
-            {
-                SetFinalState(_fromCanvas, _fromRect, _fromInitialPos, 0f, false);
-                SetFinalState(_toCanvas, _toRect, _toInitialPos, 1f, true);
-            }
-            else
-            {
-                SetFinalState(_toCanvas, _toRect, _toInitialPos, 0f, false);
-                SetFinalState(_fromCanvas, _fromRect, _fromInitialPos, 1f, true);
-            }
+            SetFinalState(_fromCanvas, _fromRect, _fromInitialPos, 0f, false);
+            SetFinalState(_toCanvas, _toRect, _toInitialPos, 1f, true);
+            
+            _fromRect.localScale = Vector3.one;
+            _toRect.localScale = Vector3.one;
         }
 
         private void SetFinalState(CanvasGroup cg, RectTransform rt, Vector2 pos, float alpha, bool interactable)
@@ -87,10 +91,15 @@ namespace Handlers.UISystem.Screens.Transitions
             rt.anchoredPosition = pos;
         }
 
-        // Вспомогательная функция EaseOutSine
-        private float EaseOutSine(float t)
+        // Плавное начало для уходящего экрана
+        private float EaseInQuart(float t) => t * t * t * t;
+
+        // "Дорогой" отскок для входящего экрана
+        private float EaseOutBack(float t)
         {
-            return Mathf.Sin(t * (Mathf.PI / 2f));
+            const float c1 = 1.70158f;
+            const float c3 = c1 + 1;
+            return 1 + c3 * Mathf.Pow(t - 1, 3) + c1 * Mathf.Pow(t - 1, 2);
         }
     }
 }

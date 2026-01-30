@@ -338,6 +338,8 @@ MonoBehaviour:
   _soundHandler: {fileID: 7097281561540031536}
   _levelsParamsStorageData: {fileID: 11400000, guid: ee10b72902a1ab94db068e4883dc8e28,
     type: 2}
+  _screenTransitionParticlesHandler: {fileID: 4091691429793854820, guid: 38e2487f51ee745e59748dafd4c2f8c2,
+    type: 3}
 --- !u!114 &7097281561540031536
 MonoBehaviour:
   m_ObjectHideFlags: 0

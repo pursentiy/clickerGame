@@ -120,7 +120,7 @@ namespace UI.Screens.ChoosePack.Widgets
         
                 index++;
 
-                yield return new WaitForSecondsRealtime(0.05f);
+                yield return null;
             }
         }
         
