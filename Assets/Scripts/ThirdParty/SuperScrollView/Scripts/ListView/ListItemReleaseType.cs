@@ -1,4 +1,4 @@
-namespace Plugins.SuperScrollView.Scripts.ListView
+namespace ThirdParty.SuperScrollView.Scripts.ListView
 {
     public enum ListItemReleaseType
     {

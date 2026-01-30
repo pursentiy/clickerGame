@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Common.Currency;
 using Common.Data.Info;
 using Components.UI;
@@ -8,9 +9,12 @@ using Handlers.UISystem;
 using Handlers.UISystem.Screens.Transitions;
 using Installers;
 using Services;
+using ThirdParty.SuperScrollView.Scripts.GridView;
+using ThirdParty.SuperScrollView.Scripts.List;
 using ThirdParty.SuperScrollView.Scripts.ListView;
 using UI.Screens.ChooseLevel;
 using UI.Screens.ChoosePack.NoCurrencySequence;
+using UI.Screens.ChoosePack.PackLevelItem;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities.Disposable;
@@ -26,7 +30,7 @@ namespace UI.Screens.ChoosePack.Widgets
         [Inject] private readonly UIManager _uiManager;
         
         [SerializeField] private PackItemWidget _packItemWidgetPrefab;
-        [SerializeField] private LoopListView2 _packsItemList;
+        [SerializeField] private LoopGridView _loopGridView;
         [SerializeField] private RectTransform _packsContainer;
         [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroupPrefab;
         [Range(1, 5)]
@@ -34,6 +38,7 @@ namespace UI.Screens.ChoosePack.Widgets
         
         private List<HorizontalLayoutGroup> _horizontalGroups = new();
         private List<PackItemWidget> _packItems = new();
+        private IReadOnlyCollection<PackInfo> _allPacksInfos;
         private CurrencyDisplayWidget _currencyDisplayWidget;
         private AdsButtonWidget _adsButtonWidget;
         private ListViewAdapter _listViewAdapter;
@@ -87,14 +92,14 @@ namespace UI.Screens.ChoosePack.Widgets
                 return;
             }
             
-            var packsInfos = _progressProvider.GetAllPacks();
-            if (packsInfos.IsCollectionNullOrEmpty())
+            _allPacksInfos = _progressProvider.GetAllPacks();
+            if (_allPacksInfos.IsCollectionNullOrEmpty())
             {
                 LoggerService.LogError(this, $"[{nameof(InitializePackButtons)}]: {nameof(ProgressProvider)} packs params are null or empty.");
                 return;
             }
-            
-            StartCoroutine(InitializePacksRoutine(_packItemWidgetPrefab, _packsContainer, packsInfos));
+
+            SetupPacksList();
         }
         
         private IEnumerator InitializePacksRoutine(PackItemWidget packItemWidgetPrefab, RectTransform packsContainer, IEnumerable<PackInfo> packsInfos)
@@ -156,6 +161,47 @@ namespace UI.Screens.ChoosePack.Widgets
                 .CreateMachine(new VisualizeNotEnoughCurrencyContext(_currencyDisplayWidget, _adsButtonWidget))
                 .StartSequence<VisualizeNotEnoughCurrencyState>()
                 .FinishWith(this);
+        }
+        
+        private void SetupPacksList()
+        {
+            if (_allPacksInfos.IsCollectionNullOrEmpty())
+            {
+                LoggerService.LogWarning(this, $"[{nameof(SetupPacksList)}]: {nameof(IReadOnlyCollection<PackInfo>)} is empty");
+            }
+            if (_listViewAdapter == null)
+            {
+                _listViewAdapter = new ListViewAdapter(_loopGridView);
+                _listViewAdapter.InitScroll(GetMemberItems(), initParams: LoopListView2Extensions.GetInitParams());
+            }
+            else
+            {
+                var items = GetMemberItems();
+                _listViewAdapter.SetData(items);
+                _listViewAdapter.LoopListView.SetListItemCount(items.Count);
+                _listViewAdapter.LoopListView.RefreshAllShownItem();
+                _listViewAdapter.LoopListView.StopRefreshingListOnPopupBeginHide(this);
+            }
+        }
+        
+        private IList<IListItem> GetMemberItems(IEnumerable<PackInfo> packsInfos)
+        {
+            return packsInfos.Select(GetPackWidgetInfo)
+                .Where(info => info != null).Select(info => new PackItemWidgetMediator(info)).ToList<IListItem>();
+        }
+        
+        private PackItemWidgetInfo GetPackWidgetInfo(PackInfo packInfo)
+        {
+            if (this == null || gameObject == null)
+                return null;
+
+            var packId = packInfo.PackId;
+            var isUnlocked = _progressProvider.IsPackAvailable(packId);
+            var maybeStarsRequired = _progressProvider.GetStarsCountForPackUnlocking(packId);
+            var starsRequired = maybeStarsRequired ?? new Stars(0);
+                
+            return new PackItemWidgetInfo(packInfo.PackName, packInfo.PackImagePrefab, packId, isUnlocked,
+                () => OnAvailablePackClicked(packInfo), OnUnavailablePackClicked, starsRequired);
         }
     }
 }

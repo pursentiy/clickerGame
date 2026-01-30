@@ -1,4 +1,4 @@
-namespace Plugins.SuperScrollView.Scripts.List
+namespace ThirdParty.SuperScrollView.Scripts.List
 {
     public static class MediatorsIdGenerator
     {
