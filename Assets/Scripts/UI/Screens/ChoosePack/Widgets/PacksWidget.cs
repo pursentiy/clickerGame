@@ -7,7 +7,9 @@ using Extensions;
 using Handlers.UISystem;
 using Handlers.UISystem.Screens.Transitions;
 using Installers;
+using Plugins.SuperScrollView.Scripts.ListView;
 using Services;
+using SuperScrollView;
 using UI.Screens.ChooseLevel;
 using UI.Screens.ChoosePack.NoCurrencySequence;
 using UnityEngine;
@@ -25,6 +27,7 @@ namespace UI.Screens.ChoosePack.Widgets
         [Inject] private readonly UIManager _uiManager;
         
         [SerializeField] private PackItemWidget _packItemWidgetPrefab;
+        [SerializeField] private LoopListView2 _packsItemList;
         [SerializeField] private RectTransform _packsContainer;
         [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroupPrefab;
         [Range(1, 5)]
@@ -34,6 +37,7 @@ namespace UI.Screens.ChoosePack.Widgets
         private List<PackItemWidget> _packItems = new();
         private CurrencyDisplayWidget _currencyDisplayWidget;
         private AdsButtonWidget _adsButtonWidget;
+        private ListViewAdapter _listViewAdapter;
 
         public void Initialize(CurrencyDisplayWidget currencyDisplayWidget, AdsButtonWidget adsButtonWidget)
         {

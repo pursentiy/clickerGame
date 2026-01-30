@@ -1,0 +1,19 @@
+using Plugins.SuperScrollView.Scripts.ListView;
+using SuperScrollView;
+
+namespace Extensions
+{
+    public static class LoopListView2Extensions
+    {
+        public static LoopListViewInitParam GetInitParams()
+        {
+            var initParams = LoopListViewInitParam.CopyDefaultInitParam();
+            initParams.mDistanceForNew0 *= 4;
+            initParams.mDistanceForNew1 *= 4;
+            initParams.mDistanceForRecycle0 *= 4;
+            initParams.mDistanceForRecycle1 *= 4;
+
+            return initParams;
+        }
+    }
+}

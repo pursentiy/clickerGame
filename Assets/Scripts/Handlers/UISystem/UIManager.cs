@@ -137,16 +137,7 @@ namespace Handlers.UISystem
             var canvas = Instantiate(prefab, parent).GetComponent<Canvas>();
             canvas.gameObject.name = canvasName;
     
-            var rt = canvas.GetComponent<RectTransform>();
-            rt.anchorMin = new Vector2(0, 0);
-            rt.anchorMax = new Vector2(1, 1);
-            rt.offsetMin = Vector2.zero; // Лево и Низ
-            rt.offsetMax = Vector2.zero; // Право и Верх
-            
-            rt.anchoredPosition = Vector2.zero;
-            rt.sizeDelta = Vector2.zero;
-            rt.localScale = Vector3.one * UIScale;
-            rt.localPosition = Vector3.zero;
+            canvas.GetComponent<RectTransform>().SetFullStretch();
             
             var scaler = canvas.GetComponent<CanvasScaler>();
             if (scaler != null) Destroy(scaler);
