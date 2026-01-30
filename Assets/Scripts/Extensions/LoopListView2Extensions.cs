@@ -1,5 +1,4 @@
-using Plugins.SuperScrollView.Scripts.ListView;
-using SuperScrollView;
+using ThirdParty.SuperScrollView.Scripts.ListView;
 
 namespace Extensions
 {
