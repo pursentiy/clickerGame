@@ -29,20 +29,20 @@ namespace UI.Screens.ChoosePack.PackLevelItem
             base.OnInitialize(isVisibleOnRefresh);
 
             var packKey = $"pack_{Data.PackName.ToLower()}";
-            View.PackText.text = _localization.GetValue(packKey);
+            View.PackText.SetText(_localization.GetValue(packKey));
             
             if (_packImageInstance == null)
                 _packImageInstance = Object.Instantiate(Data.PackImagePrefab, View.PackImagePrefabContainer);
 
             _isInitialized = true;
-            UpdateState(Data.IsUnlocked, Data.OnClickAction, Data.OnLockedClickAction, Data.StarsRequired, immediate: true);
+            UpdateMediator(Data.IsUnlocked, Data.OnClickAction, Data.OnLockedClickAction, Data.StarsRequired, immediate: true);
         }
         
-        public void UpdateState(bool isUnlocked, Action onClickAction, Action onLockedClickAction, int starsRequired, bool immediate = false)
+        public void UpdateMediator(bool isUnlocked, Action onClickAction, Action onLockedClickAction, int starsRequired, bool immediate = false)
         {
             if (!_isInitialized)
             {
-                LoggerService.LogWarning(this, $"Widget is not initialized at {nameof(UpdateState)}.");
+                LoggerService.LogWarning(this, $"Widget is not initialized at {nameof(UpdateMediator)}.");
                 return;
             }
             

@@ -2,26 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Services;
-using ThirdParty.SuperScrollView.Scripts.GridView;
 using ThirdParty.SuperScrollView.Scripts.ListView;
 
 namespace ThirdParty.SuperScrollView.Scripts.List
 {
-    public class GridViewAdapter
+    public class ListViewAdapter
     {
         private bool _loopItems;
 
-        private readonly LoopGridView _loopListView;
+        public LoopListView2 LoopListView { get; }
         
         private readonly List<IListItem> _data = new List<IListItem>();
 
-        public GridViewAdapter(LoopGridView loopListView)
+        public ListViewAdapter(LoopListView2 loopListView)
         {
-            _loopListView = loopListView;
-            _loopListView.ObjectDestroyed += OnListViewDestroyed;
-        }       
-        
-        private void OnListViewDestroyed()
+            LoopListView = loopListView;
+            LoopListView.ObjectDestroyed += OnListViewDestroyed;
+        }
+
+        public void ReleaseListView()
         {
             try
             {
@@ -33,32 +32,38 @@ namespace ThirdParty.SuperScrollView.Scripts.List
             }
         }
 
-        public void InitScroll(IList<IListItem> data, bool loopItems = false)
+        private void OnListViewDestroyed()
+        {
+            ReleaseListView();
+        }
+
+        public void InitScroll(IList<IListItem> data, bool loopItems = false, LoopListViewInitParam initParams = null)
         {
             SetData(data);
 
             _loopItems = loopItems;
             var itemCount = _loopItems ? -1 : _data.Count;
-            _loopListView.InitGridView(itemCount, OnGetItemByIndex);
+            LoopListView.InitListView(itemCount, OnGetItemByIndex, initParams);
         }
 
-        public void SetData(IList<IListItem> data)
+        public void SetData(IList<IListItem> data, bool forceRelease = true)
         {
-            _data.ForEach(x => x.ForceViewRelease());
+            if (forceRelease)
+                _data.ForEach(x => x.ForceViewRelease());
             
             foreach (var item in _data)
             {
-                if (!data.Contains(item))
+                if (!data.Contains(item) && forceRelease)
                 {
                     item.MediatorRelease();
                 }
             }
-
+            
             _data.Clear();
             
             _data.AddRange(data);
         }
-        
+
         private void ClearData(ListItemReleaseType type = ListItemReleaseType.Default)
         {
             try
@@ -74,47 +79,36 @@ namespace ThirdParty.SuperScrollView.Scripts.List
             _data.Clear();
         }
 
-        private LoopGridViewItem OnGetItemByIndex(LoopGridView listView, int index, int row, int column)
+        public List<IListItem> GetData()
         {
-            LoopGridViewItem item;
-            ItemViewBase view;
-            IListItem itemData;
+            return _data;
+        }
 
-            try
+        private LoopListViewItem2 OnGetItemByIndex(LoopListView2 listView, int index, bool visibleItemOnRefresh, ListItemReleaseType releaseType)
+        {
+            if (!_loopItems && (index < 0 || index >= _data.Count))
             {
-                if (!_loopItems && (index < 0 || index >= _data.Count))
-                {
-                    return null;
-                }
-
-                itemData = GetItemDataByIndex(index, _data);
-
-                if (itemData == null)
-                {
-                    return null;
-                }           
-            
-                item = listView.GetGridViewItem(SelectPrefab(itemData));
-                if (item != null)
-                    view = item.GetComponent<ItemViewBase>();
-                else
-                    return null;
-            }
-            catch (Exception e)
-            {
-                LoggerService.LogError(e);
                 return null;
             }
 
+            var itemData = GetItemDataByIndex(index, _data);
+
+            if (itemData == null)
+            {
+                return null;
+            }           
+
+            var item = listView.GetListViewItem(SelectPrefab(itemData));
+            var view = item.GetComponent<ItemViewBase>();
+            
             try
             {
-                if (view != null)
-                    view.Release();
+                view.Release(releaseType);
             }
             catch (Exception e)
             {
-                LoggerService.LogError(e);
-            }
+                LoggerService.LogError($"{nameof(view)}.{nameof(view.Release)}: {e}");
+            }           
 
             try
             {
@@ -122,22 +116,20 @@ namespace ThirdParty.SuperScrollView.Scripts.List
             }
             catch (Exception e)
             {
-                LoggerService.LogError(e);
+                LoggerService.LogError($"{nameof(itemData)}.{nameof(itemData.ForceViewRelease)}: {e}");
             }
 
             try
             {
-                itemData.Setup(view);
+                itemData.Setup(view, visibleItemOnRefresh);
             }
             catch (Exception e)
             {
-                LoggerService.LogError(e);
+                LoggerService.LogError($"{nameof(itemData)}.{nameof(itemData.Setup)}: {e}");
             }
             
             return item;
         }
-        
-        public IListItem GetItemByIndex(int index) => GetItemDataByIndex(index, _data);
 
         private IListItem GetItemDataByIndex(int index, IReadOnlyList<IListItem> data)
         {
@@ -160,10 +152,12 @@ namespace ThirdParty.SuperScrollView.Scripts.List
 
             return data[index];
         }
+
+        public IListItem GetItemByIndex(int index) => GetItemDataByIndex(index, _data);
         
         private string SelectPrefab(IListItem data)
         {
-            var prefab = _loopListView.ItemPrefabDataList.FirstOrDefault(x => data.CanUsePrefab(x.mItemPrefab));
+            var prefab = LoopListView.ItemPrefabDataList.FirstOrDefault(x => data.CanUsePrefab(x.mItemPrefab));
 
             if (prefab == null)
             {

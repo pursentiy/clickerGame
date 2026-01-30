@@ -2,25 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Services;
+using ThirdParty.SuperScrollView.Scripts.GridView;
 using ThirdParty.SuperScrollView.Scripts.ListView;
 
 namespace ThirdParty.SuperScrollView.Scripts.List
 {
-    public class ListViewAdapter
+    public partial class GridViewAdapter
     {
         private bool _loopItems;
 
-        public LoopListView2 LoopListView { get; set; }
+        public readonly LoopGridView LoopGridView;
         
         private readonly List<IListItem> _data = new List<IListItem>();
 
-        public ListViewAdapter(LoopListView2 loopListView)
+        public GridViewAdapter(LoopGridView loopGridView)
         {
-            LoopListView = loopListView;
-            LoopListView.ObjectDestroyed += OnListViewDestroyed;
-        }
-
-        public void ReleaseListView()
+            LoopGridView = loopGridView;
+            LoopGridView.ObjectDestroyed += OnGridViewDestroyed;
+        }       
+        
+        private void OnGridViewDestroyed()
         {
             try
             {
@@ -32,38 +33,32 @@ namespace ThirdParty.SuperScrollView.Scripts.List
             }
         }
 
-        private void OnListViewDestroyed()
-        {
-            ReleaseListView();
-        }
-
-        public void InitScroll(IList<IListItem> data, bool loopItems = false, LoopListViewInitParam initParams = null)
+        public void InitScroll(IList<IListItem> data, bool loopItems = false)
         {
             SetData(data);
 
             _loopItems = loopItems;
             var itemCount = _loopItems ? -1 : _data.Count;
-            LoopListView.InitListView(itemCount, OnGetItemByIndex, initParams);
+            LoopGridView.InitGridView(itemCount, OnGetItemByIndex);
         }
 
-        public void SetData(IList<IListItem> data, bool forceRelease = true)
+        public void SetData(IList<IListItem> data)
         {
-            if (forceRelease)
-                _data.ForEach(x => x.ForceViewRelease());
+            _data.ForEach(x => x.ForceViewRelease());
             
             foreach (var item in _data)
             {
-                if (!data.Contains(item) && forceRelease)
+                if (!data.Contains(item))
                 {
                     item.MediatorRelease();
                 }
             }
-            
+
             _data.Clear();
             
             _data.AddRange(data);
         }
-
+        
         private void ClearData(ListItemReleaseType type = ListItemReleaseType.Default)
         {
             try
@@ -79,36 +74,47 @@ namespace ThirdParty.SuperScrollView.Scripts.List
             _data.Clear();
         }
 
-        public List<IListItem> GetData()
+        private LoopGridViewItem OnGetItemByIndex(LoopGridView listView, int index, int row, int column)
         {
-            return _data;
-        }
+            LoopGridViewItem item;
+            ItemViewBase view;
+            IListItem itemData;
 
-        private LoopListViewItem2 OnGetItemByIndex(LoopListView2 listView, int index, bool visibleItemOnRefresh, ListItemReleaseType releaseType)
-        {
-            if (!_loopItems && (index < 0 || index >= _data.Count))
-            {
-                return null;
-            }
-
-            var itemData = GetItemDataByIndex(index, _data);
-
-            if (itemData == null)
-            {
-                return null;
-            }           
-
-            var item = listView.GetListViewItem(SelectPrefab(itemData));
-            var view = item.GetComponent<ItemViewBase>();
-            
             try
             {
-                view.Release(releaseType);
+                if (!_loopItems && (index < 0 || index >= _data.Count))
+                {
+                    return null;
+                }
+
+                itemData = GetItemDataByIndex(index, _data);
+
+                if (itemData == null)
+                {
+                    return null;
+                }           
+            
+                item = listView.GetGridViewItem(SelectPrefab(itemData));
+                if (item != null)
+                    view = item.GetComponent<ItemViewBase>();
+                else
+                    return null;
             }
             catch (Exception e)
             {
-                LoggerService.LogError($"{nameof(view)}.{nameof(view.Release)}: {e}");
-            }           
+                LoggerService.LogError(e);
+                return null;
+            }
+
+            try
+            {
+                if (view != null)
+                    view.Release();
+            }
+            catch (Exception e)
+            {
+                LoggerService.LogError(e);
+            }
 
             try
             {
@@ -116,20 +122,22 @@ namespace ThirdParty.SuperScrollView.Scripts.List
             }
             catch (Exception e)
             {
-                LoggerService.LogError($"{nameof(itemData)}.{nameof(itemData.ForceViewRelease)}: {e}");
+                LoggerService.LogError(e);
             }
 
             try
             {
-                itemData.Setup(view, visibleItemOnRefresh);
+                itemData.Setup(view);
             }
             catch (Exception e)
             {
-                LoggerService.LogError($"{nameof(itemData)}.{nameof(itemData.Setup)}: {e}");
+                LoggerService.LogError(e);
             }
             
             return item;
         }
+        
+        public IListItem GetItemByIndex(int index) => GetItemDataByIndex(index, _data);
 
         private IListItem GetItemDataByIndex(int index, IReadOnlyList<IListItem> data)
         {
@@ -152,12 +160,10 @@ namespace ThirdParty.SuperScrollView.Scripts.List
 
             return data[index];
         }
-
-        public IListItem GetItemByIndex(int index) => GetItemDataByIndex(index, _data);
         
         private string SelectPrefab(IListItem data)
         {
-            var prefab = LoopListView.ItemPrefabDataList.FirstOrDefault(x => data.CanUsePrefab(x.mItemPrefab));
+            var prefab = LoopGridView.ItemPrefabDataList.FirstOrDefault(x => data.CanUsePrefab(x.mItemPrefab));
 
             if (prefab == null)
             {

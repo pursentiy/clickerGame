@@ -526,8 +526,6 @@ GameObject:
   - component: {fileID: 7696129570211938874}
   - component: {fileID: 8856191506991724745}
   - component: {fileID: 3451253803911443857}
-  - component: {fileID: 5206088070734728881}
-  - component: {fileID: 5193978019325408058}
   - component: {fileID: 1670062774961349019}
   - component: {fileID: 6274523441344146927}
   m_Layer: 5
@@ -589,11 +587,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31527af64416451ab420e02689337132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PackItemWidgetPrefab: {fileID: 4610776258104028812, guid: 6878609189f7d834cb7f18aaa6b206ac,
-    type: 3}
-  PacksContainer: {fileID: 1950796836342682763}
-  HorizontalLayoutGroupPrefab: {fileID: 8399391387326885449, guid: 038723734860dbc4aa9918f525815788,
-    type: 3}
   StarsDisplayWidget: {fileID: 569682460304773617}
   HeaderText: {fileID: 5870720989226935585}
   AvailablePacksText: {fileID: 4310048746956419853}
@@ -603,7 +596,6 @@ MonoBehaviour:
   InfoButton: {fileID: 2128853769501641773}
   AdsButton: {fileID: 2763976902507579019}
   InfoMessageFontSize: 150
-  RowPacksCount: 2
 --- !u!225 &3451253803911443857
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -616,44 +608,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &5206088070734728881
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2254273223443519547}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd186c05614f4a50bf2c6b8a354a6737, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  duration: 0.6
-  easeType: 9
-  postShowDelay: 0
-  postHideDelay: 0.25
-  moveOffset: 30
-  startAlpha: 0
-  targetRectTransform: {fileID: 2254273223443519544}
-  canvasGroup: {fileID: 3451253803911443857}
---- !u!114 &5193978019325408058
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2254273223443519547}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7882089cb8b94d3dac543bb226315dc8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  duration: 0.5
-  overshoot: 0.8
-  easeType: 27
-  targetRectTransform: {fileID: 2254273223443519544}
-  canvasGroup: {fileID: 3451253803911443857}
-  targetScale: {x: 1, y: 1, z: 1}
 --- !u!114 &1670062774961349019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -911,10 +865,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _packItemWidgetPrefab: {fileID: 4610776258104028812, guid: 6878609189f7d834cb7f18aaa6b206ac,
     type: 3}
-  _packsContainer: {fileID: 6808412473636373514}
-  _horizontalLayoutGroupPrefab: {fileID: 8399391387326885449, guid: 038723734860dbc4aa9918f525815788,
-    type: 3}
-  _rowPacksCount: 2
+  _loopGridView: {fileID: 8114800829758226268}
 --- !u!1 &5540573065740957546
 GameObject:
   m_ObjectHideFlags: 0
@@ -1085,6 +1036,7 @@ GameObject:
   - component: {fileID: 1959824232774858106}
   - component: {fileID: 697808364620938783}
   - component: {fileID: 5608399667112040027}
+  - component: {fileID: 8114800829758226268}
   m_Layer: 5
   m_Name: Scroll
   m_TagString: Untagged
@@ -1235,6 +1187,36 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &8114800829758226268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6808412472487802488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17e9881a7bce8124a8f855b96a8ca11a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mItemPrefabDataList:
+  - mItemPrefab: {fileID: 1803877355706238529, guid: 791cd192c6c8046eba1a91469de4ccb9,
+      type: 3}
+    mInitCreateCount: 6
+  mArrangeType: 0
+  mFixedRowOrColumnCount: 2
+  mPadding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  mItemPadding: {x: 50, y: 50}
+  mItemSize: {x: 500, y: 500}
+  mItemRecycleDistance: {x: 100, y: 100}
+  mItemSnapEnable: 0
+  mGridFixedType: 0
+  mViewPortSnapPivot: {x: 0, y: 0}
+  mItemSnapPivot: {x: 0, y: 0}
 --- !u!1 &6808412473636373515
 GameObject:
   m_ObjectHideFlags: 0
@@ -1269,10 +1251,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6808412472487802491}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0.00001800865}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 90}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &6808412473636373559
 CanvasRenderer:
@@ -1319,7 +1301,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6808412473636373515}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
   m_Name: 
@@ -1345,7 +1327,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6808412473636373515}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
