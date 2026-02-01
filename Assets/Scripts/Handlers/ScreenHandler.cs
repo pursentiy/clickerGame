@@ -28,9 +28,7 @@ namespace Handlers
         [Inject] private CoroutineService _coroutineService;
 
         [SerializeField] private RectTransform _screenCanvasTransform;
-        [SerializeField] private ChooseLevelScreen _chooseLevelScreen;
         [SerializeField] private WelcomeScreen _welcomeScreen;
-        [SerializeField] private ChoosePackScreen _choosePackScreen;
         [SerializeField] private ParticleSystem[] _changeScreenParticles;
         [SerializeField] private AnimationCurve _popupAnimationCurve;
         
@@ -39,32 +37,7 @@ namespace Handlers
         private const float _awaitChangeScreenTime = 0.9f;
 
         public float AwaitChangeScreenTime => _awaitChangeScreenTime;
-
-        public void ShowChooseLevelScreen(PackInfo packInfo, FSignal levelResetSignal = null, bool fast = false)
-        {
-            var blockRef = _uiScreenBlocker.Block();
-            AnimateTransition(fast).Then(() =>
-            {
-                levelResetSignal?.Dispatch();
-                PopupCurrentScreenAndDisposeHandlers();
-                var screen = Instantiate(_chooseLevelScreen, _screenCanvasTransform);
-                screen.Initialize(packInfo);
-                
-                _currentScreenBase = screen;
-                blockRef?.Dispose();
-            }).CancelWith(this);
-        }
         
-        public void ShowChoosePackScreen(bool fast = false)
-        {
-            var blockRef = _uiScreenBlocker.Block();
-            AnimateTransition(fast).Then(() =>
-            {
-                PopupCurrentScreenAndDisposeHandlers();
-                _currentScreenBase = Instantiate(_choosePackScreen, _screenCanvasTransform);
-                blockRef?.Dispose();
-            }).CancelWith(this);;
-        }
 
         public void ShowWelcomeScreen(bool fast = false)
         {

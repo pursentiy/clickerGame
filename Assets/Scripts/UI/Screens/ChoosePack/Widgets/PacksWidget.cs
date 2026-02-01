@@ -26,7 +26,6 @@ namespace UI.Screens.ChoosePack.Widgets
         [Inject] private readonly ProgressController _progressController;
         [Inject] private readonly UIManager _uiManager;
         
-        [SerializeField] private PackItemWidget _packItemWidgetPrefab;
         [SerializeField] private LoopGridView _loopGridView;
         
         private IReadOnlyCollection<PackInfo> _allPacksInfos;
@@ -49,12 +48,6 @@ namespace UI.Screens.ChoosePack.Widgets
         
         private void InitializePackButtons()
         {
-            if (_packItemWidgetPrefab == null)
-            {
-                LoggerService.LogError(this, $"[{nameof(InitializePackButtons)}]: {nameof(PackItemWidget)} is null");
-                return;
-            }
-            
             _allPacksInfos = _progressProvider.GetAllPacks();
             if (_allPacksInfos.IsCollectionNullOrEmpty())
             {

@@ -1,21 +1,11 @@
-using System.Collections;
 using Attributes;
-using Common.Data.Info;
-using Components.UI;
 using Controllers;
 using Extensions;
-using Handlers;
-using Handlers.UISystem;
 using Handlers.UISystem.Screens;
 using Services;
 using Services.Player;
 using Services.ScreenObserver;
-using TMPro;
 using UI.Popups.MessagePopup;
-using UI.Popups.SettingsPopup;
-using UI.Screens.ChooseLevel.Widgets;
-using UI.Screens.ChoosePack;
-using UnityEngine;
 using UnityEngine.UI;
 using Utilities.Disposable;
 using Zenject;
@@ -25,14 +15,13 @@ namespace UI.Screens.ChooseLevel
     [AssetKey("UI Screens/ChooseLevelScreenMediator")]
     public class ChooseLevelScreenMediator : UIScreenBase<ChooseLevelScreenView, ChooseLevelScreenContext>
     {
-        [Inject] private readonly ScreenHandler _screenHandler;
         [Inject] private readonly ProgressProvider _progressProvider;
         [Inject] private readonly ProgressController _progressController;
-        [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly ScreenObserverService _screenObserverService;
         [Inject] private readonly FlowPopupController _flowPopupController;
+        [Inject] private readonly FlowScreenController _flowScreenController;
         
         private HorizontalLayoutGroup _horizontalGroup;
         private int _currentPackId;
@@ -65,7 +54,7 @@ namespace UI.Screens.ChooseLevel
 
         private void OnGoBackButtonClicked()
         {
-            _screenHandler.ShowChoosePackScreen();
+            _flowScreenController.GoToChoosePackScreen();
         }
 
         private void SetTexts()
