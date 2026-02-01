@@ -51,7 +51,7 @@ namespace UI.Screens.ChoosePack.Widgets
         {
             if (_packItemWidgetPrefab == null)
             {
-                LoggerService.LogWarning(this, $"[{nameof(InitializePackButtons)}]: {nameof(PackItemWidget)} is null");
+                LoggerService.LogError(this, $"[{nameof(InitializePackButtons)}]: {nameof(PackItemWidget)} is null");
                 return;
             }
             
@@ -104,7 +104,6 @@ namespace UI.Screens.ChoosePack.Widgets
             return new PackItemWidgetInfo(packInfo.PackName, packInfo.PackImagePrefab, packId, isUnlocked,
                 () => OnAvailablePackClicked(packInfo), OnUnavailablePackClicked, starsRequired);
         }
-
         
         private void OnAvailablePackClicked(PackInfo packInfo)
         {

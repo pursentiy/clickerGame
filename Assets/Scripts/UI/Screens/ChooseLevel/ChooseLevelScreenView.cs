@@ -9,15 +9,14 @@ namespace UI.Screens.ChooseLevel
 {
     public class ChooseLevelScreenView : MonoBehaviour, IUIView
     {
-        public LevelItemWidget _levelItemWidgetPrefab;
-        public RectTransform _levelEnterPopupsParentTransform;
-        public HorizontalLayoutGroup _horizontalLayoutGroupPrefab;
-        public Button _goBack;
-        public Button _settingsButton;
-        public Button _infoButton;
-        public CurrencyDisplayWidget _starsDisplayWidget;
-        public TextMeshProUGUI _headerText;
-        public TextMeshProUGUI _availableLevelsText;
-        public TMP_Text _packName;
+        public LevelsWidget LevelsWidget;
+        public Button GoBackButton;
+        public Button SettingsButton;
+        public Button InfoButton;
+        public CurrencyDisplayWidget StarsDisplayWidget;
+        public TextMeshProUGUI HeaderText;
+        public TextMeshProUGUI AvailableLevelsText;
+        public TMP_Text PackName;
+        public float InfoMessageFontSize = 150f;
     }
 }

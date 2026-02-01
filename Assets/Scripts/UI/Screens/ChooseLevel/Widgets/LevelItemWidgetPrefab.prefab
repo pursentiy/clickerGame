@@ -85,18 +85,19 @@ GameObject:
   - component: {fileID: 1803877355706238534}
   - component: {fileID: 1803877355706238538}
   - component: {fileID: 1803877355706238532}
-  - component: {fileID: 980463320655953494}
+  - component: {fileID: 3298506477891442088}
   - component: {fileID: 401770376168379129}
   - component: {fileID: 252421654806522332}
   - component: {fileID: 1952644796899789958}
   - component: {fileID: 8313386592982820461}
+  - component: {fileID: -2162102364019259326}
   m_Layer: 5
   m_Name: LevelItemWidgetPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1803877355706238534
 RectTransform:
   m_ObjectHideFlags: 0
@@ -116,11 +117,11 @@ RectTransform:
   - {fileID: 1803877356123055895}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 500, y: 750}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 1}
 --- !u!222 &1803877355706238538
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -173,7 +174,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &980463320655953494
+--- !u!114 &3298506477891442088
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -182,22 +183,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1803877355706238529}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfa6cd02a70042a896a8b8f9f89b5f14, type: 3}
+  m_Script: {fileID: 11500000, guid: 2c0f7f72efc942678d3437f53426a16b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _lockImage: {fileID: 1803877356123055892}
-  _levelText: {fileID: 1803877355841150641}
-  _levelDifficultyText: {fileID: 6733217696166253614}
-  _fadeImage: {fileID: 488405301101980088}
-  _levelImage: {fileID: 8324443963710728762}
-  _levelEnterButton: {fileID: 1803877355706238532}
-  _starsImages:
+  LockImage: {fileID: 1803877356123055892}
+  LevelText: {fileID: 1803877355841150641}
+  LevelDifficultyText: {fileID: 6733217696166253614}
+  FadeImage: {fileID: 488405301101980088}
+  LevelImage: {fileID: 8324443963710728762}
+  LevelEnterButton: {fileID: 1803877355706238532}
+  StarsImages:
   - {fileID: 4620876636875049140}
   - {fileID: 444553577860970504}
   - {fileID: 3142337938822068957}
-  _grayScaleStarMaterial: {fileID: 2100000, guid: ce13bf7b378374e8c9ee2cfd4c63a621,
+  GrayScaleStarMaterial: {fileID: 2100000, guid: ce13bf7b378374e8c9ee2cfd4c63a621,
     type: 2}
-  _defaultStareMaterial: {fileID: 2100000, guid: 2d0140163a5f5478fa0f687eaea10630,
+  DefaultStareMaterial: {fileID: 2100000, guid: 2d0140163a5f5478fa0f687eaea10630,
     type: 2}
 --- !u!114 &401770376168379129
 MonoBehaviour:
@@ -277,7 +278,7 @@ Canvas:
   m_OverridePixelPerfect: 1
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -299,6 +300,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &-2162102364019259326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1803877355706238529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec0432517adfcb84bb6163d7a44ab8c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1803877355841150643
 GameObject:
   m_ObjectHideFlags: 0
@@ -826,7 +839,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2.7, y: 109}
+  m_AnchoredPosition: {x: -2.699997, y: 109}
   m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8544392583461874774

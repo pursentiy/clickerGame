@@ -31,7 +31,7 @@ namespace UI.Screens.ChoosePack
             InitText();
             
             View.InfoButton.onClick.MapListenerWithSound(OnInfoButtonClicked).DisposeWith(this);
-            View.GoBack.onClick.MapListenerWithSound(OnGoBackButtonClicked).DisposeWith(this);
+            View.GoBackButton.onClick.MapListenerWithSound(OnGoBackButtonClicked).DisposeWith(this);
             View.SettingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
             View.AdsButton.Button.onClick.MapListenerWithSound(OnAdsButtonClicked).DisposeWith(this);
         }
@@ -64,7 +64,7 @@ namespace UI.Screens.ChoosePack
 
         private void OnGoBackButtonClicked()
         {
-            _flowScreenController.GoToWelcomeScreen();
+            _flowScreenController.GoToChoosePackScreen();
         }
         
         private void OnAdsButtonClicked()
@@ -74,6 +74,5 @@ namespace UI.Screens.ChoosePack
                 .StartSequence<TryShowAdsRewardState>()
                 .FinishWith(this);
         }
-
     }
 }

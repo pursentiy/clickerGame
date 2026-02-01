@@ -20,6 +20,7 @@ namespace ThirdParty.SuperScrollView.Editor
         SerializedProperty mItemSize;
         SerializedProperty mItemPadding;
         SerializedProperty mItemRecycleDistance;
+        SerializedProperty mCenterLastRowElement;
 
         GUIContent mItemSnapEnableContent = new GUIContent("ItemSnapEnable");
         GUIContent mArrangeTypeGuiContent = new GUIContent("ArrangeType");
@@ -33,6 +34,7 @@ namespace ThirdParty.SuperScrollView.Editor
         GUIContent mGridFixedRowContent = new GUIContent("RowCount");
         GUIContent mGridFixedColumnContent = new GUIContent("ColumnCount");
         GUIContent mItemRecycleDistanceContent = new GUIContent("RecycleDistance");
+        GUIContent mCenterLastRowElementContent = new GUIContent("Center Last Row Element");
 
         protected virtual void OnEnable()
         {
@@ -47,6 +49,7 @@ namespace ThirdParty.SuperScrollView.Editor
             mPadding = serializedObject.FindProperty("mPadding");
             mItemSize = serializedObject.FindProperty("mItemSize");
             mItemRecycleDistance = serializedObject.FindProperty("mItemRecycleDistance");
+            mCenterLastRowElement = serializedObject.FindProperty("mCenterLastRowElement");
         }
 
 
@@ -122,7 +125,10 @@ namespace ThirdParty.SuperScrollView.Editor
             EditorGUILayout.PropertyField(mItemSize, mItemSizeContent);
             EditorGUILayout.PropertyField(mItemPadding, mItemPaddingContent);
             EditorGUILayout.PropertyField(mItemRecycleDistance, mItemRecycleDistanceContent);
+            EditorGUILayout.PropertyField(mItemRecycleDistance, mItemRecycleDistanceContent);
 
+            EditorGUILayout.PropertyField(mCenterLastRowElement, mCenterLastRowElementContent);
+            
             EditorGUILayout.Space();
             EditorGUILayout.PropertyField(mItemSnapEnable, mItemSnapEnableContent);
             if(mItemSnapEnable.boolValue == true)

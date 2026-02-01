@@ -13,7 +13,7 @@ namespace UI.Screens.ChoosePack
         public TextMeshProUGUI HeaderText;
         public TextMeshProUGUI AvailablePacksText;
         public PacksWidget PacksWidget;
-        public Button GoBack;
+        public Button GoBackButton;
         public Button SettingsButton;
         public Button InfoButton;
         public AdsButtonWidget AdsButton;

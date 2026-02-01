@@ -9,10 +9,12 @@ namespace Handlers.UISystem.Screens.Transitions
     {
         [Inject] private ScreenTransitionParticlesHandler _particlesHandler;
         
-        private const float Duration = 0.55f; 
-        private const float MoveOffset = 120f; // Величина заезда
+        private const float Duration = 0.7f; 
+        private const float MoveOffset = 120f;
         private const float ScaleEffect = 0.05f;
-        private const float ParticlesStartTime = 0.01f;
+        
+        // Поле задержки перед началом основной анимации
+        private const float ParticlesDelayMainTransitionTime = 0.15f; 
 
         private CanvasGroup _fromCanvas;
         private CanvasGroup _toCanvas;
@@ -23,7 +25,8 @@ namespace Handlers.UISystem.Screens.Transitions
         private Vector2 _toInitialPos;
         private bool _particlesPlayed;
 
-        public override float TransitionTime => Duration;
+        // Общее время теперь включает задержку
+        public override float TransitionTime => Duration + ParticlesDelayMainTransitionTime;
 
         public FadeScreenTransition(Type toScreenType, IScreenContext context)
             : base(toScreenType, context, false)
@@ -46,33 +49,49 @@ namespace Handlers.UISystem.Screens.Transitions
             _toCanvas.blocksRaycasts = false;
             _fromCanvas.blocksRaycasts = false;
             
-            // Важно: новый экран должен быть над старым
             toScreen.transform.SetAsLastSibling();
+            _particlesPlayed = false;
         }
 
         public override void DoTransition(float t, bool forward)
         {
-            if (t > ParticlesStartTime && !_particlesPlayed)
+            // 1. Сначала запускаем частицы (сразу при старте)
+            if (!_particlesPlayed)
             {
                 _particlesHandler.PlayParticles();
                 _particlesPlayed = true;
             }
+
+            // 2. Рассчитываем локальное время для анимации (от 0 до 1 после задержки)
+            // Общее время t здесь в секундах (если базовый класс передает нормализованное 0..1, 
+            // то нужно предварительно умножить на TransitionTime)
+            
+            float currentTime = t * TransitionTime; // Текущее время в секундах
+            
+            if (currentTime < ParticlesDelayMainTransitionTime)
+            {
+                return;
+            }
+
+            // Нормализуем t_anim, чтобы она пробегала от 0 до 1 строго за время Duration
+            float t_anim = (currentTime - ParticlesDelayMainTransitionTime) / Duration;
+            t_anim = Mathf.Clamp01(t_anim);
             
             // Используем разные кривые для ухода и появления
-            float outEased = EaseInQuart(t);
-            float inEased = EaseOutBack(t);
+            float outEased = EaseInQuart(t_anim);
+            float inEased = EaseOutBack(t_anim);
             
             // 1. Старый экран плавно уходит вниз и затухает
-            _fromCanvas.alpha = Mathf.Lerp(1f, 0f, t * 1.5f);
+            _fromCanvas.alpha = Mathf.Lerp(1f, 0f, t_anim * 1.5f);
             var fromY = Mathf.Lerp(0, -MoveOffset * 0.5f, outEased);
             _fromRect.anchoredPosition = _fromInitialPos + new Vector2(0, fromY);
             _fromRect.localScale = Vector3.one * (1f - ScaleEffect * outEased);
 
-            // 2. Новый экран выезжает сверху с сочным "отскоком"
-            _toCanvas.alpha = Mathf.Clamp01(t * 2f); // Проявляется быстрее
+            // 2. Новый экран выезжает сверху
+            _toCanvas.alpha = Mathf.Clamp01(t_anim * 2f);
             var toY = Mathf.Lerp(MoveOffset, 0, inEased);
             _toRect.anchoredPosition = _toInitialPos + new Vector2(0, toY);
-            _toRect.localScale = Vector3.one * ( (1f - ScaleEffect) + ScaleEffect * inEased);
+            _toRect.localScale = Vector3.one * ((1f - ScaleEffect) + ScaleEffect * inEased);
         }
 
         public override void OnComplete(UIScreenBase fromScreen, UIScreenBase toScreen, bool forward)
@@ -91,10 +110,8 @@ namespace Handlers.UISystem.Screens.Transitions
             rt.anchoredPosition = pos;
         }
 
-        // Плавное начало для уходящего экрана
         private float EaseInQuart(float t) => t * t * t * t;
 
-        // "Дорогой" отскок для входящего экрана
         private float EaseOutBack(float t)
         {
             const float c1 = 1.70158f;

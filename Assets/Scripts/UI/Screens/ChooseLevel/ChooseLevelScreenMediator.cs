@@ -2,6 +2,7 @@ using System.Collections;
 using Attributes;
 using Common.Data.Info;
 using Components.UI;
+using Controllers;
 using Extensions;
 using Handlers;
 using Handlers.UISystem;
@@ -31,6 +32,7 @@ namespace UI.Screens.ChooseLevel
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly ScreenObserverService _screenObserverService;
+        [Inject] private readonly FlowPopupController _flowPopupController;
         
         private HorizontalLayoutGroup _horizontalGroup;
         private int _currentPackId;
@@ -40,25 +42,25 @@ namespace UI.Screens.ChooseLevel
             base.OnCreated();
             
             _currentPackId = _progressController.CurrentPackId;
-            
-            SetTexts();
-            InitializeLevelsButton();
-            SetAvailableLevelsText();
 
-            View._starsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
+            InitWidgets();
+            SetTexts();
+
+            View.StarsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
             
-            View._goBack.onClick.MapListenerWithSound(OnGoBackButtonClicked).DisposeWith(this);
-            View._infoButton.onClick.MapListenerWithSound(OnInfoButtonClicked).DisposeWith(this);
-            View._settingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
-            
-            _screenObserverService.OnOrientationChangeSignal.MapListener(_ => HideAllInfoMessagesPopups()).DisposeWith(this);
-            _screenObserverService.OnResolutionChangeSignal.MapListener(HideAllInfoMessagesPopups).DisposeWith(this);
+            View.GoBackButton.onClick.MapListenerWithSound(OnGoBackButtonClicked).DisposeWith(this);
+            View.InfoButton.onClick.MapListenerWithSound(OnInfoButtonClicked).DisposeWith(this);
+            View.SettingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
+        }
+
+        private void InitWidgets()
+        {
+            View.LevelsWidget.Initialize(Context.PackInfo.PackId, Context.PackInfo.LevelsInfo);
         }
 
         private void OnSettingsButtonClicked()
         {
-            var context = new SettingsPopupContext(true);
-            _uiManager.PopupsHandler.ShowPopupImmediately<SettingsPopupMediator>(context);
+            _flowPopupController.ShowSettingsPopup(true);
         }
 
         private void OnGoBackButtonClicked()
@@ -68,87 +70,54 @@ namespace UI.Screens.ChooseLevel
 
         private void SetTexts()
         {
-            View._headerText.SetText(_localizationService.GetValue("choose_level_header"));
+            View.HeaderText.SetText(_localizationService.GetValue("choose_level_header"));
             
             var localizedName = _localizationService.GetValue($"pack_{Context.PackInfo.PackName.ToLower()}");
             var wordPack = _localizationService.GetValue("word_pack");
-            View._packName.SetText($"{localizedName} {wordPack}");
+            View.PackName.SetText($"{localizedName} {wordPack}");
+            
+            var totalLevels = _progressProvider.GetLevelsCountInPack(_currentPackId);
+            var totalAvailableLevels = _progressProvider.GetLevelsCountInPack(_currentPackId, true);
+            View.AvailableLevelsText.SetText(_localizationService.GetFormattedValue("unlocked_levels", $"{totalAvailableLevels}/{totalLevels}"));
         }
 
         private void OnInfoButtonClicked()
         {
-            var fontSize = 150;
-            var anchor = View._infoButton.GetRectTransform();
-            var context = new MessagePopupContext(_localizationService.GetValue("unlocked_levels_info"), anchor, fontSize);
-            _uiManager.PopupsHandler.ShowPopupImmediately<MessagePopupMediator>(context)
-                .CancelWith(this);
-        }
-        
-        private void SetAvailableLevelsText()
-        {
-            var totalLevels = _progressProvider.GetLevelsCountInPack(_currentPackId);
-            var totalAvailableLevels = _progressProvider.GetLevelsCountInPack(_currentPackId, true);
-            
-            View._availableLevelsText.SetText(_localizationService.GetFormattedValue("unlocked_levels", $"{totalAvailableLevels}/{totalLevels}"));
+            var context = new MessagePopupContext(_localizationService.GetValue("unlock_sets_info"), View.InfoButton.GetRectTransform(), View.InfoMessageFontSize, facing: PopupFacing.Right);
+            _flowPopupController.ShowMessagePopup(context, overrideDisposeProvider: this.GetDisposeProvider());
         }
 
-        private void InitializeLevelsButton()
-        {
-            StartCoroutine(InitializeLevelsRoutine());
-        }
-
-        private IEnumerator InitializeLevelsRoutine()
-        {
-            var index = 0;
-            _horizontalGroup = null;
-
-            foreach (var levelParams in Context.PackInfo.LevelsInfo)
-            {
-                if (this == null || gameObject == null)
-                    yield break;
-
-                if (_horizontalGroup == null || index % 2 == 0)
-                {
-                    _horizontalGroup = Instantiate(View._horizontalLayoutGroupPrefab, View._levelEnterPopupsParentTransform);
-                }
-
-                var enterButton = Instantiate(View._levelItemWidgetPrefab, _horizontalGroup.transform);
-                var earnedStarsForLevel = _progressProvider.GetEarnedStarsForLevel(_currentPackId, levelParams.LevelId) ?? 0;
-
-                enterButton.Initialize(
-                    levelParams.LevelName, 
-                    levelParams.LevelImage, 
-                    earnedStarsForLevel, 
-                    levelParams.LevelDifficulty, 
-                    _progressProvider.IsLevelAvailableToPlay(_currentPackId, levelParams.LevelId),
-                    () => StartLevel(Context.PackInfo, levelParams)
-                );
-
-                index++;
-                
-                yield return new WaitForSecondsRealtime(0.05f);
-            }
-        }
-
-        private void StartLevel(PackInfo packInfo, LevelInfo levelInfo)
-        {
-            if (levelInfo == null)
-            {
-                LoggerService.LogError($"{nameof(PackInfo)} is null");
-                return;
-            }
-
-            _screenHandler.StartNewLevel(levelInfo.LevelId, packInfo, levelInfo);
-        }
-
-        private void OnDestroy()
-        {
-            HideAllInfoMessagesPopups();
-        }
-        
-        private void HideAllInfoMessagesPopups()
-        {
-            _uiManager.PopupsHandler.HideAllPopups<MessagePopupMediator>();
-        }
+        // private IEnumerator InitializeLevelsRoutine()
+        // {
+        //     var index = 0;
+        //     _horizontalGroup = null;
+        //
+        //     foreach (var levelParams in Context.PackInfo.LevelsInfo)
+        //     {
+        //         if (this == null || gameObject == null)
+        //             yield break;
+        //
+        //         if (_horizontalGroup == null || index % 2 == 0)
+        //         {
+        //             _horizontalGroup = Instantiate(View._horizontalLayoutGroupPrefab, View._levelEnterPopupsParentTransform);
+        //         }
+        //
+        //         var enterButton = Instantiate(View._levelItemWidgetPrefab, _horizontalGroup.transform);
+        //         var earnedStarsForLevel = _progressProvider.GetEarnedStarsForLevel(_currentPackId, levelParams.LevelId) ?? 0;
+        //
+        //         enterButton.Initialize(
+        //             levelParams.LevelName, 
+        //             levelParams.LevelImage, 
+        //             earnedStarsForLevel, 
+        //             levelParams.LevelDifficulty, 
+        //             _progressProvider.IsLevelAvailableToPlay(_currentPackId, levelParams.LevelId),
+        //             () => StartLevel(Context.PackInfo, levelParams)
+        //         );
+        //
+        //         index++;
+        //         
+        //         yield return new WaitForSecondsRealtime(0.05f);
+        //     }
+        // }
     }
 }

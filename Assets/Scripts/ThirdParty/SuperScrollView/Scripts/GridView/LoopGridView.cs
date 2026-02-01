@@ -80,6 +80,8 @@ namespace ThirdParty.SuperScrollView.Scripts.GridView
         List<GridItemPool> mItemPoolList = new List<GridItemPool>();
         [SerializeField]
         List<GridViewItemPrefabConfData> mItemPrefabDataList = new List<GridViewItemPrefabConfData>();
+        [SerializeField]
+        bool mCenterLastRowElement = false;
 
         [SerializeField]
         private GridItemArrangeType mArrangeType = GridItemArrangeType.TopLeftToBottomRight;
@@ -676,6 +678,22 @@ namespace ThirdParty.SuperScrollView.Scripts.GridView
             Vector2 absPos = GetItemAbsPos(row, column);
             float x = absPos.x;
             float y = absPos.y;
+
+            // Проверяем, нужно ли центрировать элементы в последнем ряду
+            if (mCenterLastRowElement && mGridFixedType == GridFixedType.ColumnCountFixed && row == mRowCount - 1)
+            {
+                int itemsInLastRow = mItemTotalCount % mFixedRowOrColumnCount;
+                if (itemsInLastRow > 0 && itemsInLastRow < mFixedRowOrColumnCount)
+                {
+                    // Вычисляем, сколько места "не дотягивает" до полной ширины ряда
+                    float rowWidth = mFixedRowOrColumnCount * mItemSizeWithPadding.x - mItemPadding.x;
+                    float actualWidth = itemsInLastRow * mItemSizeWithPadding.x - mItemPadding.x;
+                    float offset = (rowWidth - actualWidth) / 2f;
+            
+                    x += offset; // Смещаем элемент к центру
+                }
+            }
+
             if (ArrangeType == GridItemArrangeType.TopLeftToBottomRight)
             {
                 return new Vector2(x, -y);

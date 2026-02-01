@@ -202,7 +202,7 @@ PrefabInstance:
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
       propertyPath: simulationSpeed
-      value: 2
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
@@ -476,7 +476,7 @@ PrefabInstance:
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
       propertyPath: simulationSpeed
-      value: 2
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
@@ -750,7 +750,7 @@ PrefabInstance:
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
       propertyPath: simulationSpeed
-      value: 2
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
@@ -1024,7 +1024,7 @@ PrefabInstance:
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
       propertyPath: simulationSpeed
-      value: 2
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
@@ -1298,7 +1298,7 @@ PrefabInstance:
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
       propertyPath: simulationSpeed
-      value: 2
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
@@ -1572,7 +1572,7 @@ PrefabInstance:
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
       propertyPath: simulationSpeed
-      value: 2
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
@@ -1846,7 +1846,7 @@ PrefabInstance:
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
       propertyPath: simulationSpeed
-      value: 2
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7392640766984335477, guid: 409b8aa8d10adee45b479c2ed56b127f,
         type: 3}
