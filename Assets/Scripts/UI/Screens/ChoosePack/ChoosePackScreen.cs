@@ -7,6 +7,7 @@ using Extensions;
 using Handlers;
 using Handlers.UISystem;
 using Services;
+using Services.FlyingRewardsAnimation;
 using Services.Player;
 using Services.ScreenObserver;
 using TMPro;
@@ -34,6 +35,8 @@ namespace UI.Screens.ChoosePack
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly AdsService _adsService;
         [Inject] private readonly ScreenObserverService _screenObserverService;
+        [Inject] private readonly GameConfigurationProvider _gameConfigurationProvider;
+        [Inject] private readonly CurrencyLibraryService _currencyLibraryService;
         
         [SerializeField] private PackItemWidget _packItemWidgetPrefab;
         [SerializeField] private RectTransform _levelEnterPopupsParentTransform;
@@ -45,6 +48,7 @@ namespace UI.Screens.ChoosePack
         [SerializeField] private Button _settingsButton;
         [SerializeField] private Button _infoButton;
         [SerializeField] private AdsButtonWidget _adsButton;
+        [SerializeField] private Button _adsInfoButton;
         [Range(1, 5)]
         [SerializeField] private int _rowPacksCount = 2;
 
@@ -64,6 +68,7 @@ namespace UI.Screens.ChoosePack
             _goBack.onClick.MapListenerWithSound(OnGoBackButtonClicked).DisposeWith(this);
             _settingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
             _adsButton.Button.onClick.MapListenerWithSound(OnAdsButtonClicked).DisposeWith(this);
+            _adsInfoButton.onClick.MapListenerWithSound(OnAdsInfoButtonClicked).DisposeWith(this);
             
             _screenObserverService.OnOrientationChangeSignal.MapListener(_ => HideAllInfoMessagesPopups()).DisposeWith(this);
             _screenObserverService.OnResolutionChangeSignal.MapListener(HideAllInfoMessagesPopups).DisposeWith(this);
@@ -188,6 +193,16 @@ namespace UI.Screens.ChoosePack
                 .CreateMachine(new RewardedAdsSequenceContext(_starsDisplayWidget, UpdatePacksState, _adsButton.RectTransform, this.GetRectTransform()))
                 .StartSequence<TryShowAdsRewardState>()
                 .FinishWith(this);
+        }
+
+        private void OnAdsInfoButtonClicked()
+        {
+            var currencyToEarnViaAds = _gameConfigurationProvider.StarsRewardForAds;
+            var spriteAsset = _currencyLibraryService.GetSpriteAsset(CurrencyExtensions.StarsCurrencyName);
+            var fontSize = 175;
+            var context = new MessagePopupContext(_localizationService.GetFormattedValue(LocalizationExtensions.AdsFullInfo, currencyToEarnViaAds), _adsInfoButton.GetRectTransform(), fontSize, spriteAsset);
+            _uiManager.PopupsHandler.ShowPopupImmediately<MessagePopupMediator>(context)
+                .CancelWith(this);
         }
         
         private void OnAvailablePackClicked(PackInfo packInfo)

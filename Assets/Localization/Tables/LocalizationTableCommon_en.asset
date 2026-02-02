@@ -261,6 +261,19 @@ MonoBehaviour:
     m_Localized: Watch an ad to get {0} <sprite=0>
     m_Metadata:
       m_Items: []
+  - m_Id: 89024711885840384
+    m_Localized: This is the ad viewing button! You can get {0} <sprite=0> for watching
+      an advertisement!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89049590794280960
+    m_Localized: Log In
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89054446657462272
+    m_Localized: Log in to save your stars and play on any device!
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

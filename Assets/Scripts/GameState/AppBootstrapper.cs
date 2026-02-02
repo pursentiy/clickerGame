@@ -28,12 +28,13 @@ namespace GameState
         {
             LoggerService.LogDebug($"[{GetType().Name}] Initialization started...");
             
-            yield return _bridgeService.AuthenticationRoutine();
+            yield return _bridgeService.PlatformDetectionRoutine();
             yield return LocalizationPreloadRoutine();
 
             LoggerService.LogDebug($"[{GetType().Name}] Initialization finished...");
 
-            ShowPrerollInterstitialAd()
+            TryAuthenticatePlayer()
+                .Then(TryShowPrerollInterstitialAd)
                 .ContinueWithResolved(LoadNextScene)
                 .CancelWith(this);
         }
@@ -56,9 +57,20 @@ namespace GameState
             
             LoggerService.LogDebug($"[{GetType().Name}] [{nameof(LocalizationPreloadRoutine)}]: Successfully loaded Localization.");
         }
-        
-        private IPromise ShowPrerollInterstitialAd()
+
+        private IPromise TryAuthenticatePlayer()
         {
+            if (!_bridgeService.WasAuthorizedBefore)
+                return Promise.Resolved();
+            
+            return _bridgeService.AuthenticatePlayer();
+        }
+        
+        private IPromise TryShowPrerollInterstitialAd()
+        {
+            if (!_adsService.CanShowPrerollAd())
+                return Promise.Resolved();
+            
             return _adsService.ShowInterstitial().AsNonGenericPromise().CancelWith(this);
         }
         

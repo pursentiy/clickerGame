@@ -50,6 +50,7 @@ SpriteAtlas:
     isAtlasV2: 0
     cachedData: {fileID: 0}
     packedSpriteRenderDataKeys:
+    - 75eb22216c9f74854b6169cd7300cf8c: 21300000
     - ad73c5a21b3ad0c4e90ad57e113b2403: 21300000
     - 67a86c0303377c44e929ac69363ae1ea: 21300000
     - b9f23f956b3b34723abacb652dcfc337: 21300000
@@ -59,6 +60,7 @@ SpriteAtlas:
     - b7cd213ea8f19ae4caeb966c405fb0a4: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: 75eb22216c9f74854b6169cd7300cf8c, type: 3}
   - {fileID: 21300000, guid: ad73c5a21b3ad0c4e90ad57e113b2403, type: 3}
   - {fileID: 21300000, guid: 67a86c0303377c44e929ac69363ae1ea, type: 3}
   - {fileID: 21300000, guid: b9f23f956b3b34723abacb652dcfc337, type: 3}
@@ -67,6 +69,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 2374f7fce1fad4a47adc74f70fc387b8, type: 3}
   - {fileID: 21300000, guid: b7cd213ea8f19ae4caeb966c405fb0a4, type: 3}
   m_PackedSpriteNamesToIndex:
+  - question
   - LeftArrowButton
   - SettingsButton
   - buttonLargeDefaultRed
