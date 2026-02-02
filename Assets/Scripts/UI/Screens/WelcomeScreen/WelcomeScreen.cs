@@ -3,6 +3,7 @@ using Extensions;
 using Handlers;
 using Handlers.UISystem;
 using Services;
+using UI.Popups.MessagePopup;
 using UI.Popups.SettingsPopup;
 using UI.Screens.WelcomeScreen.AuthenticateSequence;
 using UnityEngine;
@@ -19,10 +20,12 @@ namespace UI.Screens.WelcomeScreen
         [Inject] private SoundHandler _soundHandler;
         [Inject] private UIManager _uiManager;
         [Inject] private readonly BridgeService _bridgeService;
+        [Inject] private readonly LocalizationService _localizationService;
         
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _settingsButton;
         [SerializeField] private Button _authenticationButton;
+        [SerializeField] private Button _authenticationInfoButton;
         [SerializeField] private RectTransform _headerText;
         [SerializeField] private CanvasGroup _headerTextCanvasGroup;
         
@@ -51,11 +54,20 @@ namespace UI.Screens.WelcomeScreen
             {
                 _authenticationButton.TrySetActive(true);
                 _authenticationButton.onClick.MapListenerWithSound(StartAuthenticationSequence).DisposeWith(this);
+                _authenticationInfoButton.onClick.MapListenerWithSound(ShowMessageInfoPopup).DisposeWith(this);
             }
             else
             {
                 _authenticationButton.TrySetActive(false);
             }
+        }
+
+        private void ShowMessageInfoPopup()
+        {
+            var fontSize = 175;
+            var context = new MessagePopupContext(_localizationService.GetValue(LocalizationExtensions.LogInInfo), _authenticationInfoButton.GetRectTransform(), fontSize);
+            _uiManager.PopupsHandler.ShowPopupImmediately<MessagePopupMediator>(context)
+                .CancelWith(this);
         }
 
         private void StartAuthenticationSequence()

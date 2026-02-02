@@ -270,6 +270,11 @@ MonoBehaviour:
     m_Localized: "Iniciar sesi\xF3n"
     m_Metadata:
       m_Items: []
+  - m_Id: 89054446657462272
+    m_Localized: "Inicia sesi\xF3n para guardar tus estrellas \u0438 jugar en cualquier
+      dispositivo!"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

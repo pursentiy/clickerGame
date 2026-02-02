@@ -11,6 +11,7 @@ namespace Extensions
         public static string InfoTitle => "info_title";
         public static string AdsInfo => "ads_info";
         public static string AdsFullInfo => "ads_full_info";
+        public static string LogInInfo => "log_in_info";
         
         //Specific cases
     }

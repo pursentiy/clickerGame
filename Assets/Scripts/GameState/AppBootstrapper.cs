@@ -60,7 +60,7 @@ namespace GameState
 
         private IPromise TryAuthenticatePlayer()
         {
-            if (!_bridgeService.ShouldAuthenticatePlayer)
+            if (!_bridgeService.WasAuthorizedBefore)
                 return Promise.Resolved();
             
             return _bridgeService.AuthenticatePlayer();

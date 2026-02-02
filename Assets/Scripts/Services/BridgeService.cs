@@ -10,12 +10,14 @@ namespace Services
 {
     public class BridgeService
     {
+        private const string AuthRememberKey = "was_authorized_once";
         private const float BridgePlatformAwaitTimeout = 5f;
 
         private bool _isPlatformDetected = false;
         private bool _isGameReadyFlagSet = false;
         
-        public bool ShouldAuthenticatePlayer => CheckPlatform(BridgePlatformType.Yandex) && 
+        public bool WasAuthorizedBefore => PlayerPrefs.GetInt(AuthRememberKey, 0) == 1;
+        public bool ShouldAuthenticatePlayer => CheckPlatform(BridgePlatformType.Mock) && 
                                                 Bridge.player != null && 
                                                 !Bridge.player.isAuthorized;
         public bool IsAuthenticated => Bridge.player != null && Bridge.player.isAuthorized;
@@ -78,6 +80,8 @@ namespace Services
                 {
                     if (success)
                     {
+                        PlayerPrefs.SetInt(AuthRememberKey, 1);
+                        PlayerPrefs.Save();
                         LoggerService.LogDebug(this, "Bridge auth successful");
                     }
                     else
