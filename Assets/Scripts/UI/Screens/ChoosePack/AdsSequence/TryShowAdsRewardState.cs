@@ -2,6 +2,7 @@ using System;
 using Common.Currency;
 using RSG;
 using Services;
+using Services.Configuration;
 using Services.Player;
 using Services.ScreenBlocker;
 using Utilities.Disposable;
@@ -17,7 +18,7 @@ namespace UI.Screens.ChoosePack.AdsSequence
         [Inject] private readonly AdsService _adsService;
         [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
-        [Inject] private readonly GameConfigurationProvider _gameConfigurationProvider;
+        [Inject] private readonly GameInfoProvider _gameInfoProvider;
         
         private IUIBlockRef _uiBlockRef;
 
@@ -49,8 +50,8 @@ namespace UI.Screens.ChoosePack.AdsSequence
             if (!result)
                 return Promise<Stars>.Resolved(0);
 
-            var starsToEarn = _gameConfigurationProvider.StarsRewardForAds;
-            if (!_playerCurrencyService.TryAddStars(_gameConfigurationProvider.StarsRewardForAds, CurrencyChangeMode.Animated))
+            var starsToEarn = _gameInfoProvider.StarsRewardForAds;
+            if (!_playerCurrencyService.TryAddStars(_gameInfoProvider.StarsRewardForAds, CurrencyChangeMode.Animated))
             {
                 return Promise<Stars>.Resolved(0);
             }

@@ -3,6 +3,7 @@ using Handlers;
 using Handlers.UISystem;
 using JetBrains.Annotations;
 using Services;
+using Services.Configuration;
 using Services.CoroutineServices;
 using Services.Player;
 using Services.ScreenBlocker;
@@ -27,7 +28,7 @@ namespace GameState.OnGameEnterSequence
             _applicationService.RegisterDisposableService<PersistentCoroutinesService>();
             _applicationService.RegisterDisposableService<CoroutineService>();
             _applicationService.RegisterDisposableService<GameSoundManager>();
-            _applicationService.RegisterDisposableService<GameConfigurationProvider>();
+            _applicationService.RegisterDisposableService<GameInfoProvider>();
             _applicationService.RegisterDisposableService<UserSettingsService>();
             _applicationService.RegisterDisposableService<PlayerProfileManager>();
             _applicationService.RegisterDisposableService<AdsService>();

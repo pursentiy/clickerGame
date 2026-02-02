@@ -3,18 +3,19 @@ using System.Linq;
 using Common.Currency;
 using Common.Data.Info;
 using Configurations;
+using Configurations.Progress;
 using Extensions;
 using Services.Base;
 using Storage;
-using Storage.Levels;
 using UnityEngine;
 using Zenject;
 
-namespace Services
+namespace Services.Configuration
 {
-    public class GameConfigurationProvider : DisposableService
+    public abstract class GameInfoProvider : DisposableService
     {
         [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
+        [Inject] private readonly GameConfigurationProvider _gameConfigurationProvider;
         
         private List<PackInfo> _packInfoList = new();
         
@@ -75,14 +76,15 @@ namespace Services
 
         private void InitPacksInfoList()
         {
-            //TODO ADD MORE SAFE APPROACH
-            var csvFile = Resources.Load<TextAsset>("GameProgressConfig");
-            if (csvFile == null) 
+            var config = _gameConfigurationProvider.GetConfig<ProgressConfiguration>();
+            if (config == null)
+            {
+                LoggerService.LogError(this, $"{nameof(InitPacksInfoList)}: {nameof(ProgressConfiguration)} is null");
                 return;
-    
-            var parsedConfig = ConfigParser.ParseCSV(csvFile.text);
+            }
+            
             var rawStorageData = _levelsParamsStorageData.DefaultPacksParamsList;
-            _packInfoList = rawStorageData.MergeWithConfig(parsedConfig.PacksInfoDictionary);
+            _packInfoList = rawStorageData.MergeWithConfig(config.PacksInfoDictionary);
 
             IsInitialized = true;
         }

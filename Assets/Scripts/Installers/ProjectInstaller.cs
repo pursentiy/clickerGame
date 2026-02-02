@@ -1,6 +1,7 @@
 using Common.Rewards;
 using Handlers;
 using Services;
+using Services.Configuration;
 using Services.ContentDeliveryService;
 using Services.CoroutineServices;
 using Services.FlyingRewardsAnimation;
@@ -47,6 +48,7 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<GameSoundManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<LanguageConversionService>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameConfigurationProvider>().AsSingle();
+            Container.BindInterfacesAndSelfTo<GameInfoProvider>().AsSingle();
             Container.BindInterfacesAndSelfTo<UserSettingsService>().AsSingle();
             Container.BindInterfacesAndSelfTo<AdsService>().AsSingle();
             Container.BindInterfacesAndSelfTo<BridgeService>().AsSingle();

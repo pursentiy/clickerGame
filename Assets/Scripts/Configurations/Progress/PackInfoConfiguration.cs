@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Configurations
+namespace Configurations.Progress
 {
     public class PackInfoConfiguration
     {

@@ -2,6 +2,7 @@ using Extensions;
 using Handlers.UISystem;
 using RSG;
 using Services;
+using Services.Configuration;
 using Services.CoroutineServices;
 using Services.FlyingRewardsAnimation;
 using Services.Player;
@@ -18,7 +19,7 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
         [Inject] private readonly AdsService _adsService;
         [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
-        [Inject] private readonly GameConfigurationProvider _gameConfigurationProvider;
+        [Inject] private readonly GameInfoProvider _gameInfoProvider;
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly CoroutineService _coroutineService;
         [Inject] private readonly LocalizationService _localizationService;
@@ -53,7 +54,7 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
 
         private IPromise ShowMessagePopup()
         {
-            var currencyToEarnViaAds = _gameConfigurationProvider.StarsRewardForAds;
+            var currencyToEarnViaAds = _gameInfoProvider.StarsRewardForAds;
             var spriteAsset = _currencyLibraryService.GetSpriteAsset(CurrencyExtensions.StarsCurrencyName);
             var fontSize = 175;
             var context = new MessagePopupContext(_localizationService.GetFormattedValue(LocalizationExtensions.AdsInfo, currencyToEarnViaAds), Context.AdsButtonWidget.RectTransform, fontSize, spriteAsset);

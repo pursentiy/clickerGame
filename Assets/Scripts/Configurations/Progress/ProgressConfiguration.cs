@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using Extensions;
 using Services;
 
-namespace Configurations
+namespace Configurations.Progress
 {
-    public static class ConfigParser
+    public class ProgressConfiguration : ICSVConfig
     {
-        public static ProgressConfiguration ParseCSV(string csvText)
+        public IReadOnlyDictionary<int, PackInfoConfiguration> PacksInfoDictionary { get; private set; }
+
+        public void Parse(string csvText)
         {
             var packsData = new Dictionary<int, (string Name, int Stars, List<LevelInfoConfiguration> Levels)>();
             var uniqueLevelCheck = new HashSet<string>();
@@ -50,19 +54,40 @@ namespace Configurations
                 }
                 catch (Exception e)
                 {
-                    LoggerService.LogError($"[ConfigParser] Ошибка на строке {i}: {e.Message}");
+                    LoggerService.LogError($"[{nameof(ProgressConfiguration)}] Error on line {i}: {e.Message}");
                 }
             }
 
             var finalPacksDict = new Dictionary<int, PackInfoConfiguration>();
             foreach (var kvp in packsData)
             {
-                // Предполагаем, что PackInfo принимает IReadOnlyCollection<LevelInfoConfiguration>
                 var packInfo = new PackInfoConfiguration(kvp.Value.Stars, kvp.Value.Name, kvp.Value.Levels.AsReadOnly());
                 finalPacksDict.Add(kvp.Key, packInfo);
             }
+            
+            PacksInfoDictionary = finalPacksDict;
+        }
+        
+        public PackInfoConfiguration GetPackInfo(int packId)
+        {
+            if (PacksInfoDictionary.IsCollectionNullOrEmpty() ||
+                !PacksInfoDictionary.TryGetValue(packId, out var packInfo))
+                return null;
 
-            return new ProgressConfiguration(finalPacksDict);
+            return packInfo;
+        }
+
+        public LevelInfoConfiguration GetLevelInfo(int packId, int levelId)
+        {
+            var packInfo = GetPackInfo(packId);
+            if (packInfo == null)
+                return null;
+            
+            if (packInfo.Levels.IsCollectionNullOrEmpty())
+                return null;
+
+            var levelInfo = packInfo.Levels.FirstOrDefault(i => i != null && i.LevelId == levelId);
+            return levelInfo;
         }
     }
 }

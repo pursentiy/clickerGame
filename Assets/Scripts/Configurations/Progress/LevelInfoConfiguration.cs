@@ -1,4 +1,4 @@
-namespace Configurations
+namespace Configurations.Progress
 {
     public class LevelInfoConfiguration
     {

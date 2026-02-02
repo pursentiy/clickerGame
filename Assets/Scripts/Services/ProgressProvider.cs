@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Common.Currency;
 using Common.Data.Info;
+using Services.Configuration;
 using Services.Player;
 using Storage;
 using Storage.Levels;
@@ -15,17 +16,17 @@ namespace Services
     {
         [Inject] private PlayerProfileManager _playerProfileManager;
         [Inject] private PlayerCurrencyService _playerCurrencyService;
-        [Inject] private GameConfigurationProvider _gameConfigurationProvider;
+        [Inject] private GameInfoProvider _gameInfoProvider;
 
-        public int GetAllPacksCount() => _gameConfigurationProvider.IsInitialized ? _gameConfigurationProvider.GetPacksCount() : 0;
-        public IReadOnlyCollection<PackInfo> GetAllPacks() => _gameConfigurationProvider.IsInitialized ? _gameConfigurationProvider.PacksInfo : Array.Empty<PackInfo>();
+        public int GetAllPacksCount() => _gameInfoProvider.IsInitialized ? _gameInfoProvider.GetPacksCount() : 0;
+        public IReadOnlyCollection<PackInfo> GetAllPacks() => _gameInfoProvider.IsInitialized ? _gameInfoProvider.PacksInfo : Array.Empty<PackInfo>();
 
         public PackInfo GetPackInfo(int packId)
         {
-            if (!_gameConfigurationProvider.IsInitialized)
+            if (!_gameInfoProvider.IsInitialized)
                 return null;
             
-            return _gameConfigurationProvider.PacksInfo.FirstOrDefault(i => i.PackId == packId);
+            return _gameInfoProvider.PacksInfo.FirstOrDefault(i => i.PackId == packId);
         }
         
         public bool IsPackAvailable(int packNumber)
@@ -36,24 +37,24 @@ namespace Services
         
         public int GetAllAvailablePacksCount()
         {
-            if (!_gameConfigurationProvider.IsInitialized)
+            if (!_gameInfoProvider.IsInitialized)
             {
-                LoggerService.LogWarning($"[{nameof(GetAllAvailablePacksCount)}]: {nameof(GameConfigurationProvider)} is not initialized");
+                LoggerService.LogWarning($"[{nameof(GetAllAvailablePacksCount)}]: {nameof(GameInfoProvider)} is not initialized");
                 return 0;
             }
 
-            return _gameConfigurationProvider.GetPacksIds().Count(IsPackAvailable);
+            return _gameInfoProvider.GetPacksIds().Count(IsPackAvailable);
         }
         
         public Stars? GetStarsCountForPackUnlocking(int packNumber)
         {
-            if (!_gameConfigurationProvider.IsInitialized)
+            if (!_gameInfoProvider.IsInitialized)
             {
-                LoggerService.LogWarning($"[{nameof(GetStarsCountForPackUnlocking)}]: {nameof(GameConfigurationProvider)} is not initialized");
+                LoggerService.LogWarning($"[{nameof(GetStarsCountForPackUnlocking)}]: {nameof(GameInfoProvider)} is not initialized");
                 return null;
             }
 
-            var pack = _gameConfigurationProvider.GetPackById(packNumber);
+            var pack = _gameInfoProvider.GetPackById(packNumber);
             return pack?.StarsToUnlock;
         }
         
@@ -64,9 +65,9 @@ namespace Services
         
         public bool IsLevelAvailableToPlay(int packId, int levelId)
         {
-            if (!_gameConfigurationProvider.IsInitialized)
+            if (!_gameInfoProvider.IsInitialized)
             {
-                LoggerService.LogWarning($"[{nameof(IsLevelAvailableToPlay)}]: {nameof(GameConfigurationProvider)} is not initialized");
+                LoggerService.LogWarning($"[{nameof(IsLevelAvailableToPlay)}]: {nameof(GameInfoProvider)} is not initialized");
                 return false;
             }
             
@@ -82,13 +83,13 @@ namespace Services
         
         public int GetLevelsCountInPack(int packId, bool availableLevelsToPlay = false)
         {
-            if (!_gameConfigurationProvider.IsInitialized)
+            if (!_gameInfoProvider.IsInitialized)
             {
-                LoggerService.LogWarning($"[{nameof(GetLevelsCountInPack)}]: {nameof(GameConfigurationProvider)} is not initialized");
+                LoggerService.LogWarning($"[{nameof(GetLevelsCountInPack)}]: {nameof(GameInfoProvider)} is not initialized");
                 return 0;
             }
 
-            var levelsIds = _gameConfigurationProvider.GetLevelsIds(packId);
+            var levelsIds = _gameInfoProvider.GetLevelsIds(packId);
             if (levelsIds == null)
                 return 0;
 
