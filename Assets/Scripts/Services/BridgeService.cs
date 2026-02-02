@@ -17,7 +17,7 @@ namespace Services
         private bool _isGameReadyFlagSet = false;
         
         public bool WasAuthorizedBefore => PlayerPrefs.GetInt(AuthRememberKey, 0) == 1;
-        public bool ShouldAuthenticatePlayer => CheckPlatform(BridgePlatformType.Mock) && 
+        public bool ShouldAuthenticatePlayer => CheckPlatform(BridgePlatformType.Yandex) && 
                                                 Bridge.player != null && 
                                                 !Bridge.player.isAuthorized;
         public bool IsAuthenticated => Bridge.player != null && Bridge.player.isAuthorized;
