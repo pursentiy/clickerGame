@@ -16,7 +16,8 @@ namespace UI.Screens.WelcomeScreen.AuthenticateSequence
             LoggerService.LogDebug(this, 
                 $"<color=green>[{GetType().Name}]</color> Player authorization status is {_bridgeService.IsAuthenticated}");
             
-            _reloadService.SoftRestart();
+            if (_bridgeService.IsAuthenticated)
+                _reloadService.SoftRestart();
             FinishSequence();
         }
 
