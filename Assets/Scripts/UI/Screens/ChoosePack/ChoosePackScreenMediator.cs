@@ -34,6 +34,7 @@ namespace UI.Screens.ChoosePack
             View.GoBackButton.onClick.MapListenerWithSound(OnGoBackButtonClicked).DisposeWith(this);
             View.SettingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
             View.AdsButton.Button.onClick.MapListenerWithSound(OnAdsButtonClicked).DisposeWith(this);
+            View.AdsInfoButton.onClick.MapListenerWithSound(ShowAdsInfoPopup).DisposeWith(this);
         }
 
         private void InitWidgets()
@@ -54,6 +55,12 @@ namespace UI.Screens.ChoosePack
         private void OnInfoButtonClicked()
         {
             var context = new MessagePopupContext(_localizationService.GetValue("unlock_sets_info"), View.InfoButton.GetRectTransform(), View.InfoMessageFontSize, facing: PopupFacing.Right);
+            _flowPopupController.ShowMessagePopup(context, overrideDisposeProvider: this.GetDisposeProvider());
+        }
+        
+        private void ShowAdsInfoPopup()
+        {
+            var context = new MessagePopupContext(_localizationService.GetValue(LocalizationExtensions.AdsFullInfo), View.AdsInfoButton.GetRectTransform(), View.InfoMessageFontSize, facing: PopupFacing.Right);
             _flowPopupController.ShowMessagePopup(context, overrideDisposeProvider: this.GetDisposeProvider());
         }
 

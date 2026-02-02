@@ -1,6 +1,6 @@
-using Handlers;
 using RSG;
 using Services;
+using Services.ScreenBlocker;
 using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
@@ -10,7 +10,10 @@ namespace UI.Screens.WelcomeScreen.AuthenticateSequence
     public class AuthenticatePlayerState : InjectableStateBase<DefaultStateContext>
     {
         [Inject] private readonly BridgeService _bridgeService;
-        [Inject] private readonly UIBlockHandler _uiBlockHandler;
+        [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
+
+        private IUIBlockRef _blockRef;
+        
         public override void OnEnter(params object[] arguments)
         {
             base.OnEnter(arguments);
@@ -57,12 +60,12 @@ namespace UI.Screens.WelcomeScreen.AuthenticateSequence
         
         private void PrepareEnvironment()
         {
-            _uiBlockHandler.BlockUserInput(true);
+            _blockRef = _uiScreenBlocker.Block(30f);
         }
         
         private void RevertEnvironment()
         {
-            _uiBlockHandler.BlockUserInput(false);
+            _blockRef?.Dispose();
         }
     }
 }

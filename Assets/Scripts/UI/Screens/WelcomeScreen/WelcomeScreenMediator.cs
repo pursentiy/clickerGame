@@ -2,7 +2,11 @@ using Attributes;
 using Controllers;
 using Extensions;
 using Handlers.UISystem.Screens;
+using Services;
+using UI.Popups.MessagePopup;
+using UI.Screens.WelcomeScreen.AuthenticateSequence;
 using Utilities.Disposable;
+using Utilities.StateMachine;
 using Zenject;
 
 namespace UI.Screens.WelcomeScreen
@@ -19,6 +23,7 @@ namespace UI.Screens.WelcomeScreen
 
             View.PlayButton.onClick.MapListenerWithSound(PushNextScreen).DisposeWith(this);
             View.SettingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
+            View.LoginButtonWidget.Initialize();
         }
 
         public override void OnBeginShow()

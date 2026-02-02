@@ -16,6 +16,7 @@ namespace UI.Screens.ChoosePack
         public Button GoBackButton;
         public Button SettingsButton;
         public Button InfoButton;
+        public Button AdsInfoButton;
         public AdsButtonWidget AdsButton;
         public float InfoMessageFontSize = 150f;
     }

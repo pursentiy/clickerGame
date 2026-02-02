@@ -9,6 +9,7 @@ namespace UI.Screens.WelcomeScreen
     {
         public Button PlayButton;
         public Button SettingsButton;
+        public LoginButtonWidget LoginButtonWidget;
         public WelcomeScreenAnimationWidget ScreenAnimationWidget;
     }
 }
