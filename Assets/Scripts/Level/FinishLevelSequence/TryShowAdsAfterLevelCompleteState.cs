@@ -41,7 +41,7 @@ namespace Level.FinishLevelSequence
 
         private void NextState()
         {
-            Sequence.ActivateState<ShowCompletePopupState>();
+            Sequence.ActivateState<SaveProgressState>();
         }
 
         private void PrepareForState()

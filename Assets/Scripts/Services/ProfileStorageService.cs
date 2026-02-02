@@ -31,6 +31,7 @@ namespace Services
         
         public void LoadProfileRecord(Action<ProfileRecord> onLoaded)
         {
+            //TODO ADD MERGE ON AUTHENTICATION COMPLETE VIA BRIDGE
             if (AppConfigService.IsProduction())
             {
                 LoadProfileRecordProduction(onLoaded);

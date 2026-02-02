@@ -115,7 +115,7 @@ namespace Components.Levels
         {
             StateMachine
                 .CreateMachine(new FinishLevelContext(packId, levelId, currentStarsForLevel, initialStarsForLevel, levelPlayedTime, _packInfo, completedLevelStatus))
-                .StartSequence<TryShowAdsAfterLevelCompleteState>()
+                .StartSequence<ShowCompletePopupState>()
                 .FinishWith(this);
         }
 

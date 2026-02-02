@@ -9,11 +9,14 @@ using Services.CoroutineServices;
 using Services.Static;
 using UnityEngine;
 using Utilities.Disposable;
+using Zenject;
 
 namespace Services
 {
     public class AdsService : DisposableService
     {
+        [Inject] private readonly BridgeService _bridgeService;
+        
         private const float AdTimeoutDuration = 4f; 
         private const float CheatTimeoutDuration = 2f;
 
@@ -25,6 +28,12 @@ namespace Services
         private bool _hasAdStarted;
         private IPromise _timeoutPromise;
         private Promise<bool> _currentAdPromise;
+        private float _lastInterstitialTime = -1000f;
+
+        public bool CanShowPrerollAd()
+        {
+            return !_bridgeService.CheckPlatform(BridgePlatformType.Yandex);
+        }
 
         public AdsService(
             SoundHandler soundHandler, 
@@ -50,13 +59,42 @@ namespace Services
                 Bridge.advertisement.ShowBanner(BannerPosition.Top);
             }
         }
+        
+        public bool IsInterstitialCooldownPassed()
+        {
+            if (Bridge.advertisement == null)
+                return false;
+            
+            var delay = Bridge.advertisement.minimumDelayBetweenInterstitial;
+            if (delay <= 0) delay = 61; 
+
+            return (Time.time - _lastInterstitialTime) >= delay;
+        }
 
         public IPromise<bool> ShowInterstitial(string placement = "default")
         {
+            if (Bridge.advertisement == null)
+            {
+                LoggerService.LogWarning(this, $"Bridge advertisement is null");
+                return Promise<bool>.Resolved(false);
+            }
+            
             if (!AppConfigService.IsProduction())
             {
                 LoggerService.LogDebug($"<color=green>{GetType().Name}</color> Dev Mode: Skipping Interstitial ({placement})");
                 return Promise<bool>.Resolved(true);
+            }
+            
+            if (!IsInterstitialCooldownPassed())
+            {
+                LoggerService.LogDebug(this, "Interstitial skipped: Cooldown is active.");
+                return Promise<bool>.Resolved(false);
+            }
+            
+            if (Bridge.advertisement.interstitialState != InterstitialState.Closed)
+            {
+                LoggerService.LogDebug(this, "Interstitial skipped: Module is busy.");
+                return Promise<bool>.Resolved(false);
             }
 
             return InternalShowAd(() => Bridge.advertisement.ShowInterstitial());
@@ -125,7 +163,8 @@ namespace Services
                     break;
                 case InterstitialState.Closed:
                 case InterstitialState.Failed:
-                    FinalizeAd(true); // В Interstitial всегда true, чтобы не ломать поток игры
+                    _lastInterstitialTime = Time.time;
+                    FinalizeAd(true);
                     break;
             }
         }

@@ -261,6 +261,20 @@ MonoBehaviour:
     m_Localized: Mira un anuncio para obtener {0} <sprite=0>
     m_Metadata:
       m_Items: []
+  - m_Id: 89024711885840384
+    m_Localized: "Este es el bot\xF3n para ver anuncios! Al ver un anuncio puedes
+      obtener {0} <sprite=0>"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89049590794280960
+    m_Localized: "Iniciar sesi\xF3n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89054446657462272
+    m_Localized: "Inicia sesi\xF3n para guardar tus estrellas \u0438 jugar en cualquier
+      dispositivo!"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

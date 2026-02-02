@@ -23,6 +23,28 @@
     </head>
     <body>
         <canvas id="canvas" class="fullscreen-canvas"></canvas>
+        <script>
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.playbackState = 'none';
+                
+                const actionHandlers = [
+                    'play', 'pause', 'previoustrack', 'nexttrack',
+                    'seekbackward', 'seekforward', 'seekto', 'stop'
+                ];
+
+                actionHandlers.forEach(action => {
+                    try {
+                        navigator.mediaSession.setActionHandler(action, null);
+                    } catch (error) { /* игнорируем */ }
+                });
+
+                Object.defineProperty(navigator.mediaSession, 'playbackState', {
+                    get: function() { return 'none'; },
+                    set: function() { },
+                    configurable: false
+                });
+            }
+        </script>
         <script src="./playgama-bridge-unity.js"></script>
     </body>
 </html>
