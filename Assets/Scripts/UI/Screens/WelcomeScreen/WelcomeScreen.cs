@@ -2,10 +2,13 @@
 using Extensions;
 using Handlers;
 using Handlers.UISystem;
+using Services;
 using UI.Popups.SettingsPopup;
+using UI.Screens.WelcomeScreen.AuthenticateSequence;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities.Disposable;
+using Utilities.StateMachine;
 using Zenject;
 
 namespace UI.Screens.WelcomeScreen
@@ -15,9 +18,11 @@ namespace UI.Screens.WelcomeScreen
         [Inject] private ScreenHandler _screenHandler;
         [Inject] private SoundHandler _soundHandler;
         [Inject] private UIManager _uiManager;
+        [Inject] private readonly BridgeService _bridgeService;
         
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _settingsButton;
+        [SerializeField] private Button _authenticationButton;
         [SerializeField] private RectTransform _headerText;
         [SerializeField] private CanvasGroup _headerTextCanvasGroup;
         
@@ -41,6 +46,24 @@ namespace UI.Screens.WelcomeScreen
             _settingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
             
             AnimateShow();
+
+            if (_bridgeService.ShouldAuthenticatePlayer)
+            {
+                _authenticationButton.TrySetActive(true);
+                _authenticationButton.onClick.MapListenerWithSound(StartAuthenticationSequence).DisposeWith(this);
+            }
+            else
+            {
+                _authenticationButton.TrySetActive(false);
+            }
+        }
+
+        private void StartAuthenticationSequence()
+        {
+            StateMachine
+                .CreateMachine(null)
+                .StartSequence<AuthenticatePlayerState>()
+                .FinishWith(this);
         }
 
         private void OnSettingsButtonClicked()

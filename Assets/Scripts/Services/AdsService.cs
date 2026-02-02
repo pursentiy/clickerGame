@@ -9,11 +9,14 @@ using Services.CoroutineServices;
 using Services.Static;
 using UnityEngine;
 using Utilities.Disposable;
+using Zenject;
 
 namespace Services
 {
     public class AdsService : DisposableService
     {
+        [Inject] private readonly BridgeService _bridgeService;
+        
         private const float AdTimeoutDuration = 4f; 
         private const float CheatTimeoutDuration = 2f;
 
@@ -25,6 +28,11 @@ namespace Services
         private bool _hasAdStarted;
         private IPromise _timeoutPromise;
         private Promise<bool> _currentAdPromise;
+
+        public bool CanShowPrerollAd()
+        {
+            return !_bridgeService.CheckPlatform(BridgePlatformType.Yandex);
+        }
 
         public AdsService(
             SoundHandler soundHandler, 

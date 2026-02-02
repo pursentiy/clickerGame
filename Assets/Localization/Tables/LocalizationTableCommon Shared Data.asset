@@ -259,6 +259,10 @@ MonoBehaviour:
     m_Key: ads_full_info
     m_Metadata:
       m_Items: []
+  - m_Id: 89049590794280960
+    m_Key: login
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

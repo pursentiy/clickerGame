@@ -287,6 +287,10 @@ MonoBehaviour:
       {0} <sprite=0>"
     m_Metadata:
       m_Items: []
+  - m_Id: 89049590794280960
+    m_Localized: "\u0417\u0430\u043B\u043E\u0433\u0438\u043D\u0438\u0442\u044C\u0441\u044F"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

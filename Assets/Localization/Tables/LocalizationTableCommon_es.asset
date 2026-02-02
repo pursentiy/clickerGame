@@ -266,6 +266,10 @@ MonoBehaviour:
       obtener {0} <sprite=0>"
     m_Metadata:
       m_Items: []
+  - m_Id: 89049590794280960
+    m_Localized: "Iniciar sesi\xF3n"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
