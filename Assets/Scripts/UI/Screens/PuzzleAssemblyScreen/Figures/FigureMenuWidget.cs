@@ -4,19 +4,20 @@ using RSG;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Utilities.Disposable;
 
-namespace Components.Levels.Figures
+namespace UI.Screens.PuzzleAssemblyScreen.Figures
 {
-    public class FigureMenu : Figure, IDragHandler, IBeginDragHandler, IEndDragHandler
+    public class FigureMenuWidget : FigureBase, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
+        private const float YDeltaDispersion = 2f;
+        private const float InitialWidthParam = 250f;
+        private const float InitialHeightParam = 250f;
+        
         [SerializeField] protected Image _image;
         [SerializeField] protected RectTransform _transformFigure;
         [SerializeField] protected RectTransform _transformContainer;
         [SerializeField] private ParticleSystem _particleSystem;
-        
-        private const float YDeltaDispersion = 2f;
-        public const float InitialWidthParam = 250f;
-        public const float InitialHeightParam = 250f;
         
         private Sequence _fadeAnimationSequence;
         private bool _isScrolling;
@@ -25,11 +26,10 @@ namespace Components.Levels.Figures
         public float InitialWidth => InitialWidthParam;
         public float InitialHeight => InitialHeightParam;
         public RectTransform ContainerTransform => _transformContainer;
-        public FSignal<FigureMenu> OnBeginDragFigureSignal { get; } = new FSignal<FigureMenu>();
+        public FSignal<FigureMenuWidget> OnBeginDragFigureSignal { get; } = new FSignal<FigureMenuWidget>();
         public FSignal<PointerEventData> OnBeginDragSignal { get; } = new FSignal<PointerEventData>();
         public FSignal<PointerEventData> OnDraggingSignal { get; } = new FSignal<PointerEventData>();
         public FSignal<PointerEventData> OnEndDragSignal { get; } = new FSignal<PointerEventData>();
-
         public int SiblingPosition { get; set; }
         public Vector3 InitialPosition { get; set; }
 
@@ -46,8 +46,11 @@ namespace Components.Levels.Figures
         private void FadeFigure(Promise fadeFigurePromise)
         {
             var color = _image.color;
-            _fadeAnimationSequence = DOTween.Sequence().Append(_image.DOColor(new Color(color.r, color.g, color.b, 0.5f), 0.2f)).OnComplete(
-                fadeFigurePromise.Resolve);
+            
+            _fadeAnimationSequence = DOTween.Sequence()
+                .Append(_image.DOColor(new Color(color.r, color.g, color.b, 0.5f), 0.2f))
+                .OnComplete(fadeFigurePromise.Resolve)
+                .KillWith(this);
         }
 
         public void SetConnected(Promise fadeFigurePromise)
@@ -63,11 +66,6 @@ namespace Components.Levels.Figures
             
             if(_transformFigure != null)
                 Destroy(_transformFigure.gameObject);
-        }
-
-        private void OnDestroy()
-        {
-            _fadeAnimationSequence?.Kill();
         }
 
         public void OnDrag(PointerEventData eventData)

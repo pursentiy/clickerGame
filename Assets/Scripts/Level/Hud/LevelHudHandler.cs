@@ -2,7 +2,6 @@
 using System.Linq;
 using Common.Data.Info;
 using Common.Widgets.Animations;
-using Components.Levels.Figures;
 using DG.Tweening;
 using Extensions;
 using Handlers;
@@ -16,6 +15,8 @@ using Services.CoroutineServices;
 using Storage;
 using Storage.Snapshots.LevelParams;
 using UI.Popups.SettingsPopup;
+using UI.Screens.PuzzleAssemblyScreen.Figures;
+using UI.Screens.PuzzleAssemblyScreen.Widgets;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -48,8 +49,8 @@ namespace Level.Hud
         [SerializeField] private ParticleSystem _finishLevelParticles;
         [SerializeField] private FadeWidget _fadeWidget;
         
-        private List<FigureMenu> _figureAnimalsForAssemblyList = new List<FigureMenu>();
-        private List<FigureTarget> _figureAnimalsTargetList = new List<FigureTarget>();
+        private List<FigureMenuWidget> _figureAnimalsForAssemblyList = new List<FigureMenuWidget>();
+        private List<FigureTargetWidget> _figureAnimalsTargetList = new List<FigureTargetWidget>();
         private float _figuresGroupSpacing;
         private Sequence _shiftingSequence;
         private PackInfo _currentPackInfo;
@@ -171,7 +172,7 @@ namespace Level.Hud
             _figureAnimalsTargetList.Add(figure);
         }
 
-        private void SetupDraggingSignalsHandlers(FigureMenu figure)
+        private void SetupDraggingSignalsHandlers(FigureMenuWidget figure)
         {
             figure.OnBeginDragSignal.MapListener(OnBeginDragSignalHandler).DisposeWith(this);
             figure.OnDraggingSignal.MapListener(OnDraggingSignalHandler).DisposeWith(this);
@@ -197,7 +198,6 @@ namespace Level.Hud
         {
             _levelInfoTrackerService.StopLevelTracking();
             _levelInfoTrackerService.ClearData();
-            _screenHandler.ShowChooseLevelScreen(_currentPackInfo, BackToMenuClickSignal);
         }
 
         public void ShiftAllElements(bool isInserting, int figureId, Promise animationPromise)
@@ -271,12 +271,12 @@ namespace Level.Hud
             _finishLevelParticles.Play();
         }
 
-        public FigureMenu GetFigureById(int figureId)
+        public FigureMenuWidget GetFigureById(int figureId)
         {
             return _figureAnimalsForAssemblyList.FirstOrDefault(figure => figure.FigureId == figureId);
         }
 
-        public List<FSignal<FigureMenu>> GetOnBeginDragFiguresSignal()
+        public List<FSignal<FigureMenuWidget>> GetOnBeginDragFiguresSignal()
         {
             return _figureAnimalsForAssemblyList.Select(figure => figure.OnBeginDragFigureSignal).ToList();
         }

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Linq;
 using Common.Data.Info;
-using Components.Levels.Figures;
 using DG.Tweening;
 using Extensions;
 using Handlers;
@@ -16,6 +14,7 @@ using Services.CoroutineServices;
 using Services.ScreenBlocker;
 using Storage.Snapshots.LevelParams;
 using UI.Popups.CompleteLevelInfoPopup;
+using UI.Screens.PuzzleAssemblyScreen.Figures;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Utilities.Disposable;
@@ -40,9 +39,9 @@ namespace Components.Levels
         [SerializeField] private RectTransform _draggingTransform;
 
         private LevelHudHandler _levelHudHandler;
-        private FigureMenu _draggingFigureContainer;
+        private FigureMenuWidget _draggingFigureContainer;
         private GameObject _draggingFigureImage;
-        private FigureMenu _menuFigure;
+        private FigureMenuWidget _menuWidgetFigure;
         private bool _isDraggable;
         private LevelParamsSnapshot _currentLevelParams;
 
@@ -130,7 +129,7 @@ namespace Components.Levels
             _levelHudHandler.GetOnDragEndFiguresSignal().ForEach(signal => signal.MapListener(EndElementDragging).DisposeWith(this));
         }
 
-        private void StartElementDragging(FigureMenu figure)
+        private void StartElementDragging(FigureMenuWidget figure)
         {
             if (_isDraggable || figure == null || figure.IsCompleted)
             {
@@ -138,7 +137,7 @@ namespace Components.Levels
             }
 
             _isDraggable = true;
-            _menuFigure = figure;
+            _menuWidgetFigure = figure;
             _levelHudHandler.LockScroll(true);
             
             SetupDraggingFigure(figure.FigureId);
@@ -219,7 +218,7 @@ namespace Components.Levels
         private IPromise SetMenuFigureConnected()
         {
             var menuFigurePromise = new Promise();
-            _menuFigure.SetConnected(menuFigurePromise);
+            _menuWidgetFigure.SetConnected(menuFigurePromise);
             
             return menuFigurePromise.Then(() =>
             {

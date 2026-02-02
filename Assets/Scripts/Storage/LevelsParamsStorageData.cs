@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Components.Levels.Figures;
 using Storage.Levels;
+using UI.Screens.PuzzleAssemblyScreen.Figures;
 using UnityEngine;
 
 namespace Storage
@@ -13,18 +13,18 @@ namespace Storage
         
         public List<PackParamsData> DefaultPacksParamsList => _packParamsList;
 
-        public FigureTarget GetTargetFigure(int packNumber, int levelNumber, int figureId)
+        public FigureTargetWidget GetTargetFigure(int packNumber, int levelNumber, int figureId)
         {
             var levelParams = GetLevelFiguresParamsData(packNumber, levelNumber, figureId);
 
-            return levelParams?.FigureTarget;
+            return levelParams?._figureTargetWidget;
         }
         
-        public FigureMenu GetMenuFigure(int packNumber, int levelNumber, int figureId)
+        public FigureMenuWidget GetMenuFigure(int packNumber, int levelNumber, int figureId)
         {
             var levelParams = GetLevelFiguresParamsData(packNumber, levelNumber, figureId);
 
-            return levelParams?.FigureMenu;
+            return levelParams?.figureMenuWidget;
         }
         
         public LevelFigureParamsData GetLevelFiguresParamsData(int packNumber, int levelNumber, int figureId)

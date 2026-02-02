@@ -1,18 +1,18 @@
-using Components.Levels.Figures;
+using UI.Screens.PuzzleAssemblyScreen.Figures;
 
 namespace Common.Data.Info
 {
     public class FigureInfo
     {
         public int FigureId;
-        public FigureTarget FigureTarget;
-        public FigureMenu FigureMenu;
+        public FigureTargetWidget FigureTargetWidget;
+        public FigureMenuWidget FigureMenuWidget;
 
-        public FigureInfo(int figureId, FigureTarget figureTarget, FigureMenu figureMenu)
+        public FigureInfo(int figureId, FigureTargetWidget _figureTargetWidget, FigureMenuWidget figureMenuWidget)
         {
             FigureId = figureId;
-            FigureTarget = figureTarget;
-            FigureMenu = figureMenu;
+            FigureTargetWidget = _figureTargetWidget;
+            FigureMenuWidget = figureMenuWidget;
         }
     }
 }

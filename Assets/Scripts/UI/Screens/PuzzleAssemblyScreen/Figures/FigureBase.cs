@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace Components.Levels.Figures
+namespace UI.Screens.PuzzleAssemblyScreen.Figures
 {
-    public abstract class Figure : MonoBehaviour
+    public abstract class FigureBase : MonoBehaviour
     {
         public int FigureId { get; private set; }
         public bool IsCompleted { get; private set; }

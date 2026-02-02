@@ -5,7 +5,7 @@ using Storage.Snapshots.LevelParams;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Level.Widgets
+namespace UI.Screens.PuzzleAssemblyScreen.Widgets
 {
     public class StarsProgressWidget : InjectableMonoBehaviour
     {
@@ -58,7 +58,7 @@ namespace Level.Widgets
         {
             _isStarActive = new [] { true, true, true };
             
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 // Сброс активных звезд (видимые)
                 starImages[i].DOKill();

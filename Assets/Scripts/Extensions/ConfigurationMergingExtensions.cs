@@ -65,7 +65,7 @@ namespace Extensions
                 }
                 
                 var figuresInfo = storageLevel.LevelsFiguresParams
-                    .Select(i => new FigureInfo(i.FigureId, i.FigureTarget, i.FigureMenu)).ToList();
+                    .Select(i => new FigureInfo(i.FigureId, i._figureTargetWidget, i.figureMenuWidget)).ToList();
                 
                 var levelInfo = new LevelInfo(
                     storageLevel.LevelId,
