@@ -28,7 +28,6 @@ namespace Handlers
         [Inject] private CoroutineService _coroutineService;
 
         [SerializeField] private RectTransform _screenCanvasTransform;
-        [SerializeField] private WelcomeScreen _welcomeScreen;
         [SerializeField] private ParticleSystem[] _changeScreenParticles;
         [SerializeField] private AnimationCurve _popupAnimationCurve;
         

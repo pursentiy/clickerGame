@@ -6,6 +6,7 @@ using RSG;
 using Services;
 using Services.CoroutineServices;
 using Services.Player;
+using Services.ScreenBlocker;
 using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
@@ -20,13 +21,15 @@ namespace Level.FinishLevelSequence
         [Inject] private readonly ProgressController _progressController;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
         [Inject] private readonly CoroutineService _coroutineService;
-        [Inject] private readonly UIBlockHandler _uiBlockHandler;
+        [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
+        
+        private IUIBlockRef _uiBlockRef;
         
         public override void OnEnter(params object[] arguments)
         {
             base.OnEnter(arguments);
 
-            PrepareForState();
+            PrepareEnvironment();
             SaveProgress()
                 .ContinueWithResolved(GoToLevelsScreen)
                 .CancelWith(this);
@@ -63,19 +66,19 @@ namespace Level.FinishLevelSequence
                 return;
             }
             
-            _screenHandler.ShowChooseLevelScreen(Context.PackInfo);
-            ResetState();
+            //_screenHandler.ShowChooseLevelScreen(Context.PackInfo);
+            RevertEnvironment();
             Sequence.Finish();
         }
         
-        private void PrepareForState()
+        private void PrepareEnvironment()
         {
-            _uiBlockHandler.BlockUserInput(true);
+            _uiBlockRef = _uiScreenBlocker.Block();
         }
 
-        private void ResetState()
+        private void RevertEnvironment()
         {
-            _uiBlockHandler.BlockUserInput(false);
+            _uiBlockRef?.Dispose();
         }
     }
 }

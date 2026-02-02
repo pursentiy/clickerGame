@@ -1,5 +1,6 @@
 using System;
 using Configurations;
+using Configurations.Progress;
 using UnityEngine;
 
 namespace UI.Screens.ChooseLevel.LevelItem

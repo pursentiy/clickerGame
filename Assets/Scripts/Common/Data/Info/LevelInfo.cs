@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Configurations;
+using Configurations.Progress;
 using UnityEngine;
 
 namespace Common.Data.Info
