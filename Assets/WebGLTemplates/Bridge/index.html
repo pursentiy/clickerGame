@@ -24,18 +24,25 @@
     <body>
         <canvas id="canvas" class="fullscreen-canvas"></canvas>
         <script>
-            try {
-                if (window.navigator && 'mediaSession' in window.navigator) {
-                    window.navigator.mediaSession.playbackState = 'none';
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.playbackState = 'none';
+                
+                const actionHandlers = [
+                    'play', 'pause', 'previoustrack', 'nexttrack',
+                    'seekbackward', 'seekforward', 'seekto', 'stop'
+                ];
 
-                    Object.defineProperty(window.navigator.mediaSession, 'playbackState', {
-                        get: function() { return 'none'; },
-                        set: function() { },
-                        configurable: false
-                    });
-                }
-            } catch (e) {
-                console.warn("MediaSession block failed, but that's okay:", e);
+                actionHandlers.forEach(action => {
+                    try {
+                        navigator.mediaSession.setActionHandler(action, null);
+                    } catch (error) { /* игнорируем */ }
+                });
+
+                Object.defineProperty(navigator.mediaSession, 'playbackState', {
+                    get: function() { return 'none'; },
+                    set: function() { },
+                    configurable: false
+                });
             }
         </script>
         <script src="./playgama-bridge-unity.js"></script>
