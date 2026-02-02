@@ -30,7 +30,7 @@ namespace UI.Screens.ChooseLevel
         {
             base.OnCreated();
             
-            _currentPackId = _progressController.CurrentPackId;
+            _currentPackId = Context.PackInfo.PackId;
 
             InitWidgets();
             SetTexts();
@@ -75,38 +75,5 @@ namespace UI.Screens.ChooseLevel
             var context = new MessagePopupContext(_localizationService.GetValue("unlock_sets_info"), View.InfoButton.GetRectTransform(), View.InfoMessageFontSize, facing: PopupFacing.Right);
             _flowPopupController.ShowMessagePopup(context, overrideDisposeProvider: this.GetDisposeProvider());
         }
-
-        // private IEnumerator InitializeLevelsRoutine()
-        // {
-        //     var index = 0;
-        //     _horizontalGroup = null;
-        //
-        //     foreach (var levelParams in Context.PackInfo.LevelsInfo)
-        //     {
-        //         if (this == null || gameObject == null)
-        //             yield break;
-        //
-        //         if (_horizontalGroup == null || index % 2 == 0)
-        //         {
-        //             _horizontalGroup = Instantiate(View._horizontalLayoutGroupPrefab, View._levelEnterPopupsParentTransform);
-        //         }
-        //
-        //         var enterButton = Instantiate(View._levelItemWidgetPrefab, _horizontalGroup.transform);
-        //         var earnedStarsForLevel = _progressProvider.GetEarnedStarsForLevel(_currentPackId, levelParams.LevelId) ?? 0;
-        //
-        //         enterButton.Initialize(
-        //             levelParams.LevelName, 
-        //             levelParams.LevelImage, 
-        //             earnedStarsForLevel, 
-        //             levelParams.LevelDifficulty, 
-        //             _progressProvider.IsLevelAvailableToPlay(_currentPackId, levelParams.LevelId),
-        //             () => StartLevel(Context.PackInfo, levelParams)
-        //         );
-        //
-        //         index++;
-        //         
-        //         yield return new WaitForSecondsRealtime(0.05f);
-        //     }
-        // }
     }
 }

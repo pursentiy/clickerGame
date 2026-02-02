@@ -1,7 +1,7 @@
 using Handlers.UISystem.Screens;
 using Storage.Snapshots.LevelParams;
 
-namespace UI.Screens.PuzzleAssemblyScreen
+namespace UI.Screens.PuzzleAssembly
 {
     public class PuzzleAssemblyScreenContext : IScreenContext
     {
@@ -10,6 +10,6 @@ namespace UI.Screens.PuzzleAssemblyScreen
             LevelParamsSnapshot = levelParamsSnapshot;
         }
 
-        public LevelParamsSnapshot  LevelParamsSnapshot { get; }
+        public LevelParamsSnapshot LevelParamsSnapshot { get; }
     }
 }

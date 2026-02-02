@@ -5,7 +5,7 @@ using Storage.Snapshots.LevelParams;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI.Screens.PuzzleAssemblyScreen.Widgets
+namespace UI.Screens.PuzzleAssembly.Widgets
 {
     public class StarsProgressWidget : InjectableMonoBehaviour
     {

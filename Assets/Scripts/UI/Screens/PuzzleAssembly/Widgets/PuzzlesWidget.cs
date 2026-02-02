@@ -1,6 +1,6 @@
 using Installers;
 
-namespace UI.Screens.PuzzleAssemblyScreen.Widgets
+namespace UI.Screens.PuzzleAssembly.Widgets
 {
     public class PuzzlesWidget : InjectableMonoBehaviour
     {

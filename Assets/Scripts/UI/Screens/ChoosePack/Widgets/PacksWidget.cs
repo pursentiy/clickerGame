@@ -3,6 +3,7 @@ using System.Linq;
 using Common.Currency;
 using Common.Data.Info;
 using Components.UI;
+using Controllers;
 using Extensions;
 using Handlers.UISystem;
 using Handlers.UISystem.Screens.Transitions;
@@ -24,7 +25,7 @@ namespace UI.Screens.ChoosePack.Widgets
     {
         [Inject] private readonly ProgressProvider _progressProvider;
         [Inject] private readonly ProgressController _progressController;
-        [Inject] private readonly UIManager _uiManager;
+        [Inject] private readonly FlowScreenController _flowScreenController;
         
         [SerializeField] private LoopGridView _loopGridView;
         
@@ -100,9 +101,7 @@ namespace UI.Screens.ChoosePack.Widgets
         
         private void OnAvailablePackClicked(PackInfo packInfo)
         {
-            _progressController.SetCurrentPackId(packInfo.PackId);
-            var context = new ChooseLevelScreenContext(packInfo);
-            _uiManager.ScreensHandler.PushScreen(new FadeScreenTransition(typeof(ChooseLevelScreenMediator), context));
+            _flowScreenController.GoToChooseLevelScreen(packInfo);
         }
             
         private void OnUnavailablePackClicked()

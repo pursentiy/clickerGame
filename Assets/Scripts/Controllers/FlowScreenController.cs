@@ -3,6 +3,7 @@ using Handlers.UISystem;
 using Handlers.UISystem.Screens;
 using Handlers.UISystem.Screens.Transitions;
 using RSG;
+using Storage.Snapshots.LevelParams;
 using UI.Screens.ChooseLevel;
 using UI.Screens.ChoosePack;
 using UI.Screens.WelcomeScreen;
@@ -23,7 +24,8 @@ namespace Controllers
         
         public MediatorFlowInfo GoToChooseLevelScreen(PackInfo packInfo)
         {
-            var screenPromise = GoToScreenInternal(new FadeScreenTransition(typeof(ChooseLevelScreenMediator), new ChooseLevelScreenContext(packInfo)));
+            var context = new ChooseLevelScreenContext(packInfo);
+            var screenPromise = GoToScreenInternal(new FadeScreenTransition(typeof(ChooseLevelScreenMediator), context));
             return ToFlowInfo(screenPromise);
         }
         

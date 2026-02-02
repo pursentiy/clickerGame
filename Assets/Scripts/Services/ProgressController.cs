@@ -13,18 +13,18 @@ namespace Services
         [Inject] private readonly PlayerProfileManager _playerProfileManager;
         [Inject] private readonly ProgressProvider _progressProvider;
 
-        public int CurrentPackId { get; private set; }
-        public int CurrentLevelId { get; private set; }
+        //public int CurrentPackId { get; private set; }
+        //public int CurrentLevelId { get; private set; }
 
-        public void SetCurrentLevelId(int currentLevelId)
-        {
-            CurrentLevelId = currentLevelId;
-        }
-
-        public void SetCurrentPackId(int currentPackId)
-        {
-            CurrentPackId = currentPackId;
-        }
+        // public void SetCurrentLevelId(int currentLevelId)
+        // {
+        //     CurrentLevelId = currentLevelId;
+        // }
+        //
+        // public void SetCurrentPackId(int currentPackId)
+        // {
+        //     CurrentPackId = currentPackId;
+        // }
         
         public bool SetLevelCompleted(int packId, int levelId, float levelCompletedTime, Stars starsEarned, SavePriority savePriority)
         {

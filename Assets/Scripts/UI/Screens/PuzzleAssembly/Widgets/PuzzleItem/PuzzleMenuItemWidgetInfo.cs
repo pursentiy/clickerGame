@@ -1,4 +1,4 @@
-namespace UI.Screens.PuzzleAssemblyScreen.Widgets.PuzzleItem
+namespace UI.Screens.PuzzleAssembly.Widgets.PuzzleItem
 {
     public class PuzzleMenuItemWidgetInfo
     {

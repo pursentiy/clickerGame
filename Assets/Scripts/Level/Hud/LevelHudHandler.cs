@@ -15,6 +15,7 @@ using Services.CoroutineServices;
 using Storage;
 using Storage.Snapshots.LevelParams;
 using UI.Popups.SettingsPopup;
+using UI.Screens.PuzzleAssembly.Widgets;
 using UI.Screens.PuzzleAssemblyScreen.Figures;
 using UI.Screens.PuzzleAssemblyScreen.Widgets;
 using UnityEngine;

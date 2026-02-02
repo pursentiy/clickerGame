@@ -3,7 +3,7 @@ using Installers;
 using TMPro;
 using UnityEngine;
 
-namespace UI.Screens.PuzzleAssemblyScreen.Widgets
+namespace UI.Screens.PuzzleAssembly.Widgets
 {
     public class LevelTimerWidget : InjectableMonoBehaviour
     {

@@ -3,7 +3,7 @@ using ThirdParty.SuperScrollView.Scripts.List;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI.Screens.PuzzleAssemblyScreen.Widgets.PuzzleItem
+namespace UI.Screens.PuzzleAssembly.Widgets.PuzzleItem
 {
     public class PuzzleMenuItemWidgetView : ItemViewBase
     {
