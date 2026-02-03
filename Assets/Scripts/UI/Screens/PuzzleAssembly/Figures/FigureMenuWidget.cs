@@ -1,109 +1,93 @@
-﻿using DG.Tweening;
-using Plugins.FSignal;
+﻿using Common.Handlers.Draggable;
+using DG.Tweening;
+using Extensions;
 using RSG;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Utilities.Disposable;
 
-namespace UI.Screens.PuzzleAssemblyScreen.Figures
+namespace UI.Screens.PuzzleAssembly.Figures
 {
-    public class FigureMenuWidget : FigureBase, IDragHandler, IBeginDragHandler, IEndDragHandler
+    public class FigureMenuWidget : DraggableItemHandler, IFigureBase
     {
         private const float YDeltaDispersion = 2f;
         private const float InitialWidthParam = 250f;
         private const float InitialHeightParam = 250f;
         
-        [SerializeField] protected Image _image;
-        [SerializeField] protected RectTransform _transformFigure;
-        [SerializeField] protected RectTransform _transformContainer;
+        [SerializeField] private Image _image;
+        [SerializeField] private RectTransform _transformFigure;
+        [SerializeField] private RectTransform _transformContainer;
         [SerializeField] private ParticleSystem _particleSystem;
         
         private Sequence _fadeAnimationSequence;
         private bool _isScrolling;
-
+        
+        public bool IsCompleted { get; private set; }
         public RectTransform FigureTransform => _transformFigure;
         public float InitialWidth => InitialWidthParam;
         public float InitialHeight => InitialHeightParam;
         public RectTransform ContainerTransform => _transformContainer;
-        public FSignal<FigureMenuWidget> OnBeginDragFigureSignal { get; } = new FSignal<FigureMenuWidget>();
-        public FSignal<PointerEventData> OnBeginDragSignal { get; } = new FSignal<PointerEventData>();
-        public FSignal<PointerEventData> OnDraggingSignal { get; } = new FSignal<PointerEventData>();
-        public FSignal<PointerEventData> OnEndDragSignal { get; } = new FSignal<PointerEventData>();
-        public int SiblingPosition { get; set; }
+        public void SetFigureCompleted(bool value)
+        {
+            IsCompleted = value;
+        }
+        
         public Vector3 InitialPosition { get; set; }
 
-        private void Start()
-        {
-            ContainerTransform.sizeDelta = new Vector2(InitialWidthParam, InitialHeightParam);
-        }
-
+        //TODO REFACTORING DO NEED THIS?
         public void SetScale(float scale)
         {
-            _transformFigure.localScale = new Vector3(scale, scale, 0);
+            //_transformFigure.localScale = new Vector3(scale, scale, 0);
         }
 
-        private void FadeFigure(Promise fadeFigurePromise)
-        {
-            var color = _image.color;
-            
-            _fadeAnimationSequence = DOTween.Sequence()
-                .Append(_image.DOColor(new Color(color.r, color.g, color.b, 0.5f), 0.2f))
-                .OnComplete(fadeFigurePromise.Resolve)
-                .KillWith(this);
-        }
-
-        public void SetConnected(Promise fadeFigurePromise)
+        public IPromise SetConnected()
         {
             SetFigureCompleted(true);
-            FadeFigure(fadeFigurePromise);
-            
+            return FadeFigure();
+        }
+        
+        //TODO REFACTORING DO NEED THIS?
+        private void Start()
+        {
+            //ContainerTransform.sizeDelta = new Vector2(InitialWidthParam, InitialHeightParam);
         }
 
-        public void Destroy()
+        public void DestroyWidget()
         {
-            Destroy(gameObject);
-            
-            if(_transformFigure != null)
+            if (_transformFigure != null)
                 Destroy(_transformFigure.gameObject);
-        }
-
-        public void OnDrag(PointerEventData eventData)
-        {
-            if (_isScrolling)
-            {
-                OnDraggingSignal.Dispatch(eventData);
-            }
-        }
-
-        public void OnBeginDrag(PointerEventData eventData)
-        {
-            if (eventData.button != PointerEventData.InputButton.Left)
-                return;
             
-            if (!(eventData.delta.y < YDeltaDispersion) )
+            Destroy(gameObject);
+        }
+
+        protected override void OnBeginDragInternally(PointerEventData eventData)
+        {
+            base.OnBeginDragInternally(eventData);
+            
+            if (_particleSystem != null && eventData.delta.y >= YDeltaDispersion)
             {
                 _particleSystem.Simulate(0);
                 _particleSystem.Play();
-                
-                OnBeginDragFigureSignal.Dispatch(this);
-                return;
             }
-
-            OnBeginDragSignal.Dispatch(eventData);
-            _isScrolling = true;
         }
 
-        public void OnEndDrag(PointerEventData eventData)
+        protected override void OnEndDragInternally(PointerEventData eventData)
         {
-            if (eventData.button != PointerEventData.InputButton.Left)
-                return;
+            base.OnEndDragInternally(eventData);
             
             _particleSystem.Stop();
-            
-            OnEndDragSignal.Dispatch(eventData);
-            
-            _isScrolling = false;
+        }
+        
+        private IPromise FadeFigure()
+        {
+            var color = _image.color;
+
+            _fadeAnimationSequence = DOTween.Sequence()
+                .Append(_image.DOColor(new Color(color.r, color.g, color.b, 0.5f), 0.2f))
+                .KillWith(this);
+
+            return _fadeAnimationSequence.AsPromise();
         }
     }
 }

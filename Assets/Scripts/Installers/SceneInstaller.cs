@@ -17,7 +17,7 @@ namespace Installers
     public class SceneInstaller : MonoInstaller
     {
         [SerializeField] private ScreenHandler _screenHandler;
-        [SerializeField] private LevelSessionHandler _levelSessionHandler;
+        [SerializeField] private LevelSessionHandlerOld levelSessionHandlerOld;
         [SerializeField] private LevelParamsHandler _levelParamsHandler;
         [SerializeField] private UISystemData _uiSystemData;
         [SerializeField] private ScreenTransitionParticlesHandler _screenTransitionParticlesHandler;
@@ -34,7 +34,7 @@ namespace Installers
             
             Container.Bind<ScreenHandler>().FromInstance(_screenHandler).AsSingle();
             
-            Container.BindInterfacesAndSelfTo<LevelSessionHandler>().FromInstance(_levelSessionHandler).AsSingle();
+            Container.BindInterfacesAndSelfTo<LevelSessionHandlerOld>().FromInstance(levelSessionHandlerOld).AsSingle();
             Container.Bind<LevelParamsHandler>().FromInstance(_levelParamsHandler).AsSingle();
             Container.BindInterfacesAndSelfTo<ScreenTransitionParticlesHandler>().FromComponentInNewPrefab(_screenTransitionParticlesHandler).WithGameObjectName("[ScreenTransition]")
                 .UnderTransform(sceneServicesRoot).AsSingle().NonLazy();

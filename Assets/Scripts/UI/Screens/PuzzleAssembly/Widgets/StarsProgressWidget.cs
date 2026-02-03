@@ -1,14 +1,20 @@
 using DG.Tweening;
+using Extensions;
 using Installers;
+using Level.Widgets;
 using Services;
 using Storage.Snapshots.LevelParams;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities.Disposable;
+using Zenject;
 
 namespace UI.Screens.PuzzleAssembly.Widgets
 {
     public class StarsProgressWidget : InjectableMonoBehaviour
     {
+        [Inject] private readonly LevelInfoTrackerService _levelInfoTrackerService;
+        
         [Header("UI References")] 
         [SerializeField] private Image[] starImages;
         [SerializeField] private Image[] grayStarImages;
@@ -31,22 +37,17 @@ namespace UI.Screens.PuzzleAssembly.Widgets
             
             _timeThresholds = new [] {levelBeatingTime.FastestTime, levelBeatingTime.MediumTime, levelBeatingTime.MinimumTime};
             SetupStarsInitialState();
-        }
-        
-        public void ResetWidget()
-        {
-            ResetStarsAnimations(true);
-            SetupStarsInitialState();
+            
+            _levelInfoTrackerService.CurrentLevelPlayingTimeChangedSignal.MapListener(OnTimeUpdate).DisposeWith(this);
         }
 
-        public void OnTimeUpdate(double currentTime)
+        private void OnTimeUpdate(double currentTime)
         {
             if (_isStarActive == null) 
                 return;
 
             for (var i = 0; i < starImages.Length; i++)
             {
-                // Если звезда активна, но время превысило порог — "теряем" её
                 if (_isStarActive[i] && currentTime > _timeThresholds[i])
                 {
                     LoseStar(i);
@@ -56,20 +57,16 @@ namespace UI.Screens.PuzzleAssembly.Widgets
         
         private void SetupStarsInitialState()
         {
+            ResetStarsAnimations();
+            
             _isStarActive = new [] { true, true, true };
             
             for (var i = 0; i < 3; i++)
             {
-                // Сброс активных звезд (видимые)
-                starImages[i].DOKill();
-                starImages[i].transform.DOKill();
-                starImages[i].color = SetAlpha(starImages[i].color, 1f);
+                starImages[i].color.SetAlpha(1f);
                 starImages[i].transform.localScale = Vector3.one;
 
-                // Сброс серых звезд (невидимые в начале)
-                grayStarImages[i].DOKill();
-                grayStarImages[i].transform.DOKill();
-                grayStarImages[i].color = SetAlpha(grayStarImages[i].color, 0f);
+                grayStarImages[i].color.SetAlpha( 0f);
                 grayStarImages[i].transform.localScale = Vector3.one;
             }
         }
@@ -77,16 +74,12 @@ namespace UI.Screens.PuzzleAssembly.Widgets
         private void LoseStar(int index)
         {
             _isStarActive[index] = false;
-
-            // 1. Исчезновение цветной звезды
-            starImages[index].DOFade(0f, _fadeDuration);
-
-            // 2. Появление серой звезды с анимацией
+            
+            starImages[index].DOFade(0f, _fadeDuration).KillWith(this);
             grayStarImages[index].transform.localScale = Vector3.zero;
             grayStarImages[index].DOFade(1f, _fadeDuration);
-            grayStarImages[index].transform.DOScale(1f, _fadeDuration).SetEase(Ease.OutBack);
-
-            // 3. "Бамп" (пульсация) всех оставшихся активных звезд
+            grayStarImages[index].transform.DOScale(1f, _fadeDuration).SetEase(Ease.OutBack).KillWith(this);
+            
             for (var i = 0; i < _isStarActive.Length; i++)
             {
                 if (_isStarActive[i])
@@ -103,12 +96,8 @@ namespace UI.Screens.PuzzleAssembly.Widgets
             
             target.DOScale(_bumpScaleAmount, _bumpDuration / 2)
                 .SetLoops(2, LoopType.Yoyo)
-                .SetEase(Ease.OutQuad);
-        }
-        
-        private void OnDestroy()
-        {
-            ResetStarsAnimations();
+                .SetEase(Ease.OutQuad)
+                .KillWith(this);
         }
 
         private void ResetStarsAnimations(bool completeAnimation = false)
@@ -126,12 +115,6 @@ namespace UI.Screens.PuzzleAssembly.Widgets
                 img.DOKill(completeAnimation);
                 img.transform.DOKill(completeAnimation);
             }
-        }
-
-        private Color SetAlpha(Color color, float alpha)
-        {
-            color.a = alpha;
-            return color;
         }
     }
 }

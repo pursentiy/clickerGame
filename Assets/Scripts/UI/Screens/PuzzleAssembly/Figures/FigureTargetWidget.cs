@@ -1,17 +1,31 @@
 ﻿using DG.Tweening;
 using Extensions;
+using Installers;
 using RSG;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities.Disposable;
 
-namespace UI.Screens.PuzzleAssemblyScreen.Figures
+namespace UI.Screens.PuzzleAssembly.Figures
 {
-    public class FigureTargetWidget : FigureBase
+    public class FigureTargetWidget : InjectableMonoBehaviour, IFigureBase
     {
         [SerializeField] protected Image _fullImageSpriteRenderer;
         [SerializeField] protected Image _outlineImageSpriteRenderer;
         [SerializeField] protected ParticleSystem _completeParticles;
+        
+        public bool IsCompleted { get; private set; }
+        public int Id { get; private set; }
+        
+        public void Initialize(int id)
+        {
+            Id = id;
+        }
+
+        public void SetFigureCompleted(bool value)
+        {
+            IsCompleted = value;
+        }
         
         public void SetUpFigure(bool isCompleted)
         {
@@ -20,6 +34,17 @@ namespace UI.Screens.PuzzleAssemblyScreen.Figures
             
             _fullImageSpriteRenderer.DOFade(isCompleted ? 1 : 0, 0.01f).KillWith(this);
             _fullImageSpriteRenderer.gameObject.SetActive(isCompleted);
+        }
+        
+        public IPromise SetConnected()
+        {
+            return SetFigureCompletedAnimation()
+                .Then(() =>
+                {
+                    SetFigureCompleted(true);
+                    return Promise.Resolved();
+                })
+                .CancelWith(this);
         }
 
         private IPromise SetFigureCompletedAnimation()
@@ -49,17 +74,6 @@ namespace UI.Screens.PuzzleAssemblyScreen.Figures
             });
 
             return s.AsPromise();
-        }
-        
-        public IPromise SetConnected()
-        {
-            return SetFigureCompletedAnimation()
-                .Then(() =>
-                {
-                    SetFigureCompleted(true);
-                    return Promise.Resolved();
-                })
-                .CancelWith(this);
         }
     }
 }

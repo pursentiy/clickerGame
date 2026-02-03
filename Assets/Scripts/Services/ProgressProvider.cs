@@ -8,6 +8,8 @@ using Services.Player;
 using Storage;
 using Storage.Levels;
 using Storage.Snapshots;
+using Storage.Snapshots.LevelParams;
+using UI.Popups.CompleteLevelInfoPopup;
 using Zenject;
 
 namespace Services
@@ -57,8 +59,8 @@ namespace Services
             var pack = _gameInfoProvider.GetPackById(packNumber);
             return pack?.StarsToUnlock;
         }
-        
-        public bool IsLevelCompleted(int packNumber, int levelNumber)
+
+        public bool HasLevelBeenCompletedBefore(int packNumber, int levelNumber)
         {
             return TryGetLevelSnapshot(packNumber, levelNumber) != null;
         }
@@ -78,7 +80,7 @@ namespace Services
                 return true;
 
             var previousLevelId = levelId - 1;
-            return IsLevelCompleted(packId, previousLevelId);
+            return HasLevelBeenCompletedBefore(packId, previousLevelId);
         }
         
         public int GetLevelsCountInPack(int packId, bool availableLevelsToPlay = false)

@@ -14,7 +14,7 @@ using Services.CoroutineServices;
 using Services.ScreenBlocker;
 using Storage.Snapshots.LevelParams;
 using UI.Popups.CompleteLevelInfoPopup;
-using UI.Screens.PuzzleAssemblyScreen.Figures;
+using UI.Screens.PuzzleAssembly.Figures;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Utilities.Disposable;
@@ -23,7 +23,7 @@ using Zenject;
 
 namespace Components.Levels
 {
-    public class LevelSessionHandler : MonoBehaviour, IDisposableHandlers
+    public class LevelSessionHandlerOld : MonoBehaviour, IDisposableHandlers
     {
         [Inject] private readonly ProgressController _progressController;
         [Inject] private readonly ScreenHandler _screenHandler;
@@ -97,7 +97,7 @@ namespace Components.Levels
             var packId = _progressController.CurrentPackId;
             var levelId = _currentLevelParams.LevelId;
             
-            var levelStatus = _progressProvider.IsLevelCompleted(packId, levelId)
+            var levelStatus = _progressProvider.HasLevelBeenCompletedBefore(packId, levelId)
                     ? CompletedLevelStatus.Replayed
                     : CompletedLevelStatus.InitialCompletion;
             
@@ -140,7 +140,7 @@ namespace Components.Levels
             _menuWidgetFigure = figure;
             _levelHudHandler.LockScroll(true);
             
-            SetupDraggingFigure(figure.FigureId);
+            SetupDraggingFigure(figure.Id);
         }
 
         private void SetupDraggingFigure(int figureId)
@@ -169,21 +169,21 @@ namespace Components.Levels
                     return;
                 }
             
-                var figure = releasedOnFigures.FirstOrDefault(i => i != null && i.FigureId == _draggingFigureContainer.FigureId);
+                var figure = releasedOnFigures.FirstOrDefault(i => i != null && i.Id == _draggingFigureContainer.Id);
                 if (figure == null)
                 {
                     ResetDraggingFigure();
                     return;
                 }
                 
-                if (_draggingFigureContainer.FigureId == figure.FigureId)
+                if (_draggingFigureContainer.Id == figure.Id)
                 {
                     var blockRef = _uiScreenBlocker.Block(15);
                     _soundHandler.PlaySound("success");
                     var shiftingAnimationPromise = new Promise();
-                    _levelHudHandler.TryShiftAllElementsAfterRemoving(_draggingFigureContainer.FigureId, shiftingAnimationPromise);
+                    _levelHudHandler.TryShiftAllElementsAfterRemoving(_draggingFigureContainer.Id, shiftingAnimationPromise);
                 
-                    TrySetFigureInserted(figure.FigureId);
+                    TrySetFigureInserted(figure.Id);
                 
                     _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigureImage.transform.DOScale(0, 0.3f))
                         .KillWith(this);
@@ -222,7 +222,7 @@ namespace Components.Levels
             
             return menuFigurePromise.Then(() =>
             {
-                _levelHudHandler.DestroyFigure(_draggingFigureContainer.FigureId);
+                _levelHudHandler.DestroyFigure(_draggingFigureContainer.Id);
                 ClearDraggingFigure();
                 return _coroutineService.WaitFrame();
             }).CancelWith(this);
@@ -233,7 +233,7 @@ namespace Components.Levels
             var blockRef = _uiScreenBlocker.Block(15);
             _soundHandler.PlaySound("fail");
             var shiftingAnimationPromise = new Promise();
-            _levelHudHandler.ShiftAllElements(true, _draggingFigureContainer.FigureId, shiftingAnimationPromise);
+            _levelHudHandler.ShiftAllElements(true, _draggingFigureContainer.Id, shiftingAnimationPromise);
 
             _resetDraggingAnimationSequence = DOTween.Sequence()
                 .Append(_draggingFigureImage.transform.DOMove(_draggingFigureContainer.InitialPosition, 0.4f))
@@ -243,7 +243,7 @@ namespace Components.Levels
                 .KillWith(this);
 
             Promise.All(shiftingAnimationPromise, _resetDraggingAnimationSequence.AsPromise())
-                .Then(() => _levelHudHandler.ReturnFigureBackToScroll(_draggingFigureContainer.FigureId))
+                .Then(() => _levelHudHandler.ReturnFigureBackToScroll(_draggingFigureContainer.Id))
                 .Then(() =>
                 {
                     _draggingFigureContainer.FigureTransform.transform.localPosition = Vector3.zero;

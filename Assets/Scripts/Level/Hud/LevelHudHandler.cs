@@ -15,8 +15,8 @@ using Services.CoroutineServices;
 using Storage;
 using Storage.Snapshots.LevelParams;
 using UI.Popups.SettingsPopup;
+using UI.Screens.PuzzleAssembly.Figures;
 using UI.Screens.PuzzleAssembly.Widgets;
-using UI.Screens.PuzzleAssemblyScreen.Figures;
 using UI.Screens.PuzzleAssemblyScreen.Widgets;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -149,7 +149,7 @@ namespace Level.Hud
             }
             
             var figure = Instantiate(figurePrefab, _figuresDraggingContainer);
-            figure.SetUpDefaultParamsFigure(figureParams.FigureId);
+            ((FigureBase)figure).Initialize(figureParams.FigureId);
             figure.SetScale(1);
             _figureAnimalsForAssemblyList.Add(figure);
             
@@ -169,7 +169,7 @@ namespace Level.Hud
 
             var figure = Instantiate(figurePrefab, _figuresAssemblyContainer);
             figure.SetUpFigure(figureParams.Completed);
-            figure.SetUpDefaultParamsFigure(figureParams.FigureId);
+            figure.Initialize(figureParams.FigureId);
             _figureAnimalsTargetList.Add(figure);
         }
 
@@ -216,7 +216,7 @@ namespace Level.Hud
 
             _figureAnimalsForAssemblyList.ForEach(figure =>
             {
-                if (figure.FigureId <= figureId || figure == null)
+                if (figure.Id <= figureId || figure == null)
                     return;
 
                 var position = figure.ContainerTransform.localPosition;
@@ -239,7 +239,7 @@ namespace Level.Hud
             var shiftingSequence = DOTween.Sequence().KillWith(this);
             _figureAnimalsForAssemblyList.ForEach(figure =>
             {
-                if (figure.FigureId <= figureId)
+                if (figure.Id <= figureId)
                     return;
                 
                 var position = figure.ContainerTransform.localPosition;
@@ -252,8 +252,8 @@ namespace Level.Hud
 
         public void DestroyFigure(int figureId)
         { 
-            _figureAnimalsForAssemblyList.FirstOrDefault(figure => figure.FigureId == figureId)?.Destroy();
-            _figureAnimalsForAssemblyList = _figureAnimalsForAssemblyList.Where(figure => figure.FigureId != figureId).ToList();
+            _figureAnimalsForAssemblyList.FirstOrDefault(figure => figure.Id == figureId)?.DestroyWidget();
+            _figureAnimalsForAssemblyList = _figureAnimalsForAssemblyList.Where(figure => figure.Id != figureId).ToList();
         }
 
         public void LockScroll(bool value)
@@ -274,7 +274,7 @@ namespace Level.Hud
 
         public FigureMenuWidget GetFigureById(int figureId)
         {
-            return _figureAnimalsForAssemblyList.FirstOrDefault(figure => figure.FigureId == figureId);
+            return _figureAnimalsForAssemblyList.FirstOrDefault(figure => figure.Id == figureId);
         }
 
         public List<FSignal<FigureMenuWidget>> GetOnBeginDragFiguresSignal()

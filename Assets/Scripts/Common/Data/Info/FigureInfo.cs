@@ -1,4 +1,4 @@
-using UI.Screens.PuzzleAssemblyScreen.Figures;
+using UI.Screens.PuzzleAssembly.Figures;
 
 namespace Common.Data.Info
 {

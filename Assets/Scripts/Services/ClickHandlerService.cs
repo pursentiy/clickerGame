@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using UI.Screens.PuzzleAssemblyScreen.Figures;
+using UI.Screens.PuzzleAssembly.Figures;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 

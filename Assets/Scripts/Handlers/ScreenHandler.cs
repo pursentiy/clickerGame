@@ -22,7 +22,7 @@ namespace Handlers
         [Inject] private UIScreenBlocker _uiScreenBlocker;
         [Inject] private ProgressProvider _progressProvider;
         [Inject] private ProgressController _progressController;
-        [Inject] private LevelSessionHandler _levelSessionHandler;
+        [Inject] private LevelSessionHandlerOld _levelSessionHandlerOld;
         [Inject] private LevelParamsHandler _levelParamsHandler;
         [Inject] private IDisposableHandlers[] _disposableHandlers;
         [Inject] private CoroutineService _coroutineService;
@@ -56,7 +56,7 @@ namespace Handlers
             {
                 _progressController.SetCurrentLevelId(levelId);
                 PopupCurrentScreenAndDisposeHandlers();
-                _levelSessionHandler.StartLevel(levelInfo.ToSnapshot(), _levelParamsHandler.LevelHudHandlerPrefab, packInfo);
+                _levelSessionHandlerOld.StartLevel(levelInfo.ToSnapshot(), _levelParamsHandler.LevelHudHandlerPrefab, packInfo);
                 blockRef?.Dispose();
             }).CancelWith(this);
         }
@@ -114,7 +114,7 @@ namespace Handlers
         {
             var particlesPromise = TryStartParticlesAwaitPromiseTransition(fast);
             var screenHidePromise = !fast ? (_currentScreenBase?.HideScreen() ?? Promise.Resolved()) : Promise.Resolved();
-            var levelHudHidePromise = _levelSessionHandler.HideHUD(fast);
+            var levelHudHidePromise = _levelSessionHandlerOld.HideHUD(fast);
 
             return Promise.All(particlesPromise, screenHidePromise, levelHudHidePromise);
         }

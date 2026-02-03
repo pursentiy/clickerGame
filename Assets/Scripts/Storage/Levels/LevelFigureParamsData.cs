@@ -1,5 +1,5 @@
 using System;
-using UI.Screens.PuzzleAssemblyScreen.Figures;
+using UI.Screens.PuzzleAssembly.Figures;
 
 namespace Storage.Levels
 {
@@ -7,7 +7,7 @@ namespace Storage.Levels
     public class LevelFigureParamsData
     {
         public int FigureId;
-        public FigureTargetWidget _figureTargetWidget;
-        public FigureMenuWidget figureMenuWidget;
+        public FigureTargetWidget FigureTarget;
+        public FigureMenuWidget FigureMenu;
     }
 }

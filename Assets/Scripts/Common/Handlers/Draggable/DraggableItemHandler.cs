@@ -9,12 +9,12 @@ namespace Common.Handlers.Draggable
         private const PointerEventData.InputButton ForbiddenButton = PointerEventData.InputButton.Left;
         public FSignal<IDraggable, PointerEventData> OnBeginDragSignal { get; } = new ();
         public FSignal<PointerEventData> OnDragSignal { get; } = new ();
-        public FSignal<PointerEventData> OnEndDragSignal { get; } = new ();
+        public FSignal<IDraggable, PointerEventData> OnEndDragSignal { get; } = new ();
         public int Id { get; private set; }
         
         private bool _isDragging;
 
-        public void Initialize(int id)
+        public virtual void Initialize(int id)
         {
             Id = id;
         }
@@ -32,6 +32,7 @@ namespace Common.Handlers.Draggable
                 return;
             
             _isDragging = true;
+            OnBeginDragInternally(eventData);
             OnBeginDragSignal.Dispatch(this, eventData);
         }
 
@@ -40,7 +41,19 @@ namespace Common.Handlers.Draggable
             if (!_isDragging) return;
             
             _isDragging = false;
-            OnEndDragSignal.Dispatch(eventData);
+            
+            OnEndDragInternally(eventData);
+            OnEndDragSignal.Dispatch(this, eventData);
+        }
+
+        protected virtual void OnEndDragInternally(PointerEventData eventData)
+        {
+            
+        }
+        
+        protected virtual void OnBeginDragInternally(PointerEventData eventData)
+        {
+            
         }
     }
 }

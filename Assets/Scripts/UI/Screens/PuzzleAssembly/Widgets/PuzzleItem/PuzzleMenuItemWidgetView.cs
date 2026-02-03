@@ -7,7 +7,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets.PuzzleItem
 {
     public class PuzzleMenuItemWidgetView : ItemViewBase
     {
-        public Image _image;
+        public Image Image;
         public RectTransform _transformFigure;
         public RectTransform _transformContainer;
         public ParticleSystem _particleSystem;

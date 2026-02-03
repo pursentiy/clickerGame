@@ -50,7 +50,7 @@ namespace Handlers.UISystem.Screens
     {
         [Inject] private DiContainer _container;
         [Inject] private List<IWidget> _widgets;
-        [Inject] private SoundHandler _soundHandler;
+        [Inject] protected SoundHandler _soundHandler;
 
         public virtual bool CanResync => false;
         public abstract IScreenContext GetContext();

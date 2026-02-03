@@ -19,9 +19,9 @@ using UnityEngine.UI;
 using Utilities.Disposable;
 using Zenject;
 
-namespace UI.Screens.PuzzleAssembly.Widgets
+namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
 {
-    public class PuzzlesWidget : InjectableMonoBehaviour
+    public class PuzzlesListWidget : InjectableMonoBehaviour
     {
         [Inject] private readonly ScreenHandler _screenHandler;
         [Inject] private readonly ProgressProvider _progressProvider;
