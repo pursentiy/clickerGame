@@ -32,6 +32,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
         
         [SerializeField] private PuzzlesListWidget _puzzlesListWidget;
         [SerializeField] private RectTransform _draggingTransform;
+        [SerializeField] private RectTransform _figuresAssemblyContainer;
         [SerializeField] private GraphicRaycaster _figuresAssemblyCanvasRaycaster;
 
         public FSignal CheckLevelCompletionSignal { get; } = new();
@@ -49,10 +50,10 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
         private Coroutine _finishCoroutine;
         private PackInfo _packInfo;
 
-        public void Initialize(
-            List<TargetFigureInfo> figuresTargetList, 
-            List<MenuFigureInfo> figuresMenuList)
+        public void Initialize(List<TargetFigureInfo> figuresTargetList, 
+            List<MenuFigureInfo> figuresMenuList, float assemblyContainerScale)
         {
+            SetAssemblyContainerScale(assemblyContainerScale);
             InitializePuzzles(figuresTargetList, figuresMenuList);
             SubscribeToMenuFiguresSignals();
         }
@@ -60,6 +61,17 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
         private void InitializePuzzles(List<TargetFigureInfo> figuresTargetList, List<MenuFigureInfo> figuresMenuList)
         {
             _puzzlesListWidget.Initialize(figuresTargetList, figuresMenuList);
+        }
+        
+        private void SetAssemblyContainerScale(float scale)
+        {
+            if (scale <= 0)
+            {
+                LoggerService.LogWarning(this, $"Scale must be greater than zero at {nameof(SetAssemblyContainerScale)}");
+                return;
+            }
+            
+            _figuresAssemblyContainer.localScale = new Vector3(scale, scale, scale);
         }
         
         private void SubscribeToMenuFiguresSignals()
@@ -89,7 +101,6 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
                 endSignal.MapListener(OnDragEndFiguresSignal).DisposeWith(this);
             }
         }
-        
         
         private void OnBeginDragFiguresSignal(IDraggable draggable, PointerEventData eventData)
         {
@@ -160,7 +171,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
                         .Then(() => _coroutineService.WaitFor(0.05f))
                         .Then(() =>
                         {
-                            SetDraggingFinished();
+                            SetDraggingDisabled();
                             blockRef?.Dispose();
                             CheckLevelCompletionSignal.Dispatch();
                         })
@@ -189,8 +200,18 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             _draggingMenuScrollEmptyContainer = null;
             _draggingFigure = null;
         }
+        
+        private IPromise SetMenuFigureConnected()
+         {
+             return _menuWidgetFigure.SetConnected().Then(() =>
+             {
+                 _puzzlesListWidget.DestroyFigure(_draggingMenuScrollEmptyContainer.Id);
+                 ClearDraggingFigure();
+                 return _coroutineService.WaitFrame();
+             }).CancelWith(this);
+         }
 
-        private void SetDraggingFinished()
+        private void SetDraggingDisabled()
         {
             _isDraggable = false;
         }
@@ -214,8 +235,10 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
         {
             var blockRef = _uiScreenBlocker.Block(15);
             _soundHandler.PlaySound("fail");
-            var shiftingAnimationPromise = new Promise();
-            _puzzlesListWidget.TryShiftAllElements(_draggingMenuScrollEmptyContainer.Id, true);
+            
+            SetDraggingDisabled();
+            
+            var shiftingAnimationPromise = _puzzlesListWidget.TryShiftAllElements(_draggingMenuScrollEmptyContainer.Id, true);
 
             _resetDraggingAnimationSequence = DOTween.Sequence()
                 .Append(_draggingFigure.transform.DOMove(_draggingMenuScrollEmptyContainer.InitialPosition, 0.4f))
@@ -233,11 +256,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
                     return Promise.Resolved();
                 })
                 .Then(() => _coroutineService.WaitFor(0.15f))
-                .Then(() =>
-                {
-                    SetDraggingFinished();
-                    blockRef?.Dispose();
-                })
+                .Then(() => blockRef?.Dispose())
                 .Catch(e =>
                 {
                     LoggerService.LogWarning(this, e.Message);

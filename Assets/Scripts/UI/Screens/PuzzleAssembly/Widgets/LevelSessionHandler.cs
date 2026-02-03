@@ -5,7 +5,6 @@ using DG.Tweening;
 using Extensions;
 using Handlers;
 using Installers;
-using Level.FinishLevelSequence;
 using Level.Hud;
 using Level.Widgets;
 using RSG;
@@ -16,6 +15,7 @@ using Storage;
 using Storage.Snapshots.LevelParams;
 using UI.Popups.CompleteLevelInfoPopup;
 using UI.Screens.PuzzleAssembly.Figures;
+using UI.Screens.PuzzleAssembly.Level.FinishLevelSequence;
 using UI.Screens.PuzzleAssembly.Widgets.Puzzles;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -44,7 +44,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets
         private int _packId;
         private int _levelId;
 
-        public void Initialize(LevelParamsSnapshot levelParamsSnapshot, int packId, int levelId)
+        public void Initialize(LevelParamsSnapshot levelParamsSnapshot, int packId)
         {
             if (!_progressController.SetCurrentLevel(levelParamsSnapshot))
             {
@@ -52,16 +52,22 @@ namespace UI.Screens.PuzzleAssembly.Widgets
             }
             
             _packId = packId;
-            _levelId = levelId;
-            _levelTrackingId = LevelTrackingExtensions.GetLevelTrackingId(packId, levelId);
+            _levelId = levelParamsSnapshot.LevelId;
+            _levelTrackingId = LevelTrackingExtensions.GetLevelTrackingId(packId, _levelId);
             _levelParamsSnapshot = levelParamsSnapshot;
             _soundHandler.PlaySound("start");
             
             StartLevelTracking();
-            InitializePuzzles(packId, levelId);
+            InitializePuzzles(packId, _levelId, levelParamsSnapshot.FigureScale);
 
             _puzzlesWidget.CheckLevelCompletionSignal.MapListener(TryHandleLevelCompletion).DisposeWith(this);
             _puzzlesWidget.TrySetFigureConnectedSignal.MapListener(TrySetFigureConnected).DisposeWith(this);
+        }
+
+        public void OnScreenLeave()
+        {
+            StopLevelTracking();
+            _progressController.ResetCurrentLevelSnapshot();
         }
 
         private void TrySetFigureConnected(int figureId)
@@ -98,8 +104,8 @@ namespace UI.Screens.PuzzleAssembly.Widgets
         private void StartLevelCompletionSequence(int packId, int levelId, int currentStarsForLevel, int initialStarsForLevel, float levelPlayedTime, CompletedLevelStatus completedLevelStatus)
         {
             StateMachine
-                .CreateMachine(new FinishLevelContext(packId, levelId, currentStarsForLevel, initialStarsForLevel, levelPlayedTime, _packInfo, completedLevelStatus))
-                .StartSequence<ShowCompletePopupState>()
+                .CreateMachine(new FinishLevelContext(packId, levelId, currentStarsForLevel, initialStarsForLevel, levelPlayedTime, completedLevelStatus))
+                .StartSequence<ResetLevelParamsState>()
                 .FinishWith(this);
         }
 
@@ -119,12 +125,12 @@ namespace UI.Screens.PuzzleAssembly.Widgets
             _scrollRect.horizontal = !value;
         }
 
-        private void InitializePuzzles(int packId, int levelId)
+        private void InitializePuzzles(int packId, int levelId, float assemblyContainerScale)
         {
             var figuresTargetList = _levelsParamsStorageData.GetTargetFigures(packId, levelId);
             var figuresMenuList = _levelsParamsStorageData.GetMenuFigures(packId, levelId);
             
-            _puzzlesWidget.Initialize(figuresTargetList, figuresMenuList);
+            _puzzlesWidget.Initialize(figuresTargetList, figuresMenuList, assemblyContainerScale);
         }
         
         private void StartLevelTracking()

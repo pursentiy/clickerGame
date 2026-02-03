@@ -1,5 +1,7 @@
 using System;
 using Common.Currency;
+using Common.Data.Info;
+using Controllers;
 using Handlers;
 using Handlers.UISystem;
 using RSG;
@@ -11,17 +13,19 @@ using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
 
-namespace Level.FinishLevelSequence
+namespace UI.Screens.PuzzleAssembly.Level.FinishLevelSequence
 {
     public class SaveProgressState : InjectableStateBase<FinishLevelContext>
     {
         [Inject] private readonly UIManager _uiManager;
-        [Inject] private readonly ScreenHandler _screenHandler;
         [Inject] private readonly SoundHandler _soundHandler;
         [Inject] private readonly ProgressController _progressController;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
         [Inject] private readonly CoroutineService _coroutineService;
         [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
+        [Inject] private readonly ProgressProvider _progressProvider;
+        [Inject] private readonly FlowScreenController _flowScreenController;
+
         
         private IUIBlockRef _uiBlockRef;
         
@@ -59,14 +63,15 @@ namespace Level.FinishLevelSequence
 
         private void GoToLevelsScreen()
         {
-            if (Context.PackInfo == null)
+            var packInfo = _progressProvider.GetPackInfo(Context.PackId);
+            if (packInfo == null)
             {
-                LoggerService.LogWarning(this, $"[{GetType().Name}]: {nameof(Context.PackInfo)} is null. Returning to Welcome Screen");
-                _screenHandler.ShowWelcomeScreen();
+                LoggerService.LogWarning(this, $"{nameof(PackInfo)} is null for PackId {Context.PackId}. Returning to Welcome Screen");
+                _flowScreenController.GoToWelcomeScreen();
                 return;
             }
             
-            //_screenHandler.ShowChooseLevelScreen(Context.PackInfo);
+            _flowScreenController.GoToChooseLevelScreen(packInfo);
             RevertEnvironment();
             Sequence.Finish();
         }

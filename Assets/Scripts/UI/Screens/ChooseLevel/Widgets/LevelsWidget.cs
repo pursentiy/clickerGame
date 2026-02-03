@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Common.Data.Info;
+using Controllers;
 using Extensions;
 using Installers;
 using Services;
+using Storage.Extensions;
+using Storage.Snapshots.LevelParams;
 using ThirdParty.SuperScrollView.Scripts.GridView;
 using ThirdParty.SuperScrollView.Scripts.List;
 using UI.Screens.ChooseLevel.LevelItem;
@@ -15,6 +18,7 @@ namespace UI.Screens.ChooseLevel.Widgets
     public class LevelsWidget : InjectableMonoBehaviour
     {
         [Inject] private readonly ProgressProvider _progressProvider;
+        [Inject] private readonly FlowScreenController _flowScreenController;
         
         [SerializeField] private LoopGridView _loopGridView;
 
@@ -81,7 +85,14 @@ namespace UI.Screens.ChooseLevel.Widgets
         
         private void StartLevel(int levelId)
         {
-            //TODO START LEVEL ACTION
+            var levelParamsSnapshot = _progressProvider.GetLevelInfo(_packId, levelId)?.ToSnapshot();
+            if (levelParamsSnapshot == null)
+            {
+                LoggerService.LogWarning(this, $"Cannot start level {levelId} as {nameof(LevelParamsSnapshot)} is null");
+                return;
+            }
+
+            _flowScreenController.GoToPuzzleAssemblyScreen(levelParamsSnapshot, _packId);
         }
     }
 }

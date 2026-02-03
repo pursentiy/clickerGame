@@ -6,6 +6,7 @@ using RSG;
 using Storage.Snapshots.LevelParams;
 using UI.Screens.ChooseLevel;
 using UI.Screens.ChoosePack;
+using UI.Screens.PuzzleAssembly;
 using UI.Screens.WelcomeScreen;
 using Utilities.Disposable;
 using Zenject;
@@ -26,6 +27,12 @@ namespace Controllers
         {
             var context = new ChooseLevelScreenContext(packInfo);
             var screenPromise = GoToScreenInternal(new FadeScreenTransition(typeof(ChooseLevelScreenMediator), context));
+            return ToFlowInfo(screenPromise);
+        }
+        public MediatorFlowInfo GoToPuzzleAssemblyScreen(LevelParamsSnapshot levelParamsSnapshot, int packId)
+        {
+            var context = new PuzzleAssemblyScreenContext(levelParamsSnapshot, packId);
+            var screenPromise = GoToScreenInternal(new FadeScreenTransition(typeof(PuzzleAssemblyScreenMediator), context));
             return ToFlowInfo(screenPromise);
         }
         

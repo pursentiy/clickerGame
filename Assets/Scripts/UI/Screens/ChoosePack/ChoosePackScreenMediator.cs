@@ -71,7 +71,7 @@ namespace UI.Screens.ChoosePack
 
         private void OnGoBackButtonClicked()
         {
-            _flowScreenController.GoToChoosePackScreen();
+            _flowScreenController.GoToWelcomeScreen();
         }
         
         private void OnAdsButtonClicked()

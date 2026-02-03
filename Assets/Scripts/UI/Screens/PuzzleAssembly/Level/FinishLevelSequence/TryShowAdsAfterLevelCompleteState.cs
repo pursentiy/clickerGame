@@ -7,7 +7,7 @@ using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
 
-namespace Level.FinishLevelSequence
+namespace UI.Screens.PuzzleAssembly.Level.FinishLevelSequence
 {
     [UsedImplicitly]
     public sealed class TryShowAdsAfterLevelCompleteState : InjectableStateBase<FinishLevelContext>

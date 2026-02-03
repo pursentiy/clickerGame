@@ -11,7 +11,7 @@ using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
 
-namespace Level.FinishLevelSequence
+namespace UI.Screens.PuzzleAssembly.Level.FinishLevelSequence
 {
     public class ShowCompletePopupState : InjectableStateBase<FinishLevelContext>
     {

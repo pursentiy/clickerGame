@@ -22,6 +22,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 453b70b42ca734edf9892cafedf8ffa5
+    m_Address: UI Screens/PuzzleAssemblyScreenMediator
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e0a982ea61aaff3479e996a1e981d2c7
     m_Address: UI Screens/WelcomeScreenScreenMediator
     m_ReadOnly: 0

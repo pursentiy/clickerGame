@@ -1,9 +1,8 @@
 using Common.Currency;
-using Common.Data.Info;
 using UI.Popups.CompleteLevelInfoPopup;
 using Utilities.StateMachine;
 
-namespace Level.FinishLevelSequence
+namespace UI.Screens.PuzzleAssembly.Level.FinishLevelSequence
 {
     public class FinishLevelContext : IStateContext
     {
@@ -13,7 +12,6 @@ namespace Level.FinishLevelSequence
             Stars currentStars,
             Stars initialStars,
             float levelCompletingTime,
-            PackInfo packInfo,
             CompletedLevelStatus completedLevelStatus)
         {
             PackId = packId;
@@ -21,7 +19,6 @@ namespace Level.FinishLevelSequence
             CurrentStars = currentStars;
             InitialStars = initialStars;
             LevelCompletingTime = levelCompletingTime;
-            PackInfo = packInfo;
             CompletedLevelStatus = completedLevelStatus;
         }
         
@@ -30,7 +27,6 @@ namespace Level.FinishLevelSequence
         public Stars CurrentStars { get; }
         public Stars InitialStars { get; }
         public float LevelCompletingTime { get; }
-        public PackInfo PackInfo { get; }
         public CompletedLevelStatus CompletedLevelStatus { get; }
     }
 }

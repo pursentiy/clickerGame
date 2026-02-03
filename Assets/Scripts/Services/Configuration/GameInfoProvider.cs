@@ -12,7 +12,7 @@ using Zenject;
 
 namespace Services.Configuration
 {
-    public abstract class GameInfoProvider : DisposableService
+    public class GameInfoProvider : DisposableService
     {
         [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private readonly GameConfigurationProvider _gameConfigurationProvider;

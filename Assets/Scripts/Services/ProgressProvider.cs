@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Common.Currency;
 using Common.Data.Info;
+using Extensions;
 using Services.Configuration;
 using Services.Player;
-using Storage;
-using Storage.Levels;
 using Storage.Snapshots;
-using Storage.Snapshots.LevelParams;
-using UI.Popups.CompleteLevelInfoPopup;
 using Zenject;
 
 namespace Services
@@ -29,6 +26,16 @@ namespace Services
                 return null;
             
             return _gameInfoProvider.PacksInfo.FirstOrDefault(i => i.PackId == packId);
+        }
+
+        public LevelInfo GetLevelInfo(int packId, int levelId)
+        {
+            var pack = GetPackInfo(packId);
+            if (pack == null || pack.LevelsInfo.IsCollectionNullOrEmpty())
+                return null;
+            
+            var level = pack.LevelsInfo.FirstOrDefault(i => i.LevelId == levelId);
+            return level;
         }
         
         public bool IsPackAvailable(int packNumber)
@@ -62,7 +69,7 @@ namespace Services
 
         public bool HasLevelBeenCompletedBefore(int packNumber, int levelNumber)
         {
-            return TryGetLevelSnapshot(packNumber, levelNumber) != null;
+            return TryGetSavedLevelSnapshot(packNumber, levelNumber) != null;
         }
         
         public bool IsLevelAvailableToPlay(int packId, int levelId)
@@ -100,25 +107,25 @@ namespace Services
         
         public Stars? GetEarnedStarsForLevel(int packId, int levelId)
         {
-            return TryGetLevelSnapshot(packId, levelId)?.StarsEarned;
+            return TryGetSavedLevelSnapshot(packId, levelId)?.StarsEarned;
         }
         
-        public PackSnapshot TryGetPackSnapshot(int packId)
+        public PackSnapshot TryGetSavedPackSnapshot(int packId)
         {
             if (!_playerProfileManager.IsInitialized)
             {
-                LoggerService.LogWarning(this,$"[{nameof(TryGetPackSnapshot)}]: {nameof(PlayerProfileManager)} is not initialized");
+                LoggerService.LogWarning(this,$"[{nameof(TryGetSavedPackSnapshot)}]: {nameof(PlayerProfileManager)} is not initialized");
                 return null;
             }
             
             return _playerProfileManager.TryGetPackSnapshot(packId);
         }
         
-        public LevelSnapshot TryGetLevelSnapshot(int packId, int levelId)
+        public LevelSnapshot TryGetSavedLevelSnapshot(int packId, int levelId)
         {
             if (!_playerProfileManager.IsInitialized)
             {
-                LoggerService.LogWarning(this,$"[{nameof(TryGetLevelSnapshot)}]: {nameof(PlayerProfileManager)} is not initialized");
+                LoggerService.LogWarning(this,$"[{nameof(TryGetSavedLevelSnapshot)}]: {nameof(PlayerProfileManager)} is not initialized");
                 return null;
             }
             

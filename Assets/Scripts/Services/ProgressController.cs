@@ -50,6 +50,11 @@ namespace Services
             return true;
         }
 
+        public void ResetCurrentLevelSnapshot()
+        {
+            _currentLevelSnapshot = null;
+        }
+
         public bool TrySetCurrentLevelFigureConnected(int levelId, int figureId)
         {
             if (_currentLevelSnapshot == null)
@@ -89,13 +94,13 @@ namespace Services
                 return false;
             }
             
-            if (_progressProvider.TryGetPackSnapshot(packId) == null && !TryAddPackToProfile(packId))
+            if (_progressProvider.TryGetSavedPackSnapshot(packId) == null && !TryAddPackToProfile(packId))
             {
                 LoggerService.LogWarning(this, $"[{nameof(SetLevelCompleted)}]: Cannot get packId {packId} neither cannot add it");
                 return false;
             }
 
-            var maybeLevelSnapshot = _progressProvider.TryGetLevelSnapshot(packId, levelId);
+            var maybeLevelSnapshot = _progressProvider.TryGetSavedLevelSnapshot(packId, levelId);
             if (maybeLevelSnapshot != null)
             {
                 if (!TryUpdateLevelSnapshot(packId, levelId, levelCompletedTime, starsEarned))
@@ -178,7 +183,7 @@ namespace Services
         
         private bool TryUpdateLevelSnapshot(int packId, int levelId, float newCompletedTime, Stars updatedEarnedStars)
         {
-            var levelSnapshot = _progressProvider.TryGetLevelSnapshot(packId, levelId);
+            var levelSnapshot = _progressProvider.TryGetSavedLevelSnapshot(packId, levelId);
             if (levelSnapshot == null)
             {
                 return false;

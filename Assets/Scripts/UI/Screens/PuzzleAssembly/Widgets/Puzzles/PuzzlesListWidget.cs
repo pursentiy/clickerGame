@@ -23,7 +23,6 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
 {
     public class PuzzlesListWidget : InjectableMonoBehaviour
     {
-        [Inject] private readonly ScreenHandler _screenHandler;
         [Inject] private readonly ProgressProvider _progressProvider;
         [Inject] private readonly ProgressController _progressController;
         [Inject] private readonly SoundHandler _soundHandler;
@@ -35,18 +34,12 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
         [SerializeField] private RectTransform _figuresAssemblyContainer;
         [SerializeField] private ScrollRect _scrollRect;
         [SerializeField] private HorizontalLayoutGroup _figuresLayoutGroup;
-        [SerializeField] private CanvasGroup _canvasGroup;
-        [SerializeField] private StarsProgressWidget _starsProgressWidget;
-        [SerializeField] private LevelTimerWidget _levelTimerWidget;
-        [SerializeField] private GraphicRaycaster _figuresAssemblyCanvasRaycaster;
-        [SerializeField] private ParticleSystem _finishLevelParticles;
         
         private List<FigureMenuWidget> _figuresMenuList = new List<FigureMenuWidget>();
         private List<FigureTargetWidget> _figuresTargetList = new List<FigureTargetWidget>();
         private Sequence _shiftingSequence;
         
-        public IReadOnlyList<FigureMenuWidget> FiguresMenu => _figuresMenuList;
-        public IReadOnlyList<FigureTargetWidget> FigureTarget => _figuresTargetList;
+
         public IReadOnlyList<FSignal<IDraggable, PointerEventData>> OnBeginDragFiguresSignals => 
             _figuresMenuList.Select(figure => figure.OnBeginDragSignal).ToList();
         public IReadOnlyList<FSignal<IDraggable, PointerEventData>> OnDragEndFiguresSignals => 
