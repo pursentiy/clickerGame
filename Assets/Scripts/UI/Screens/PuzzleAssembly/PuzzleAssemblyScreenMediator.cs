@@ -50,8 +50,14 @@ namespace UI.Screens.PuzzleAssembly
                 return;
             }
             
-            View.LevelSessionHandler.OnScreenLeave();
             _flowScreenController.GoToChooseLevelScreen(packInfo);
+        }
+
+        public override void OnEndHide()
+        {
+            base.OnEndHide();
+            
+            View.LevelSessionHandler.OnScreenLeave();
         }
     }
 }

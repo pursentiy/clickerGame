@@ -53,21 +53,21 @@ namespace Services.ScreenBlocker
         {
             Object.Destroy(_blocker.transform.parent.gameObject);
             
-            LoggerService.LogDebug(this, "Blocker object destroyed");
+            LoggerService.LogDebug(this, "[UIBlocker] Blocker object destroyed");
         }
 
         private void RefreshState()
         {
             if (_blocker == null)
             {
-                LoggerService.LogDebug(this, $"[{nameof(RefreshState)}]: blocker is null");
+                LoggerService.LogDebug(this, $"[UIBlocker] [{nameof(RefreshState)}]: blocker is null");
                 return;
             }
             
             var blockerObject = _blocker.gameObject;
             blockerObject.SetActive(_blockRefs.Count > 0);
             
-            LoggerService.LogDebug(this, $"[{nameof(RefreshState)}]: blocked? = {blockerObject.activeSelf} (refs count = {_blockRefs.Count})");
+            LoggerService.LogDebug(this, $"[UIBlocker] [{nameof(RefreshState)}]: blocked? = {blockerObject.activeSelf} (refs count = {_blockRefs.Count})");
         }
 
         private static void DisposeBlockRefAfterTimer(UIBlockRef<T> blockRef)
@@ -85,14 +85,14 @@ namespace Services.ScreenBlocker
         private static void LogBlockerCreated(UIBlockRef<T> blockRef)
         {
 #if UNITY_EDITOR
-            LoggerService.LogDebug($"[UIBlocker]: blocker Id = {blockRef.Id} at {nameof(LogBlockerCreated)}");
+            LoggerService.LogDebug($"[UIBlocker] blocker Id = {blockRef.Id} at {nameof(LogBlockerCreated)}");
 #endif   
         }
         
         private static void LogBlockerDisposeAfterTimer(UIBlockRef<T> blockRef)
         {
 #if UNITY_EDITOR
-            LoggerService.LogDebug($"[UIBlocker]: blocker Id = {blockRef.Id} at {nameof(LogBlockerDisposeAfterTimer)}");
+            LoggerService.LogDebug($"[UIBlocker] blocker Id = {blockRef.Id} at {nameof(LogBlockerDisposeAfterTimer)}");
 #endif   
         }
     }

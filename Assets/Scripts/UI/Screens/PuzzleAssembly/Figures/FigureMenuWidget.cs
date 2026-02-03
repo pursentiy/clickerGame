@@ -64,12 +64,6 @@ namespace UI.Screens.PuzzleAssembly.Figures
 
             return _connectAnimationSequence.AsPromise();
         }
-        
-        //TODO REFACTORING DO NEED THIS?
-        private void Start()
-        {
-            //ContainerTransform.sizeDelta = new Vector2(InitialWidthParam, InitialHeightParam);
-        }
 
         public void DestroyWidget()
         {
