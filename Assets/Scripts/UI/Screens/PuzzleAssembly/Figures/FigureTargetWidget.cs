@@ -38,13 +38,7 @@ namespace UI.Screens.PuzzleAssembly.Figures
         
         public IPromise SetConnected()
         {
-            return SetFigureCompletedAnimation()
-                .Then(() =>
-                {
-                    SetFigureCompleted(true);
-                    return Promise.Resolved();
-                })
-                .CancelWith(this);
+            return SetFigureCompletedAnimation().CancelWith(this);
         }
 
         private IPromise SetFigureCompletedAnimation()

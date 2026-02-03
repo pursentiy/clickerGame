@@ -83,6 +83,7 @@ namespace UI.Screens.PuzzleAssembly.Figures
         {
             var color = _image.color;
 
+            _fadeAnimationSequence?.Kill(true);
             _fadeAnimationSequence = DOTween.Sequence()
                 .Append(_image.DOColor(new Color(color.r, color.g, color.b, 0.5f), 0.2f))
                 .KillWith(this);
