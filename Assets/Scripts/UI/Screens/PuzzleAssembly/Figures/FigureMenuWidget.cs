@@ -18,7 +18,7 @@ namespace UI.Screens.PuzzleAssembly.Figures
         [SerializeField] private RectTransform _transformContainer;
         [SerializeField] private ParticleSystem _particleSystem;
         
-        private Sequence _fadeAnimationSequence;
+        private Sequence _connectAnimationSequence;
         private bool _isScrolling;
         
         public bool IsCompleted { get; private set; }
@@ -37,11 +37,10 @@ namespace UI.Screens.PuzzleAssembly.Figures
         {
             InitialPosition =  position;
         }
-
-        //TODO REFACTORING DO NEED THIS?
-        public void SetScale(float scale)
+        
+        public void SetFigureTransformPosition(Vector3 position)
         {
-            //_transformFigure.localScale = new Vector3(scale, scale, 0);
+            FigureTransform.transform.localPosition = position;
         }
 
         public void SaveInitialWidthAndHeight()
@@ -50,16 +49,20 @@ namespace UI.Screens.PuzzleAssembly.Figures
             InitialHeight = _transformContainer.sizeDelta.y;
         }
 
-        public IPromise FadeFigure()
+        public IPromise AnimateFigureConnection()
         {
+            _connectAnimationSequence?.Kill(true);
+    
             var color = _image.color;
-
-            _fadeAnimationSequence?.Kill(true);
-            _fadeAnimationSequence = DOTween.Sequence()
-                .Append(_image.DOColor(new Color(color.r, color.g, color.b, 0.5f), 0.2f))
+            var targetColor = new Color(color.r, color.g, color.b, 0.5f);
+    
+            _connectAnimationSequence = DOTween.Sequence()
+                .Append(_transformFigure.DOScale(0, 0.25f).SetEase(Ease.InBack))
+                .Join(_image.DOColor(targetColor, 0.2f))
+                .Join(_image.transform.DOPunchRotation(new Vector3(0, 0, 10), 0.25f, 5, 1f))
                 .KillWith(this);
 
-            return _fadeAnimationSequence.AsPromise();
+            return _connectAnimationSequence.AsPromise();
         }
         
         //TODO REFACTORING DO NEED THIS?

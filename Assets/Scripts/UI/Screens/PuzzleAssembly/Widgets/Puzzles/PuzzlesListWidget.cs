@@ -34,6 +34,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
         [SerializeField] private RectTransform _figuresAssemblyContainer;
         [SerializeField] private ScrollRect _scrollRect;
         [SerializeField] private HorizontalLayoutGroup _figuresLayoutGroup;
+        [SerializeField] private CanvasGroup _disabledDraggingContainerOverlay;
         
         private List<FigureMenuWidget> _figuresMenuList = new List<FigureMenuWidget>();
         private List<FigureTargetWidget> _figuresTargetList = new List<FigureTargetWidget>();
@@ -66,19 +67,42 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             
             figuresMenuList.ForEach(InitializeMenuFigure);
             figuresTargetList.ForEach(InitializeTargetFigure);
-        }
-
-        public void FinishAllShiftingAnimations()
-        {
-            _shiftingSequence?.Kill(true);
+            FadeDraggingContainerOverlay(false, fast: true);
         }
         
-        public IPromise TryShiftAllElements(int figureId, bool isInserting)
+        public IPromise FadeDraggingContainerOverlay(bool isVisible, float duration = 0.3f, bool fast = false)
+        {
+            _disabledDraggingContainerOverlay.DOKill();
+
+            var targetAlpha = isVisible ? 0.5f : 0f;
+            var easeType = isVisible ? Ease.OutQuad : Ease.InQuad;
+            
+            if (isVisible) 
+                _disabledDraggingContainerOverlay.blocksRaycasts = true;
+
+            var tweener = _disabledDraggingContainerOverlay
+                .DOFade(targetAlpha, duration)
+                .SetEase(easeType)
+                .OnComplete(() =>
+                {
+                    if (!isVisible) _disabledDraggingContainerOverlay.blocksRaycasts = false;
+                })
+                .KillWith(this);
+
+            if (fast)
+            {
+                tweener.Kill(true);
+            }
+            
+            return tweener.AsPromise();
+        }
+        
+        public IPromise TryShiftAllElements(int figureId, bool isInserting, bool shiftByPadding = false)
         {
             if (_figuresMenuList.Count <= 0)
                 return Promise.Resolved();
 
-            FinishAllShiftingAnimations();
+            _shiftingSequence?.Kill(true);
             _shiftingSequence = DOTween.Sequence().KillWith(this);
             
             var targetFigures = _figuresMenuList
@@ -90,18 +114,18 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             {
                 var figure = targetFigures[i];
                 var position = figure.ContainerTransform.localPosition;
-        
-                var finalPosition = isInserting
-                    ? new Vector2(position.x + figure.InitialWidth, position.y)
-                    : new Vector2(position.x - figure.InitialWidth, position.y);
+                
+                var offset = shiftByPadding ? _figuresLayoutGroup.spacing : figure.InitialWidth;
+                var direction = isInserting ? 1f : -1f;
+                var finalPosition = position + new Vector3(offset * direction, 0);
                 
                 var delay = i * 0.01f; 
 
                 _shiftingSequence.Join(
                     figure.ContainerTransform
-                        .DOLocalMove(finalPosition, 0.4f) // Увеличили длительность
-                        .SetEase(Ease.OutBack, 0.8f)      // Добавили мягкий отскок
-                        .SetDelay(delay)                  // Добавили эффект волны
+                        .DOLocalMove(finalPosition, 0.4f)
+                        .SetEase(Ease.OutBack, 0.8f)
+                        .SetDelay(delay)
                 );
                 
                 _shiftingSequence.Join(

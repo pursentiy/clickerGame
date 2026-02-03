@@ -105,7 +105,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             if (figure == null || figure.IsCompleted)
                 return;
 
-            _isDraggable = true;
+            SetDraggingEnabled(true);
             _lockScrollAction?.SafeInvoke(true);
             
             _draggingMenuScrollEmptyContainer = figure;
@@ -115,68 +115,26 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             
             _puzzlesListWidget.TryShiftAllElements(figure.Id,false);
             _draggingMenuScrollEmptyContainer.transform.DOScale(0, 0.3f).KillWith(this);
+            _puzzlesListWidget.FadeDraggingContainerOverlay(true);
             _draggingMenuScrollEmptyContainer.ContainerTransform.DOSizeDelta(new Vector2(0, 0), 0.3f).KillWith(this);
         }
         
         private void OnDragEndFiguresSignal(IDraggable draggable, PointerEventData eventData)
         {
-            if (_draggingFigure == null)
+            var draggingFigure = draggable?.GetAs<FigureMenuWidget>();
+            if (draggingFigure == null || _draggingFigure == null) 
                 return;
-            
-            var draggingFigure = draggable.GetAs<FigureMenuWidget>();
-            if (draggingFigure == null || draggingFigure.IsCompleted)
-                return;
-
-            if (draggingFigure.Id != _draggingMenuScrollEmptyContainer.Id)
+            if (draggingFigure.IsCompleted || draggingFigure.Id != _draggingMenuScrollEmptyContainer.Id) 
                 return;
 
             try
             {
-                var maybeTargetFigures = _clickHandlerService.DetectFigureTarget(eventData, _figuresAssemblyCanvasRaycaster);
-                if (maybeTargetFigures.IsCollectionNullOrEmpty())
+                var targets = _clickHandlerService.DetectFigureTarget(eventData, _figuresAssemblyCanvasRaycaster);
+                var targetFigure = targets?.FirstOrDefault(f => f != null && f.Id == _draggingMenuScrollEmptyContainer.Id);
+
+                if (targetFigure != null)
                 {
-                    ResetDraggingFigure();
-                    return;
-                }
-            
-                var figure = maybeTargetFigures.FirstOrDefault(i => i != null && i.Id == _draggingMenuScrollEmptyContainer.Id);
-                if (figure == null)
-                {
-                    ResetDraggingFigure();
-                    return;
-                }
-                
-                if (_draggingMenuScrollEmptyContainer.Id == figure.Id)
-                {
-                    var blockRef = _uiScreenBlocker.Block(15);
-                    _soundHandler.PlaySound("success");
-                    _puzzlesListWidget.FinishAllShiftingAnimations();
-                    
-                    var figureScaleTweener = _draggingFigure.transform.DOScale(0, 0.3f).KillWith(this);
-                    var fadePromise = _draggingMenuScrollEmptyContainer.FadeFigure();
-                    
-                    Promise.All(fadePromise, figureScaleTweener.AsPromise(), figure.SetConnected())
-                        .Then(() =>
-                        {
-                            _draggingMenuScrollEmptyContainer.SetFigureCompleted(true);
-                            figure.SetFigureCompleted(true);
-                            return Promise.Resolved();
-                        })
-                        .Then(() => DestroyDraggingFigure(figure.Id))
-                        .Then(() => _coroutineService.WaitFor(0.05f))
-                        .Then(() =>
-                        {
-                            SetDraggingDisabled();
-                            blockRef?.Dispose();
-                            TrySetFigureConnectedSignal.Dispatch(figure.Id);
-                            CheckLevelCompletionSignal.Dispatch();
-                        })
-                        .Catch(e =>
-                        {
-                            LoggerService.LogWarning(this, e.Message);
-                            blockRef?.Dispose();
-                        })
-                        .CancelWith(this);
+                    TryInsertMenuFigure(targetFigure);
                 }
                 else
                 {
@@ -185,8 +143,50 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             }
             catch (Exception e)
             {
-                LoggerService.LogWarning(this, e.Message);
+                LoggerService.LogWarning(this, $"Failed to process drag end: {e.Message}");
+                ResetDraggingFigure();
             }
+        }
+
+        private void TryInsertMenuFigure(FigureTargetWidget target)
+        {
+            var blockRef = _uiScreenBlocker.Block(15);
+            _soundHandler.PlaySound("success");
+
+            var animations = Promise.All(
+                _draggingMenuScrollEmptyContainer.AnimateFigureConnection(),
+                target.SetConnected(),
+                _puzzlesListWidget.TryShiftAllElements(target.Id, false, true),
+                _puzzlesListWidget.FadeDraggingContainerOverlay(false)
+            );
+
+            animations
+                .Then(FinalizeInsertion)
+                .Then(CleanUpAndNotify)
+                .Catch(e => HandleError(e, blockRef))
+                .CancelWith(this);
+            
+            IPromise FinalizeInsertion()
+            {
+                _draggingMenuScrollEmptyContainer.SetFigureCompleted(true);
+                target.SetFigureCompleted(true);
+                return DestroyDraggingFigure(target.Id);
+            }
+
+            void CleanUpAndNotify()
+            {
+                SetDraggingEnabled(false);
+                blockRef?.Dispose();
+        
+                TrySetFigureConnectedSignal.Dispatch(target.Id);
+                CheckLevelCompletionSignal.Dispatch();
+            }
+        }
+
+        private void HandleError(Exception e, IDisposable blockRef)
+        {
+            LoggerService.LogWarning(this, $"Insert error: {e.Message}");
+            blockRef?.Dispose();
         }
         
         private void ClearDraggingFigureElements()
@@ -203,9 +203,9 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
              return _coroutineService.WaitFrame();
          }
 
-        private void SetDraggingDisabled()
+        private void SetDraggingEnabled(bool enable)
         {
-            _isDraggable = false;
+            _isDraggable = enable;
         }
 
         private void Update()
@@ -227,28 +227,33 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
         {
             var blockRef = _uiScreenBlocker.Block(15);
             _soundHandler.PlaySound("fail");
+            SetDraggingEnabled(false);
             
-            SetDraggingDisabled();
+            var animations = Promise.All(
+                _puzzlesListWidget.TryShiftAllElements(_draggingMenuScrollEmptyContainer.Id, isInserting: true),
+                _puzzlesListWidget.AnimateMenuFigureFlightToPosition(_draggingMenuScrollEmptyContainer, _draggingFigure),
+                _puzzlesListWidget.FadeDraggingContainerOverlay(false)
+            );
             
-            var shiftingAnimationPromise = _puzzlesListWidget.TryShiftAllElements(_draggingMenuScrollEmptyContainer.Id, true);
-            var figureFlightPromise = _puzzlesListWidget.AnimateMenuFigureFlightToPosition(_draggingMenuScrollEmptyContainer, _draggingFigure);
-
-            Promise.All(shiftingAnimationPromise, figureFlightPromise)
-                .Then(() => _puzzlesListWidget.ReturnFigureBackToScroll(_draggingMenuScrollEmptyContainer.Id))
-                .Then(() =>
-                {
-                    _draggingMenuScrollEmptyContainer.FigureTransform.transform.localPosition = Vector3.zero;
-                    ClearDraggingFigureElements();
-                    return Promise.Resolved();
-                })
-                .Then(() => _coroutineService.WaitFor(0.15f))
+            animations
+                .Then(FinalizeFigureReturn)
                 .Then(() => blockRef?.Dispose())
-                .Catch(e =>
-                {
-                    LoggerService.LogWarning(this, e.Message);
-                    blockRef?.Dispose();
-                })
+                .Catch(HandleResetError)
                 .CancelWith(this);
+            
+            IPromise FinalizeFigureReturn()
+            {
+                _puzzlesListWidget.ReturnFigureBackToScroll(_draggingMenuScrollEmptyContainer.Id);
+                _draggingMenuScrollEmptyContainer.SetFigureTransformPosition(Vector3.zero);
+                ClearDraggingFigureElements();
+                return Promise.Resolved();
+            }
+
+            void HandleResetError(Exception e)
+            {
+                LoggerService.LogWarning(this, e.Message);
+                blockRef?.Dispose();
+            }
         }
     }
 }

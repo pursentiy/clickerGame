@@ -44,7 +44,7 @@ namespace Controllers
         
         private IPromise<UIScreenBase> GoToScreenInternal(UIScreenTransition transition)
         {
-            return _uiManager.ScreensHandler.PushScreen(transition).CancelWith(this);
+            return _uiManager.ScreensHandler.PushScreenClean(transition).CancelWith(this);
         }
 
         protected override void OnInitialize()
