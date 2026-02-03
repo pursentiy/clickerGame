@@ -7,12 +7,12 @@ using DG.Tweening;
 using Extensions;
 using Handlers;
 using Installers;
-using Level.Hud;
 using Plugins.FSignal;
 using RSG;
 using Services;
 using Services.CoroutineServices;
 using Services.ScreenBlocker;
+using Storage;
 using Storage.Snapshots.LevelParams;
 using UI.Screens.PuzzleAssembly.Figures;
 using UnityEngine;
@@ -21,19 +21,21 @@ using UnityEngine.UI;
 using Utilities.Disposable;
 using Zenject;
 
-namespace UI.Screens.PuzzleAssembly.Widgets
+namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
 {
-    public class PuzzleDraggingWidget : InjectableMonoBehaviour
+    public class PuzzlesWidget : InjectableMonoBehaviour
     {
         [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
         [Inject] private readonly ClickHandlerService _clickHandlerService;
         [Inject] private readonly CoroutineService _coroutineService;
         [Inject] private readonly SoundHandler _soundHandler;
         
+        [SerializeField] private PuzzlesListWidget _puzzlesListWidget;
         [SerializeField] private RectTransform _draggingTransform;
         [SerializeField] private GraphicRaycaster _figuresAssemblyCanvasRaycaster;
 
-        public FSignal CheckLevelCompletionSignal { get; } = new FSignal();
+        public FSignal CheckLevelCompletionSignal { get; } = new();
+        public FSignal<int> TrySetFigureConnectedSignal { get; } = new();
         
         private bool _isDraggable;
         private Action<bool> _lockScrollAction;
@@ -47,9 +49,24 @@ namespace UI.Screens.PuzzleAssembly.Widgets
         private Coroutine _finishCoroutine;
         private PackInfo _packInfo;
 
-        public void Initialize(IReadOnlyList<FSignal<IDraggable, PointerEventData>> onBeginDragFiguresSignals,
-            IReadOnlyList<FSignal<IDraggable, PointerEventData>> onDragEndFiguresSignals)
+        public void Initialize(
+            List<TargetFigureInfo> figuresTargetList, 
+            List<MenuFigureInfo> figuresMenuList)
         {
+            InitializePuzzles(figuresTargetList, figuresMenuList);
+            SubscribeToMenuFiguresSignals();
+        }
+
+        private void InitializePuzzles(List<TargetFigureInfo> figuresTargetList, List<MenuFigureInfo> figuresMenuList)
+        {
+            _puzzlesListWidget.Initialize(figuresTargetList, figuresMenuList);
+        }
+        
+        private void SubscribeToMenuFiguresSignals()
+        {
+            var onBeginDragFiguresSignals = _puzzlesListWidget.OnBeginDragFiguresSignals;
+            var onDragEndFiguresSignals = _puzzlesListWidget.OnDragEndFiguresSignals;
+            
             if (onBeginDragFiguresSignals.IsCollectionNullOrEmpty())
             {
                 LoggerService.LogError(this, $"{nameof(onBeginDragFiguresSignals)} is null or empty at {nameof(Initialize)}");
@@ -61,13 +78,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets
                 LoggerService.LogError(this, $"{nameof(onDragEndFiguresSignals)} is null or empty at {nameof(Initialize)}");
                 return;
             }
-
-            SubscribeToMenuFiguresSignals(onBeginDragFiguresSignals, onDragEndFiguresSignals);
-        }
-        
-        private void SubscribeToMenuFiguresSignals(IReadOnlyList<FSignal<IDraggable, PointerEventData>> onBeginDragFiguresSignals,
-            IReadOnlyList<FSignal<IDraggable, PointerEventData>> onDragEndFiguresSignals)
-        {
+            
             foreach (var beginSignal in onBeginDragFiguresSignals)
             {
                 beginSignal.MapListener(OnBeginDragFiguresSignal).DisposeWith(this);
@@ -99,7 +110,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets
             _draggingMenuScrollEmptyContainer.InitialPosition = _draggingMenuScrollEmptyContainer.transform.position;
             _draggingFigure.GetRectTransform().SetParent(_draggingTransform);
             
-            _levelHudHandler.ShiftAllElements(false, figure.Id, new Promise());
+            _puzzlesListWidget.TryShiftAllElements(figure.Id,false);
             _draggingMenuScrollEmptyContainer.transform.DOScale(0, 0.3f).KillWith(this);
             _draggingMenuScrollEmptyContainer.ContainerTransform.DOSizeDelta(new Vector2(0, 0), 0.3f).KillWith(this);
         }
@@ -136,10 +147,10 @@ namespace UI.Screens.PuzzleAssembly.Widgets
                 {
                     var blockRef = _uiScreenBlocker.Block(15);
                     _soundHandler.PlaySound("success");
-                    var shiftingAnimationPromise = new Promise();
-                    _levelHudHandler.TryShiftAllElementsAfterRemoving(_draggingMenuScrollEmptyContainer.Id, shiftingAnimationPromise);
+                    
+                    var shiftingAnimationPromise = _puzzlesListWidget.TryShiftAllElements(_draggingMenuScrollEmptyContainer.Id, true);
                 
-                    TrySetFigureInserted(figure.Id);
+                    TrySetFigureConnectedSignal.Dispatch(figure.Id);
                 
                     _completeDraggingAnimationSequence = DOTween.Sequence().Append(_draggingFigure.transform.DOScale(0, 0.3f))
                         .KillWith(this);
@@ -204,8 +215,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets
             var blockRef = _uiScreenBlocker.Block(15);
             _soundHandler.PlaySound("fail");
             var shiftingAnimationPromise = new Promise();
-            //TODO REFACTORING SHIFT
-           // _levelHudHandler.ShiftAllElements(true, _draggingMenuScrollEmptyContainer.Id, shiftingAnimationPromise);
+            _puzzlesListWidget.TryShiftAllElements(_draggingMenuScrollEmptyContainer.Id, true);
 
             _resetDraggingAnimationSequence = DOTween.Sequence()
                 .Append(_draggingFigure.transform.DOMove(_draggingMenuScrollEmptyContainer.InitialPosition, 0.4f))
@@ -215,7 +225,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets
                 .KillWith(this);
 
             Promise.All(shiftingAnimationPromise, _resetDraggingAnimationSequence.AsPromise())
-                .Then(() => _levelHudHandler.ReturnFigureBackToScroll(_draggingMenuScrollEmptyContainer.Id))
+                .Then(() => _puzzlesListWidget.ReturnFigureBackToScroll(_draggingMenuScrollEmptyContainer.Id))
                 .Then(() =>
                 {
                     _draggingMenuScrollEmptyContainer.FigureTransform.transform.localPosition = Vector3.zero;

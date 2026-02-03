@@ -16,6 +16,7 @@ using Storage;
 using Storage.Snapshots.LevelParams;
 using UI.Popups.CompleteLevelInfoPopup;
 using UI.Screens.PuzzleAssembly.Figures;
+using UI.Screens.PuzzleAssembly.Widgets.Puzzles;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -32,9 +33,9 @@ namespace UI.Screens.PuzzleAssembly.Widgets
         [Inject] private readonly LevelInfoTrackerService _levelInfoTrackerService;
         [Inject] private readonly SoundHandler _soundHandler;
         [Inject] private readonly ProgressProvider _progressProvider;
+        [Inject] private readonly ProgressController _progressController;
         
         [SerializeField] private PuzzlesWidget _puzzlesWidget;
-        [SerializeField] private PuzzleDraggingWidget _puzzleDraggingWidget;
         [SerializeField] private ParticleSystem _finishLevelParticles;
         [SerializeField] private ScrollRect _scrollRect;
 
@@ -45,17 +46,33 @@ namespace UI.Screens.PuzzleAssembly.Widgets
 
         public void Initialize(LevelParamsSnapshot levelParamsSnapshot, int packId, int levelId)
         {
+            if (!_progressController.SetCurrentLevel(levelParamsSnapshot))
+            {
+                return;
+            }
+            
             _packId = packId;
             _levelId = levelId;
             _levelTrackingId = LevelTrackingExtensions.GetLevelTrackingId(packId, levelId);
             _levelParamsSnapshot = levelParamsSnapshot;
-            
             _soundHandler.PlaySound("start");
             
             StartLevelTracking();
             InitializePuzzles(packId, levelId);
 
-            _puzzleDraggingWidget.CheckLevelCompletionSignal.MapListener(TryHandleLevelCompletion).DisposeWith(this);
+            _puzzlesWidget.CheckLevelCompletionSignal.MapListener(TryHandleLevelCompletion).DisposeWith(this);
+            _puzzlesWidget.TrySetFigureConnectedSignal.MapListener(TrySetFigureConnected).DisposeWith(this);
+        }
+
+        private void TrySetFigureConnected(int figureId)
+        {
+            if (!_progressController.HasActiveLevel)
+            {
+                LoggerService.LogError(this, $"Has no active level. PackId {_packId}, LevelId {_levelId}, FigureId: {figureId}");
+                return;
+            }
+
+            _progressController.TrySetCurrentLevelFigureConnected(_levelId, figureId);
         }
 
         private void TryHandleLevelCompletion()

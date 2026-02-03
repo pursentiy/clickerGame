@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using Common.Currency;
 using Services.Player;
 using Storage;
 using Storage.Snapshots;
+using Storage.Snapshots.LevelParams;
 using Zenject;
 
 namespace Services
@@ -12,6 +14,8 @@ namespace Services
         [Inject] private readonly UserSettingsService _userSettingsService;
         [Inject] private readonly PlayerProfileManager _playerProfileManager;
         [Inject] private readonly ProgressProvider _progressProvider;
+
+        private LevelParamsSnapshot _currentLevelSnapshot;
 
         //public int CurrentPackId { get; private set; }
         //public int CurrentLevelId { get; private set; }
@@ -25,6 +29,51 @@ namespace Services
         // {
         //     CurrentPackId = currentPackId;
         // }
+        
+        public bool HasActiveLevel => _currentLevelSnapshot != null;
+
+        public bool SetCurrentLevel(LevelParamsSnapshot levelSnapshot)
+        {
+            if (levelSnapshot is null)
+            {
+                LoggerService.LogError(this, $"{nameof(LevelParamsSnapshot)} cannot be null at {nameof(SetCurrentLevel)}");
+                return false;
+            }
+
+            if (_currentLevelSnapshot != null)
+            {
+                LoggerService.LogError(this,  $"{nameof(_currentLevelSnapshot)} has already been set");
+                return false;
+            }
+
+            _currentLevelSnapshot = levelSnapshot;
+            return true;
+        }
+
+        public bool TrySetCurrentLevelFigureConnected(int levelId, int figureId)
+        {
+            if (_currentLevelSnapshot == null)
+                return false;
+
+            if (_currentLevelSnapshot.LevelId != levelId)
+                return false;
+            
+            var levelFigure = _currentLevelSnapshot.LevelFiguresParamsList.FirstOrDefault(level => level.FigureId == figureId);
+            
+            if (levelFigure == null)
+            {
+                return false;
+            }
+
+            if (levelFigure.Completed)
+            {
+                LoggerService.LogWarning(this, $"{nameof(LevelFigureParamsSnapshot)} already completed at {nameof(TrySetCurrentLevelFigureConnected)} for Level {levelId} and FigureId {figureId}");
+                return false;
+            }
+            
+            levelFigure.SetLevelCompleted(true);
+            return true;
+        }
         
         public bool SetLevelCompleted(int packId, int levelId, float levelCompletedTime, Stars starsEarned, SavePriority savePriority)
         {
