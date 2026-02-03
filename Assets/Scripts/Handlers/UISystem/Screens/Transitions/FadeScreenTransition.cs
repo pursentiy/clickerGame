@@ -10,7 +10,7 @@ namespace Handlers.UISystem.Screens.Transitions
         [Inject] private ScreenTransitionParticlesHandler _particlesHandler;
         
         private const float OutDuration = 0.35f; // Время на исчезновение
-        private const float InDuration = 0.35f;  // Время на появление
+        private const float InDuration = 0.55f;  // Время на появление
         private const float MiddlePause = 0.2f;  // Та самая пауза 0.2с
         private const float ParticlesDelayMainTransitionTime = 0.15f; 
         
@@ -85,8 +85,9 @@ namespace Handlers.UISystem.Screens.Transitions
             float pauseStartTime = outStartTime + OutDuration;
             if (currentTime >= pauseStartTime && currentTime < pauseStartTime + MiddlePause)
             {
-                _fromCanvas.alpha = 0f; // Убеждаемся, что старый скрыт
-                _toCanvas.alpha = 0f;   // Убеждаемся, что новый еще не виден
+                _fromCanvas.alpha = 0f;
+                _toCanvas.alpha = 0f;
+                _toRect.localScale = Vector3.one * 0.92f; 
                 return;
             }
 
@@ -94,14 +95,31 @@ namespace Handlers.UISystem.Screens.Transitions
             float inStartTime = pauseStartTime + MiddlePause;
             if (currentTime >= inStartTime)
             {
-                float t_in = (currentTime - inStartTime) / InDuration;
-                t_in = Mathf.Clamp01(t_in);
-                float eased = EaseOutBack(t_in);
+                // Нормализуем время для этой фазы
+                float t_in = Mathf.Clamp01((currentTime - inStartTime) / InDuration);
 
-                _toCanvas.alpha = t_in;
-                var toY = Mathf.Lerp(MoveOffset, 0, eased);
-                _toRect.anchoredPosition = _toInitialPos + new Vector2(0, toY);
-                _toRect.localScale = Vector3.one * ((1f - ScaleEffect) + ScaleEffect * eased);
+                // Используем Quintic Out для супер-плавного торможения
+                // t = 1 - (1 - t)^5
+                float brakeEased = 1f - Mathf.Pow(1f - t_in, 5f);
+        
+                // Для эффекта "Back" (отскока) добавим небольшую синусоиду в конце
+                // Это создаст микро-колебание, которое почти незаметно, но ощущается как "вес"
+                float overshoot = Mathf.Sin(t_in * Mathf.PI) * 0.1f * (1f - t_in);
+                float finalEased = brakeEased + overshoot;
+
+                // 1. Прозрачность через SmoothStep (плавный вход и выход)
+                _toCanvas.alpha = Mathf.SmoothStep(0f, 1f, t_in * 1.5f);
+
+                // 2. Движение СНИЗУ ВВЕРХ
+                // Увеличим MoveOffset, чтобы экран летел издалека
+                float startY = -MoveOffset * 2.5f; 
+                float currentY = Mathf.Lerp(startY, 0f, finalEased);
+                _toRect.anchoredPosition = _toInitialPos + new Vector2(0, currentY);
+
+                // 3. Динамический масштаб (от 0.8 до 1.0)
+                // Эффект "вылета из глубины"
+                float scaleEased = 1f - Mathf.Pow(1f - t_in, 4f); // Чуть быстрее чем позиция
+                _toRect.localScale = Vector3.Lerp(Vector3.one * 0.85f, Vector3.one, scaleEased);
             }
         }
 
@@ -123,11 +141,17 @@ namespace Handlers.UISystem.Screens.Transitions
 
         private float EaseInQuart(float t) => t * t * t * t;
 
-        private float EaseOutBack(float t)
+        private float PremiumBrakeEase(float t, float amplitude = 1.7f)
         {
-            const float c1 = 1.70158f;
-            const float c3 = c1 + 1;
-            return 1 + c3 * Mathf.Pow(t - 1, 3) + c1 * Mathf.Pow(t - 1, 2);
+            // Это модифицированная формула Quintic OutBack. 
+            // Она дает очень быстрое ускорение в начале и экстремально долгое, 
+            // "масляное" замедление в конце.
+            if (t == 0) return 0;
+            if (t == 1) return 1;
+    
+            // Вместо обычного Pow(t, 2) используем Pow(t, 5) для резкого старта и мягкого финиша
+            float t1 = t - 1;
+            return (t1 * t1 * ((amplitude + 1) * t1 + amplitude) + 1);
         }
     }
 }
