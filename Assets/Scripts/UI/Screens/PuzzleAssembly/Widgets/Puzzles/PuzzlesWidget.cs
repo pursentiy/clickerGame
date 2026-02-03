@@ -110,10 +110,10 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             
             _draggingMenuScrollEmptyContainer = figure;
             _draggingFigure = _draggingMenuScrollEmptyContainer.FigureTransform.gameObject;
-            _draggingMenuScrollEmptyContainer.InitialPosition = _draggingMenuScrollEmptyContainer.transform.position;
+            _draggingMenuScrollEmptyContainer.SetInitialPosition(_draggingMenuScrollEmptyContainer.transform.position);
             _draggingFigure.GetRectTransform().SetParent(_draggingTransform);
             
-            //_puzzlesListWidget.TryShiftAllElements(figure.Id,false);
+            _puzzlesListWidget.TryShiftAllElements(figure.Id,false);
             _draggingMenuScrollEmptyContainer.transform.DOScale(0, 0.3f).KillWith(this);
             _draggingMenuScrollEmptyContainer.ContainerTransform.DOSizeDelta(new Vector2(0, 0), 0.3f).KillWith(this);
         }
@@ -150,12 +150,18 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
                 {
                     var blockRef = _uiScreenBlocker.Block(15);
                     _soundHandler.PlaySound("success");
+                    _puzzlesListWidget.FinishAllShiftingAnimations();
                     
-                    //var shiftingAnimationPromise = _puzzlesListWidget.TryShiftAllElements(_draggingMenuScrollEmptyContainer.Id, true);
                     var figureScaleTweener = _draggingFigure.transform.DOScale(0, 0.3f).KillWith(this);
-
-                    Promise.All(figureScaleTweener.AsPromise(), figure.SetConnected())
-                        .Then(() => figure.SetFigureCompleted(true))
+                    var fadePromise = _draggingMenuScrollEmptyContainer.FadeFigure();
+                    
+                    Promise.All(fadePromise, figureScaleTweener.AsPromise(), figure.SetConnected())
+                        .Then(() =>
+                        {
+                            _draggingMenuScrollEmptyContainer.SetFigureCompleted(true);
+                            figure.SetFigureCompleted(true);
+                            return Promise.Resolved();
+                        })
                         .Then(() => DestroyDraggingFigure(figure.Id))
                         .Then(() => _coroutineService.WaitFor(0.05f))
                         .Then(() =>
@@ -224,16 +230,10 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             
             SetDraggingDisabled();
             
-            //var shiftingAnimationPromise = _puzzlesListWidget.TryShiftAllElements(_draggingMenuScrollEmptyContainer.Id, true);
+            var shiftingAnimationPromise = _puzzlesListWidget.TryShiftAllElements(_draggingMenuScrollEmptyContainer.Id, true);
+            var figureFlightPromise = _puzzlesListWidget.AnimateMenuFigureFlightToPosition(_draggingMenuScrollEmptyContainer, _draggingFigure);
 
-            var sequence = DOTween.Sequence()
-                .Append(_draggingFigure.transform.DOMove(_draggingMenuScrollEmptyContainer.InitialPosition, 0.4f))
-                .Join(_draggingMenuScrollEmptyContainer.transform.DOScale(1, 0.3f))
-                .Join(_draggingMenuScrollEmptyContainer.ContainerTransform.DOSizeDelta
-                    (new Vector2(_draggingMenuScrollEmptyContainer.InitialWidth, _draggingMenuScrollEmptyContainer.InitialHeight), 0.3f))
-                .KillWith(this);
-
-            Promise.All(sequence.AsPromise())
+            Promise.All(shiftingAnimationPromise, figureFlightPromise)
                 .Then(() => _puzzlesListWidget.ReturnFigureBackToScroll(_draggingMenuScrollEmptyContainer.Id))
                 .Then(() =>
                 {

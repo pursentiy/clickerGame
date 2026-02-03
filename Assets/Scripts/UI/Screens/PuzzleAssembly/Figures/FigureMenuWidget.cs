@@ -12,8 +12,6 @@ namespace UI.Screens.PuzzleAssembly.Figures
     public class FigureMenuWidget : DraggableItemHandler, IFigureBase
     {
         private const float YDeltaDispersion = 2f;
-        private const float InitialWidthParam = 250f;
-        private const float InitialHeightParam = 250f;
         
         [SerializeField] private Image _image;
         [SerializeField] private RectTransform _transformFigure;
@@ -24,16 +22,21 @@ namespace UI.Screens.PuzzleAssembly.Figures
         private bool _isScrolling;
         
         public bool IsCompleted { get; private set; }
-        public RectTransform FigureTransform => _transformFigure;
-        public float InitialWidth => InitialWidthParam;
-        public float InitialHeight => InitialHeightParam;
+        public float InitialWidth {get; private set;}
+        public float InitialHeight {get; private set;}
+        public Vector3 InitialPosition { get; private set; }
         public RectTransform ContainerTransform => _transformContainer;
+        public RectTransform FigureTransform => _transformFigure;
+        
         public void SetFigureCompleted(bool value)
         {
             IsCompleted = value;
         }
-        
-        public Vector3 InitialPosition { get; set; }
+
+        public void SetInitialPosition(Vector3 position)
+        {
+            InitialPosition =  position;
+        }
 
         //TODO REFACTORING DO NEED THIS?
         public void SetScale(float scale)
@@ -41,10 +44,22 @@ namespace UI.Screens.PuzzleAssembly.Figures
             //_transformFigure.localScale = new Vector3(scale, scale, 0);
         }
 
-        public IPromise SetConnected()
+        public void SaveInitialWidthAndHeight()
         {
-            SetFigureCompleted(true);
-            return FadeFigure();
+            InitialWidth = _transformContainer.sizeDelta.x;
+            InitialHeight = _transformContainer.sizeDelta.y;
+        }
+
+        public IPromise FadeFigure()
+        {
+            var color = _image.color;
+
+            _fadeAnimationSequence?.Kill(true);
+            _fadeAnimationSequence = DOTween.Sequence()
+                .Append(_image.DOColor(new Color(color.r, color.g, color.b, 0.5f), 0.2f))
+                .KillWith(this);
+
+            return _fadeAnimationSequence.AsPromise();
         }
         
         //TODO REFACTORING DO NEED THIS?
@@ -77,18 +92,6 @@ namespace UI.Screens.PuzzleAssembly.Figures
             base.OnEndDragInternally(eventData);
             
             _particleSystem.Stop();
-        }
-        
-        private IPromise FadeFigure()
-        {
-            var color = _image.color;
-
-            _fadeAnimationSequence?.Kill(true);
-            _fadeAnimationSequence = DOTween.Sequence()
-                .Append(_image.DOColor(new Color(color.r, color.g, color.b, 0.5f), 0.2f))
-                .KillWith(this);
-
-            return _fadeAnimationSequence.AsPromise();
         }
     }
 }

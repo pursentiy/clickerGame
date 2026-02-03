@@ -9,12 +9,13 @@ namespace Handlers.UISystem.Screens.Transitions
     {
         [Inject] private ScreenTransitionParticlesHandler _particlesHandler;
         
-        private const float Duration = 0.7f; 
+        private const float OutDuration = 0.35f; // Время на исчезновение
+        private const float InDuration = 0.35f;  // Время на появление
+        private const float MiddlePause = 0.2f;  // Та самая пауза 0.2с
+        private const float ParticlesDelayMainTransitionTime = 0.15f; 
+        
         private const float MoveOffset = 120f;
         private const float ScaleEffect = 0.05f;
-        
-        // Поле задержки перед началом основной анимации
-        private const float ParticlesDelayMainTransitionTime = 0.15f; 
 
         private CanvasGroup _fromCanvas;
         private CanvasGroup _toCanvas;
@@ -26,7 +27,7 @@ namespace Handlers.UISystem.Screens.Transitions
         private bool _particlesPlayed;
 
         // Общее время теперь включает задержку
-        public override float TransitionTime => Duration + ParticlesDelayMainTransitionTime;
+        public override float TransitionTime => ParticlesDelayMainTransitionTime + OutDuration + MiddlePause + InDuration;
 
         public FadeScreenTransition(Type toScreenType, IScreenContext context)
             : base(toScreenType, context, false)
@@ -55,43 +56,53 @@ namespace Handlers.UISystem.Screens.Transitions
 
         public override void DoTransition(float t, bool forward)
         {
-            // 1. Сначала запускаем частицы (сразу при старте)
             if (!_particlesPlayed)
             {
                 _particlesHandler.PlayParticles();
                 _particlesPlayed = true;
             }
 
-            // 2. Рассчитываем локальное время для анимации (от 0 до 1 после задержки)
-            // Общее время t здесь в секундах (если базовый класс передает нормализованное 0..1, 
-            // то нужно предварительно умножить на TransitionTime)
-            
-            float currentTime = t * TransitionTime; // Текущее время в секундах
-            
-            if (currentTime < ParticlesDelayMainTransitionTime)
+            float currentTime = t * TransitionTime;
+
+            // 1. Ожидание частиц
+            if (currentTime < ParticlesDelayMainTransitionTime) return;
+
+            // 2. Фаза ухода (Fade Out)
+            float outStartTime = ParticlesDelayMainTransitionTime;
+            if (currentTime >= outStartTime && currentTime < outStartTime + OutDuration)
             {
+                float t_out = (currentTime - outStartTime) / OutDuration;
+                float eased = EaseInQuart(t_out);
+
+                _fromCanvas.alpha = 1f - t_out;
+                var fromY = Mathf.Lerp(0, -MoveOffset * 0.5f, eased);
+                _fromRect.anchoredPosition = _fromInitialPos + new Vector2(0, fromY);
+                _fromRect.localScale = Vector3.one * (1f - ScaleEffect * eased);
                 return;
             }
 
-            // Нормализуем t_anim, чтобы она пробегала от 0 до 1 строго за время Duration
-            float t_anim = (currentTime - ParticlesDelayMainTransitionTime) / Duration;
-            t_anim = Mathf.Clamp01(t_anim);
-            
-            // Используем разные кривые для ухода и появления
-            float outEased = EaseInQuart(t_anim);
-            float inEased = EaseOutBack(t_anim);
-            
-            // 1. Старый экран плавно уходит вниз и затухает
-            _fromCanvas.alpha = Mathf.Lerp(1f, 0f, t_anim * 1.5f);
-            var fromY = Mathf.Lerp(0, -MoveOffset * 0.5f, outEased);
-            _fromRect.anchoredPosition = _fromInitialPos + new Vector2(0, fromY);
-            _fromRect.localScale = Vector3.one * (1f - ScaleEffect * outEased);
+            // 3. Фаза паузы
+            float pauseStartTime = outStartTime + OutDuration;
+            if (currentTime >= pauseStartTime && currentTime < pauseStartTime + MiddlePause)
+            {
+                _fromCanvas.alpha = 0f; // Убеждаемся, что старый скрыт
+                _toCanvas.alpha = 0f;   // Убеждаемся, что новый еще не виден
+                return;
+            }
 
-            // 2. Новый экран выезжает сверху
-            _toCanvas.alpha = Mathf.Clamp01(t_anim * 2f);
-            var toY = Mathf.Lerp(MoveOffset, 0, inEased);
-            _toRect.anchoredPosition = _toInitialPos + new Vector2(0, toY);
-            _toRect.localScale = Vector3.one * ((1f - ScaleEffect) + ScaleEffect * inEased);
+            // 4. Фаза появления (Fade In)
+            float inStartTime = pauseStartTime + MiddlePause;
+            if (currentTime >= inStartTime)
+            {
+                float t_in = (currentTime - inStartTime) / InDuration;
+                t_in = Mathf.Clamp01(t_in);
+                float eased = EaseOutBack(t_in);
+
+                _toCanvas.alpha = t_in;
+                var toY = Mathf.Lerp(MoveOffset, 0, eased);
+                _toRect.anchoredPosition = _toInitialPos + new Vector2(0, toY);
+                _toRect.localScale = Vector3.one * ((1f - ScaleEffect) + ScaleEffect * eased);
+            }
         }
 
         public override void OnComplete(UIScreenBase fromScreen, UIScreenBase toScreen, bool forward)
