@@ -35,19 +35,16 @@ namespace UI.Screens.ChoosePack.PackLevelItem
                 _packImageInstance = Object.Instantiate(Data.PackImagePrefab, View.PackImagePrefabContainer);
 
             _isInitialized = true;
-            UpdateMediator(Data.IsUnlocked, Data.OnClickAction, Data.OnLockedClickAction, Data.StarsRequired, immediate: true);
+            UpdateMediator(Data.IsUnlocked, Data.OnClickAction, Data.OnLockedClickAction, Data.StarsRequired, immediate: Data.ShouldAnimate);
         }
         
-        public void UpdateMediator(bool isUnlocked, Action onClickAction, Action onLockedClickAction, int starsRequired, bool immediate = false)
+        private void UpdateMediator(bool isUnlocked, Action onClickAction, Action onLockedClickAction, int starsRequired, bool immediate = false)
         {
             if (!_isInitialized)
             {
                 LoggerService.LogWarning(this, $"Widget is not initialized at {nameof(UpdateMediator)}.");
                 return;
             }
-            
-            if (_isUnlocked == isUnlocked && !immediate) 
-                return;
 
             _isUnlocked = isUnlocked;
             View.PackEnterButton.onClick.RemoveAllListeners();

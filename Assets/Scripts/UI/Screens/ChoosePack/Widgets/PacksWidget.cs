@@ -68,24 +68,24 @@ namespace UI.Screens.ChoosePack.Widgets
             if (_gridViewAdapter == null)
             {
                 _gridViewAdapter = new GridViewAdapter(_loopGridView);
-                _gridViewAdapter.InitScroll(GetMemberItems(_allPacksInfos));
+                _gridViewAdapter.InitScroll(GetMemberItems(_allPacksInfos, false));
             }
             else
             {
-                var items = GetMemberItems(_allPacksInfos);
-                _gridViewAdapter.SetData(items);
+                var items = GetMemberItems(_allPacksInfos, true);
                 _gridViewAdapter.LoopGridView.SetListItemCount(items.Count);
+                _gridViewAdapter.SetData(items);
                 _gridViewAdapter.LoopGridView.RefreshAllShownItem();
             }
         }
         
-        private IList<IListItem> GetMemberItems(IEnumerable<PackInfo> packsInfos)
+        private IList<IListItem> GetMemberItems(IEnumerable<PackInfo> packsInfos, bool shouldAnimate)
         {
-            return packsInfos.Select(GetPackWidgetInfo)
+            return packsInfos.Select(i => GetPackWidgetInfo(i, shouldAnimate))
                 .Where(info => info != null).Select(info => new PackItemWidgetMediator(info)).ToList<IListItem>();
         }
         
-        private PackItemWidgetInfo GetPackWidgetInfo(PackInfo packInfo)
+        private PackItemWidgetInfo GetPackWidgetInfo(PackInfo packInfo, bool shouldAnimate)
         {
             if (this == null || gameObject == null)
                 return null;
@@ -96,7 +96,7 @@ namespace UI.Screens.ChoosePack.Widgets
             var starsRequired = maybeStarsRequired ?? new Stars(0);
                 
             return new PackItemWidgetInfo(packInfo.PackName, packInfo.PackImagePrefab, packId, isUnlocked,
-                () => OnAvailablePackClicked(packInfo), OnUnavailablePackClicked, starsRequired);
+                () => OnAvailablePackClicked(packInfo), OnUnavailablePackClicked, starsRequired, shouldAnimate);
         }
         
         private void OnAvailablePackClicked(PackInfo packInfo)

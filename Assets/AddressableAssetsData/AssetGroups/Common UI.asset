@@ -17,6 +17,11 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: d497eda6d715c4916a13d559f9c85ead
   m_SerializeEntries:
+  - m_GUID: 17538502d4af64312a923b9589d475e4
+    m_Address: Assets/Sprites/Screens/CommonAtlas.spriteatlas
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4ffe841dfbb6ce447b17d5328d875589
     m_Address: Assets/Sprites/Screens/Common/scroller.png
     m_ReadOnly: 0

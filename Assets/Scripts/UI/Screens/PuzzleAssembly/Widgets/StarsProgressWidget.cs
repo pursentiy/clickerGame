@@ -63,11 +63,13 @@ namespace UI.Screens.PuzzleAssembly.Widgets
             
             for (var i = 0; i < 3; i++)
             {
-                starImages[i].color.SetAlpha(1f);
-                starImages[i].transform.localScale = Vector3.one;
-
-                grayStarImages[i].color.SetAlpha( 0f);
-                grayStarImages[i].transform.localScale = Vector3.one;
+                var star = starImages[i];
+                star.color = star.color.SetAlpha(1f);
+                star.transform.localScale = Vector3.one;
+                
+                var grayStar = grayStarImages[i];
+                grayStar.color = grayStar.color.SetAlpha(0f);
+                grayStar.transform.localScale = Vector3.zero;
             }
         }
 

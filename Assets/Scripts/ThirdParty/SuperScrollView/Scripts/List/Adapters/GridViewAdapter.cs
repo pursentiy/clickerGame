@@ -137,6 +137,11 @@ namespace ThirdParty.SuperScrollView.Scripts.List
             return item;
         }
         
+        public IReadOnlyCollection<IListItem> GetData()
+        {
+            return _data;
+        }
+        
         public IListItem GetItemByIndex(int index) => GetItemDataByIndex(index, _data);
 
         private IListItem GetItemDataByIndex(int index, IReadOnlyList<IListItem> data)

@@ -1655,7 +1655,6 @@ GameObject:
   - component: {fileID: 2902414039444785919}
   - component: {fileID: 6055261361001014442}
   - component: {fileID: 4874529528775170972}
-  - component: {fileID: 3379660038550850295}
   m_Layer: 5
   m_Name: PuzzleAssemblyScreen
   m_TagString: Untagged
@@ -1749,21 +1748,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7f43065f89f48c395f216d2d52146da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3379660038550850295
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4922581533627459721}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2a38844c6074b6ca8394de9b412d54f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _position: 1
-  _bannerHeight: 50
-  _rectTransform: {fileID: 0}
 --- !u!1 &5400428544044334222
 GameObject:
   m_ObjectHideFlags: 0

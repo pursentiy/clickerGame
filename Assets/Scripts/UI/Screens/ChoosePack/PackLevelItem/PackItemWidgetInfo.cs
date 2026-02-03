@@ -6,7 +6,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem
     public class PackItemWidgetInfo
     {
         public PackItemWidgetInfo(string packName, GameObject packImagePrefab, int packId, bool isUnlocked,
-            Action onClickAction, Action onLockedClickAction, int starsRequired)
+            Action onClickAction, Action onLockedClickAction, int starsRequired, bool shouldAnimate)
         {
             PackName = packName;
             PackImagePrefab = packImagePrefab;
@@ -15,6 +15,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem
             OnClickAction = onClickAction;
             OnLockedClickAction = onLockedClickAction;
             StarsRequired = starsRequired;
+            ShouldAnimate = shouldAnimate;
         }
 
         public string PackName { get; }
@@ -24,5 +25,6 @@ namespace UI.Screens.ChoosePack.PackLevelItem
         public Action OnClickAction { get; }
         public Action OnLockedClickAction { get; }
         public int StarsRequired { get; }
+        public bool ShouldAnimate { get; }
     }
 }
