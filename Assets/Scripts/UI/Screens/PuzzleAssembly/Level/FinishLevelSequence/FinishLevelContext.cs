@@ -12,7 +12,7 @@ namespace UI.Screens.PuzzleAssembly.Level.FinishLevelSequence
             Stars currentStars,
             Stars initialStars,
             float levelCompletingTime,
-            CompletedLevelStatus completedLevelStatus)
+            CompletedLevelStatus completedLevelStatus, float awaitTimeBeforeShowingPopup)
         {
             PackId = packId;
             LevelId = levelId;
@@ -20,6 +20,7 @@ namespace UI.Screens.PuzzleAssembly.Level.FinishLevelSequence
             InitialStars = initialStars;
             LevelCompletingTime = levelCompletingTime;
             CompletedLevelStatus = completedLevelStatus;
+            AwaitTimeBeforeShowingPopup = awaitTimeBeforeShowingPopup;
         }
         
         public int PackId { get; }
@@ -28,5 +29,6 @@ namespace UI.Screens.PuzzleAssembly.Level.FinishLevelSequence
         public Stars InitialStars { get; }
         public float LevelCompletingTime { get; }
         public CompletedLevelStatus CompletedLevelStatus { get; }
+        public float AwaitTimeBeforeShowingPopup { get; }
     }
 }

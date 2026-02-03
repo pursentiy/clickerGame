@@ -159,6 +159,9 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
                 _puzzlesListWidget.TryShiftAllElements(target.Id, false, true),
                 _puzzlesListWidget.FadeDraggingContainerOverlay(false)
             );
+            
+            TrySetFigureConnectedSignal.Dispatch(target.Id);
+            CheckLevelCompletionSignal.Dispatch();
 
             animations
                 .Then(FinalizeInsertion)
@@ -177,9 +180,6 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             {
                 SetDraggingEnabled(false);
                 blockRef?.Dispose();
-        
-                TrySetFigureConnectedSignal.Dispatch(target.Id);
-                CheckLevelCompletionSignal.Dispatch();
             }
         }
 

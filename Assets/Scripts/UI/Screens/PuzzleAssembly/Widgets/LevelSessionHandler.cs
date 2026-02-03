@@ -18,6 +18,8 @@ namespace UI.Screens.PuzzleAssembly.Widgets
 {
     public class LevelSessionHandler : InjectableMonoBehaviour
     {
+        private const float AwaitTimeBeforeShowingPopup = 0.5f;
+        
         [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private readonly LevelHelperService _levelHelperService;
         [Inject] private readonly LevelInfoTrackerService _levelInfoTrackerService;
@@ -94,7 +96,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets
         private void StartLevelCompletionSequence(int packId, int levelId, int currentStarsForLevel, int initialStarsForLevel, float levelPlayedTime, CompletedLevelStatus completedLevelStatus)
         {
             StateMachine
-                .CreateMachine(new FinishLevelContext(packId, levelId, currentStarsForLevel, initialStarsForLevel, levelPlayedTime, completedLevelStatus))
+                .CreateMachine(new FinishLevelContext(packId, levelId, currentStarsForLevel, initialStarsForLevel, levelPlayedTime, completedLevelStatus, AwaitTimeBeforeShowingPopup))
                 .StartSequence<ResetLevelParamsState>()
                 .FinishWith(this);
         }

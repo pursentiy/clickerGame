@@ -5,6 +5,7 @@ using Handlers;
 using Handlers.UISystem;
 using RSG;
 using Services;
+using Services.CoroutineServices;
 using Services.Player;
 using UI.Popups.CompleteLevelInfoPopup;
 using Utilities.Disposable;
@@ -18,6 +19,7 @@ namespace UI.Screens.PuzzleAssembly.Level.FinishLevelSequence
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly SoundHandler _soundHandler;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        [Inject] private readonly CoroutineService _coroutineService;
 
         public override void OnEnter(params object[] arguments)
         {
@@ -27,7 +29,8 @@ namespace UI.Screens.PuzzleAssembly.Level.FinishLevelSequence
 
             var preRewardsBalance = _playerCurrencyService.Stars;
             
-            ShowCompletePopup(Context.CurrentStars, Context.InitialStars, preRewardsBalance, Context.LevelCompletingTime, Context.CompletedLevelStatus)
+            _coroutineService.WaitFor(Context.AwaitTimeBeforeShowingPopup)
+                .Then(() => ShowCompletePopup(Context.CurrentStars, Context.InitialStars, preRewardsBalance, Context.LevelCompletingTime, Context.CompletedLevelStatus))
                 .ContinueWithResolved(NextState)
                 .CancelWith(this);
         }
