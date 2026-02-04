@@ -44,7 +44,18 @@ namespace UI.Screens.ChoosePack.Widgets
         
         public void UpdatePacksState()
         {
-            SetupPacksList();
+            var data = _gridViewAdapter?.GetData();
+            if (data == null) 
+                return;
+            
+            foreach (var mediator in data.OfType<PackItemWidgetMediator>())
+            {
+                if (mediator.View == null)
+                    continue;
+            
+                var isUnlocked = _progressProvider.IsPackAvailable(mediator.PackId);
+                mediator.UpdateWidgetUnlock(isUnlocked);
+            }
         }
         
         private void InitializePackButtons()
@@ -65,27 +76,21 @@ namespace UI.Screens.ChoosePack.Widgets
             {
                 LoggerService.LogWarning(this, $"[{nameof(SetupPacksList)}]: {nameof(IReadOnlyCollection<PackInfo>)} is empty");
             }
+            
             if (_gridViewAdapter == null)
             {
                 _gridViewAdapter = new GridViewAdapter(_loopGridView);
-                _gridViewAdapter.InitScroll(GetMemberItems(_allPacksInfos, false));
-            }
-            else
-            {
-                var items = GetMemberItems(_allPacksInfos, true);
-                _gridViewAdapter.LoopGridView.SetListItemCount(items.Count);
-                _gridViewAdapter.SetData(items);
-                _gridViewAdapter.LoopGridView.RefreshAllShownItem();
+                _gridViewAdapter.InitScroll(GetMemberItems(_allPacksInfos));
             }
         }
         
-        private IList<IListItem> GetMemberItems(IEnumerable<PackInfo> packsInfos, bool shouldAnimate)
+        private IList<IListItem> GetMemberItems(IEnumerable<PackInfo> packsInfos)
         {
-            return packsInfos.Select(i => GetPackWidgetInfo(i, shouldAnimate))
+            return packsInfos.Select(GetPackWidgetInfo)
                 .Where(info => info != null).Select(info => new PackItemWidgetMediator(info)).ToList<IListItem>();
         }
         
-        private PackItemWidgetInfo GetPackWidgetInfo(PackInfo packInfo, bool shouldAnimate)
+        private PackItemWidgetInfo GetPackWidgetInfo(PackInfo packInfo)
         {
             if (this == null || gameObject == null)
                 return null;
@@ -96,7 +101,7 @@ namespace UI.Screens.ChoosePack.Widgets
             var starsRequired = maybeStarsRequired ?? new Stars(0);
                 
             return new PackItemWidgetInfo(packInfo.PackName, packInfo.PackImagePrefab, packId, isUnlocked,
-                () => OnAvailablePackClicked(packInfo), OnUnavailablePackClicked, starsRequired, shouldAnimate);
+                () => OnAvailablePackClicked(packInfo), OnUnavailablePackClicked, starsRequired);
         }
         
         private void OnAvailablePackClicked(PackInfo packInfo)

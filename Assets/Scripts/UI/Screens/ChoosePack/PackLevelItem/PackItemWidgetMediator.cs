@@ -19,6 +19,8 @@ namespace UI.Screens.ChoosePack.PackLevelItem
         private GameObject _packImageInstance;
         private bool _isUnlocked;
         private bool _isInitialized;
+
+        public int PackId => Data.PackId;
         
         public PackItemWidgetMediator(PackItemWidgetInfo data) : base(data)
         {
@@ -35,7 +37,16 @@ namespace UI.Screens.ChoosePack.PackLevelItem
                 _packImageInstance = Object.Instantiate(Data.PackImagePrefab, View.PackImagePrefabContainer);
 
             _isInitialized = true;
-            UpdateMediator(Data.IsUnlocked, Data.OnClickAction, Data.OnLockedClickAction, Data.StarsRequired, immediate: Data.ShouldAnimate);
+            UpdateMediator(Data.IsUnlocked, Data.OnClickAction, Data.OnLockedClickAction, Data.StarsRequired, immediate: true);
+        }
+
+        public void UpdateWidgetUnlock(bool isUnlocked)
+        {
+            if (Data.IsUnlocked == isUnlocked)
+                return;
+            
+            Data.IsUnlocked = isUnlocked;
+            UpdateMediator(Data.IsUnlocked, Data.OnClickAction, Data.OnLockedClickAction, Data.StarsRequired, false);
         }
         
         private void UpdateMediator(bool isUnlocked, Action onClickAction, Action onLockedClickAction, int starsRequired, bool immediate = false)
@@ -45,6 +56,9 @@ namespace UI.Screens.ChoosePack.PackLevelItem
                 LoggerService.LogWarning(this, $"Widget is not initialized at {nameof(UpdateMediator)}.");
                 return;
             }
+            
+            if (_isUnlocked == isUnlocked && !immediate) 
+                return;
 
             _isUnlocked = isUnlocked;
             View.PackEnterButton.onClick.RemoveAllListeners();
