@@ -662,6 +662,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3a171689dd1446685271d9cbd6fd79d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _figuresDraggingContainerHolder: {fileID: 4922581532589835353}
   _figuresDraggingContainer: {fileID: 4922581533096915531}
   _figuresAssemblyContainer: {fileID: 7215992690898386309}
   _scrollRect: {fileID: 4922581532116615206}

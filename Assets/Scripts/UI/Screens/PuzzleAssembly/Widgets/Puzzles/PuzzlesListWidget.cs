@@ -30,6 +30,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly CoroutineService _coroutineService;
         
+        [SerializeField] private RectTransform _figuresDraggingContainerHolder;
         [SerializeField] private RectTransform _figuresDraggingContainer;
         [SerializeField] private RectTransform _figuresAssemblyContainer;
         [SerializeField] private ScrollRect _scrollRect;
@@ -68,6 +69,24 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             figuresMenuList.ForEach(InitializeMenuFigure);
             figuresTargetList.ForEach(InitializeTargetFigure);
             FadeDraggingContainerOverlay(false, fast: true);
+        }
+
+        public IPromise BumpDraggingContainerHolder()
+        {
+            _figuresDraggingContainerHolder.DOKill(true);
+
+            var sequence = DOTween.Sequence().KillWith(_figuresDraggingContainerHolder.gameObject);
+
+            var force = 0.015f;
+            sequence.Append(_figuresDraggingContainerHolder.transform
+                .DOPunchScale(new Vector3(force, force, force), 0.2f, 3, 0.7f)
+                .SetEase(Ease.OutQuad));
+            
+            sequence.Join(_figuresDraggingContainerHolder.transform
+                .DOPunchRotation(new Vector3(0, 0, 0.05f), 0.3f, 2, 0.5f)
+                .SetEase(Ease.OutSine));
+
+            return sequence.AsPromise();
         }
         
         public IPromise FadeDraggingContainerOverlay(bool isVisible, float duration = 0.3f, bool fast = false)
@@ -162,7 +181,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             sequence.Join(draggingMenuScrollEmptyContainer.ContainerTransform
                 .DOSizeDelta(new Vector2(draggingMenuScrollEmptyContainer.InitialWidth, draggingMenuScrollEmptyContainer.InitialHeight), 0.3f)
                 .SetEase(Ease.OutQuad));
-            sequence.Insert(0.4f,draggingFigure.transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.4f, 5, 1f));
+            sequence.Insert(0.4f,draggingFigure.transform.DOPunchScale(new Vector3(0.1f, 0.1f, 0.1f), 0.4f, 5, 1f));
 
             return sequence.AsPromise();
         }

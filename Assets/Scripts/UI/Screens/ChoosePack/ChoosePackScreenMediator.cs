@@ -4,6 +4,7 @@ using Extensions;
 using Handlers.UISystem;
 using Handlers.UISystem.Screens;
 using Services;
+using Services.Configuration;
 using Services.FlyingRewardsAnimation;
 using Services.Player;
 using UI.Popups.MessagePopup;
@@ -24,6 +25,7 @@ namespace UI.Screens.ChoosePack
         [Inject] private readonly FlowScreenController _flowScreenController;
         [Inject] private readonly FlowPopupController _flowPopupController;
         [Inject] private readonly CurrencyLibraryService _currencyLibraryService;
+        [Inject] private readonly GameInfoProvider _gameInfoProvider;
         
         public override void OnCreated()
         {
@@ -62,8 +64,9 @@ namespace UI.Screens.ChoosePack
         
         private void ShowAdsInfoPopup()
         {
+            var currencyToEarnViaAds = _gameInfoProvider.StarsRewardForAds;
             var spriteAsset = _currencyLibraryService.GetSpriteAsset(CurrencyExtensions.StarsCurrencyName);
-            var context = new MessagePopupContext(_localizationService.GetValue(LocalizationExtensions.AdsFullInfo), View.AdsInfoButton.GetRectTransform(), View.InfoMessageFontSize, spriteAsset, facing: PopupFacing.Left);
+            var context = new MessagePopupContext(_localizationService.GetFormattedValue(LocalizationExtensions.AdsFullInfo, currencyToEarnViaAds), View.AdsInfoButton.GetRectTransform(), View.InfoMessageFontSize, spriteAsset, facing: PopupFacing.Left);
             _flowPopupController.ShowMessagePopup(context, overrideDisposeProvider: this.GetDisposeProvider());
         }
 

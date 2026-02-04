@@ -172,12 +172,14 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             {
                 _draggingMenuScrollEmptyContainer.SetFigureCompleted(true);
                 target.SetFigureCompleted(true);
-                return Promise.All(_puzzlesListWidget.FadeDraggingContainerOverlay(false), DestroyDraggingFigure(target.Id));
+                return DestroyDraggingFigure(target.Id);
             }
 
             void CleanUpAndNotify()
             {
                 SetDraggingEnabled(false);
+                _puzzlesListWidget.FadeDraggingContainerOverlay(false);
+                _puzzlesListWidget.BumpDraggingContainerHolder().CancelWith(this);
                 blockRef?.Dispose();
             }
         }
@@ -189,13 +191,20 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             SetDraggingEnabled(false);
             
             var animations = Promise.All(
-                _puzzlesListWidget.TryShiftAllElements(_draggingMenuScrollEmptyContainer.Id, isInserting: true),
-                _puzzlesListWidget.AnimateMenuFigureFlightToPosition(_draggingMenuScrollEmptyContainer, _draggingFigure)
+                _puzzlesListWidget.TryShiftAllElements(_draggingMenuScrollEmptyContainer.Id, isInserting: true)
             );
-            
+
+            _puzzlesListWidget.AnimateMenuFigureFlightToPosition(_draggingMenuScrollEmptyContainer, _draggingFigure)
+                .CancelWith(this);
+
+           _puzzlesListWidget.FadeDraggingContainerOverlay(false, 0.55f).CancelWith(this);
             animations
                 .Then(FinalizeFigureReturn)
-                .Then(() => blockRef?.Dispose())
+                .Then(() =>
+                {
+                    _puzzlesListWidget.BumpDraggingContainerHolder().CancelWith(this);
+                    blockRef?.Dispose();
+                })
                 .Catch(HandleResetError)
                 .CancelWith(this);
             
@@ -204,7 +213,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
                 _puzzlesListWidget.ReturnFigureBackToScroll(_draggingMenuScrollEmptyContainer.Id);
                 _draggingMenuScrollEmptyContainer.SetFigureTransformPosition(Vector3.zero);
                 ClearDraggingFigureElements();
-                return _puzzlesListWidget.FadeDraggingContainerOverlay(false);
+                return Promise.Resolved();
             }
 
             void HandleResetError(Exception e)
