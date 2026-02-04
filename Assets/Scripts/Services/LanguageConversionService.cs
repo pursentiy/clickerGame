@@ -108,15 +108,18 @@ namespace Services
             if (string.IsNullOrEmpty(bridgeLang)) 
                 return English;
             
-            bridgeLang = bridgeLang.ToLower();
+            bridgeLang = bridgeLang.ToLower().Trim();
+            
+            if (bridgeLang.StartsWith("ru") || bridgeLang.StartsWith("be") || bridgeLang.StartsWith("kk"))
+                return Russian;
+            
+            if (bridgeLang.StartsWith("es"))
+                return Spanish;
+            
+            if (bridgeLang.StartsWith("en"))
+                return English;
 
-            return bridgeLang switch
-            {
-                "ru" or "be" or "kk" => Russian,
-                "es" or "mx" or "ar" => Spanish,
-                "en" or "us" or "gb" => English,
-                _ => English
-            };
+            return English;
         }
     }
 }

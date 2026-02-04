@@ -18,7 +18,17 @@ MonoBehaviour:
   m_GUID: d497eda6d715c4916a13d559f9c85ead
   m_SerializeEntries:
   - m_GUID: 4ffe841dfbb6ce447b17d5328d875589
-    m_Address: Assets/Sprites/Screens/Common/scroller.png
+    m_Address: Assets/Sprites/Screens/Common/scroller_vertical.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b26fde62f3644f56bf6cda363a8aee5
+    m_Address: Assets/Sprites/Screens/Common/scroller_horizontal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba1b6fdea9829401b80a2bf87a48407f
+    m_Address: Assets/Sprites/Screens/Common/widget.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

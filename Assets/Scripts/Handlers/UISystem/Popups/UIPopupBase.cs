@@ -9,7 +9,7 @@ using Zenject;
 
 namespace Handlers.UISystem
 {
-    public abstract class UIPopupBase<TView, TContext> : UIPopupBase where TView : IUIView where TContext : IPopupContext
+    public abstract class UIPopupBase<TView, TContext> : UIPopupBase, IMediator where TView : IUIView where TContext : IPopupContext
     {
         [Inject] private IUIView _view;
         private IPopupContext _context;

@@ -54,7 +54,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c4ce0d2dc5242118eb0b64d4cfa5ec6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rectTransform: {fileID: 2213291782804061814}
   _fullImageSpriteRenderer: {fileID: 7956056130952421625}
   _outlineImageSpriteRenderer: {fileID: 1003623509818860900}
   _completeParticles: {fileID: 6916820566240254057}
@@ -296,32 +295,32 @@ PrefabInstance:
     - target: {fileID: 8909313493971320963, guid: 6d5e7093fe6fd4458906362384ea35f8,
         type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
-      value: 0.1882353
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8909313493971320963, guid: 6d5e7093fe6fd4458906362384ea35f8,
         type: 3}
       propertyPath: InitialModule.startColor.maxColor.g
-      value: 0.41568628
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8909313493971320963, guid: 6d5e7093fe6fd4458906362384ea35f8,
         type: 3}
       propertyPath: InitialModule.startColor.maxColor.r
-      value: 0.7647059
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8909313493971320963, guid: 6d5e7093fe6fd4458906362384ea35f8,
         type: 3}
       propertyPath: InitialModule.startColor.minColor.b
-      value: 0.493948
+      value: 0.6745283
       objectReference: {fileID: 0}
     - target: {fileID: 8909313493971320963, guid: 6d5e7093fe6fd4458906362384ea35f8,
         type: 3}
       propertyPath: InitialModule.startColor.minColor.g
-      value: 0.67128134
+      value: 0.9633809
       objectReference: {fileID: 0}
     - target: {fileID: 8909313493971320963, guid: 6d5e7093fe6fd4458906362384ea35f8,
         type: 3}
       propertyPath: InitialModule.startColor.minColor.r
-      value: 0.9433962
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8909313493971320963, guid: 6d5e7093fe6fd4458906362384ea35f8,
         type: 3}
@@ -978,6 +977,11 @@ PrefabInstance:
       propertyPath: m_SortingLayer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8909313493971320972, guid: 6d5e7093fe6fd4458906362384ea35f8,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 26c880ce3c053d04982d2c8e435fdb95, type: 2}
     - target: {fileID: 8909313493971320974, guid: 6d5e7093fe6fd4458906362384ea35f8,
         type: 3}
       propertyPath: m_Scale3D.x
@@ -1111,15 +1115,48 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8909313493971320968, guid: 6d5e7093fe6fd4458906362384ea35f8,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5911725883938991018}
   m_SourcePrefab: {fileID: 100100000, guid: 6d5e7093fe6fd4458906362384ea35f8, type: 3}
+--- !u!1 &6916820566240254050 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8909313493971320968, guid: 6d5e7093fe6fd4458906362384ea35f8,
+    type: 3}
+  m_PrefabInstance: {fileID: 2619202462314961130}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &5911725883938991018
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6916820566240254050}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 100
+  m_TargetDisplay: 0
 --- !u!114 &6916820566240254052 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8909313493971320974, guid: 6d5e7093fe6fd4458906362384ea35f8,
     type: 3}
   m_PrefabInstance: {fileID: 2619202462314961130}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 6916820566240254050}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 16f0b0b6d0b7542bfbd20a3e05b04ff1, type: 3}

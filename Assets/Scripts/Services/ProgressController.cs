@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using Common.Currency;
 using Services.Player;
 using Storage;
 using Storage.Snapshots;
+using Storage.Snapshots.LevelParams;
 using Zenject;
 
 namespace Services
@@ -13,17 +15,69 @@ namespace Services
         [Inject] private readonly PlayerProfileManager _playerProfileManager;
         [Inject] private readonly ProgressProvider _progressProvider;
 
-        public int CurrentPackId { get; private set; }
-        public int CurrentLevelId { get; private set; }
+        private LevelParamsSnapshot _currentLevelSnapshot;
 
-        public void SetCurrentLevelId(int currentLevelId)
+        //public int CurrentPackId { get; private set; }
+        //public int CurrentLevelId { get; private set; }
+
+        // public void SetCurrentLevelId(int currentLevelId)
+        // {
+        //     CurrentLevelId = currentLevelId;
+        // }
+        //
+        // public void SetCurrentPackId(int currentPackId)
+        // {
+        //     CurrentPackId = currentPackId;
+        // }
+        
+        public bool HasActiveLevel => _currentLevelSnapshot != null;
+
+        public bool SetCurrentLevel(LevelParamsSnapshot levelSnapshot)
         {
-            CurrentLevelId = currentLevelId;
+            if (levelSnapshot is null)
+            {
+                LoggerService.LogError(this, $"{nameof(LevelParamsSnapshot)} cannot be null at {nameof(SetCurrentLevel)}");
+                return false;
+            }
+
+            if (_currentLevelSnapshot != null)
+            {
+                LoggerService.LogError(this,  $"{nameof(_currentLevelSnapshot)} has already been set");
+                return false;
+            }
+
+            _currentLevelSnapshot = levelSnapshot;
+            return true;
         }
 
-        public void SetCurrentPackId(int currentPackId)
+        public void ResetCurrentLevelSnapshot()
         {
-            CurrentPackId = currentPackId;
+            _currentLevelSnapshot = null;
+        }
+
+        public bool TrySetCurrentLevelFigureConnected(int levelId, int figureId)
+        {
+            if (_currentLevelSnapshot == null)
+                return false;
+
+            if (_currentLevelSnapshot.LevelId != levelId)
+                return false;
+            
+            var levelFigure = _currentLevelSnapshot.LevelFiguresParamsList.FirstOrDefault(level => level.FigureId == figureId);
+            
+            if (levelFigure == null)
+            {
+                return false;
+            }
+
+            if (levelFigure.Completed)
+            {
+                LoggerService.LogWarning(this, $"{nameof(LevelFigureParamsSnapshot)} already completed at {nameof(TrySetCurrentLevelFigureConnected)} for Level {levelId} and FigureId {figureId}");
+                return false;
+            }
+            
+            levelFigure.SetLevelCompleted(true);
+            return true;
         }
         
         public bool SetLevelCompleted(int packId, int levelId, float levelCompletedTime, Stars starsEarned, SavePriority savePriority)
@@ -40,13 +94,13 @@ namespace Services
                 return false;
             }
             
-            if (_progressProvider.TryGetPackSnapshot(packId) == null && !TryAddPackToProfile(packId))
+            if (_progressProvider.TryGetSavedPackSnapshot(packId) == null && !TryAddPackToProfile(packId))
             {
                 LoggerService.LogWarning(this, $"[{nameof(SetLevelCompleted)}]: Cannot get packId {packId} neither cannot add it");
                 return false;
             }
 
-            var maybeLevelSnapshot = _progressProvider.TryGetLevelSnapshot(packId, levelId);
+            var maybeLevelSnapshot = _progressProvider.TryGetSavedLevelSnapshot(packId, levelId);
             if (maybeLevelSnapshot != null)
             {
                 if (!TryUpdateLevelSnapshot(packId, levelId, levelCompletedTime, starsEarned))
@@ -129,7 +183,7 @@ namespace Services
         
         private bool TryUpdateLevelSnapshot(int packId, int levelId, float newCompletedTime, Stars updatedEarnedStars)
         {
-            var levelSnapshot = _progressProvider.TryGetLevelSnapshot(packId, levelId);
+            var levelSnapshot = _progressProvider.TryGetSavedLevelSnapshot(packId, levelId);
             if (levelSnapshot == null)
             {
                 return false;

@@ -60,10 +60,5 @@ namespace UI.Screens.ChoosePack.Widgets
             _floatingSequence.Join(_floatingAnimationContainer.DORotate(new Vector3(0, 0, _rotateAngle), _floatDuration)
                 .SetEase(Ease.InOutSine));
         }
-        
-        private void OnDestroy()
-        {
-            _floatingSequence?.Kill();
-        }
     }
 }

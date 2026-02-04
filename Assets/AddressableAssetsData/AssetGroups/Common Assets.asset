@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Common Assets
+  m_EditorClassIdentifier: 
+  m_GroupName: Common Assets
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 0c32e54dda0a94461a7ce4c4b6298b3b
+  m_SerializeEntries:
+  - m_GUID: 8eb2f9b0e24dec64483d59174dddb8e0
+    m_Address: Assets/Sprites/Particles/CFX4_T_SparksHitUI.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95b22be2b746dff46a95032d1620aae1
+    m_Address: Assets/Sprites/Particles/CFX_T_Star.tga
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bbe0f3746b5824fd9ad4f84c307d006a
+    m_Address: Assets/Sprites/Screens/Common/star.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: e24ffa8b9424ddd438d6f352cb603ea5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: f8ad2c748bfc14792bec15e10c9cd327, type: 2}
+    - {fileID: 11400000, guid: 9d448bba402064432a5671b5c9fe8ace, type: 2}

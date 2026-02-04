@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Screens
+  m_EditorClassIdentifier: 
+  m_GroupName: Screens
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 4e201a398e918437bac696b431413029
+  m_SerializeEntries:
+  - m_GUID: 288e42eb0119c420ea8989c4fee0362e
+    m_Address: UI Screens/ChooseLevelScreenMediator
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 453b70b42ca734edf9892cafedf8ffa5
+    m_Address: UI Screens/PuzzleAssemblyScreenMediator
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0a982ea61aaff3479e996a1e981d2c7
+    m_Address: UI Screens/WelcomeScreenScreenMediator
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fad908d6d8aff70438f16969ecc7cc58
+    m_Address: UI Screens/ChoosePackScreenMediator
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: e24ffa8b9424ddd438d6f352cb603ea5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: fea93e402243b436b980d111d8d1dd31, type: 2}
+    - {fileID: 11400000, guid: b4017113f5fab46fe83ad7adcaeaa26e, type: 2}

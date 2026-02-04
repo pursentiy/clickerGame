@@ -191,6 +191,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 9034851929120955009}
     m_Modifications:
+    - target: {fileID: 6796169978304912260, guid: 556d380e2546b4551a559964ea8c17a8,
+        type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6796169978304912260, guid: 556d380e2546b4551a559964ea8c17a8,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6796169978304912260, guid: 556d380e2546b4551a559964ea8c17a8,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0.65594476
+      objectReference: {fileID: 0}
+    - target: {fileID: 6796169978304912260, guid: 556d380e2546b4551a559964ea8c17a8,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6796169978304912264, guid: 556d380e2546b4551a559964ea8c17a8,
         type: 3}
       propertyPath: m_Pivot.x
@@ -296,6 +316,11 @@ PrefabInstance:
       propertyPath: m_SortingLayer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6796169978304912267, guid: 556d380e2546b4551a559964ea8c17a8,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 732aef7ea0de843d69de5c3817a46966, type: 2}
     - target: {fileID: 6796169978304912271, guid: 556d380e2546b4551a559964ea8c17a8,
         type: 3}
       propertyPath: m_Name

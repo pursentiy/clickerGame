@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _uiCanvasPrefab: {fileID: 173569723275598840, guid: b3025a1fe76d74228a510bd67366a4ef,
     type: 3}
+  _uiScreenParticlesContainerPrefab: {fileID: 6530028216012592179, guid: e90dee8c98d6c49b69669eef81044e84,
+    type: 3}

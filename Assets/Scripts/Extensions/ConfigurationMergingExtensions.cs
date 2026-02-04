@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Common.Data.Info;
 using Configurations;
+using Configurations.Progress;
 using Services;
 using Storage.Levels;
 

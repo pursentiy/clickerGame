@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Components.Levels.Figures;
+using UI.Screens.PuzzleAssembly.Figures;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -7,23 +7,29 @@ namespace Services
 {
     public class ClickHandlerService
     {
-        public List<FigureTarget> DetectFigureTarget(PointerEventData eventData, GraphicRaycaster raycaster)
+        public List<FigureTargetWidget> DetectFigureTarget(PointerEventData eventData, GraphicRaycaster raycaster)
         {
-            var results = new List<RaycastResult>();
-            raycaster.Raycast(eventData, results);
-            
-            var figures = new List<FigureTarget>();
-            foreach (var result in results)
-            {
-                var figure = result.gameObject.GetComponent<FigureTarget>();
+            var raycastResults = UnityEngine.Pool.ListPool<RaycastResult>.Get();
+            var foundFigures = new List<FigureTargetWidget>();
 
-                if (figure == null) 
-                    continue;
-                 
-                figures.Add(figure);
+            try
+            {
+                raycaster.Raycast(eventData, raycastResults);
+
+                foreach (var result in raycastResults)
+                {
+                    if (result.gameObject.TryGetComponent<FigureTargetWidget>(out var figure))
+                    {
+                        foundFigures.Add(figure);
+                    }
+                }
+            }
+            finally
+            {
+                UnityEngine.Pool.ListPool<RaycastResult>.Release(raycastResults);
             }
 
-            return figures;
+            return foundFigures;
         }
     }
 }

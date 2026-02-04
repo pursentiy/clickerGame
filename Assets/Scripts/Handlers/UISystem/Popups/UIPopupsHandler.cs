@@ -4,11 +4,13 @@ using System.Linq;
 using Attributes;
 using Extensions;
 using JetBrains.Annotations;
+using ModestTree;
 using Plugins.FSignal;
 using RSG;
 using Services;
 using Services.ContentDeliveryService;
 using Services.CoroutineServices;
+using Services.ScreenBlocker;
 using UnityEngine;
 using Utilities;
 using Utilities.Disposable;
@@ -20,7 +22,8 @@ namespace Handlers.UISystem.Popups
     public class UIPopupsHandler : IDisposeProvider, IPopupHider
     {
         [Inject] private readonly AddressableContentDeliveryService _contentDeliveryService;
-        [Inject] private readonly CoroutineService _coroutineService;
+        [Inject] private readonly PersistentCoroutinesService _persistentCoroutinesService;
+        [Inject] private readonly UIGlobalBlocker _uiGlobalBlocker;
         
         public Canvas RootCanvas => _popupsCanvas;
         public bool IsQueueProcessingPopup { get; private set; }
@@ -33,6 +36,7 @@ namespace Handlers.UISystem.Popups
         public DisposableCollection ChildDisposables { get; } = new DisposableCollection();
 
         private List<UIPopupShowQuery> _popupsShowQueue;
+        private List<IUIBlockRef> _blockRefs = new();
         
         private Dictionary<Type, List<(UIPopupBase popup, IDisposableContent<GameObject> asset)>> _shownPopups;
         private Canvas _popupsCanvas;
@@ -50,17 +54,13 @@ namespace Handlers.UISystem.Popups
         public IPromise<UIPopupBase> ShowPopupImmediately(Type type, IPopupContext context)
         {
             LoggerService.LogDebug(this, $"ShowPopupImmediately with {nameof(Type)} = {type.Name}");
-            //TODO ADD UI BLOCKER
-            //var blockRef = _uiBlocker.Block();
+            var blockerAction = BlockScreen();
             IsProcessingImmediatePopup = true;
             var promise = ShowPopup(type, context);
             promise.Finally(() =>
             {
                 IsProcessingImmediatePopup = false;
-                // if (blockRef?.IsDisposed == false)
-                // {
-                //     blockRef.Dispose();
-                // }
+                blockerAction?.SafeInvoke();
             });
             return promise;
         }
@@ -442,8 +442,7 @@ namespace Handlers.UISystem.Popups
                 var query = _popupsShowQueue[0];
                 _popupsShowQueue.RemoveAt(0);
 
-                //TODO ADD UIBlocker
-                //var blockRef = _uiBlocker.Block();
+                var blockerAction = BlockScreen();
                 ShowPopup(query.PopupType, query.Context)
                     .Then(popup =>
                     {
@@ -462,9 +461,7 @@ namespace Handlers.UISystem.Popups
                     })
                     .Finally(() =>
                     {
-                        //TODO ADD UIBlocker
-                        // if (blockRef?.IsDisposed == false)
-                        //     blockRef.Dispose();
+                        blockerAction?.Invoke();
                     });
             }
         }
@@ -483,9 +480,7 @@ namespace Handlers.UISystem.Popups
 
             LoggerService.LogDebug($"Hide: {popup.GetAnalyticsName()}");
 
-            //TODO ADD BLOCKER
-            //var blockRef = _uiBlocker.Block();
-
+            var blockerAction = BlockScreen();
             try
             {
                 popup.OnBeginHide();
@@ -535,7 +530,7 @@ namespace Handlers.UISystem.Popups
 
             void DisposePopup()
             {
-                //blockRef?.Dispose();
+                blockerAction?.SafeInvoke();
                 RemoveFromShowedPopups();
                 if (popup.gameObject != null)
                 {
@@ -609,8 +604,7 @@ namespace Handlers.UISystem.Popups
             }
             else
             {
-                //TODO ADD UIBLOCKER
-                //var blockRef = _uiBlocker.Block();
+                var blockerAction = BlockScreen();
                 try
                 {
                     LoggerService.LogDebug($"Hide: {popup.GetAnalyticsName()}");
@@ -621,11 +615,11 @@ namespace Handlers.UISystem.Popups
                             try
                             {
                                 popup.OnEndHide();
-                                //blockRef?.Dispose();
+                                blockerAction?.SafeInvoke();
                             }
                             catch (Exception e)
                             {
-                                //blockRef?.Dispose();
+                                blockerAction?.SafeInvoke();
 
                                 LoggerService.LogError(this, $"Fail hiding popup with type = {name}: {e}");
                                 RemoveFromShowedPopups();
@@ -635,7 +629,7 @@ namespace Handlers.UISystem.Popups
                 }
                 catch (Exception e)
                 {
-                    //blockRef?.Dispose();
+                    blockerAction?.SafeInvoke();
 
                     LoggerService.LogError(this, $"Fail hiding popup with type = {name}: {e}");
                     if (popup != null && popup.gameObject != null)
@@ -678,6 +672,34 @@ namespace Handlers.UISystem.Popups
             HideAllPopups(typeof(TPopup));
         }
 
+        private void DisposeAllBlockers()
+        {
+            if (_blockRefs.IsCollectionNullOrEmpty())
+                return;
+
+            foreach (var uiBlockRef in _blockRefs)
+            {
+                uiBlockRef?.Dispose();
+            }
+        }
+
+        private Action BlockScreen()
+        {
+            var blockRef = _uiGlobalBlocker.Block();
+            _blockRefs.Add(blockRef);
+
+            void DisposeBlocker()
+            {
+                blockRef?.Dispose();
+                if (_blockRefs.IsCollectionNullOrEmpty())
+                    return;
+                
+                _blockRefs.Remove(blockRef);
+            }
+
+            return DisposeBlocker;
+        }
+
         private class UIPopupShowQuery
         {
             public Type PopupType { get; }
@@ -701,6 +723,8 @@ namespace Handlers.UISystem.Popups
 
         public void Dispose()
         {
+            DisposeAllBlockers();
+                
             _popupsShowQueue.Clear();
 
             var shownPopupsCopy = _shownPopups.ToDictionary(

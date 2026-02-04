@@ -32,6 +32,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c003f35895f03464893b0e778b160c56
+    m_Address: Assets/Materials/Shaders/UI_Grayscale.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cfda4227690e44613ad349f892e8d818
     m_Address: Assets/TextMesh Pro/Fonts/Comic_CAT SDF Small Material Outline.mat
     m_ReadOnly: 0

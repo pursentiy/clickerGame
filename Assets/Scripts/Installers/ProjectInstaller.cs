@@ -1,10 +1,12 @@
 using Common.Rewards;
 using Handlers;
 using Services;
+using Services.Configuration;
 using Services.ContentDeliveryService;
 using Services.CoroutineServices;
 using Services.FlyingRewardsAnimation;
 using Services.Player;
+using Services.ScreenBlocker;
 using Services.ScreenObserver;
 using Storage;
 using Storage.Audio;
@@ -31,6 +33,8 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<TimeService>().AsSingle();
             Container.BindInterfacesAndSelfTo<ReloadService>().AsSingle();
             Container.BindInterfacesAndSelfTo<ScreenObserverService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<UIScreenBlocker>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<UIGlobalBlocker>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<GlobalSettingsManager>().AsSingle().NonLazy();
 
             // DATA AND PLAYER PROGRESS
@@ -44,6 +48,7 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<GameSoundManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<LanguageConversionService>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameConfigurationProvider>().AsSingle();
+            Container.BindInterfacesAndSelfTo<GameInfoProvider>().AsSingle();
             Container.BindInterfacesAndSelfTo<UserSettingsService>().AsSingle();
             Container.BindInterfacesAndSelfTo<AdsService>().AsSingle();
             Container.BindInterfacesAndSelfTo<BridgeService>().AsSingle();
