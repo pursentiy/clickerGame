@@ -32,7 +32,7 @@ namespace Services
 
         public bool CanShowPrerollAd()
         {
-            return _bridgeService.CheckPlatform(BridgePlatformType.GameDistribution);
+            return !_bridgeService.CheckPlatform(BridgePlatformType.Mock) || _bridgeService.CheckPlatform(BridgePlatformType.GameDistribution);
         }
 
         public AdsService(
