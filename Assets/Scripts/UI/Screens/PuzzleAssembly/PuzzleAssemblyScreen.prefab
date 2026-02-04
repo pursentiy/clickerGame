@@ -1291,7 +1291,6 @@ GameObject:
   - component: {fileID: 4922581532116615205}
   - component: {fileID: 4922581532116615204}
   - component: {fileID: 4922581532116615227}
-  - component: {fileID: 5898096925715035787}
   m_Layer: 5
   m_Name: Scroll
   m_TagString: Untagged
@@ -1401,18 +1400,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1.63
---- !u!114 &5898096925715035787
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4922581532116615225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03165ea9e3da4a53a453b117ae942a92, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4922581532589835352
 GameObject:
   m_ObjectHideFlags: 0
@@ -2039,7 +2026,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: 610ecc4d165e343e2a016b00f91bffa3, type: 2}
-  m_Color: {r: 0.7735849, g: 0.7735849, b: 0.7735849, a: 1}
+  m_Color: {r: 0.4811321, g: 0.46524566, b: 0.46524566, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

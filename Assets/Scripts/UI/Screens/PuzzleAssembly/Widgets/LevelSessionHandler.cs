@@ -18,7 +18,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets
 {
     public class LevelSessionHandler : InjectableMonoBehaviour
     {
-        private const float AwaitTimeBeforeShowingPopup = 0.5f;
+        private const float AwaitTimeBeforeShowingPopup = 0.15f;
         
         [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private readonly LevelHelperService _levelHelperService;

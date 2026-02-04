@@ -72,7 +72,7 @@ namespace UI.Screens.ChooseLevel
 
         private void OnInfoButtonClicked()
         {
-            var context = new MessagePopupContext(_localizationService.GetValue("unlock_sets_info"), View.InfoButton.GetRectTransform(), View.InfoMessageFontSize, facing: PopupFacing.Right);
+            var context = new MessagePopupContext(_localizationService.GetValue("unlock_sets_info"), View.InfoButton.GetRectTransform(), View.InfoMessageFontSize, facing: PopupFacing.Left);
             _flowPopupController.ShowMessagePopup(context, overrideDisposeProvider: this.GetDisposeProvider());
         }
     }

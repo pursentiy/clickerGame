@@ -1,3 +1,4 @@
+using Controllers;
 using Extensions;
 using Handlers.UISystem;
 using RSG;
@@ -16,6 +17,8 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
 {
     public class VisualizeNotEnoughCurrencyState : InjectableStateBase<VisualizeNotEnoughCurrencyContext>
     {
+        private const float MessagePopupFontSize = 175f;
+        
         [Inject] private readonly AdsService _adsService;
         [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
@@ -24,6 +27,7 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
         [Inject] private readonly CoroutineService _coroutineService;
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly CurrencyLibraryService _currencyLibraryService;
+        [Inject] private readonly FlowPopupController _flowPopupController;
 
         private IUIBlockRef _uiBlockRef;
         
@@ -31,7 +35,7 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
         {
             base.OnEnter(arguments);
 
-            PrepareEnvironment();
+            EnableBlocker();
             
             VisualizeCurrencyWidgetAnimation()
                 .Then(() =>
@@ -39,9 +43,14 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
                     VisualizeAdsButton();
                     return ShowMessagePopup();
                 })
+                .Then(flowInfo =>
+                {
+                    flowInfo.MediatorLoadPromise.ContinueWithResolved(DisposeBlocker).CancelWith(this);
+                    return flowInfo.MediatorHidePromise;
+                })
                 .ContinueWithResolved(() =>
                 {
-                    ResetEnvironment();
+                    DisposeBlocker();
                     FinishSequence();
                 })
                 .CancelWith(this);
@@ -52,16 +61,14 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
             return Context.CurrencyDisplayWidget.Bump();
         }
 
-        private IPromise ShowMessagePopup()
+        private IPromise<MediatorFlowInfo> ShowMessagePopup()
         {
             var currencyToEarnViaAds = _gameInfoProvider.StarsRewardForAds;
             var spriteAsset = _currencyLibraryService.GetSpriteAsset(CurrencyExtensions.StarsCurrencyName);
-            var fontSize = 175;
-            var context = new MessagePopupContext(_localizationService.GetFormattedValue(LocalizationExtensions.AdsInfo, currencyToEarnViaAds), Context.AdsButtonWidget.RectTransform, fontSize, spriteAsset);
-            _uiManager.PopupsHandler.ShowPopupImmediately<MessagePopupMediator>(context)
-                .CancelWith(this);
+            var context = new MessagePopupContext(_localizationService.GetFormattedValue(LocalizationExtensions.AdsInfo, currencyToEarnViaAds), Context.AdsButtonWidget.RectTransform, MessagePopupFontSize, spriteAsset);
+            var flowInfo = _flowPopupController.ShowMessagePopup(context, overrideDisposeProvider: this);
 
-            return _coroutineService.WaitFor(0.25f).CancelWith(this);
+            return Promise<MediatorFlowInfo>.Resolved(flowInfo);
         }
 
         private void VisualizeAdsButton()
@@ -69,12 +76,12 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
             Context.AdsButtonWidget.BumpButton();
         }
 
-        private void PrepareEnvironment()
+        private void EnableBlocker()
         {
             _uiBlockRef = _uiScreenBlocker.Block();
         }
 
-        private void ResetEnvironment()
+        private void DisposeBlocker()
         {
             _uiBlockRef?.Dispose();
         }

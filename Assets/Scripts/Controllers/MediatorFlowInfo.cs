@@ -4,13 +4,13 @@ namespace Controllers
 {
     public class MediatorFlowInfo
     {
-        public MediatorFlowInfo(IPromise mediatorLoadPromise, IPromise mediatorHiddenPromise)
+        public MediatorFlowInfo(IPromise mediatorLoadPromise, IPromise mediatorHidePromise)
         {
             MediatorLoadPromise = mediatorLoadPromise;
-            MediatorHiddenPromise = mediatorHiddenPromise;
+            MediatorHidePromise = mediatorHidePromise;
         }
 
         public IPromise MediatorLoadPromise { get; }
-        public IPromise MediatorHiddenPromise { get; }
+        public IPromise MediatorHidePromise { get; }
     }
 }

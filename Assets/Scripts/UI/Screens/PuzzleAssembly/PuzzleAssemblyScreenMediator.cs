@@ -37,7 +37,7 @@ namespace UI.Screens.PuzzleAssembly
         
         private void OnSettingsButtonClicked()
         {
-            _flowPopupController.ShowSettingsPopup(true);
+            _flowPopupController.ShowSettingsPopup(false);
         }
 
         private void OnGoBackButtonClicked()

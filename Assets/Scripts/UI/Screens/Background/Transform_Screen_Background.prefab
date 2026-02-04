@@ -49,7 +49,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
   looping: 1
-  prewarm: 1
+  prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
@@ -1411,14 +1411,14 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 1, b: 1, a: 1}
+        key0: {r: 1, g: 1, b: 1, a: 0}
         key1: {r: 1, g: 1, b: 1, a: 1}
-        key2: {r: 0, g: 0, b: 0, a: 0.19607843}
-        key3: {r: 0, g: 0, b: 0, a: 1}
-        key4: {r: 0, g: 0, b: 0, a: 0.39215687}
-        key5: {r: 0, g: 0, b: 0, a: 0}
-        key6: {r: 0, g: 0, b: 0, a: 1}
-        key7: {r: 0, g: 0, b: 0, a: 1}
+        key2: {r: 0, g: 0, b: 0, a: 1}
+        key3: {r: 0, g: 0, b: 0, a: 0.19607843}
+        key4: {r: 0, g: 0, b: 0, a: 1}
+        key5: {r: 0, g: 0, b: 0, a: 0.39215687}
+        key6: {r: 0, g: 0, b: 0, a: 0}
+        key7: {r: 0, g: 0, b: 0, a: 0}
         ctime0: 13107
         ctime1: 65535
         ctime2: 0
@@ -1428,17 +1428,17 @@ ParticleSystem:
         ctime6: 0
         ctime7: 0
         atime0: 0
-        atime1: 13300
-        atime2: 26600
-        atime3: 39514
-        atime4: 53006
-        atime5: 65535
+        atime1: 578
+        atime2: 13300
+        atime3: 26600
+        atime4: 39514
+        atime5: 53006
         atime6: 65535
         atime7: 65535
         m_Mode: 0
         m_ColorSpace: 0
         m_NumColorKeys: 2
-        m_NumAlphaKeys: 6
+        m_NumAlphaKeys: 7
       minGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -5613,11 +5613,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sunTransform: {fileID: 1783795267583733156}
   maybeRayTransform: {fileID: 0}
-  peakYOffset: 0
   leftPosition: {x: -8.35, y: -3.72}
   peakPosition: {x: 0, y: 3}
   rightPosition: {x: 8.35, y: -3.72}
-  horizontalMargin: 0
   cycleDurationRange: {x: 24, y: 30}
   sunRotationDurationRange: {x: 8, y: 12}
   rayRotationDurationRange: {x: 8, y: 12}

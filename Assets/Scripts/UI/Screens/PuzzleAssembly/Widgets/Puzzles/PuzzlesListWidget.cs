@@ -151,28 +151,20 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
         
         public IPromise AnimateMenuFigureFlightToPosition(FigureMenuWidget draggingMenuScrollEmptyContainer, GameObject draggingFigure)
         {
-            // var sequence = DOTween.Sequence()
-            //     .Append(draggingFigure.transform.DOMove(draggingMenuScrollEmptyContainer.InitialPosition, 0.4f))
-            //     .Join(draggingMenuScrollEmptyContainer.transform.DOScale(1, 0.3f))
-            //     .Join(draggingMenuScrollEmptyContainer.ContainerTransform.DOSizeDelta
-            //         (new Vector2(draggingMenuScrollEmptyContainer.InitialWidth, draggingMenuScrollEmptyContainer.InitialHeight), 0.3f))
-            //     .KillWith(this);
-            
             var sequence = DOTween.Sequence().KillWith(this);
             
             sequence.Append(draggingFigure.transform
                 .DOMove(draggingMenuScrollEmptyContainer.InitialPosition, 0.5f)
-                .SetEase(Ease.OutBack, 1.2f)); // 1.2f — это амплитуда "отскока"
-
+                .SetEase(Ease.OutBack, 1.2f));
+            
             sequence.Join(draggingMenuScrollEmptyContainer.transform.DOScale(1, 0.3f));
+            
             sequence.Join(draggingMenuScrollEmptyContainer.ContainerTransform
                 .DOSizeDelta(new Vector2(draggingMenuScrollEmptyContainer.InitialWidth, draggingMenuScrollEmptyContainer.InitialHeight), 0.3f)
                 .SetEase(Ease.OutQuad));
-            
-            // sequence.Append(draggingMenuScrollEmptyContainer.transform
-            //     .DOPunchScale(new Vector3(0.15f, 0.15f, 0.15f), 0.4f, 5, 1f));
+            sequence.Insert(0.4f,draggingFigure.transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.4f, 5, 1f));
 
-           return sequence.AsPromise();
+            return sequence.AsPromise();
         }
         
         public IPromise ReturnFigureBackToScroll(int figureId)
