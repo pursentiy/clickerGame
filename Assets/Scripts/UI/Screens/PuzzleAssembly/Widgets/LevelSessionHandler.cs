@@ -18,7 +18,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets
 {
     public class LevelSessionHandler : InjectableMonoBehaviour
     {
-        private const float AwaitTimeBeforeShowingPopup = 0.15f;
+        private const float AwaitTimeBeforeShowingPopup = 0.4f;
         
         [Inject] private readonly LevelsParamsStorageData _levelsParamsStorageData;
         [Inject] private readonly LevelHelperService _levelHelperService;
@@ -47,13 +47,17 @@ namespace UI.Screens.PuzzleAssembly.Widgets
             _levelId = levelParamsSnapshot.LevelId;
             _levelTrackingId = LevelTrackingExtensions.GetLevelTrackingId(packId, _levelId);
             _levelParamsSnapshot = levelParamsSnapshot;
-            _soundHandler.PlaySound("start");
             
             StartLevelTracking();
             InitializePuzzles(packId, _levelId, levelParamsSnapshot.FigureScale);
 
             _puzzlesWidget.CheckLevelCompletionSignal.MapListener(TryHandleLevelCompletion).DisposeWith(this);
             _puzzlesWidget.TrySetFigureConnectedSignal.MapListener(TrySetFigureConnected).DisposeWith(this);
+        }
+
+        public void OnScreenEndShow()
+        {
+            _soundHandler.PlaySound("start");
         }
 
         public void OnScreenLeave()
