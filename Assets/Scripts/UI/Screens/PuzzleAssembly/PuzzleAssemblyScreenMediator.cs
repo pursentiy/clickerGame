@@ -28,6 +28,13 @@ namespace UI.Screens.PuzzleAssembly
             InitializeWidgets();
         }
 
+        public override void OnEndShow()
+        {
+            base.OnEndShow();
+            
+            View.LevelSessionHandler.OnScreenEndShow();
+        }
+
         private void InitializeWidgets()
         {
             View.LevelTimerWidget.Initialize();
