@@ -114,6 +114,7 @@ namespace Services
                 GlobalConstants.BridgeYandexId => BridgePlatformType.Yandex,
                 GlobalConstants.BridgeGDId => BridgePlatformType.GameDistribution,
                 GlobalConstants.BridgeMockId => BridgePlatformType.Mock,
+                GlobalConstants.BridgePlaygamaId => BridgePlatformType.PlayGama,
                 _ => BridgePlatformType.Unknown
             };
         }
@@ -124,6 +125,7 @@ namespace Services
         Unknown, 
         Mock,
         GameDistribution,
-        Yandex
+        Yandex,
+        PlayGama
     }
 }
