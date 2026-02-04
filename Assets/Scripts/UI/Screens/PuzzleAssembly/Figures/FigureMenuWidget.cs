@@ -57,7 +57,7 @@ namespace UI.Screens.PuzzleAssembly.Figures
             var targetColor = new Color(color.r, color.g, color.b, 0.5f);
     
             _connectAnimationSequence = DOTween.Sequence()
-                .Append(_transformFigure.DOScale(0, 0.25f).SetEase(Ease.InBack))
+                .Append(_transformFigure.DOScale(0, 0.15f).SetEase(Ease.InBack))
                 .Join(_image.DOColor(targetColor, 0.2f))
                 .Join(_image.transform.DOPunchRotation(new Vector3(0, 0, 10), 0.25f, 5, 1f))
                 .KillWith(this);

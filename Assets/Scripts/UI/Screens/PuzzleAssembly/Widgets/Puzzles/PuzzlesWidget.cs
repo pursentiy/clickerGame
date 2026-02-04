@@ -191,11 +191,9 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             SetDraggingEnabled(false);
             
             var animations = Promise.All(
-                _puzzlesListWidget.TryShiftAllElements(_draggingMenuScrollEmptyContainer.Id, isInserting: true)
+                _puzzlesListWidget.TryShiftAllElements(_draggingMenuScrollEmptyContainer.Id, isInserting: true),
+                _puzzlesListWidget.AnimateMenuFigureFlightToPosition(_draggingMenuScrollEmptyContainer, _draggingFigure)
             );
-
-            _puzzlesListWidget.AnimateMenuFigureFlightToPosition(_draggingMenuScrollEmptyContainer, _draggingFigure)
-                .CancelWith(this);
 
            _puzzlesListWidget.FadeDraggingContainerOverlay(false, 0.55f).CancelWith(this);
             animations
