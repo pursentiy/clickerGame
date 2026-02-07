@@ -69,40 +69,13 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             figuresMenuList.ForEach(InitializeMenuFigure);
             figuresTargetList.ForEach(InitializeTargetFigure);
 
-            // 1. Принудительно обновляем лейаут, чтобы Unity расставила элементы
             Canvas.ForceUpdateCanvases();
-            _figuresLayoutGroup.CalculateLayoutInputHorizontal();
-            _figuresLayoutGroup.SetLayoutHorizontal();
-    
-            // 2. Сохраняем "родные" позиции для каждого элемента
-            foreach (var figure in _figuresMenuList)
-            {
-                figure.SaveBaseLocalPosition();
-            }
 
-            // 3. Отключаем LayoutGroup, чтобы он не мешал DOTween'у
-            _figuresLayoutGroup.enabled = false;
+            _figuresLayoutGroup.enabled = false; 
 
-            FadeDraggingContainerOverlay(false, fast: true);
-        }
-
-        public IPromise BumpDraggingContainerHolder()
-        {
-            return Promise.Resolved();
-            _figuresDraggingContainerHolder.DOKill(true);
-
-            var sequence = DOTween.Sequence().KillWith(_figuresDraggingContainerHolder.gameObject);
-
-            var force = 0.015f;
-            sequence.Append(_figuresDraggingContainerHolder.transform
-                .DOPunchScale(new Vector3(force, force, force), 0.2f, 3, 0.7f)
-                .SetEase(Ease.OutQuad));
+            ReflowLayout(null);
             
-            sequence.Join(_figuresDraggingContainerHolder.transform
-                .DOPunchRotation(new Vector3(0, 0, 0.05f), 0.3f, 2, 0.5f)
-                .SetEase(Ease.OutSine));
-
-            return sequence.AsPromise();
+            FadeDraggingContainerOverlay(false, fast: true);
         }
 
         public IPromise FadeDraggingContainerOverlay(bool isVisible, float duration = 0.3f, bool fast = false)
@@ -132,130 +105,56 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             return tweener.AsPromise();
         }
 
-        public IPromise TryShiftAllElements(int figureId, bool isInserting, bool shiftByPadding = false)
+        public IPromise ReflowLayout(int? hiddenFigureId = null)
         {
-            if (_figuresMenuList.Count <= 0)
-                return Promise.Resolved();
-
             _shiftingSequence?.Kill(true);
             _shiftingSequence = DOTween.Sequence().KillWith(this);
-
-            // Берем все фигуры, которые находятся справа от той, которую мы взяли
-            var targetFigures = _figuresMenuList
-                .Where(f => f != null && f.Id > figureId)
-                .OrderBy(f => f.Id)
-                .ToList();
-
-            for (var i = 0; i < targetFigures.Count; i++)
-            {
-                var figure = targetFigures[i];
-
-                // ВАЖНО: Расчет оффсета. Обычно нужно учитывать и Spacing лейаута
-                var spacing = _figuresLayoutGroup.spacing;
-                var moveDistance = shiftByPadding
-                    ? spacing
-                    : (figure.InitialWidth + spacing); // Сдвигаем на ширину + отступ
-
-                // Логика:
-                // Если isInserting (возврат/вставка) -> возвращаем на Базовую позицию.
-                // Если !isInserting (взяли фигуру) -> сдвигаем влево от Базовой позиции.
-
-                Vector3 targetPosition;
-
-                if (isInserting)
-                {
-                    // Возвращаем все как было (на базовые места)
-                    targetPosition = figure.BaseLocalPosition;
-                }
-                else
-                {
-                    // Сдвигаем влево, чтобы закрыть пустоту
-                    // (Предполагаем горизонтальный скролл слева направо)
-                    targetPosition = figure.BaseLocalPosition - new Vector3(moveDistance, 0, 0);
-                }
-
-                var delay = i * 0.02f; // Чуть увеличил задержку для красоты
-
-                _shiftingSequence.Join(
-                    figure.ContainerTransform
-                        .DOLocalMove(targetPosition, 0.4f)
-                        .SetEase(Ease.OutBack, 0.8f)
-                        .SetDelay(delay)
-                );
-
-                // Панч эффект оставляем без изменений
-                _shiftingSequence.Join(
-                    figure.ContainerTransform
-                        .DOPunchScale(new Vector3(0.05f, -0.05f, 0), 0.3f, 5, 1f)
-                        .SetDelay(delay)
-                );
-            }
-
-            return _shiftingSequence.AsPromise();
-        }
-
-        public void RefreshBasePositionsAfterRemoval()
-        {
-            // Вариант А: Если мы просто хотим зафиксировать текущее положение как новое базовое
-            // (Использовать, только если анимация сдвига завершилась полностью)
-            /* foreach (var figure in _figuresMenuList)
-            {
-                figure.SaveBaseLocalPosition();
-            }
-            */
-
-            // Вариант Б (Надежный): Пересчитать математически
-            // Так как LayoutGroup отключен, мы можем сами рассчитать, где они должны стоять.
-            // Это предотвратит накопление ошибок float.
 
             float currentX = _figuresLayoutGroup.padding.left;
             float spacing = _figuresLayoutGroup.spacing;
 
-            // Сортируем по порядку отображения (предполагаем по ID или индексу в списке)
-            var sortedFigures = _figuresMenuList.OrderBy(f => f.Id).ToList();
-
-            foreach (var figure in sortedFigures)
+            for (int i = 0; i < _figuresMenuList.Count; i++)
             {
-                // Устанавливаем новую базу
-                var newBasePos = new Vector3(currentX + figure.InitialWidth / 2f, figure.BaseLocalPosition.y, 0);
-                // Примечание: pivot у элементов может влиять на то, нужно ли прибавлять половину ширины.
-                // Если Pivot (0, 0.5) -> просто currentX. Если (0.5, 0.5) -> currentX + width/2.
-                // Проще всего взять текущую Y и Z, а X высчитать.
+                var figure = _figuresMenuList[i];
 
-                // Но самый простой способ, если у вас уже сработал Shift влево:
-                // Просто обновить базу на текущую позицию, к которой они приехали.
-                figure.SaveBaseLocalPosition();
+                if (hiddenFigureId.HasValue && figure.Id == hiddenFigureId.Value)
+                {
+                    continue;
+                }
 
+                float targetX = currentX + figure.InitialWidth / 2f;
+                float delay = i * 0.02f;
+                
+                _shiftingSequence.Join(
+                    figure.ContainerTransform
+                        .DOLocalMoveX(targetX, 0.4f)
+                        .SetEase(Ease.OutBack, 0.8f)
+                        .SetDelay(delay)
+                );
+                
+                if (Mathf.Abs(figure.ContainerTransform.localPosition.x - targetX) > 1f)
+                {
+                    _shiftingSequence.Join(
+                        figure.ContainerTransform
+                            .DOPunchScale(new Vector3(0.05f, -0.05f, 0), 0.3f, 5, 1f)
+                            .SetDelay(delay)
+                    );
+                }
+                
                 currentX += figure.InitialWidth + spacing;
             }
+
+            return _shiftingSequence.AsPromise();
         }
         
         public bool DestroyFigure(int figureId)
-        { 
-            var figure = _figuresMenuList.FirstOrDefault(figure => figure.Id == figureId);
-            if (figure == null) 
-                return false;
-    
+        {
+            var figure = _figuresMenuList.FirstOrDefault(f => f.Id == figureId);
+            if (figure == null) return false;
+
             _figuresMenuList.Remove(figure);
             figure.DestroyWidget();
-    
-            // Фигуры уже сдвинулись влево анимацией TryShiftAllElements(..., false).
-            // Теперь это их новые законные места.
-            foreach (var f in _figuresMenuList)
-            {
-                // Если анимация еще идет, это может быть опасно, поэтому лучше
-                // вызывать это обновление только после завершения анимации вставки.
-                // Но для надежности лучше пересчитать BaseLocalPosition на основе целевой точки сдвига.
-        
-                // Самый надежный фикс для "после удаления":
-                // Вычесть (Width + Spacing) из BaseLocalPosition всех фигур справа от удаленной.
-                if (f.Id > figureId)
-                {
-                    var shift = f.InitialWidth + _figuresLayoutGroup.spacing;
-                    f.UpdateBaseLocalPosition(f.BaseLocalPosition - new Vector3(shift, 0, 0));
-                }
-            }
-    
+            
             return true;
         }
         

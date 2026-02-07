@@ -47,12 +47,13 @@ namespace UI.Screens.PuzzleAssembly.Figures
         public void SaveBaseLocalPosition()
         {
             BaseLocalPosition = ContainerTransform.localPosition;
-            
+            Debug.LogWarning($"[{nameof(SaveBaseLocalPosition)}]  Position is {BaseLocalPosition} for {GetType().Name}");
         }
 
         public void UpdateBaseLocalPosition(Vector3 newPos)
         {
             BaseLocalPosition = newPos;
+            Debug.LogWarning($"[{nameof(UpdateBaseLocalPosition)}] Updated Position is {BaseLocalPosition} for {GetType().Name}");
         }
 
         public void SaveInitialWidthAndHeight()
