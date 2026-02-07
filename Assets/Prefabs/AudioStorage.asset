@@ -52,15 +52,19 @@ MonoBehaviour:
       pitch: 0
     - name: popup_appear
       clip: {fileID: 8300000, guid: 7791ad3ce16634887a071ef9eb54f12e, type: 3}
-      volume: 0.406
+      volume: 0.22
       pitch: 0
     - name: resources_collected
       clip: {fileID: 8300000, guid: c15b10ce5fd8d414a885552207c5442c, type: 3}
       volume: 0.129
       pitch: 0
     - name: popup_hide
+      clip: {fileID: 8300000, guid: 7791ad3ce16634887a071ef9eb54f12e, type: 3}
+      volume: 0.073
+      pitch: 0
+    - name: bump_panel
       clip: {fileID: 8300000, guid: a317096ab49f347e0a52fe20fec2b8df, type: 3}
-      volume: 0.343
+      volume: 0.415
       pitch: 0
   _musicPacks:
     sounds:

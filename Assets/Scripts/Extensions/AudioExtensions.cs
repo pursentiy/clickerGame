@@ -14,5 +14,6 @@ namespace Extensions
         public static string PopupAppearKey => "popup_appear";
         public static string PopupHideKey => "popup_hide";
         public static string ResourcesCollected => "resources_collected";
+        public static string BumpPanelKey => "bump_panel";
     }
 }

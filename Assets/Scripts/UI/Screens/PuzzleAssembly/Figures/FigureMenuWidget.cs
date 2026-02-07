@@ -33,6 +33,18 @@ namespace UI.Screens.PuzzleAssembly.Figures
         {
             IsCompleted = value;
         }
+        
+        public IPromise AnimateShow(float delay)
+        {
+            _transformFigure.localScale = Vector3.zero;
+
+            return _transformFigure
+                .DOScale(1f, 0.6f)
+                .SetDelay(delay)
+                .SetEase(Ease.OutBack, 1.5f) // 1.5f дает приятный мягкий отскок
+                .KillWith(this)
+                .AsPromise();
+        }
 
         public void SetInitialPosition(Vector3 position)
         {

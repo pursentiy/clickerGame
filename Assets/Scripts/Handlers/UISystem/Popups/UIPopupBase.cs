@@ -52,9 +52,7 @@ namespace Handlers.UISystem
         protected bool IsAppeared { get; private set; }
         
         protected virtual string OnShowSoundKey => AudioExtensions.PopupAppearKey;
-        protected virtual float ShowSoundVolume => 0.2f;
         protected virtual string OnHideSoundKey => AudioExtensions.PopupHideKey;
-        protected virtual float HideSoundVolume => 0.2f;
         
         private GraphicRaycaster _graphicRaycaster;
         private IPopupHider _popupHider;
@@ -116,7 +114,7 @@ namespace Handlers.UISystem
         {
             if (PlayOnShowSound)
             {
-                SoundHandler.PlaySound(OnShowSoundKey, ShowSoundVolume);
+                SoundHandler.PlaySound(OnShowSoundKey);
             }
         }
 
@@ -149,10 +147,6 @@ namespace Handlers.UISystem
         {
             IsAppeared = false;
             IsHiding = true;
-            if (PlayOnHideSound)
-            {
-                SoundHandler.PlaySound(OnHideSoundKey, HideSoundVolume);
-            }
             
             SetRaycasterEnabled(false); 
             
@@ -161,6 +155,11 @@ namespace Handlers.UISystem
 
         public virtual void OnEndHide()
         {
+            if (PlayOnHideSound)
+            {
+                SoundHandler.PlaySound(OnHideSoundKey);
+            }
+            
             Hidden = true;
             IsHiding = false;
         }
