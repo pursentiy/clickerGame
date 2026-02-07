@@ -68,35 +68,24 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             
             figuresMenuList.ForEach(InitializeMenuFigure);
             figuresTargetList.ForEach(InitializeTargetFigure);
+
+            Canvas.ForceUpdateCanvases();
+
+            _figuresLayoutGroup.enabled = false; 
+
+            ReflowLayout(null);
+            
             FadeDraggingContainerOverlay(false, fast: true);
         }
 
-        public IPromise BumpDraggingContainerHolder()
-        {
-            _figuresDraggingContainerHolder.DOKill(true);
-
-            var sequence = DOTween.Sequence().KillWith(_figuresDraggingContainerHolder.gameObject);
-
-            var force = 0.015f;
-            sequence.Append(_figuresDraggingContainerHolder.transform
-                .DOPunchScale(new Vector3(force, force, force), 0.2f, 3, 0.7f)
-                .SetEase(Ease.OutQuad));
-            
-            sequence.Join(_figuresDraggingContainerHolder.transform
-                .DOPunchRotation(new Vector3(0, 0, 0.05f), 0.3f, 2, 0.5f)
-                .SetEase(Ease.OutSine));
-
-            return sequence.AsPromise();
-        }
-        
         public IPromise FadeDraggingContainerOverlay(bool isVisible, float duration = 0.3f, bool fast = false)
         {
             _disabledDraggingContainerOverlay.DOKill();
 
             var targetAlpha = isVisible ? 0.5f : 0f;
             var easeType = isVisible ? Ease.OutQuad : Ease.InQuad;
-            
-            if (isVisible) 
+
+            if (isVisible)
                 _disabledDraggingContainerOverlay.blocksRaycasts = true;
 
             var tweener = _disabledDraggingContainerOverlay
@@ -112,59 +101,56 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             {
                 tweener.Kill(true);
             }
-            
+
             return tweener.AsPromise();
         }
-        
-        public IPromise TryShiftAllElements(int figureId, bool isInserting, bool shiftByPadding = false)
+
+        public IPromise ReflowLayout(int? hiddenFigureId = null)
         {
-            if (_figuresMenuList.Count <= 0)
-                return Promise.Resolved();
+            float currentX = _figuresLayoutGroup.padding.left;
+            float spacing = _figuresLayoutGroup.spacing;
 
-            _shiftingSequence?.Kill(true);
-            _shiftingSequence = DOTween.Sequence().KillWith(this);
-            
-            var targetFigures = _figuresMenuList
-                .Where(f => f != null && f.Id > figureId)
-                .OrderBy(f => f.Id) // Важно для корректного Stagger эффекта
-                .ToList();
+            List<IPromise> movePromises = new List<IPromise>();
 
-            for (var i = 0; i < targetFigures.Count; i++)
+            for (int i = 0; i < _figuresMenuList.Count; i++)
             {
-                var figure = targetFigures[i];
-                var position = figure.ContainerTransform.localPosition;
-                
-                var offset = shiftByPadding ? _figuresLayoutGroup.spacing : figure.InitialWidth;
-                var direction = isInserting ? 1f : -1f;
-                var finalPosition = position + new Vector3(offset * direction, 0);
-                
-                var delay = i * 0.01f; 
+                var figure = _figuresMenuList[i];
 
-                _shiftingSequence.Join(
-                    figure.ContainerTransform
-                        .DOLocalMove(finalPosition, 0.4f)
-                        .SetEase(Ease.OutBack, 0.8f)
-                        .SetDelay(delay)
-                );
+                if (hiddenFigureId.HasValue && figure.Id == hiddenFigureId.Value)
+                {
+                    continue;
+                }
                 
-                _shiftingSequence.Join(
-                    figure.ContainerTransform
-                        .DOPunchScale(new Vector3(0.05f, -0.05f, 0), 0.3f, 5, 1f)
-                        .SetDelay(delay)
-                );
+                figure.ResetVisualState(); 
+
+                float targetX = currentX + figure.InitialWidth / 2f;
+                figure.ContainerTransform.DOKill();
+
+                var moveTween = figure.ContainerTransform
+                    .DOLocalMoveX(targetX, 0.4f)
+                    .SetEase(Ease.OutCubic);
+
+                movePromises.Add(moveTween.AsPromise());
+
+                if (Mathf.Abs(figure.ContainerTransform.localPosition.x - targetX) > 10f)
+                {
+                    figure.ContainerTransform.DOPunchScale(new Vector3(0.05f, -0.05f, 0), 0.3f, 5, 1f);
+                }
+
+                currentX += figure.InitialWidth + spacing;
             }
-    
-            return _shiftingSequence.AsPromise();
+
+            return Promise.All(movePromises);
         }
         
         public bool DestroyFigure(int figureId)
-        { 
-            var figure = _figuresMenuList.FirstOrDefault(figure => figure.Id == figureId);
-            if (figure == null) 
-                return false;
-            
+        {
+            var figure = _figuresMenuList.FirstOrDefault(f => f.Id == figureId);
+            if (figure == null) return false;
+
             _figuresMenuList.Remove(figure);
             figure.DestroyWidget();
+            
             return true;
         }
         

@@ -126,7 +126,7 @@ namespace UI.Popups.CompleteLevelInfoPopup
             }
 
             int[] animationOrder = { 0, 2, 1 };
-
+            var earnedStarPitchCoefficient = 1f;
             for (int i = 0; i < animationOrder.Length; i++)
             {
                 int starIndex = animationOrder[i];
@@ -147,12 +147,23 @@ namespace UI.Popups.CompleteLevelInfoPopup
                 {
                     float targetScale = (starIndex == 1 ? 1.3f : 1f);
                     float overshoot = (starIndex == 1 ? 5.0f : 3.0f);
+                    //TODO SOUND PITCH
+                    float currentPitch = earnedStarPitchCoefficient;
+
+                    var i1 = i;
+                    seq.AppendCallback(() =>
+                    {
+                        var soundKey = $"{AudioExtensions.StarEarnedKey}_{i1}";
+                        _soundHandler.PlaySound(soundKey);
+                    });
 
                     seq.Append(starImage.transform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack, overshoot));
 
                     if (starIndex == 1)
                         seq.Join(starImage.transform.DOPunchRotation(new Vector3(0, 0, 15), 0.6f, 10, 1));
-
+                    
+                    earnedStarPitchCoefficient *= AudioExtensions.EarnedStarPitchCoefficient;
+    
                     seq.AppendInterval(0.1f);
                 }
                 else

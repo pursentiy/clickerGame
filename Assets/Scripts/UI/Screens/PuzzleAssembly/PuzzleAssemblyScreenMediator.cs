@@ -28,11 +28,11 @@ namespace UI.Screens.PuzzleAssembly
             InitializeWidgets();
         }
 
-        public override void OnEndShow()
+        public override void OnBeginShow()
         {
-            base.OnEndShow();
+            base.OnBeginShow();
             
-            View.LevelSessionHandler.OnScreenEndShow();
+            View.LevelSessionHandler.OnScreenBeginShow();
         }
 
         private void InitializeWidgets()
@@ -57,6 +57,7 @@ namespace UI.Screens.PuzzleAssembly
                 return;
             }
             
+            _soundHandler.PlaySound(AudioExtensions.LevelFailedKey);
             _flowScreenController.GoToChooseLevelScreen(packInfo);
         }
 

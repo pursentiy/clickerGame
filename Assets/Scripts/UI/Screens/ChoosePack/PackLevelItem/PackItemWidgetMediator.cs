@@ -93,7 +93,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem
         private void UnlockWithAnimation()
         {
             View.LockedBlockHolder.gameObject.SetActive(true);
-            _soundHandler.PlaySound("pack_unlocked");
+            _soundHandler.PlaySound(AudioExtensions.PackUnlockedKey);
     
             View.FadeImage.DOFade(0, View.UnlockDuration).SetEase(Ease.Linear)
                 .OnComplete(() => View.FadeImage.gameObject.SetActive(false))

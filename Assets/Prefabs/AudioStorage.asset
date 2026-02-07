@@ -14,39 +14,79 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _effectsPacks:
     sounds:
-    - name: success
-      clip: {fileID: 8300000, guid: 937a04bc9b9730d40a4192ad3cd9a88f, type: 3}
-      volume: 0
+    - name: puzzle_insertion_success
+      clip: {fileID: 8300000, guid: 802b568167b8a45c48e41982ccca072e, type: 3}
+      volume: 0.157
       pitch: 0
-    - name: fail
-      clip: {fileID: 8300000, guid: ef23ccb36c8906d4e8d2f9c2c6dcb1c5, type: 3}
-      volume: 0
+    - name: puzzle_insertion_fail
+      clip: {fileID: 8300000, guid: 922e8f9a133854892ac7ea4f3b329d19, type: 3}
+      volume: 0.178
       pitch: 0
-    - name: start
-      clip: {fileID: 8300000, guid: bcf5dc2d0c0138846823b9c3a3b696c6, type: 3}
-      volume: 0
+    - name: start_level
+      clip: {fileID: 8300000, guid: 98d38f88a944f460094e06148b217c33, type: 3}
+      volume: 0.366
       pitch: 0
-    - name: finished
-      clip: {fileID: 8300000, guid: e4514a9b5d7e25a4fa6edec12a5a6cc7, type: 3}
-      volume: 0
+    - name: level_finished
+      clip: {fileID: 8300000, guid: e7d3f980eaf294028b9e73435609ffc5, type: 3}
+      volume: 0.436
       pitch: 0
     - name: pack_unlocked
-      clip: {fileID: 8300000, guid: 03d26d9c6e8d94812be028c062434a97, type: 3}
-      volume: 0
+      clip: {fileID: 8300000, guid: 4f94463b266ae42a6b2c3451a75ed319, type: 3}
+      volume: 0.303
+      pitch: 0
+    - name: star_earned_0
+      clip: {fileID: 8300000, guid: d20b44439210b425a9a41b875845586f, type: 3}
+      volume: 0.373
+      pitch: 0
+    - name: star_earned_1
+      clip: {fileID: 8300000, guid: d20b44439210b425a9a41b875845586f, type: 3}
+      volume: 0.38
+      pitch: 0
+    - name: star_earned_2
+      clip: {fileID: 8300000, guid: d20b44439210b425a9a41b875845586f, type: 3}
+      volume: 0.387
+      pitch: 0
+    - name: level_failed
+      clip: {fileID: 8300000, guid: 00eb2570f091345f691cf4ee1fc7e540, type: 3}
+      volume: 0.233
+      pitch: 0
+    - name: popup_appear
+      clip: {fileID: 8300000, guid: 7791ad3ce16634887a071ef9eb54f12e, type: 3}
+      volume: 0.406
+      pitch: 0
+    - name: resources_collected
+      clip: {fileID: 8300000, guid: c15b10ce5fd8d414a885552207c5442c, type: 3}
+      volume: 0.129
+      pitch: 0
+    - name: popup_hide
+      clip: {fileID: 8300000, guid: a317096ab49f347e0a52fe20fec2b8df, type: 3}
+      volume: 0.343
       pitch: 0
   _musicPacks:
     sounds:
     - name: theme_1
       clip: {fileID: 8300000, guid: 3caa1ffd03ef1438f96aad6a4999caa2, type: 3}
-      volume: 0
+      volume: 0.399
       pitch: 0
   _buttonsPacks:
     sounds:
     - name: button_1
-      clip: {fileID: 8300000, guid: 4bdab381848a0ab4dad680176805c498, type: 3}
-      volume: 0
+      clip: {fileID: 8300000, guid: 900963b80aca54319b803cad229212c5, type: 3}
+      volume: 0.147
       pitch: 0
     - name: button_2
-      clip: {fileID: 8300000, guid: ea2f364c4741f684596e5e829a79a402, type: 3}
-      volume: 0
+      clip: {fileID: 8300000, guid: c23a48fbb960e42efb7947773e64f7a9, type: 3}
+      volume: 0.147
+      pitch: 0
+    - name: button_3
+      clip: {fileID: 8300000, guid: fa5bf77e87308464e9fdc89004b21a02, type: 3}
+      volume: 0.147
+      pitch: 0
+    - name: button_4
+      clip: {fileID: 8300000, guid: b35a3f48ad4194b9bbea3731d6ced5b5, type: 3}
+      volume: 0.147
+      pitch: 0
+    - name: button_5
+      clip: {fileID: 8300000, guid: 9e0bc64e4ca494063b57f1c68153aedd, type: 3}
+      volume: 0.147
       pitch: 0

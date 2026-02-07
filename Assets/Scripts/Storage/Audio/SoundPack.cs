@@ -11,14 +11,14 @@ namespace Storage.Audio
     {
         public List<Sound> sounds;
 
-        public AudioClip GetClipByName(string name)
+        public Sound GetClipByName(string name)
         {
-            return sounds.Count <= 0 ? null : sounds.FirstOrDefault(sound => sound.name == name)?.clip;
+            return sounds.Count <= 0 ? null : sounds.FirstOrDefault(sound => sound.name == name);
         }
 
-        public AudioClip GetRandomClip()
+        public Sound GetRandomClip()
         {
-            return sounds.Count <= 0 ? null : sounds[Random.Range(0, sounds.Count)].clip;
+            return sounds.Count <= 0 ? null : sounds[Random.Range(0, sounds.Count)];
         }
 
         public Sound GetRandomSoundExceptSpecific(string name)

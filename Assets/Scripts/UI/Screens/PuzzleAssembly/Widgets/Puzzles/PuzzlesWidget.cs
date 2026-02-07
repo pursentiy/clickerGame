@@ -23,7 +23,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
 {
     public class PuzzlesWidget : InjectableMonoBehaviour
     {
-        [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
+        [Inject] private readonly UIScreenBlocker _uiScreenBlocker; 
         [Inject] private readonly ClickHandlerService _clickHandlerService;
         [Inject] private readonly CoroutineService _coroutineService;
         [Inject] private readonly SoundHandler _soundHandler;
@@ -38,7 +38,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
         
         private bool _isDraggable;
         private Action<bool> _lockScrollAction;
-        
+
         private FigureMenuWidget _draggingMenuScrollEmptyContainer;
         private GameObject _draggingFigure;
         
@@ -71,17 +71,8 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             var onBeginDragFiguresSignals = _puzzlesListWidget.OnBeginDragFiguresSignals;
             var onDragEndFiguresSignals = _puzzlesListWidget.OnDragEndFiguresSignals;
             
-            if (onBeginDragFiguresSignals.IsCollectionNullOrEmpty())
-            {
-                LoggerService.LogError(this, $"{nameof(onBeginDragFiguresSignals)} is null or empty at {nameof(Initialize)}");
-                return;
-            }
-            
-            if (onDragEndFiguresSignals.IsCollectionNullOrEmpty())
-            {
-                LoggerService.LogError(this, $"{nameof(onDragEndFiguresSignals)} is null or empty at {nameof(Initialize)}");
-                return;
-            }
+            if (onBeginDragFiguresSignals.IsCollectionNullOrEmpty()) return;
+            if (onDragEndFiguresSignals.IsCollectionNullOrEmpty()) return;
             
             foreach (var beginSignal in onBeginDragFiguresSignals)
             {
@@ -113,7 +104,8 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             _draggingMenuScrollEmptyContainer.SetInitialPosition(_draggingMenuScrollEmptyContainer.transform.position);
             _draggingFigure.GetRectTransform().SetParent(_draggingTransform);
             
-            _puzzlesListWidget.TryShiftAllElements(figure.Id,false);
+            _puzzlesListWidget.ReflowLayout(hiddenFigureId: figure.Id);
+            
             _draggingMenuScrollEmptyContainer.transform.DOScale(0, 0.3f).KillWith(this);
             _puzzlesListWidget.FadeDraggingContainerOverlay(true);
             _draggingMenuScrollEmptyContainer.ContainerTransform.DOSizeDelta(new Vector2(0, 0), 0.3f).KillWith(this);
@@ -121,110 +113,110 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
         
         private void OnDragEndFiguresSignal(IDraggable draggable, PointerEventData eventData)
         {
-            var draggingFigure = draggable?.GetAs<FigureMenuWidget>();
-            if (draggingFigure == null || _draggingFigure == null) 
+            var draggingFigureWidget = draggable?.GetAs<FigureMenuWidget>();
+            
+            if (draggingFigureWidget == null || _draggingFigure == null) 
                 return;
-            if (draggingFigure.IsCompleted || draggingFigure.Id != _draggingMenuScrollEmptyContainer.Id) 
+            if (draggingFigureWidget.IsCompleted || draggingFigureWidget.Id != _draggingMenuScrollEmptyContainer.Id) 
                 return;
+            
+            var figureToAnimate = _draggingMenuScrollEmptyContainer;
+            var visualObjectToAnimate = _draggingFigure;
+
+            ClearDraggingFigureElements();
+            SetDraggingEnabled(false);
+            
+            _lockScrollAction?.SafeInvoke(false);
 
             try
             {
                 var targets = _clickHandlerService.DetectFigureTarget(eventData, _figuresAssemblyCanvasRaycaster);
-                var targetFigure = targets?.FirstOrDefault(f => f != null && f.Id == _draggingMenuScrollEmptyContainer.Id);
+                var targetFigure = targets?.FirstOrDefault(f => f != null && f.Id == figureToAnimate.Id);
 
                 if (targetFigure != null)
                 {
-                    TryInsertMenuFigure(targetFigure);
+                    TryInsertMenuFigure(figureToAnimate, visualObjectToAnimate, targetFigure);
                 }
                 else
                 {
-                    ResetDraggingFigure();
+                    ResetDraggingFigure(figureToAnimate, visualObjectToAnimate);
                 }
             }
             catch (Exception e)
             {
                 LoggerService.LogWarning(this, $"Failed to process drag end: {e.Message}");
-                ResetDraggingFigure();
+                ResetDraggingFigure(figureToAnimate, visualObjectToAnimate);
             }
         }
 
-        private void TryInsertMenuFigure(FigureTargetWidget target)
+        private void TryInsertMenuFigure(FigureMenuWidget figureWidget, GameObject visualObj, FigureTargetWidget target)
         {
-            var blockRef = _uiScreenBlocker.Block(15);
-            _soundHandler.PlaySound("success");
+            _soundHandler.PlaySound(AudioExtensions.SuccessPuzzleInsertionKey);
 
             var animations = Promise.All(
-                _draggingMenuScrollEmptyContainer.AnimateFigureConnection(),
+                figureWidget.AnimateFigureConnection(),
                 target.SetConnected(),
-                _puzzlesListWidget.TryShiftAllElements(target.Id, false, true)
+                _puzzlesListWidget.ReflowLayout(target.Id)
             );
             
             TrySetFigureConnectedSignal.Dispatch(target.Id);
             CheckLevelCompletionSignal.Dispatch();
 
+            if (!_isDraggable)
+            {
+                 _puzzlesListWidget.FadeDraggingContainerOverlay(false);
+            }
+            
             animations
                 .Then(FinalizeInsertion)
-                .Then(CleanUpAndNotify)
-                .Catch(e => HandleError(e, blockRef))
+                .Catch(HandleError)
                 .CancelWith(this);
             
             IPromise FinalizeInsertion()
             {
-                _draggingMenuScrollEmptyContainer.SetFigureCompleted(true);
+                figureWidget.SetFigureCompleted(true);
                 target.SetFigureCompleted(true);
-                return DestroyDraggingFigure(target.Id);
-            }
-
-            void CleanUpAndNotify()
-            {
-                SetDraggingEnabled(false);
-                _puzzlesListWidget.FadeDraggingContainerOverlay(false);
-                _puzzlesListWidget.BumpDraggingContainerHolder().CancelWith(this);
-                blockRef?.Dispose();
+                return DestroyDraggingFigure(figureWidget, visualObj);
             }
         }
         
-        private void ResetDraggingFigure()
+        private void ResetDraggingFigure(FigureMenuWidget figureWidget, GameObject visualObj)
         {
-            var blockRef = _uiScreenBlocker.Block(15);
-            _soundHandler.PlaySound("fail");
-            SetDraggingEnabled(false);
+            
+            _soundHandler.PlaySound(AudioExtensions.FailPuzzleInsertionKey);
+            
+            if (!_isDraggable)
+            {
+                _puzzlesListWidget.FadeDraggingContainerOverlay(false, 0.55f).CancelWith(this);
+            }
             
             var animations = Promise.All(
-                _puzzlesListWidget.TryShiftAllElements(_draggingMenuScrollEmptyContainer.Id, isInserting: true),
-                _puzzlesListWidget.AnimateMenuFigureFlightToPosition(_draggingMenuScrollEmptyContainer, _draggingFigure)
+                _puzzlesListWidget.ReflowLayout(hiddenFigureId: null),
+                _puzzlesListWidget.AnimateMenuFigureFlightToPosition(figureWidget, visualObj)
             );
 
-           _puzzlesListWidget.FadeDraggingContainerOverlay(false, 0.55f).CancelWith(this);
             animations
                 .Then(FinalizeFigureReturn)
-                .Then(() =>
-                {
-                    _puzzlesListWidget.BumpDraggingContainerHolder().CancelWith(this);
-                    blockRef?.Dispose();
-                })
                 .Catch(HandleResetError)
                 .CancelWith(this);
             
             IPromise FinalizeFigureReturn()
             {
-                _puzzlesListWidget.ReturnFigureBackToScroll(_draggingMenuScrollEmptyContainer.Id);
-                _draggingMenuScrollEmptyContainer.SetFigureTransformPosition(Vector3.zero);
-                ClearDraggingFigureElements();
+                _puzzlesListWidget.ReturnFigureBackToScroll(figureWidget.Id);
+                figureWidget.SetFigureTransformPosition(Vector3.zero);
+                
                 return Promise.Resolved();
             }
 
             void HandleResetError(Exception e)
             {
                 LoggerService.LogWarning(this, e.Message);
-                blockRef?.Dispose();
             }
         }
 
-        private void HandleError(Exception e, IDisposable blockRef)
+        private void HandleError(Exception e)
         {
             LoggerService.LogWarning(this, $"Insert error: {e.Message}");
-            blockRef?.Dispose();
         }
         
         private void ClearDraggingFigureElements()
@@ -233,13 +225,20 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             _draggingFigure = null;
         }
         
-        private IPromise DestroyDraggingFigure(int figureId)
-         {
-             _puzzlesListWidget.DestroyFigure(figureId);
-             ClearDraggingFigureElements();
-             
-             return _coroutineService.WaitFrame();
-         }
+        private IPromise DestroyDraggingFigure(FigureMenuWidget figureWidget, GameObject visualObj)
+        {
+            var idToRemove = figureWidget.Id;
+
+            if (_puzzlesListWidget.DestroyFigure(idToRemove))
+            {
+                _puzzlesListWidget.ReflowLayout(null);
+            }
+     
+            if(visualObj != null) Destroy(visualObj);
+            if(figureWidget != null) figureWidget.DestroyWidget();
+     
+            return _coroutineService.WaitFrame();
+        }
 
         private void SetDraggingEnabled(bool enable)
         {

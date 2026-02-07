@@ -27,6 +27,7 @@ namespace UI.Screens.PuzzleAssembly.Figures
         public Vector3 InitialPosition { get; private set; }
         public RectTransform ContainerTransform => _transformContainer;
         public RectTransform FigureTransform => _transformFigure;
+        public Vector3 BaseLocalPosition { get; private set; }
         
         public void SetFigureCompleted(bool value)
         {
@@ -41,6 +42,15 @@ namespace UI.Screens.PuzzleAssembly.Figures
         public void SetFigureTransformPosition(Vector3 position)
         {
             FigureTransform.transform.localPosition = position;
+        }
+        
+        public void ResetVisualState()
+        {
+            _transformContainer.DOKill();
+            transform.DOKill();
+            
+            transform.localScale = Vector3.one;
+            _transformContainer.sizeDelta = new Vector2(InitialWidth, InitialHeight);
         }
 
         public void SaveInitialWidthAndHeight()

@@ -4,6 +4,7 @@ using System.Linq;
 using Common.Currency;
 using Common.Rewards;
 using Extensions;
+using Handlers;
 using RSG;
 using Services.ContentDeliveryService;
 using Services.Player;
@@ -18,6 +19,7 @@ namespace Services.FlyingRewardsAnimation
         [Inject] private readonly FlyingUIRewardDestinationService _destinationService;
         [Inject] private readonly CurrencyLibraryService _currencyLibraryService;
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        [Inject] private readonly SoundHandler _soundHandler;
         
         public IPromise Play(FlyingUIRewardAnimationContext context)
         {
@@ -115,6 +117,11 @@ namespace Services.FlyingRewardsAnimation
                                                 appearDistanceScale: particleAppearDistanceScale,
                                                 callbackForEachAnimation: null);
 
+                                        //TODO FIX THIS
+                                        starsRewardAnimationPromises.AnyParticleFinish
+                                            .Then(() => _soundHandler.PlaySound(AudioExtensions.ResourcesCollected))
+                                            .CancelWith(disposeProvider);
+                                        
                                         return starsRewardAnimationPromises.AllParticlesFinish;
                                     
 
@@ -134,8 +141,7 @@ namespace Services.FlyingRewardsAnimation
                         }));
                 }
                 
-                //TODO ADD SOUND LOGIC HERE
-                //_soundService.Play(context.Rewards, context.RewardsMoveTimeSpeedupFactor);
+                
 
                 if (!isAnyRewards)
                 {

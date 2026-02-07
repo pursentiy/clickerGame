@@ -25,7 +25,7 @@ namespace UI.Screens.PuzzleAssembly.Level.FinishLevelSequence
         {
             base.OnEnter(arguments);
 
-            _soundHandler.PlaySound("finished");
+            _soundHandler.PlaySound(AudioExtensions.LevelFinishedKey);
 
             var preRewardsBalance = _playerCurrencyService.Stars;
             

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Extensions;
 using Handlers.UISystem.Popups;
 using Plugins.FSignal;
 using RSG;
@@ -50,10 +51,10 @@ namespace Handlers.UISystem
         protected bool OnCreatedExecuted { get; private set; }
         protected bool IsAppeared { get; private set; }
         
-        protected virtual string OnShowSoundKey => "window_open";
-        protected virtual float ShowSoundVolume => 1;
-        protected virtual string OnHideSoundKey => "window_close";
-        protected virtual float HideSoundVolume => 1;
+        protected virtual string OnShowSoundKey => AudioExtensions.PopupAppearKey;
+        protected virtual float ShowSoundVolume => 0.2f;
+        protected virtual string OnHideSoundKey => AudioExtensions.PopupHideKey;
+        protected virtual float HideSoundVolume => 0.2f;
         
         private GraphicRaycaster _graphicRaycaster;
         private IPopupHider _popupHider;
@@ -113,7 +114,10 @@ namespace Handlers.UISystem
 
         public virtual void OnCreated()
         {
-            
+            if (PlayOnShowSound)
+            {
+                SoundHandler.PlaySound(OnShowSoundKey, ShowSoundVolume);
+            }
         }
 
         public virtual IPromise OnCreatedDelayed()
@@ -127,10 +131,7 @@ namespace Handlers.UISystem
             OnShowEnd.Reset();
             Hidden = false;
             IsHiding = false;
-            if (PlayOnShowSound)
-            {
-                SoundHandler.PlaySound(OnShowSoundKey, ShowSoundVolume);
-            }
+            
         }
 
         public virtual void OnEndShow()
