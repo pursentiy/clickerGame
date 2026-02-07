@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using DG.Tweening;
 using Extensions;
+using Handlers;
 using Installers;
 using RSG;
 using Services.Player;
@@ -15,6 +16,7 @@ namespace Components.UI
     public class CurrencyDisplayWidget : InjectableMonoBehaviour
     {
         [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        [Inject] private readonly SoundHandler _soundHandler;
         
         [Header("UI References")] [SerializeField]
         private TextMeshProUGUI currencyText;
@@ -72,6 +74,7 @@ namespace Components.UI
         {
             bumpTransform.DOComplete();
             
+            _soundHandler.PlaySound(AudioExtensions.BumpPanelKey);
             return bumpTransform.DOPunchScale(Vector3.one * punchStrength, animationDuration, vibrato, elasticity)
                 .KillWith(this)
                 .AsPromise();

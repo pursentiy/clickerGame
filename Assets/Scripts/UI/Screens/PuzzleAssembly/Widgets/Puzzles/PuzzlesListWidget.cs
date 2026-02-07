@@ -23,6 +23,8 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
 {
     public class PuzzlesListWidget : InjectableMonoBehaviour
     {
+        private const float BaseMenuFigureAppearAnimationDelay = 0.65f;
+        
         [Inject] private readonly ProgressProvider _progressProvider;
         [Inject] private readonly ProgressController _progressController;
         [Inject] private readonly SoundHandler _soundHandler;
@@ -66,15 +68,19 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
                 return;
             }
             
-            figuresMenuList.ForEach(InitializeMenuFigure);
             figuresTargetList.ForEach(InitializeTargetFigure);
-
-            Canvas.ForceUpdateCanvases();
-
-            _figuresLayoutGroup.enabled = false; 
-
-            ReflowLayout(null);
             
+            for (var i = 0; i < figuresMenuList.Count; i++)
+            {
+                var menuFigure = CreateMenuFigure(figuresMenuList[i]);
+                float staggerDelay = BaseMenuFigureAppearAnimationDelay + i * 0.08f;
+                menuFigure.AnimateShow(staggerDelay);
+            }
+            
+            Canvas.ForceUpdateCanvases();
+            _figuresLayoutGroup.enabled = false; 
+    
+            ReflowLayout(null);
             FadeDraggingContainerOverlay(false, fast: true);
         }
 
@@ -188,19 +194,13 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             return Promise.Resolved();
         }
         
-        private void InitializeMenuFigure(MenuFigureInfo menuFigureInfo)
+        private FigureMenuWidget CreateMenuFigure(MenuFigureInfo info)
         {
-            if (menuFigureInfo == null)
-            {
-                LoggerService.LogError(this, $"{nameof(MenuFigureInfo)} is null at {nameof(InitializeMenuFigure)}");
-                return;
-            }
-            
-            var menuFigure = Instantiate(menuFigureInfo.Widget, _figuresDraggingContainer);
-            menuFigure.Initialize(menuFigureInfo.Id);
+            var menuFigure = Instantiate(info.Widget, _figuresDraggingContainer);
+            menuFigure.Initialize(info.Id);
             menuFigure.SaveInitialWidthAndHeight();
-
             _figuresMenuList.Add(menuFigure);
+            return menuFigure;
         }
         
         private void InitializeTargetFigure(TargetFigureInfo figureTargetInfo)
