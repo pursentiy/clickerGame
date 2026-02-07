@@ -23,7 +23,8 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
 {
     public class PuzzlesWidget : InjectableMonoBehaviour
     {
-        [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
+        // ScreenBlocker убран из логики анимаций, чтобы не блокировать ввод
+        [Inject] private readonly UIScreenBlocker _uiScreenBlocker; 
         [Inject] private readonly ClickHandlerService _clickHandlerService;
         [Inject] private readonly CoroutineService _coroutineService;
         [Inject] private readonly SoundHandler _soundHandler;
@@ -39,6 +40,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
         private bool _isDraggable;
         private Action<bool> _lockScrollAction;
         
+        // Эти поля используются ТОЛЬКО для активного перетаскивания (когда палец на экране)
         private FigureMenuWidget _draggingMenuScrollEmptyContainer;
         private GameObject _draggingFigure;
         
@@ -71,17 +73,8 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             var onBeginDragFiguresSignals = _puzzlesListWidget.OnBeginDragFiguresSignals;
             var onDragEndFiguresSignals = _puzzlesListWidget.OnDragEndFiguresSignals;
             
-            if (onBeginDragFiguresSignals.IsCollectionNullOrEmpty())
-            {
-                LoggerService.LogError(this, $"{nameof(onBeginDragFiguresSignals)} is null or empty at {nameof(Initialize)}");
-                return;
-            }
-            
-            if (onDragEndFiguresSignals.IsCollectionNullOrEmpty())
-            {
-                LoggerService.LogError(this, $"{nameof(onDragEndFiguresSignals)} is null or empty at {nameof(Initialize)}");
-                return;
-            }
+            if (onBeginDragFiguresSignals.IsCollectionNullOrEmpty()) return;
+            if (onDragEndFiguresSignals.IsCollectionNullOrEmpty()) return;
             
             foreach (var beginSignal in onBeginDragFiguresSignals)
             {
@@ -96,6 +89,8 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
         
         private void OnBeginDragFiguresSignal(IDraggable draggable, PointerEventData eventData)
         {
+            // Проверка _isDraggable гарантирует, что мы не возьмем две фигуры ОДНОВРЕМЕННО в руки,
+            // но как только мы отпустим первую, флаг сбросится, и можно будет брать вторую.
             if (_isDraggable || draggable == null)
             {
                 return;
@@ -113,7 +108,10 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             _draggingMenuScrollEmptyContainer.SetInitialPosition(_draggingMenuScrollEmptyContainer.transform.position);
             _draggingFigure.GetRectTransform().SetParent(_draggingTransform);
             
-            _puzzlesListWidget.TryShiftAllElements(figure.Id,false);
+            // Используем ID конкретной фигуры
+            _puzzlesListWidget.TryShiftAllElements(figure.Id, false);
+            
+            // Анимации старта перетаскивания
             _draggingMenuScrollEmptyContainer.transform.DOScale(0, 0.3f).KillWith(this);
             _puzzlesListWidget.FadeDraggingContainerOverlay(true);
             _draggingMenuScrollEmptyContainer.ContainerTransform.DOSizeDelta(new Vector2(0, 0), 0.3f).KillWith(this);
@@ -121,40 +119,60 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
         
         private void OnDragEndFiguresSignal(IDraggable draggable, PointerEventData eventData)
         {
-            var draggingFigure = draggable?.GetAs<FigureMenuWidget>();
-            if (draggingFigure == null || _draggingFigure == null) 
+            var draggingFigureWidget = draggable?.GetAs<FigureMenuWidget>();
+            
+            // Проверки валидности
+            if (draggingFigureWidget == null || _draggingFigure == null) 
                 return;
-            if (draggingFigure.IsCompleted || draggingFigure.Id != _draggingMenuScrollEmptyContainer.Id) 
+            if (draggingFigureWidget.IsCompleted || draggingFigureWidget.Id != _draggingMenuScrollEmptyContainer.Id) 
                 return;
+
+            // 1. ЗАХВАТЫВАЕМ текущие объекты в локальные переменные для анимации
+            var figureToAnimate = _draggingMenuScrollEmptyContainer;
+            var visualObjectToAnimate = _draggingFigure;
+
+            // 2. СРАЗУ СБРАСЫВАЕМ состояние драга, чтобы разрешить взятие следующей фигуры
+            ClearDraggingFigureElements();
+            SetDraggingEnabled(false);
+            
+            // 3. Разблокируем скролл (опционально, можно оставить заблокированным до конца анимации, но лучше разблокировать)
+            _lockScrollAction?.SafeInvoke(false);
 
             try
             {
                 var targets = _clickHandlerService.DetectFigureTarget(eventData, _figuresAssemblyCanvasRaycaster);
-                var targetFigure = targets?.FirstOrDefault(f => f != null && f.Id == _draggingMenuScrollEmptyContainer.Id);
+                var targetFigure = targets?.FirstOrDefault(f => f != null && f.Id == figureToAnimate.Id);
 
                 if (targetFigure != null)
                 {
-                    TryInsertMenuFigure(targetFigure);
+                    // Передаем захваченные переменные
+                    TryInsertMenuFigure(figureToAnimate, visualObjectToAnimate, targetFigure);
                 }
                 else
                 {
-                    ResetDraggingFigure();
+                    // Передаем захваченные переменные
+                    ResetDraggingFigure(figureToAnimate, visualObjectToAnimate);
                 }
             }
             catch (Exception e)
             {
                 LoggerService.LogWarning(this, $"Failed to process drag end: {e.Message}");
-                ResetDraggingFigure();
+                // В случае ошибки тоже пытаемся вернуть, используя захваченные переменные
+                ResetDraggingFigure(figureToAnimate, visualObjectToAnimate);
             }
         }
 
-        private void TryInsertMenuFigure(FigureTargetWidget target)
+        // Метод теперь принимает конкретные экземпляры, а не берет их из полей класса
+        private void TryInsertMenuFigure(FigureMenuWidget figureWidget, GameObject visualObj, FigureTargetWidget target)
         {
-            var blockRef = _uiScreenBlocker.Block(15);
+            // УБРАН БЛОКИРОВЩИК ЭКРАНА, чтобы можно было взаимодействовать с другими элементами
+            // var blockRef = _uiScreenBlocker.Block(15); 
+            
             _soundHandler.PlaySound("success");
 
+            // Запускаем анимации параллельно
             var animations = Promise.All(
-                _draggingMenuScrollEmptyContainer.AnimateFigureConnection(),
+                figureWidget.AnimateFigureConnection(),
                 target.SetConnected(),
                 _puzzlesListWidget.TryShiftAllElements(target.Id, false, true)
             );
@@ -162,84 +180,106 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
             TrySetFigureConnectedSignal.Dispatch(target.Id);
             CheckLevelCompletionSignal.Dispatch();
 
+            // Overlay убираем сразу, но проверяем, не начался ли новый драг
+            // Если начался новый драг, FadeDraggingContainerOverlay(true) в OnBegin перебьет это.
+            if (!_isDraggable)
+            {
+                 _puzzlesListWidget.FadeDraggingContainerOverlay(false);
+            }
+            
             animations
                 .Then(FinalizeInsertion)
-                .Then(CleanUpAndNotify)
-                .Catch(e => HandleError(e, blockRef))
+                .Then(CleanUp)
+                .Catch(e => HandleError(e))
                 .CancelWith(this);
             
             IPromise FinalizeInsertion()
             {
-                _draggingMenuScrollEmptyContainer.SetFigureCompleted(true);
+                figureWidget.SetFigureCompleted(true);
                 target.SetFigureCompleted(true);
-                return DestroyDraggingFigure(target.Id);
+                // Уничтожаем конкретный визуальный объект
+                return DestroyDraggingFigure(figureWidget, visualObj);
             }
 
-            void CleanUpAndNotify()
+            void CleanUp()
             {
-                SetDraggingEnabled(false);
-                _puzzlesListWidget.FadeDraggingContainerOverlay(false);
+                // Бамп холдера делаем, только если это уместно
                 _puzzlesListWidget.BumpDraggingContainerHolder().CancelWith(this);
-                blockRef?.Dispose();
             }
         }
         
-        private void ResetDraggingFigure()
+        // Метод теперь принимает конкретные экземпляры
+        private void ResetDraggingFigure(FigureMenuWidget figureWidget, GameObject visualObj)
         {
-            var blockRef = _uiScreenBlocker.Block(15);
+            // УБРАН БЛОКИРОВЩИК, чтобы можно было брать другую фигуру пока эта летит
+            // var blockRef = _uiScreenBlocker.Block(15);
+            
             _soundHandler.PlaySound("fail");
-            SetDraggingEnabled(false);
+
+            // Если начался новый драг, мы не должны выключать Overlay
+            if (!_isDraggable)
+            {
+                _puzzlesListWidget.FadeDraggingContainerOverlay(false, 0.55f).CancelWith(this);
+            }
             
             var animations = Promise.All(
-                _puzzlesListWidget.TryShiftAllElements(_draggingMenuScrollEmptyContainer.Id, isInserting: true),
-                _puzzlesListWidget.AnimateMenuFigureFlightToPosition(_draggingMenuScrollEmptyContainer, _draggingFigure)
+                _puzzlesListWidget.TryShiftAllElements(figureWidget.Id, isInserting: true),
+                // Анимируем полет конкретного объекта к конкретному виджету
+                _puzzlesListWidget.AnimateMenuFigureFlightToPosition(figureWidget, visualObj)
             );
 
-           _puzzlesListWidget.FadeDraggingContainerOverlay(false, 0.55f).CancelWith(this);
             animations
                 .Then(FinalizeFigureReturn)
                 .Then(() =>
                 {
                     _puzzlesListWidget.BumpDraggingContainerHolder().CancelWith(this);
-                    blockRef?.Dispose();
                 })
                 .Catch(HandleResetError)
                 .CancelWith(this);
             
             IPromise FinalizeFigureReturn()
             {
-                _puzzlesListWidget.ReturnFigureBackToScroll(_draggingMenuScrollEmptyContainer.Id);
-                _draggingMenuScrollEmptyContainer.SetFigureTransformPosition(Vector3.zero);
-                ClearDraggingFigureElements();
+                // Возвращаем конкретную фигуру
+                _puzzlesListWidget.ReturnFigureBackToScroll(figureWidget.Id);
+                figureWidget.SetFigureTransformPosition(Vector3.zero);
+                
+                // Важно: мы не вызываем ClearDraggingFigureElements() здесь, 
+                // так как они уже могли быть заполнены НОВОЙ фигурой, которую игрок взял в руку.
+                
                 return Promise.Resolved();
             }
 
             void HandleResetError(Exception e)
             {
                 LoggerService.LogWarning(this, e.Message);
-                blockRef?.Dispose();
             }
         }
 
-        private void HandleError(Exception e, IDisposable blockRef)
+        private void HandleError(Exception e)
         {
             LoggerService.LogWarning(this, $"Insert error: {e.Message}");
-            blockRef?.Dispose();
         }
         
         private void ClearDraggingFigureElements()
         {
+            // Очищаем только ссылки на текущие перетаскиваемые объекты
             _draggingMenuScrollEmptyContainer = null;
             _draggingFigure = null;
         }
         
-        private IPromise DestroyDraggingFigure(int figureId)
-         {
-             _puzzlesListWidget.DestroyFigure(figureId);
-             ClearDraggingFigureElements();
+        // Модифицирован для удаления конкретного объекта
+        private IPromise DestroyDraggingFigure(FigureMenuWidget figureWidget, GameObject visualObj)
+        {
+             // Удаляем из списка
+             if (_puzzlesListWidget.DestroyFigure(figureWidget.Id))
+                 _puzzlesListWidget.RefreshBasePositionsAfterRemoval();
+             
+             // Удаляем физический объект (если он еще существует)
+             if(visualObj != null) Destroy(visualObj);
+             if(figureWidget != null) figureWidget.DestroyWidget();
              
              return _coroutineService.WaitFrame();
-         }
+        }
 
         private void SetDraggingEnabled(bool enable)
         {
@@ -253,6 +293,9 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
 
         private void TryUpdateDraggingFigurePosition()
         {
+            // Это работает только пока палец держит фигуру.
+            // Как только сработал OnDragEnd, мы обнулили _draggingFigure,
+            // и этот апдейт перестал работать. Далее фигуру двигает DOTween в ResetDraggingFigure.
             if (_draggingMenuScrollEmptyContainer == null || _draggingFigure == null || !_isDraggable)
             {
                 return;
