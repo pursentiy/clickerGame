@@ -151,7 +151,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
 
         private void TryInsertMenuFigure(FigureMenuWidget figureWidget, GameObject visualObj, FigureTargetWidget target)
         {
-            _soundHandler.PlaySound("success");
+            _soundHandler.PlaySound(AudioExtensions.SuccessPuzzleInsertionKey);
 
             var animations = Promise.All(
                 figureWidget.AnimateFigureConnection(),
@@ -183,7 +183,7 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
         private void ResetDraggingFigure(FigureMenuWidget figureWidget, GameObject visualObj)
         {
             
-            _soundHandler.PlaySound("fail");
+            _soundHandler.PlaySound(AudioExtensions.FailPuzzleInsertionKey);
             
             if (!_isDraggable)
             {

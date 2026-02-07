@@ -21,12 +21,12 @@ namespace Handlers
         //TODO ADD VOLUME SETTING AND PLAYING LOGIC
         public void StartAmbience(string exceptClipName = "")
         {
-            var clipData = _audioStorageData.MusicPack.GetRandomSoundExceptSpecific(exceptClipName);
-            if (clipData == null || clipData.clip == null)
+            var sound = _audioStorageData.MusicPack.GetRandomSoundExceptSpecific(exceptClipName);
+            if (sound == null || sound.clip == null)
                 return;
             
-            _musicSource.clip = clipData.clip;
-            _musicSource.volume = 0.5f;
+            _musicSource.clip = sound.clip;
+            _musicSource.volume = sound.volume;
             _musicSource.loop = true;
             _musicSource.Play();
         }
@@ -51,20 +51,24 @@ namespace Handlers
             SetSoundVolume(true);
         }
         
-        public void PlaySound(string clipName, float volume = 1)
+        public void PlaySound(string clipName, float volumeOverride = 1, float pitchOverride = 1)
         {
-            var clip = _audioStorageData.EffectsPack.GetClipByName(clipName);
-            
-            if (clip != null)
-                _effectsSource.PlayOneShot(clip);
+            var sound = _audioStorageData.EffectsPack.GetClipByName(clipName);
+            if (sound == null) return;
+
+            var volume = Mathf.Approximately(volumeOverride, 1) ? sound.volume : volumeOverride;
+            _effectsSource.pitch = pitchOverride;
+            _effectsSource.PlayOneShot(sound.clip, volume);
         }
 
         public void PlayButtonSound()
         {
-            var clip = _audioStorageData.ButtonSoundsPack.GetRandomClip();
+            var sound = _audioStorageData.ButtonSoundsPack.GetRandomClip();
+            if (sound == null)
+                return;
             
-            if (clip != null)
-                _effectsSource.PlayOneShot(clip);
+            _effectsSource.pitch = 1;
+            _effectsSource.PlayOneShot(sound.clip, sound.volume);
         }
 
         public void SetMusicVolume(bool isOn)

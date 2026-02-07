@@ -55,9 +55,9 @@ namespace UI.Screens.PuzzleAssembly.Widgets
             _puzzlesWidget.TrySetFigureConnectedSignal.MapListener(TrySetFigureConnected).DisposeWith(this);
         }
 
-        public void OnScreenEndShow()
+        public void OnScreenBeginShow()
         {
-            _soundHandler.PlaySound("start");
+            _soundHandler.PlaySound(AudioExtensions.StartLevelKey);
         }
 
         public void OnScreenLeave()
