@@ -44,16 +44,13 @@ namespace UI.Screens.PuzzleAssembly.Figures
             FigureTransform.transform.localPosition = position;
         }
         
-        public void SaveBaseLocalPosition()
+        public void ResetVisualState()
         {
-            BaseLocalPosition = ContainerTransform.localPosition;
-            Debug.LogWarning($"[{nameof(SaveBaseLocalPosition)}]  Position is {BaseLocalPosition} for {GetType().Name}");
-        }
-
-        public void UpdateBaseLocalPosition(Vector3 newPos)
-        {
-            BaseLocalPosition = newPos;
-            Debug.LogWarning($"[{nameof(UpdateBaseLocalPosition)}] Updated Position is {BaseLocalPosition} for {GetType().Name}");
+            _transformContainer.DOKill();
+            transform.DOKill();
+            
+            transform.localScale = Vector3.one;
+            _transformContainer.sizeDelta = new Vector2(InitialWidth, InitialHeight);
         }
 
         public void SaveInitialWidthAndHeight()

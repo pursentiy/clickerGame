@@ -107,11 +107,10 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
 
         public IPromise ReflowLayout(int? hiddenFigureId = null)
         {
-            _shiftingSequence?.Kill(true);
-            _shiftingSequence = DOTween.Sequence().KillWith(this);
-
             float currentX = _figuresLayoutGroup.padding.left;
             float spacing = _figuresLayoutGroup.spacing;
+
+            List<IPromise> movePromises = new List<IPromise>();
 
             for (int i = 0; i < _figuresMenuList.Count; i++)
             {
@@ -121,30 +120,27 @@ namespace UI.Screens.PuzzleAssembly.Widgets.Puzzles
                 {
                     continue;
                 }
+                
+                figure.ResetVisualState(); 
 
                 float targetX = currentX + figure.InitialWidth / 2f;
-                float delay = i * 0.02f;
-                
-                _shiftingSequence.Join(
-                    figure.ContainerTransform
-                        .DOLocalMoveX(targetX, 0.4f)
-                        .SetEase(Ease.OutBack, 0.8f)
-                        .SetDelay(delay)
-                );
-                
-                if (Mathf.Abs(figure.ContainerTransform.localPosition.x - targetX) > 1f)
+                figure.ContainerTransform.DOKill();
+
+                var moveTween = figure.ContainerTransform
+                    .DOLocalMoveX(targetX, 0.4f)
+                    .SetEase(Ease.OutCubic);
+
+                movePromises.Add(moveTween.AsPromise());
+
+                if (Mathf.Abs(figure.ContainerTransform.localPosition.x - targetX) > 10f)
                 {
-                    _shiftingSequence.Join(
-                        figure.ContainerTransform
-                            .DOPunchScale(new Vector3(0.05f, -0.05f, 0), 0.3f, 5, 1f)
-                            .SetDelay(delay)
-                    );
+                    figure.ContainerTransform.DOPunchScale(new Vector3(0.05f, -0.05f, 0), 0.3f, 5, 1f);
                 }
-                
+
                 currentX += figure.InitialWidth + spacing;
             }
 
-            return _shiftingSequence.AsPromise();
+            return Promise.All(movePromises);
         }
         
         public bool DestroyFigure(int figureId)
