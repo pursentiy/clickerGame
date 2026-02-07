@@ -70,7 +70,7 @@ MonoBehaviour:
     sounds:
     - name: theme_1
       clip: {fileID: 8300000, guid: 3caa1ffd03ef1438f96aad6a4999caa2, type: 3}
-      volume: 0.399
+      volume: 0.195
       pitch: 0
   _buttonsPacks:
     sounds:
