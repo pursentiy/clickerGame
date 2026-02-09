@@ -10,6 +10,7 @@ using RSG;
 using Services.Player;
 using Utilities.Disposable;
 using Zenject;
+using AudioExtensions = Extensions.AudioExtensions;
 
 namespace Components.UI
 {

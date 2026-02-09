@@ -7,6 +7,7 @@ using RSG;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
+using AudioExtensions = Extensions.AudioExtensions;
 
 namespace Handlers.UISystem
 {

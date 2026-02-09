@@ -13,6 +13,7 @@ using UI.Popups.CommonPopup;
 using UnityEngine;
 using Utilities.Disposable;
 using Zenject;
+using AudioExtensions = Extensions.AudioExtensions;
 using Random = UnityEngine.Random;
 
 namespace UI.Popups.CompleteLevelInfoPopup

@@ -78,7 +78,7 @@ namespace Common.Widgets.Tumbleweed
 
         private void FixedUpdate()
         {
-            if (rb.velocity.x < maxSpeed)
+            if (rb.linearVelocity.x < maxSpeed)
             {
                 rb.AddForce(Vector2.right * Random.Range(windMinForce, windMaxForce));
             }
@@ -111,7 +111,7 @@ namespace Common.Widgets.Tumbleweed
         private void HandleVisualRotation()
         {
             if (visualSprite == null) return;
-            var currentSpeed = rb.velocity.x;
+            var currentSpeed = rb.linearVelocity.x;
             var rotationAmount = -currentSpeed * rotationMultiplier * Time.deltaTime;
             visualSprite.Rotate(0, 0, rotationAmount);
         }

@@ -11,6 +11,7 @@ using Services.Player;
 using UnityEngine;
 using Utilities.Disposable;
 using Zenject;
+using AudioExtensions = Extensions.AudioExtensions;
 
 namespace Services.FlyingRewardsAnimation
 {

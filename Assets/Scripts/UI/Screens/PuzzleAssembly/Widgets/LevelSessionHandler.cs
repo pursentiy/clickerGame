@@ -13,6 +13,7 @@ using UnityEngine.UI;
 using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
+using AudioExtensions = Extensions.AudioExtensions;
 
 namespace UI.Screens.PuzzleAssembly.Widgets
 {
