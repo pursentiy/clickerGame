@@ -26,6 +26,7 @@ namespace Services.Player
         public Stars Stars => _profileSnapshot?.Stars ?? new Stars(0);
         public IReadOnlyList<PackSnapshot> PacksSnapshot => _profileSnapshot?.PackSnapshots;
         public GameParamsSnapshot TryGetGameParamsSnapshot() => _profileSnapshot?.GameParamsSnapshot;
+        public DailyRewardSnapshot TryGetDailyRewardSnapshot() => _profileSnapshot?.DailyRewardSnapshot;
 
         public void UpdateStarsAndSave(int amount)
         {
@@ -34,6 +35,15 @@ namespace Services.Player
             
             _profileSnapshot.Stars += amount;
             SaveProfile(SavePriority.ImmediateSave);
+        }
+        
+        public void UpdateDailyRewardAndSave(DailyRewardSnapshot dailyRewardSnapshot, SavePriority savePriority)
+        {
+            if (_profileSnapshot == null || dailyRewardSnapshot == null)
+                return;
+
+            _profileSnapshot.DailyRewardSnapshot = dailyRewardSnapshot;
+            SaveProfile(savePriority);
         }
         
         public PackSnapshot TryGetPackSnapshot(int packId)

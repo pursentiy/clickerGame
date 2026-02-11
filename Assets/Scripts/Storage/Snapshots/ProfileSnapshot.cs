@@ -30,5 +30,8 @@ namespace Storage.Snapshots
         public List<string> PurchasedItemsIds {get; set;}
         public AnalyticsInfoSnapshot AnalyticsInfoSnapshot {get; set;}
         public GameParamsSnapshot GameParamsSnapshot {get; set;}
+        
+        // Daily reward runtime data
+        public DailyRewardSnapshot DailyRewardSnapshot { get; set; }
     }
 }

@@ -12,7 +12,8 @@ namespace Storage.Records
             int hardCurrency,
             List<PackRecord> packRecords,
             AnalyticsInfoRecord analyticsInfoRecord,
-            GameParamsRecord gameParamsRecord)
+            GameParamsRecord gameParamsRecord,
+            DailyRewardRecord dailyRewardRecord = null)
         {
             Stars = stars;
             PackRecords = packRecords;
@@ -20,6 +21,7 @@ namespace Storage.Records
             GameParamsRecord = gameParamsRecord;
             SoftCurrency = softCurrency;
             HardCurrency = hardCurrency;
+            DailyRewardRecord = dailyRewardRecord;
         }
          
         public int Stars;
@@ -32,5 +34,8 @@ namespace Storage.Records
         public List<string> PurchasedItemsIds;
         public AnalyticsInfoRecord AnalyticsInfoRecord;
         public GameParamsRecord GameParamsRecord;
+        
+        // Daily reward progression and last claim info
+        public DailyRewardRecord DailyRewardRecord;
     }
 }

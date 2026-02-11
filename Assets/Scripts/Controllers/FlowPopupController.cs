@@ -3,6 +3,7 @@ using Handlers.UISystem;
 using Handlers.UISystem.Popups;
 using RSG;
 using UI.Popups.MessagePopup;
+using UI.Popups.DailyRewardPopup;
 using UI.Popups.SettingsPopup;
 using UnityEngine;
 using Utilities;
@@ -25,6 +26,12 @@ namespace Controllers
         {
             var popupPromise = ShowPopupInternally<MessagePopupMediator>(context, option, overrideDisposeProvider);
             return ToFlowInfo<MessagePopupMediator>(popupPromise);
+        }
+        
+        public MediatorFlowInfo ShowDailyRewardPopup(DailyRewardPopupContext context, PopupShowingOptions option = PopupShowingOptions.Immediately, IDisposeProvider overrideDisposeProvider = null)
+        {
+            var popupPromise = ShowPopupInternally<DailyRewardPopupMediator>(context, option, overrideDisposeProvider);
+            return ToFlowInfo<DailyRewardPopupMediator>(popupPromise);
         }
         
         protected override void OnInitialize()

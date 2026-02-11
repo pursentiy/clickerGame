@@ -100,6 +100,16 @@ namespace Services
 
             return authenticationPromise;
         }
+
+        /// <summary>
+        /// Gets the current server time from Bridge. Falls back to DateTime.UtcNow if Bridge is not available.
+        /// </summary>
+        public DateTime GetServerTime()
+        {
+            // TODO: Implement Bridge.platform.getServerTime() callback handling
+            // For now, returns UTC time. Bridge time should be integrated via JS callback.
+            return DateTime.UtcNow;
+        }
         
         private BridgePlatformType GetCurrentPlatformType()
         {

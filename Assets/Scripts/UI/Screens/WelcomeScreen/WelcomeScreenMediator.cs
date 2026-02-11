@@ -16,7 +16,8 @@ namespace UI.Screens.WelcomeScreen
     {
         [Inject] private readonly FlowScreenController _flowScreenController;
         [Inject] private readonly FlowPopupController _flowPopupController;
-        
+        [Inject] private readonly DailyRewardService _dailyRewardService;
+
         public override void OnCreated()
         {
             base.OnCreated();
@@ -24,6 +25,11 @@ namespace UI.Screens.WelcomeScreen
             View.PlayButton.onClick.MapListenerWithSound(PushNextScreen).DisposeWith(this);
             View.SettingsButton.onClick.MapListenerWithSound(OnSettingsButtonClicked).DisposeWith(this);
             View.LoginButtonWidget.Initialize();
+            
+            if (View.DailyRewardsButton != null)
+            {
+                View.DailyRewardsButton.Initialize();
+            }
         }
 
         public override void OnBeginShow()
@@ -31,6 +37,13 @@ namespace UI.Screens.WelcomeScreen
             base.OnBeginShow();
 
             View.ScreenAnimationWidget.ShowAnimation();
+            
+            TryShowDailyRewardPopup();
+            
+            if (View.DailyRewardsButton != null)
+            {
+                View.DailyRewardsButton.UpdateTimer();
+            }
         }
 
         private void OnSettingsButtonClicked()
@@ -41,6 +54,18 @@ namespace UI.Screens.WelcomeScreen
         private void PushNextScreen()
         {
             _flowScreenController.GoToChoosePackScreen();
+        }
+
+        private void TryShowDailyRewardPopup()
+        {
+            if (_dailyRewardService.TryGetTodayRewardPreview(out var rewardInfo))
+            {
+                var context = new UI.Popups.DailyRewardPopup.DailyRewardPopupContext(
+                    rewardInfo.DayIndex,
+                    rewardInfo.RewardsByDay,
+                    rewardInfo.EarnedDailyReward);
+                _flowPopupController.ShowDailyRewardPopup(context, PopupShowingOptions.Enqueue);
+            }
         }
     }
 }

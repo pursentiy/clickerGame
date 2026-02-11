@@ -25,7 +25,8 @@ namespace Storage.Extensions
                 (int)snapshot.SoftCurrency.GetCount(),
                 packSnapshots,
                 snapshot.AnalyticsInfoSnapshot.ToRecord(),
-                snapshot.GameParamsSnapshot.ToRecord());
+                snapshot.GameParamsSnapshot.ToRecord(),
+                snapshot.DailyRewardSnapshot.ToRecord());
         }
         
         public static PackRecord ToRecord(this PackSnapshot snapshot)
@@ -98,7 +99,7 @@ namespace Storage.Extensions
                 : record.PackRecords.Select(i => i.ToSnapshot()).Where(i => i != null).ToList();
 
             //TODO beware of overflow
-            return new ProfileSnapshot(
+            var snapshot = new ProfileSnapshot(
                 new Stars(record.Stars),
                 new SoftCurrency(record.SoftCurrency),
                 new HardCurrency(record.HardCurrency),
@@ -106,6 +107,9 @@ namespace Storage.Extensions
                 record.PurchasedItemsIds,
                 record.AnalyticsInfoRecord.ToSnapshot(),
                 record.GameParamsRecord.ToSnapshot());
+
+            snapshot.DailyRewardSnapshot = record.DailyRewardRecord.ToSnapshot();
+            return snapshot;
         }
 
         public static PackSnapshot ToSnapshot(this PackRecord record)
@@ -130,6 +134,22 @@ namespace Storage.Extensions
         
             //TODO beware of overflow
             return new LevelSnapshot(record.LevelNumber, record.BestCompletedTime, new Stars(record.StarsEarned), record.IsUnlocked, record.PlayCount);
+        }
+
+        public static DailyRewardRecord ToRecord(this DailyRewardSnapshot snapshot)
+        {
+            if (snapshot == null)
+                return null;
+
+            return new DailyRewardRecord(snapshot.CurrentDayIndex, snapshot.LastClaimUtcTicks);
+        }
+        
+        public static DailyRewardSnapshot ToSnapshot(this DailyRewardRecord record)
+        {
+            if (record == null)
+                return null;
+
+            return new DailyRewardSnapshot(record.CurrentDayIndex, record.LastClaimUtcTicks);
         }
     }
 }

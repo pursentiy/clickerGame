@@ -38,8 +38,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PixelRect:
     serializedVersion: 2
-    x: -1728
-    y: 90
+    x: 0
+    y: 66
     width: 1728
     height: 973
   m_ShowMode: 0
@@ -62,7 +62,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PixelRect:
     serializedVersion: 2
-    x: -640
+    x: 0
     y: 332
     width: 640
     height: 606
@@ -900,10 +900,10 @@ MonoBehaviour:
       serializedVersion: 2
       x: 0
       y: 21
-      width: 749
-      height: 935
-    m_Scale: {x: 0.49933332, y: 0.49933332}
-    m_Translation: {x: 374.5, y: 467.5}
+      width: 674
+      height: 869
+    m_Scale: {x: 0.44933334, y: 0.44933334}
+    m_Translation: {x: 337, y: 434.5}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
@@ -911,12 +911,12 @@ MonoBehaviour:
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
       x: -750
-      y: -936.24835
+      y: -966.9881
       width: 1500
-      height: 1872.4967
+      height: 1933.9762
     m_MinimalGUI: 1
-  m_defaultScale: 0.49933332
-  m_LastWindowPixelSize: {x: 749, y: 956}
+  m_defaultScale: 0.44933334
+  m_LastWindowPixelSize: {x: 674, y: 890}
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
   m_LowResolutionForAspectRatios: 01000000000000000000
@@ -1564,7 +1564,7 @@ MonoBehaviour:
   m_Position:
     m_Target: {x: 0, y: 0, z: 0}
     speed: 2
-    m_Value: {x: 817.5721, y: 154.38765, z: -0.55893624}
+    m_Value: {x: 0, y: 0, z: 0}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1616,7 +1616,7 @@ MonoBehaviour:
   m_Size:
     m_Target: 10
     speed: 2
-    m_Value: 236.61626
+    m_Value: 10
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -1971,8 +1971,7 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 41514
-    - m_Data: 1000000000
+    - m_Data: 42288
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -2005,8 +2004,7 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 41514
-    - m_Data: 1000000000
+    - m_Data: 42288
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 

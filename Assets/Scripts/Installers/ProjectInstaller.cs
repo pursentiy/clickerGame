@@ -52,6 +52,7 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<UserSettingsService>().AsSingle();
             Container.BindInterfacesAndSelfTo<AdsService>().AsSingle();
             Container.BindInterfacesAndSelfTo<BridgeService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<DailyRewardService>().AsSingle();
             
             Container.BindInterfacesAndSelfTo<SoundHandler>().FromInstance(_soundHandler).AsSingle();
             Container.BindInterfacesAndSelfTo<LevelsParamsStorageData>().FromScriptableObject(_levelsParamsStorageData).AsSingle();

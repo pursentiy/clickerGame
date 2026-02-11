@@ -11,5 +11,6 @@ namespace UI.Screens.WelcomeScreen
         public Button SettingsButton;
         public LoginButtonWidget LoginButtonWidget;
         public WelcomeScreenAnimationWidget ScreenAnimationWidget;
+        public DailyRewardsButton DailyRewardsButton;
     }
 }
