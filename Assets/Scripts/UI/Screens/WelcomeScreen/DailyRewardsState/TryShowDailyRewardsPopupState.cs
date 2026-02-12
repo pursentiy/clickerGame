@@ -1,6 +1,7 @@
 using Controllers;
 using RSG;
 using Services;
+using Services.CoroutineServices;
 using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
@@ -11,6 +12,7 @@ namespace UI.Screens.WelcomeScreen.DailyRewardsState
     {
         [Inject] private readonly DailyRewardService _dailyRewardService;
         [Inject] private readonly FlowPopupController _flowPopupController;
+        [Inject] private readonly CoroutineService _coroutineService;
         
         public override void OnEnter(params object[] arguments)
         {
@@ -41,7 +43,7 @@ namespace UI.Screens.WelcomeScreen.DailyRewardsState
 
         private void NextState(DailyRewardsAcquireInfo rewardsAcquireInfo)
         {
-            Sequence.ActivateState<AcquireDailyRewardsState>(rewardsAcquireInfo);
+            Sequence.ActivateState<TryAcquireDailyRewardsState>(rewardsAcquireInfo);
         }
     }
 }

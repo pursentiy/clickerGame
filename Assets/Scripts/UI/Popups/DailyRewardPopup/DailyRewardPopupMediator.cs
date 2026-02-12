@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Attributes;
 using Common.Currency;
 using Configurations.DailyReward;
@@ -6,6 +8,7 @@ using Extensions;
 using Handlers.UISystem;
 using RSG;
 using Services;
+using Services.CoroutineServices;
 using Services.FlyingRewardsAnimation;
 using UI.Popups.CommonPopup;
 using UI.Popups.MessagePopup;
@@ -19,9 +22,13 @@ namespace UI.Popups.DailyRewardPopup
     [AssetKey("UI Popups/DailyRewardPopupMediator")]
     public class DailyRewardPopupMediator : UIPopupBase<DailyRewardPopupView, DailyRewardPopupContext>
     {
+        private const float AwaitTimeAfterConsumingDailyRewards = 0.5f;
+        
         [Inject] private readonly DailyRewardService _dailyRewardService;
         [Inject] private readonly FlowPopupController _flowPopupController;
         [Inject] private readonly CurrencyLibraryService _currencyLibraryService;
+        [Inject] private readonly FlyingUIRewardAnimationService _flyingUIRewardAnimationService;
+        [Inject] private readonly CoroutineService _coroutineService;
 
         public override IUIPopupAnimation Animation => new ScalePopupAnimation(View.MainTransform);
 
@@ -113,22 +120,11 @@ namespace UI.Popups.DailyRewardPopup
         private void OnClaimRewardsClicked()
         {
             if (View.ClaimRewardsButton != null)
-            {
                 View.ClaimRewardsButton.interactable = false;
-            }
 
             PlayClaimAnimationSequence()
-                .Then(() =>
-                {
-                    if (!_dailyRewardService.TryClaimTodayReward(out var claimedInfo))
-                    {
-                        Hide();
-                        return;
-                    }
-
-                    SetupDayRewards();
-                    Hide();
-                })
+                .Then(() => VisualizeRewardsFlight(Context.EarnedDailyReward))
+                .Then(() => View.CurrencyDisplayWidget.SetCurrency(Context.EarnedDailyReward.First().GetCount(), true))
                 .CancelWith(this);
         }
 
@@ -146,18 +142,40 @@ namespace UI.Popups.DailyRewardPopup
             return Promise.Resolved();
         }
         
-        private IPromise VisualizeStarsFlight(Stars earnedStars)
+        private IPromise VisualizeRewardsFlight(IList<ICurrency> rewards)
         {
-            if (earnedStars.Value <= 0)
+            if (rewards == null || rewards.Count == 0)
                 return Promise.Resolved();
-            
+
+            if (View.FlyingRewardsContainer == null)
+                return Promise.Resolved();
+
+            if (View.CurrencyDisplayWidget == null || View.CurrencyDisplayWidget.AnimationTarget == null)
+                return Promise.Resolved();
+
+            Vector3 startPosition = GetRewardFlightStartPosition();
+            Vector3 targetPosition = View.CurrencyDisplayWidget.AnimationTarget.position;
+
             var context = new FlyingUIRewardAnimationContext(
-                new ICurrency[]{earnedStars}, 
-                View.FlyingRewardsContainer, 
-                new Vector3[] {View.StarsFlightStartPlace.position},
-                new Vector3[] {View.StarsDisplayWidget.AnimationTarget.position});
-            
+                rewards.ToArray(),
+                View.FlyingRewardsContainer,
+                new[] { startPosition },
+                new[] { targetPosition });
+
             return _flyingUIRewardAnimationService.PlayAnimation(context).CancelWith(this);
+        }
+
+        private Vector3 GetRewardFlightStartPosition()
+        {
+            var currentItemIndex = Context.DayIndex - 1;
+            if (View.DayRewardItems != null && currentItemIndex >= 0 && currentItemIndex < View.DayRewardItems.Length)
+            {
+                var currentItem = View.DayRewardItems[currentItemIndex];
+                if (currentItem != null && currentItem.RootTransformRef != null)
+                    return currentItem.RootTransformRef.position;
+            }
+
+            return View.FlyingRewardsContainer != null ? View.FlyingRewardsContainer.position : Vector3.zero;
         }
 
         /// <summary>

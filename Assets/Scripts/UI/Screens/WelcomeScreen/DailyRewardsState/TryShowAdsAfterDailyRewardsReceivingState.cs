@@ -40,7 +40,7 @@ namespace UI.Screens.WelcomeScreen.DailyRewardsState
 
         private void NextState()
         {
-            Sequence.ActivateState<AcquireDailyRewardsState>(TypedArgument);
+            Sequence.ActivateState<TryAcquireDailyRewardsState>(TypedArgument);
         }
 
         private void PrepareForState()

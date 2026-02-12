@@ -11,6 +11,8 @@ namespace UI.Popups.DailyRewardPopup
     {
         [Header("References")]
         [SerializeField] private RectTransform RootTransform;
+
+        public RectTransform RootTransformRef => RootTransform;
         [SerializeField] private Image RewardIcon;
         [SerializeField] private Image LockIcon;
         [SerializeField] private TMP_Text LockText;

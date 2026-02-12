@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Common.Currency;
 using RSG;
+using Services;
 using Services.CoroutineServices;
 using Services.Player;
 using Services.ScreenBlocker;
@@ -10,22 +11,24 @@ using Zenject;
 
 namespace UI.Screens.WelcomeScreen.DailyRewardsState
 {
-    public class AcquireDailyRewardsState : InjectableStateBase<DefaultStateContext, DailyRewardsAcquireInfo>
+    public class TryAcquireDailyRewardsState : InjectableStateBase<DefaultStateContext, DailyRewardsAcquireInfo>
     {
         [Inject] private PlayerCurrencyService _playerCurrencyService;
         [Inject] CoroutineService _coroutineService;
         [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
+        [Inject] private readonly DailyRewardService _dailyRewardService;
         
         private IUIBlockRef _uiBlockRef;
 
-        private bool CanAcquireDailyRewards => TypedArgument is { EarnedDailyReward: { Count: > 0 } };
+        private bool HasAcquireDailyRewards => TypedArgument is { EarnedDailyReward: { Count: > 0 } };
         
         public override void OnEnter(params object[] arguments)
         {
             base.OnEnter(arguments);
 
             PrepareEnvironment();
-            if (CanAcquireDailyRewards)
+            
+            if (HasAcquireDailyRewards && _dailyRewardService.TryClaimTodayReward())
             {
                 AcquireEarnedStars(TypedArgument.EarnedDailyReward)
                     .ContinueWithResolved(FinishSequence)

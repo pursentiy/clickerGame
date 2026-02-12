@@ -288,11 +288,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Popups.DailyRewardPopup.DailyRewardPopupView
   MainTransform: {fileID: 7105021539367332845}
+  FlyingRewardsContainer: {fileID: 1795250813654733639}
   TitleText: {fileID: 4303779283167890086}
   DayText: {fileID: 9159601259236029287}
   ClaimRewardsButton: {fileID: 4995292288417103503}
   CloseButton: {fileID: 1247479791710347566}
   InfoButton: {fileID: 3787520244731173266}
+  CurrencyDisplayWidget: {fileID: 7887233292712904831}
   DayRewardItems:
   - {fileID: 3911427268358392437}
   - {fileID: 8137164013044259244}
@@ -1601,6 +1603,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2663402743695931855}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7887233292712904831 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5297176865675571632, guid: a3f902d9e9bb74bc483ea62a04344d5d,
+    type: 3}
+  m_PrefabInstance: {fileID: 2663402743695931855}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb69e5b1e4a549d3990592a3c81dcd54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4884187245418087782
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
 using Common.Currency;
+using Components.UI;
 using Handlers.UISystem;
 using TMPro;
 using UnityEngine;
@@ -21,6 +22,7 @@ namespace UI.Popups.DailyRewardPopup
         public Button ClaimRewardsButton;
         public Button CloseButton;
         public Button InfoButton;
+        public CurrencyDisplayWidget CurrencyDisplayWidget;
 
         [Header("Daily Rewards")]
         public DailyRewardDayItem[] DayRewardItems;

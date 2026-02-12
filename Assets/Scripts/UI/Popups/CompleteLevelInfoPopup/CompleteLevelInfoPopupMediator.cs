@@ -28,7 +28,6 @@ namespace UI.Popups.CompleteLevelInfoPopup
         private Camera _textureCamera;
         private RenderTexture _renderTexture;
         private Coroutine _particlesCoroutine;
-        private bool _currencyAcquired;
 
         public override IUIPopupAnimation Animation => new ScalePopupAnimation(View.MainTransform);
 
