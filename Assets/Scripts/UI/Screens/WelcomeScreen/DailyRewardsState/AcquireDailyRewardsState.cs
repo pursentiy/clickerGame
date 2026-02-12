@@ -39,7 +39,11 @@ namespace UI.Screens.WelcomeScreen.DailyRewardsState
         
         private IPromise AcquireEarnedStars(IList<ICurrency> earnedDailyReward)
         {
-            _playerCurrencyService.TryAddStars(earnedStarsForLevel, CurrencyChangeMode.Animated);
+            foreach (var currency in earnedDailyReward)
+            {
+                _playerCurrencyService.TryAddCurrency(currency, CurrencyChangeMode.Animated);
+            }
+            
             return _coroutineService.WaitFrame();
         }
         

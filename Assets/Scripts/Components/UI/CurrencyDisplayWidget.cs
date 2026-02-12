@@ -42,7 +42,7 @@ namespace Components.UI
 
         public void Start()
         {
-            _playerCurrencyService.StarsChangedSignal.MapListener(OnCurrencyChanged).DisposeWith(this);
+            _playerCurrencyService.CurrencyChangedSignal.MapListener(OnCurrencyChanged).DisposeWith(this);
         }
 
         private void OnCurrencyChanged(ICurrency newValue, CurrencyChangeMode mode)

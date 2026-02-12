@@ -7,8 +7,8 @@ namespace Storage.Snapshots
     {
         public ProfileSnapshot(
             Stars stars,
-            ICurrency softCurrency,
-            ICurrency hardCurrency,
+            SoftCurrency softCurrency,
+            HardCurrency hardCurrency,
             List<PackSnapshot> packSnapshots,
             List<string> purchasedItemsIds,
             AnalyticsInfoSnapshot analyticsInfoSnapshot,
@@ -24,8 +24,8 @@ namespace Storage.Snapshots
         }
 
         public Stars Stars {get; set;}
-        public ICurrency SoftCurrency {get; set;}
-        public ICurrency HardCurrency {get; set;}
+        public SoftCurrency SoftCurrency {get; set;}
+        public HardCurrency HardCurrency {get; set;}
         public List<PackSnapshot> PackSnapshots {get; set;}
         public List<string> PurchasedItemsIds {get; set;}
         public AnalyticsInfoSnapshot AnalyticsInfoSnapshot {get; set;}

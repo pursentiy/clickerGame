@@ -24,16 +24,59 @@ namespace Services.Player
         public bool IsInitialized { get; private set; }
         public FSignal ProfileSnapshotInitializedSignal { get; private set; } = new();
         public Stars Stars => _profileSnapshot?.Stars ?? new Stars(0);
+        public SoftCurrency SoftCurrency => _profileSnapshot?.SoftCurrency ?? new SoftCurrency(0);
         public IReadOnlyList<PackSnapshot> PacksSnapshot => _profileSnapshot?.PackSnapshots;
         public GameParamsSnapshot TryGetGameParamsSnapshot() => _profileSnapshot?.GameParamsSnapshot;
         public DailyRewardSnapshot TryGetDailyRewardSnapshot() => _profileSnapshot?.DailyRewardSnapshot;
 
-        public void UpdateStarsAndSave(int amount)
+        public ICurrency GetCurrencyCount(ICurrency currency)
+        {
+            if (_profileSnapshot == null)
+                return new Stars();
+
+            return currency switch
+            {
+                SoftCurrency _ => _profileSnapshot.SoftCurrency,
+                Stars _=> _profileSnapshot.Stars,
+                HardCurrency _=> _profileSnapshot.HardCurrency,
+                _ => new Stars()
+            };
+        }
+
+        public bool CanSpendCurrency(ICurrency currency)
+        {
+            if (_profileSnapshot == null)
+                return false;
+
+            return currency switch
+            {
+                SoftCurrency _ => _profileSnapshot.SoftCurrency.GetCount() >= currency.GetCount(),
+                Stars _ => _profileSnapshot.Stars.GetCount() >= currency.GetCount(),
+                HardCurrency _ => _profileSnapshot.HardCurrency.GetCount() >= currency.GetCount(),
+                _ => false
+            };
+        }
+        
+        public void UpdateCurrencyAndSave(ICurrency currency)
         {
             if (_profileSnapshot == null)
                 return;
+            if (!CanSpendCurrency(currency))
+                return;
             
-            _profileSnapshot.Stars += amount;
+            switch (currency)
+            {
+                case SoftCurrency softCurrency:
+                    _profileSnapshot.SoftCurrency += softCurrency;
+                    break;
+                case Stars stars:
+                    _profileSnapshot.Stars += stars;
+                    break;
+                case HardCurrency hardCurrency:
+                    _profileSnapshot.HardCurrency += hardCurrency;
+                    break;
+            }
+            
             SaveProfile(SavePriority.ImmediateSave);
         }
         

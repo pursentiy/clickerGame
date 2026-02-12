@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using System.Linq;
+using Common.Currency;
 using Extensions;
 using Handlers.UISystem;
 using Services.Player;
@@ -79,7 +80,7 @@ namespace Services.Cheats
             if (popup == null)
                 return;
             
-            popup.PlayStarsAnimation(StarsCount, UpdateProfileValues);
+            popup.PlayStarsAnimation(StarsCount);
         }
 
         /// <summary>
@@ -127,11 +128,11 @@ namespace Services.Cheats
         {
             if (StarsCount > 0)
             {
-                _playerCurrencyService.TryAddStars(StarsCount);
+                _playerCurrencyService.TryAddCurrency(new Stars(StarsCount));
             }
             else if (StarsCount < 0)
             {
-                _playerCurrencyService.TrySpendStars(-StarsCount);
+                _playerCurrencyService.TrySpendCurrency(new Stars(StarsCount));
             }
         }
 

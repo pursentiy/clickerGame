@@ -51,7 +51,7 @@ namespace UI.Screens.ChoosePack.AdsSequence
                 return Promise<Stars>.Resolved(0);
 
             var starsToEarn = _gameInfoProvider.StarsRewardForAds;
-            if (!_playerCurrencyService.TryAddStars(_gameInfoProvider.StarsRewardForAds, CurrencyChangeMode.Animated))
+            if (!_playerCurrencyService.TryAddCurrency(_gameInfoProvider.StarsRewardForAds, CurrencyChangeMode.Animated))
             {
                 return Promise<Stars>.Resolved(0);
             }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Common.Currency
 {
-    public readonly struct  SoftCurrency : ICurrency
+    public readonly struct SoftCurrency : ICurrency
     {
         [SerializeField] private readonly int _value;
 

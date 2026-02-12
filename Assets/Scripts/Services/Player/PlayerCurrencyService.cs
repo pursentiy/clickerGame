@@ -8,43 +8,43 @@ namespace Services.Player
     {
         [Inject] private readonly PlayerProfileManager _playerProfileManager;
         
-        public FSignal<ICurrency, CurrencyChangeMode> StarsChangedSignal = new ();
+        public FSignal<ICurrency, CurrencyChangeMode> CurrencyChangedSignal = new ();
         public Stars Stars => _playerProfileManager.Stars;
+        public SoftCurrency SoftCurrency => _playerProfileManager.SoftCurrency;
         
-        public bool TryAddStars(Stars amount, CurrencyChangeMode mode = CurrencyChangeMode.Instant)
+        public bool TryAddCurrency(ICurrency currency, CurrencyChangeMode mode = CurrencyChangeMode.Instant)
         {
             if (!_playerProfileManager.IsInitialized)
             {
-                LoggerService.LogError(this,$"{nameof(TryAddStars)}: {nameof(PlayerProfileManager)} is not initialized.");
+                LoggerService.LogError(this,$"{nameof(TryAddCurrency)}: {nameof(PlayerProfileManager)} is not initialized.");
                 return false;
             }
 
-            if (amount <= 0)
+            if (currency.GetCount() <= 0)
             {
                 return false;
             }
             
-            
-            _playerProfileManager.UpdateStarsAndSave(amount);
-            StarsChangedSignal.Dispatch(Stars, mode);
+            _playerProfileManager.UpdateCurrencyAndSave(currency);
+            CurrencyChangedSignal.Dispatch(_playerProfileManager.GetCurrencyCount(currency), mode);
             return true;
         }
         
-        public bool TrySpendStars(Stars amount, CurrencyChangeMode mode = CurrencyChangeMode.Instant)
+        public bool TrySpendCurrency(ICurrency amount, CurrencyChangeMode mode = CurrencyChangeMode.Instant)
         {
             if (!_playerProfileManager.IsInitialized)
             {
-                LoggerService.LogError(this,$"{nameof(TryAddStars)}: {nameof(PlayerProfileManager)} is not initialized.");
+                LoggerService.LogError(this,$"{nameof(TryAddCurrency)}: {nameof(PlayerProfileManager)} is not initialized.");
                 return false;
             }
             
-            if (Stars.GetCount() < amount)
+            if (!_playerProfileManager.CanSpendCurrency(amount))
             {
                 return false;
             }
     
-            _playerProfileManager.UpdateStarsAndSave(-amount);
-            StarsChangedSignal.Dispatch(Stars, mode);
+            _playerProfileManager.UpdateCurrencyAndSave(amount.Multiply(-1));
+            CurrencyChangedSignal.Dispatch(_playerProfileManager.GetCurrencyCount(amount), mode);
             return true;
         }
     }

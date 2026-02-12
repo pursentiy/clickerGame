@@ -215,7 +215,7 @@ namespace UI.Popups.CompleteLevelInfoPopup
                 .KillWith(this);
         }
         
-        private IPromise VisualizeStarsFlight(Stars earnedStars, bool updateProfileValues = true)
+        private IPromise VisualizeStarsFlight(Stars earnedStars)
         {
             if (earnedStars.Value <= 0)
                 return Promise.Resolved();
@@ -277,9 +277,9 @@ namespace UI.Popups.CompleteLevelInfoPopup
         
         
 #if UNITY_EDITOR
-        public void PlayStarsAnimation(Stars earnedStarsForLevel, bool updateProfileValues)
+        public void PlayStarsAnimation(Stars earnedStarsForLevel)
         {
-            VisualizeStarsFlight(earnedStarsForLevel, updateProfileValues);
+            VisualizeStarsFlight(earnedStarsForLevel);
         }
 #endif
     }

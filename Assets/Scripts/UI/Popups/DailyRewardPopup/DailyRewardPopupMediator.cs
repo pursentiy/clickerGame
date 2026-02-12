@@ -145,6 +145,20 @@ namespace UI.Popups.DailyRewardPopup
 
             return Promise.Resolved();
         }
+        
+        private IPromise VisualizeStarsFlight(Stars earnedStars)
+        {
+            if (earnedStars.Value <= 0)
+                return Promise.Resolved();
+            
+            var context = new FlyingUIRewardAnimationContext(
+                new ICurrency[]{earnedStars}, 
+                View.FlyingRewardsContainer, 
+                new Vector3[] {View.StarsFlightStartPlace.position},
+                new Vector3[] {View.StarsDisplayWidget.AnimationTarget.position});
+            
+            return _flyingUIRewardAnimationService.PlayAnimation(context).CancelWith(this);
+        }
 
         /// <summary>
         /// Plays only the claim/receiving animation for the current day (no actual claim, no hide). Used for cheats and testing.

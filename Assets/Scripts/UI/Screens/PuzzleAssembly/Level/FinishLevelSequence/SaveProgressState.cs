@@ -53,7 +53,7 @@ namespace UI.Screens.PuzzleAssembly.Level.FinishLevelSequence
             if (Context.CurrentStars <= 0)
                 return;
             
-            _playerCurrencyService.TryAddStars(earnedStarsForLevel, CurrencyChangeMode.Animated);
+            _playerCurrencyService.TryAddCurrency(earnedStarsForLevel, CurrencyChangeMode.Animated);
         }
 
         private void SetLevelCompleted(int packId, int levelId, float levelCompletedTime, Stars starsEarned)

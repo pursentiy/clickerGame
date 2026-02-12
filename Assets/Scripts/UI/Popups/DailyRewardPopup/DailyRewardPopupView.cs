@@ -11,6 +11,7 @@ namespace UI.Popups.DailyRewardPopup
     {
         [Header("Root")]
         public RectTransform MainTransform;
+        public RectTransform FlyingRewardsContainer;
 
         [Header("Texts")]
         public TMP_Text TitleText;

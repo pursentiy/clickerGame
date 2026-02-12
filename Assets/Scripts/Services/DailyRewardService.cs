@@ -171,7 +171,7 @@ namespace Services
             if (totalStars > 0)
             {
                 var starsReward = new Stars(totalStars);
-                if (!_playerCurrencyService.TryAddStars(starsReward, CurrencyChangeMode.Instant))
+                if (!_playerCurrencyService.TryAddCurrency(starsReward, CurrencyChangeMode.Instant))
                     return false;
             }
             else
