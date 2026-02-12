@@ -19,7 +19,7 @@ namespace Configurations.DailyReward
     /// </summary>
     public class DailyRewardConfiguration : ICSVConfig
     {
-        public const int CycleLength = 7;
+        public const int CycleLength = 6;
 
         /// <summary>
         /// Raw mapping of day index (1..7) to list of rewards for that day.

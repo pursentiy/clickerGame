@@ -7,19 +7,34 @@ using Utilities.Disposable;
 
 namespace UI.Popups.DailyRewardPopup
 {
+    public enum DayItemState
+    {
+        Collected,
+        ReadyToReceive,
+        ToBeCollected
+    }
+
     public class DailyRewardDayItem : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private RectTransform RootTransform;
 
         public RectTransform RootTransformRef => RootTransform;
-        [SerializeField] private Image RewardIcon;
-        [SerializeField] private Image LockIcon;
-        [SerializeField] private TMP_Text LockText;
-        [SerializeField] private Image CheckIcon;
-        [SerializeField] private TMP_Text CollectedText;
-        [SerializeField] private ParticleSystem GlowParticles;
-        [SerializeField] private CanvasGroup CanvasGroup;
+
+        [Header("State Blocks (match hierarchy: ReadyToCollectBlock, LockedBlock, AlreadyCollectedBlock)")]
+        [SerializeField] private GameObject readyToCollectBlock;
+        [SerializeField] private GameObject lockedBlock;
+        [SerializeField] private GameObject alreadyCollectedBlock;
+
+        [Header("Block Content (optional; for icon, text, check)")]
+        [SerializeField] private Image rewardIcon;
+        [SerializeField] private TMP_Text rewardCurrencyText;
+        [SerializeField] private Image lockIcon;
+        [SerializeField] private TMP_Text lockText;
+        [SerializeField] private Image checkIcon;
+        [SerializeField] private TMP_Text collectedText;
+        [SerializeField] private ParticleSystem glowParticles;
+        [SerializeField] private CanvasGroup disabledElementCanvasGroup;
 
         [Header("Animation")]
         [SerializeField] private float _bounceScale = 1.15f;
@@ -32,54 +47,48 @@ namespace UI.Popups.DailyRewardPopup
         private const string CollectedTextKey = "collected";
 
         /// <summary>
-        /// Sets visual state and runs animation for current day. Call from mediator after setting icon.
+        /// Sets visual state by enabling the right block and content. Call from mediator after setting icon.
         /// </summary>
-        public void SetupState(bool isCollected, bool isCurrent, bool isFuture)
+        public void SetupState(DayItemState state)
         {
-            if (RootTransform == null)
-                return;
-
-            // Reward icon visibility and color (grey when collected, white when current)
-            if (RewardIcon != null)
+            switch (state)
             {
-                RewardIcon.gameObject.SetActive(true);
-                RewardIcon.color = isCollected ? new Color(0.5f, 0.5f, 0.5f, 1f) : Color.white;
+                case DayItemState.Collected:
+                    readyToCollectBlock.SetActive(true);
+                    lockedBlock.SetActive(false);
+                    alreadyCollectedBlock.SetActive(true);
+                    rewardIcon.color = new Color(0.5f, 0.5f, 0.5f, 1f);
+                    rewardCurrencyText.gameObject.SetActive(false);
+                    collectedText.text = CollectedTextKey;
+                    disabledElementCanvasGroup.alpha = 0f;
+                    StopAnimations();
+                    break;
+
+                case DayItemState.ReadyToReceive:
+                    readyToCollectBlock.SetActive(true);
+                    lockedBlock.SetActive(false);
+                    alreadyCollectedBlock.SetActive(false);
+                    rewardIcon.color = Color.white;
+                    rewardCurrencyText.gameObject.SetActive(true);
+                    disabledElementCanvasGroup.alpha = 0f;
+                    PlayCurrentDayAnimation();
+                    break;
+
+                case DayItemState.ToBeCollected:
+                    readyToCollectBlock.SetActive(false);
+                    lockedBlock.SetActive(true);
+                    alreadyCollectedBlock.SetActive(false);
+                    lockText.text = LockTextKey;
+                    disabledElementCanvasGroup.alpha = 0.5f;
+                    StopAnimations();
+                    break;
             }
-
-            // Lock: only for future days; hide for collected and current
-            if (LockIcon != null)
-                LockIcon.gameObject.SetActive(isFuture);
-            if (LockText != null)
-            {
-                LockText.gameObject.SetActive(isFuture);
-                if (isFuture)
-                    LockText.text = LockTextKey;
-            }
-
-            // Collected: green check and "collected" text only for collected days
-            if (CheckIcon != null)
-                CheckIcon.gameObject.SetActive(isCollected);
-            if (CollectedText != null)
-            {
-                CollectedText.gameObject.SetActive(isCollected);
-                if (isCollected)
-                    CollectedText.text = CollectedTextKey;
-            }
-
-            // Canvas alpha
-            if (CanvasGroup != null)
-                CanvasGroup.alpha = isFuture ? 0.5f : 1f;
-
-            if (isCurrent)
-                PlayCurrentDayAnimation();
-            else
-                StopAnimations();
         }
 
         public void SetRewardIcon(Sprite icon)
         {
-            if (RewardIcon != null && icon != null)
-                RewardIcon.sprite = icon;
+            if (icon != null)
+                rewardIcon.sprite = icon;
         }
 
         /// <summary>
@@ -87,16 +96,10 @@ namespace UI.Popups.DailyRewardPopup
         /// </summary>
         public void PlayCurrentDayAnimation()
         {
-            if (RootTransform == null)
-                return;
-
             RootTransform.DOKill();
 
-            if (GlowParticles != null)
-            {
-                GlowParticles.Stop();
-                GlowParticles.Play();
-            }
+            glowParticles.Stop();
+            glowParticles.Play();
 
             var originalScale = Vector3.one;
             var bounceSequence = DOTween.Sequence().KillWith(RootTransform.gameObject);
@@ -114,10 +117,8 @@ namespace UI.Popups.DailyRewardPopup
         /// </summary>
         public void StopAnimations()
         {
-            if (RootTransform != null)
-                RootTransform.DOKill();
-            if (GlowParticles != null)
-                GlowParticles.Stop();
+            RootTransform.DOKill();
+            glowParticles.Stop();
         }
 
         /// <summary>
@@ -126,17 +127,10 @@ namespace UI.Popups.DailyRewardPopup
         public IPromise PlayClaimFeedbackAnimation()
         {
             var promise = new Promise();
-            if (RootTransform == null)
-            {
-                promise.Resolve();
-                return promise;
-            }
-
             RootTransform.DOKill();
             var seq = DOTween.Sequence().KillWith(RootTransform.gameObject);
             seq.Append(RootTransform.DOPunchScale(Vector3.one * 0.3f, 0.5f, 10, 0.9f));
-            if (CanvasGroup != null)
-                seq.Join(CanvasGroup.DOFade(0f, 0.4f).SetDelay(0.1f));
+            seq.Join(disabledElementCanvasGroup.DOFade(0f, 0.4f).SetDelay(0.1f));
             seq.OnComplete(() => promise.Resolve());
             return promise;
         }

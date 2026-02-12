@@ -24,21 +24,22 @@ namespace UI.Screens.WelcomeScreen.DailyRewardsState
         
         private IPromise<DailyRewardsAcquireInfo> TryShowDailyRewardPopup()
         {
-            if (_dailyRewardService.TryGetTodayRewardPreview(out var rewardInfo))
-            {
-                var context = new Popups.DailyRewardPopup.DailyRewardPopupContext(
-                    rewardInfo.DayIndex,
-                    rewardInfo.RewardsByDay,
-                    rewardInfo.EarnedDailyReward);
-                
-                var info = _flowPopupController.ShowDailyRewardPopup(context, PopupShowingOptions.Enqueue);
+            if (!_dailyRewardService.TryGetDailyRewardPopupInfo(out var rewardInfo))
+                return Promise<DailyRewardsAcquireInfo>.Resolved(null);
 
-                return info.MediatorHidePromise
-                    .Then(() => Promise<DailyRewardsAcquireInfo>.Resolved(new DailyRewardsAcquireInfo(rewardInfo.EarnedDailyReward)))
-                    .CancelWith(this);
-            }
+            var context = new Popups.DailyRewardPopup.DailyRewardPopupContext(
+                rewardInfo.DayIndex,
+                rewardInfo.RewardsByDay,
+                rewardInfo.EarnedDailyReward);
 
-            return Promise<DailyRewardsAcquireInfo>.Resolved(null);
+            var info = _flowPopupController.ShowDailyRewardPopup(context, PopupShowingOptions.Enqueue);
+
+            return info.MediatorHidePromise
+                .Then(() => Promise<DailyRewardsAcquireInfo>.Resolved(
+                    _dailyRewardService.TryGetTodayRewardPreview(out var preview)
+                        ? new DailyRewardsAcquireInfo(preview.EarnedDailyReward)
+                        : null))
+                .CancelWith(this);
         }
 
         private void NextState(DailyRewardsAcquireInfo rewardsAcquireInfo)

@@ -88,24 +88,19 @@ namespace UI.Popups.DailyRewardPopup
                     continue;
 
                 var item = View.DayRewardItems[itemIndex];
-                
-                // Collected: days before current day index
-                var isCollected = day < currentDayIndex;
-                // Current: the day being picked now
-                var isCurrent = day == currentDayIndex;
-                // Future: days after current day index
-                var isFuture = day > currentDayIndex;
+                var state = day < currentDayIndex ? DayItemState.Collected
+                    : day == currentDayIndex ? DayItemState.ReadyToReceive
+                    : DayItemState.ToBeCollected;
 
-                SetupDayRewardItem(item, day, isCollected, isCurrent, isFuture);
+                SetupDayRewardItem(item, day, state);
             }
         }
 
-        private void SetupDayRewardItem(DailyRewardDayItem item, int dayIndex, bool isCollected, bool isCurrent, bool isFuture)
+        private void SetupDayRewardItem(DailyRewardDayItem item, int dayIndex, DayItemState state)
         {
             if (item == null)
                 return;
 
-            // Set reward icon from config
             if (Context.RewardsByDay != null && Context.RewardsByDay.TryGetValue(dayIndex, out var rewardsForDay) && rewardsForDay != null && rewardsForDay.Count > 0)
             {
                 var firstCurrency = rewardsForDay[0];
@@ -114,7 +109,7 @@ namespace UI.Popups.DailyRewardPopup
                 item.SetRewardIcon(iconSprite);
             }
 
-            item.SetupState(isCollected, isCurrent, isFuture);
+            item.SetupState(state);
         }
 
         private void OnClaimRewardsClicked()
