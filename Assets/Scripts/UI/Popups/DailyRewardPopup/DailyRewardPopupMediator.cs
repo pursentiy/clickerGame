@@ -32,6 +32,10 @@ namespace UI.Popups.DailyRewardPopup
             SetupTexts();
             SetupButtons();
             SetupDayRewards();
+
+            // Disable claim button when there is no reward to claim today (e.g. already claimed)
+            if (View.ClaimRewardsButton != null)
+                View.ClaimRewardsButton.interactable = _dailyRewardService.TryGetTodayRewardPreview(out _);
         }
 
         private void SetupTexts()
@@ -140,6 +144,14 @@ namespace UI.Popups.DailyRewardPopup
             }
 
             return Promise.Resolved();
+        }
+
+        /// <summary>
+        /// Plays only the claim/receiving animation for the current day (no actual claim, no hide). Used for cheats and testing.
+        /// </summary>
+        public void PlayClaimReceivingAnimation()
+        {
+            PlayClaimAnimationSequence().CancelWith(this);
         }
     }
 }

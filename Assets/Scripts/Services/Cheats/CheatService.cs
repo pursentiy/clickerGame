@@ -1,9 +1,12 @@
 #if UNITY_EDITOR
+using System;
 using System.Linq;
 using Extensions;
 using Handlers.UISystem;
 using Services.Player;
+using Storage.Snapshots;
 using UI.Popups.CompleteLevelInfoPopup;
+using UI.Popups.DailyRewardPopup;
 using UI.Popups.UniversalPopup;
 using UnityEngine;
 using Zenject;
@@ -14,6 +17,7 @@ namespace Services.Cheats
     {
         [Inject] private readonly PlayerRepositoryService _playerRepositoryService;
         [Inject] private readonly ProfileBuilderService _profileBuilderService;
+        [Inject] private readonly PlayerProfileManager _playerProfileManager;
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly ReloadService _reloadService;
         [Inject] private readonly LocalizationService _localizationService;
@@ -77,6 +81,20 @@ namespace Services.Cheats
             
             popup.PlayStarsAnimation(StarsCount, UpdateProfileValues);
         }
+
+        /// <summary>
+        /// Plays the daily reward claim/receiving animation. Daily reward popup must be open.
+        /// </summary>
+        public void PlayDailyRewardReceivingAnimation()
+        {
+            var popups = _uiManager.PopupsHandler.GetShownPopups<DailyRewardPopupMediator>();
+            if (popups.IsNullOrEmpty())
+                return;
+
+            var popup = popups.First();
+            if (popup != null)
+                popup.PlayClaimReceivingAnimation();
+        }
         
         public void ResetProgress()
         {
@@ -121,7 +139,35 @@ namespace Services.Cheats
         {
             Time.timeScale = GameTimeScale;
         }
-        
+
+        /// <summary>
+        /// Resets daily rewards to day 1; reward can be collected again (day 1).
+        /// </summary>
+        public void ResetDailyRewardsProgress()
+        {
+            if (!_playerProfileManager.IsInitialized)
+                return;
+
+            var snapshot = new DailyRewardSnapshot(1, 0);
+            _playerProfileManager.UpdateDailyRewardAndSave(snapshot, SavePriority.ImmediateSave);
+        }
+
+        /// <summary>
+        /// Skips daily reward so the next day's reward can be collected again (last claim set to yesterday).
+        /// </summary>
+        public void SkipDailyRewardToNextDay()
+        {
+            if (!_playerProfileManager.IsInitialized)
+                return;
+
+            var current = _playerProfileManager.TryGetDailyRewardSnapshot();
+            var currentDay = current?.CurrentDayIndex ?? 1;
+            var yesterdayUtc = DateTime.UtcNow.Date.AddDays(-1).Ticks;
+
+            var snapshot = new DailyRewardSnapshot(currentDay, yesterdayUtc);
+            _playerProfileManager.UpdateDailyRewardAndSave(snapshot, SavePriority.ImmediateSave);
+        }
+
         public void SaveAll() => PlayerPrefs.Save();
     }
 }

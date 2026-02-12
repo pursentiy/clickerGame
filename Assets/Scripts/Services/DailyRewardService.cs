@@ -57,6 +57,51 @@ namespace Services
             return true;
         }
 
+        /// <summary>
+        /// Returns popup context for the daily reward screen. Use this to open the popup even when there is no reward to claim today.
+        /// When reward is available, matches <see cref="TryGetTodayRewardPreview"/>; when already claimed, returns next day so the grid shows correctly.
+        /// </summary>
+        public bool TryGetDailyRewardPopupInfo(out DailyRewardInfo info)
+        {
+            if (TryGetTodayRewardPreview(out info))
+                return true;
+
+            // No reward to claim today (already claimed or not initialized) – still build context so popup can be shown
+            if (!_playerProfileManager.IsInitialized)
+            {
+                info = default;
+                return false;
+            }
+
+            var config = Config;
+            if (config?.RewardsByDay == null || config.RewardsByDay.Count == 0)
+            {
+                info = default;
+                return false;
+            }
+
+            var snapshot = _playerProfileManager.TryGetDailyRewardSnapshot() ?? new DailyRewardSnapshot(0, 0);
+            var today = _bridgeService.GetServerTime().Date;
+            var lastClaimDate = snapshot.LastClaimUtcTicks > 0
+                ? new DateTime(snapshot.LastClaimUtcTicks, DateTimeKind.Utc).Date
+                : DateTime.MinValue.Date;
+
+            // Already claimed today: use next day index so the grid shows today as collected (day < nextDay), not current
+            int dayIndex;
+            if (lastClaimDate == today && snapshot.CurrentDayIndex > 0)
+            {
+                dayIndex = snapshot.CurrentDayIndex >= DailyRewardConfiguration.CycleLength ? 1 : snapshot.CurrentDayIndex + 1;
+            }
+            else
+            {
+                dayIndex = CalculateNextDayIndex(snapshot.CurrentDayIndex, lastClaimDate, today);
+            }
+
+            var rewardsForDay = config.GetRewardsForDay(dayIndex) ?? System.Array.Empty<ICurrency>();
+            info = new DailyRewardInfo(dayIndex, config.RewardsByDay, rewardsForDay);
+            return true;
+        }
+
         public DailyRewardStatus GetRewardStatus()
         {
             if (!_playerProfileManager.IsInitialized)

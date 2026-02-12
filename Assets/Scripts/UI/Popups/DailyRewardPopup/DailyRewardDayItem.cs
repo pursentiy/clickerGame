@@ -14,6 +14,8 @@ namespace UI.Popups.DailyRewardPopup
         [SerializeField] private Image RewardIcon;
         [SerializeField] private Image LockIcon;
         [SerializeField] private TMP_Text LockText;
+        [SerializeField] private Image CheckIcon;
+        [SerializeField] private TMP_Text CollectedText;
         [SerializeField] private ParticleSystem GlowParticles;
         [SerializeField] private CanvasGroup CanvasGroup;
 
@@ -25,6 +27,7 @@ namespace UI.Popups.DailyRewardPopup
         [SerializeField] private float _shakeRandomness = 90f;
 
         private const string LockTextKey = "be unlocked soon";
+        private const string CollectedTextKey = "collected";
 
         /// <summary>
         /// Sets visual state and runs animation for current day. Call from mediator after setting icon.
@@ -34,14 +37,14 @@ namespace UI.Popups.DailyRewardPopup
             if (RootTransform == null)
                 return;
 
-            // Reward icon visibility and color
+            // Reward icon visibility and color (grey when collected, white when current)
             if (RewardIcon != null)
             {
                 RewardIcon.gameObject.SetActive(true);
                 RewardIcon.color = isCollected ? new Color(0.5f, 0.5f, 0.5f, 1f) : Color.white;
             }
 
-            // Lock icon and text for future days
+            // Lock: only for future days; hide for collected and current
             if (LockIcon != null)
                 LockIcon.gameObject.SetActive(isFuture);
             if (LockText != null)
@@ -49,6 +52,16 @@ namespace UI.Popups.DailyRewardPopup
                 LockText.gameObject.SetActive(isFuture);
                 if (isFuture)
                     LockText.text = LockTextKey;
+            }
+
+            // Collected: green check and "collected" text only for collected days
+            if (CheckIcon != null)
+                CheckIcon.gameObject.SetActive(isCollected);
+            if (CollectedText != null)
+            {
+                CollectedText.gameObject.SetActive(isCollected);
+                if (isCollected)
+                    CollectedText.text = CollectedTextKey;
             }
 
             // Canvas alpha

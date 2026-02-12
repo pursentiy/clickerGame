@@ -4,9 +4,11 @@ using DG.Tweening;
 using Extensions;
 using Services;
 using UI.Popups.DailyRewardPopup;
+using UI.Screens.WelcomeScreen.DailyRewardsState;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities.Disposable;
+using Utilities.StateMachine;
 using Zenject;
 
 namespace UI.Screens.WelcomeScreen.Widgets
@@ -89,14 +91,9 @@ namespace UI.Screens.WelcomeScreen.Widgets
 
         private void OnButtonClicked()
         {
-            if (_dailyRewardService.TryGetTodayRewardPreview(out var rewardInfo))
-            {
-                var context = new DailyRewardPopupContext(
-                    rewardInfo.DayIndex,
-                    rewardInfo.RewardsByDay,
-                    rewardInfo.EarnedDailyReward);
-                _flowPopupController.ShowDailyRewardPopup(context);
-            }
+            StateMachine.CreateMachine(null)
+                .StartSequence<TryShowDailyRewardsPopupState>()
+                .FinishWith(this);
         }
 
         private void OnTimerComplete()

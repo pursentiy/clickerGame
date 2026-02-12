@@ -10,11 +10,12 @@ namespace Configurations.DailyReward
     /// CSV-driven configuration for daily login rewards.
     /// File name must be DailyRewardConfiguration.csv and placed under Resources.
     /// Format:
-    /// Day;StarsAmount
-    /// 1;5
-    /// 2;7
+    /// Day; Rewards
+    /// 1; Stars 10
+    /// 2; Stars 20, HardCurrency 30
     /// ...
-    /// 7;25
+    /// Rewards: comma-separated list of "CurrencyName Amount" (e.g. Stars 10, SoftCurrency 5).
+    /// Supported currency names: Stars, HardCurrency, SoftCurrency.
     /// </summary>
     public class DailyRewardConfiguration : ICSVConfig
     {
@@ -22,7 +23,6 @@ namespace Configurations.DailyReward
 
         /// <summary>
         /// Raw mapping of day index (1..7) to list of rewards for that day.
-        /// Currently populated with Stars currency instances based on CSV.
         /// </summary>
         public IReadOnlyDictionary<int, IList<ICurrency>> RewardsByDay { get; private set; }
 
@@ -38,38 +38,85 @@ namespace Configurations.DailyReward
 
             var lines = csvText.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
 
-            // Expect header in the first line
             for (var i = 1; i < lines.Length; i++)
             {
-                var values = lines[i].Split(';');
-                if (values.Length < 2)
+                var line = lines[i];
+                var semicolonIndex = line.IndexOf(';');
+                if (semicolonIndex < 0)
+                    continue;
+
+                var dayStr = line.Substring(0, semicolonIndex).Trim();
+                var rewardsStr = line.Substring(semicolonIndex + 1).Trim();
+                if (string.IsNullOrEmpty(rewardsStr))
                     continue;
 
                 try
                 {
-                    var dayIndex = int.Parse(values[0]);
-                    var starsAmount = int.Parse(values[1]);
-
+                    var dayIndex = int.Parse(dayStr);
                     if (dayIndex <= 0)
                         continue;
 
-                    // For now we support only Stars rewards loaded from CSV.
-                    // Each day can contain a list of currencies; we create a single Stars entry.
-                    if (!rewards.TryGetValue(dayIndex, out var list))
-                    {
-                        list = new List<ICurrency>();
+                    var list = ParseRewardsLine(rewardsStr);
+                    if (list != null && list.Count > 0)
                         rewards[dayIndex] = list;
-                    }
-
-                    list.Add(new Stars(starsAmount));
                 }
                 catch (Exception e)
                 {
-                    LoggerService.LogError($"[{nameof(DailyRewardConfiguration)}] Error on line {i}: {e.Message}");
+                    LoggerService.LogError($"[{nameof(DailyRewardConfiguration)}] Error on line {i + 1}: {e.Message}");
                 }
             }
 
             RewardsByDay = rewards;
+        }
+
+        /// <summary>
+        /// Parses a single "Rewards" cell: comma-separated "CurrencyName Amount" (e.g. "Stars 10, HardCurrency 30").
+        /// </summary>
+        private static IList<ICurrency> ParseRewardsLine(string rewardsStr)
+        {
+            var list = new List<ICurrency>();
+            var parts = rewardsStr.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var part in parts)
+            {
+                var trimmed = part.Trim();
+                if (string.IsNullOrEmpty(trimmed))
+                    continue;
+
+                var lastSpace = trimmed.LastIndexOf(' ');
+                if (lastSpace <= 0)
+                    continue;
+
+                var currencyName = trimmed.Substring(0, lastSpace).Trim();
+                var amountStr = trimmed.Substring(lastSpace + 1).Trim();
+                if (string.IsNullOrEmpty(currencyName) || string.IsNullOrEmpty(amountStr))
+                    continue;
+
+                if (!int.TryParse(amountStr, out var amount))
+                    continue;
+
+                var currency = CreateCurrency(currencyName, amount);
+                if (currency != null)
+                    list.Add(currency);
+            }
+
+            return list;
+        }
+
+        private static ICurrency? CreateCurrency(string name, int amount)
+        {
+            switch (name)
+            {
+                case "Stars":
+                    return new Stars(amount);
+                case "HardCurrency":
+                    return new HardCurrency(amount);
+                case "SoftCurrency":
+                    return new SoftCurrency(amount);
+                default:
+                    LoggerService.LogError($"[{nameof(DailyRewardConfiguration)}] Unknown currency: '{name}'. Supported: Stars, HardCurrency, SoftCurrency.");
+                    return null;
+            }
         }
 
         public IList<ICurrency> GetRewardsForDay(int dayIndex)
@@ -80,7 +127,6 @@ namespace Configurations.DailyReward
             if (dayIndex <= 0)
                 dayIndex = 1;
 
-            // Clamp into configured range if needed
             if (RewardsByDay.TryGetValue(dayIndex, out var value) && value != null)
                 return value;
 

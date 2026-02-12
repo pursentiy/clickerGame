@@ -5,6 +5,7 @@ using Handlers.UISystem.Screens;
 using Services;
 using UI.Popups.MessagePopup;
 using UI.Screens.WelcomeScreen.AuthenticateSequence;
+using UI.Screens.WelcomeScreen.DailyRewardsState;
 using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
@@ -37,13 +38,6 @@ namespace UI.Screens.WelcomeScreen
             base.OnBeginShow();
 
             View.ScreenAnimationWidget.ShowAnimation();
-            
-            TryShowDailyRewardPopup();
-            
-            if (View.DailyRewardsButton != null)
-            {
-                View.DailyRewardsButton.UpdateTimer();
-            }
         }
 
         private void OnSettingsButtonClicked()
@@ -54,18 +48,6 @@ namespace UI.Screens.WelcomeScreen
         private void PushNextScreen()
         {
             _flowScreenController.GoToChoosePackScreen();
-        }
-
-        private void TryShowDailyRewardPopup()
-        {
-            if (_dailyRewardService.TryGetTodayRewardPreview(out var rewardInfo))
-            {
-                var context = new UI.Popups.DailyRewardPopup.DailyRewardPopupContext(
-                    rewardInfo.DayIndex,
-                    rewardInfo.RewardsByDay,
-                    rewardInfo.EarnedDailyReward);
-                _flowPopupController.ShowDailyRewardPopup(context, PopupShowingOptions.Enqueue);
-            }
         }
     }
 }

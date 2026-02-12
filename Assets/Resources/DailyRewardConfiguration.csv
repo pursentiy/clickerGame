@@ -1,0 +1,8 @@
+Day; Rewards
+1; Stars 10
+2; Stars 20, HardCurrency 30
+3; Stars 30, SoftCurrency 50
+4; Stars 40, HardCurrency 50
+5; Stars 50, SoftCurrency 100
+6; Stars 60, HardCurrency 75
+7; Stars 100, HardCurrency 100, SoftCurrency 200
