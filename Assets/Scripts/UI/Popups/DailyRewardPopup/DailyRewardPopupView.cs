@@ -21,30 +21,8 @@ namespace UI.Popups.DailyRewardPopup
         public Button CloseButton;
         public Button InfoButton;
 
-        [Header("Current Reward Panel")]
-        public RectTransform CurrentRewardPanel;
-        public RectTransform CurrentRewardContainer;
-
-        [Header("Next Reward Panel")]
-        public RectTransform NextRewardPanel;
-        public RectTransform NextRewardContainer;
-
-        [Header("Reward Item Prefab")]
-        public AssetReference RewardItemPrefab;
-
-        [Header("7 Day Rewards")]
-        public DailyRewardDayItem[] DayRewardItems = new DailyRewardDayItem[7];
-    }
-
-    [System.Serializable]
-    public class DailyRewardDayItem
-    {
-        public RectTransform RootTransform;
-        public Image RewardIcon;
-        public Image LockIcon;
-        public TMP_Text LockText;
-        public ParticleSystem GlowParticles;
-        public CanvasGroup CanvasGroup;
+        [Header("Daily Rewards")]
+        public DailyRewardDayItem[] DayRewardItems;
     }
 }
 
