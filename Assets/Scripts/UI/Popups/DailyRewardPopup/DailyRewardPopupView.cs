@@ -20,7 +20,9 @@ namespace UI.Popups.DailyRewardPopup
 
         [Header("Buttons")]
         public Button ClaimRewardsButton;
+        public TMP_Text ClaimRewardsButtonText;
         public Button CloseButton;
+        public Button BackgroundButton;
         public Button InfoButton;
         public CurrencyDisplayWidget CurrencyDisplayWidget;
 

@@ -10,6 +10,8 @@ using RSG;
 using Services;
 using Services.CoroutineServices;
 using Services.FlyingRewardsAnimation;
+using Services.ScreenBlocker;
+using TMPro;
 using UI.Popups.CommonPopup;
 using UI.Popups.MessagePopup;
 using UnityEngine;
@@ -23,12 +25,19 @@ namespace UI.Popups.DailyRewardPopup
     public class DailyRewardPopupMediator : UIPopupBase<DailyRewardPopupView, DailyRewardPopupContext>
     {
         private const float AwaitTimeAfterConsumingDailyRewards = 0.5f;
+
+        private const string CollectRewardText = "Collect Reward";
+        private const string ClosePopupText = "Close Popup";
         
         [Inject] private readonly DailyRewardService _dailyRewardService;
         [Inject] private readonly FlowPopupController _flowPopupController;
         [Inject] private readonly CurrencyLibraryService _currencyLibraryService;
         [Inject] private readonly FlyingUIRewardAnimationService _flyingUIRewardAnimationService;
         [Inject] private readonly CoroutineService _coroutineService;
+        [Inject] private readonly UIGlobalBlocker _uiGlobalBlocker;
+
+        private bool _canReceiveToday;
+        private TMP_Text _primaryButtonText;
 
         public override IUIPopupAnimation Animation => new ScalePopupAnimation(View.MainTransform);
 
@@ -38,11 +47,9 @@ namespace UI.Popups.DailyRewardPopup
 
             SetupTexts();
             SetupButtons();
+            RefreshAvailability();
             SetupDayRewards();
-
-            // Disable claim button when there is no reward to claim today (e.g. already claimed)
-            if (View.ClaimRewardsButton != null)
-                View.ClaimRewardsButton.interactable = _dailyRewardService.TryGetTodayRewardPreview(out _);
+            UpdatePrimaryButtonUI();
         }
 
         private void SetupTexts()
@@ -54,8 +61,9 @@ namespace UI.Popups.DailyRewardPopup
 
         private void SetupButtons()
         {
-            View.ClaimRewardsButton.onClick.MapListenerWithSound(OnClaimRewardsClicked).DisposeWith(this);
+            View.ClaimRewardsButton.onClick.MapListenerWithSound(OnPrimaryButtonClicked).DisposeWith(this);
             View.CloseButton.onClick.MapListenerWithSound(Hide).DisposeWith(this);
+            View.BackgroundButton.onClick.MapListenerWithSound(Hide).DisposeWith(this);
             View.InfoButton.onClick.MapListenerWithSound(OnInfoClicked).DisposeWith(this);
         }
 
@@ -80,6 +88,7 @@ namespace UI.Popups.DailyRewardPopup
                 return;
 
             var currentDayIndex = Context.DayIndex;
+            var canReceiveToday = _canReceiveToday;
 
             for (int day = 1; day <= DailyRewardConfiguration.CycleLength; day++)
             {
@@ -89,7 +98,7 @@ namespace UI.Popups.DailyRewardPopup
 
                 var item = View.DayRewardItems[itemIndex];
                 var state = day < currentDayIndex ? DayItemState.Collected
-                    : day == currentDayIndex ? DayItemState.ReadyToReceive
+                    : day == currentDayIndex ? (canReceiveToday ? DayItemState.ReadyToReceive : DayItemState.ToBeCollected)
                     : DayItemState.ToBeCollected;
 
                 SetupDayRewardItem(item, day, state);
@@ -112,14 +121,49 @@ namespace UI.Popups.DailyRewardPopup
             item.SetupState(state);
         }
 
+        private void OnPrimaryButtonClicked()
+        {
+            if (!_canReceiveToday)
+            {
+                Hide();
+                return;
+            }
+
+            OnClaimRewardsClicked();
+        }
+
+        private void RefreshAvailability()
+        {
+            _canReceiveToday = _dailyRewardService.TryGetTodayRewardPreview(out var preview) &&
+                               preview.DayIndex == Context.DayIndex;
+        }
+
+        private void UpdatePrimaryButtonUI()
+        {
+            View.ClaimRewardsButton.interactable = true;
+            View.ClaimRewardsButtonText.text = _canReceiveToday ? CollectRewardText : ClosePopupText;
+        }
+
         private void OnClaimRewardsClicked()
         {
-            if (View.ClaimRewardsButton != null)
-                View.ClaimRewardsButton.interactable = false;
-
+            View.ClaimRewardsButton.interactable = false;
+            
+            var blockRef = _uiGlobalBlocker.Block(30f);
             PlayClaimAnimationSequence()
                 .Then(() => VisualizeRewardsFlight(Context.EarnedDailyReward))
                 .Then(() => View.CurrencyDisplayWidget.SetCurrency(Context.EarnedDailyReward.First().GetCount(), true))
+                .Then(() =>
+                {
+                    blockRef.Dispose();
+                    RefreshAvailability();
+                    UpdatePrimaryButtonUI();
+                })
+                .Catch(e =>
+                {
+                    LoggerService.LogError($"Failed to claim rewards for day {Context.DayIndex} with exception: {e}");
+                    blockRef.Dispose();
+                    Hide();
+                })
                 .CancelWith(this);
         }
 

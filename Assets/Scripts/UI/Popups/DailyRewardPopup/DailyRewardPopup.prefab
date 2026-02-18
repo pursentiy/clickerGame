@@ -292,7 +292,9 @@ MonoBehaviour:
   TitleText: {fileID: 4303779283167890086}
   DayText: {fileID: 9159601259236029287}
   ClaimRewardsButton: {fileID: 4995292288417103503}
+  ClaimRewardsButtonText: {fileID: 5091458449343175654}
   CloseButton: {fileID: 1247479791710347566}
+  BackgroundButton: {fileID: 2477982833825234958}
   InfoButton: {fileID: 3787520244731173266}
   CurrencyDisplayWidget: {fileID: 7887233292712904831}
   DayRewardItems:
@@ -1090,6 +1092,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: DailyRewardDayItem
       objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014466, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1400,6 +1422,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DailyRewardDayItem (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014466, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1728,6 +1770,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: DailyRewardDayItem (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014466, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1864,6 +1926,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: DailyRewardDayItem (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014466, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1999,6 +2081,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DailyRewardDayItem (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014466, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2179,6 +2281,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4337148490704325032, guid: e7de7d7e290e81941935851059680180,
         type: 3}
+      propertyPath: m_margin.x
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 4337148490704325032, guid: e7de7d7e290e81941935851059680180,
+        type: 3}
+      propertyPath: m_margin.z
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 4337148490704325032, guid: e7de7d7e290e81941935851059680180,
+        type: 3}
       propertyPath: m_enableAutoSizing
       value: 1
       objectReference: {fileID: 0}
@@ -2186,6 +2298,16 @@ PrefabInstance:
         type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
+      objectReference: {fileID: 0}
+    - target: {fileID: 4596499802393666118, guid: e7de7d7e290e81941935851059680180,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4596499802393666118, guid: e7de7d7e290e81941935851059680180,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4596499802515451074, guid: e7de7d7e290e81941935851059680180,
         type: 3}
@@ -2220,7 +2342,7 @@ PrefabInstance:
     - target: {fileID: 4596499802515451074, guid: e7de7d7e290e81941935851059680180,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 400
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 4596499802515451074, guid: e7de7d7e290e81941935851059680180,
         type: 3}
@@ -2318,6 +2440,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5091458449343175654 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4337148490704325032, guid: e7de7d7e290e81941935851059680180,
+    type: 3}
+  m_PrefabInstance: {fileID: 8834052464258798158}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &9168860120201035141
@@ -2432,6 +2566,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DailyRewardDayItem (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014465, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245303005907014466, guid: a6f0c2d80c29c45729a9b329b0ba3e63,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
