@@ -238,12 +238,9 @@ MonoBehaviour:
   checkIcon: {fileID: 3836387087856590702}
   collectedText: {fileID: 3708927399090113048}
   glowParticles: {fileID: 5245303005907014477}
-  contentCanvasGroup: {fileID: 6645939047620413307}
-  _floatAmplitude: 10
-  _rotateAngle: 3.5
-  _pulseScale: 1.08
-  _collectedBgColor: {r: 0.2, g: 0.2, b: 0.2, a: 0.8}
-  _collectedAlpha: 0.5
+  _readyBounce: 0.1
+  _readyRotation: 5
+  _lockedRotation: 2
 --- !u!225 &6645939047620413307
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -598,7 +595,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5471783171817800387
 RectTransform:
   m_ObjectHideFlags: 0

@@ -1,8 +1,10 @@
 using DG.Tweening;
+using Extensions;
 using RSG;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities.Disposable;
 
 namespace UI.Popups.DailyRewardPopup
 {
@@ -25,7 +27,6 @@ namespace UI.Popups.DailyRewardPopup
         [SerializeField] private Image checkIcon;
         [SerializeField] private TMP_Text collectedText;
         [SerializeField] private ParticleSystem glowParticles;
-        [SerializeField] private CanvasGroup contentCanvasGroup;
 
         [Header("Ready Animation Settings")]
         [SerializeField] private float _readyBounce = 0.1f;
@@ -41,7 +42,6 @@ namespace UI.Popups.DailyRewardPopup
 
         public void SetupState(DayItemState state)
         {
-            // Полная остановка всего перед настройкой
             StopAnimations();
             ResetVisuals();
 
@@ -52,9 +52,13 @@ namespace UI.Popups.DailyRewardPopup
                     lockedBlock.SetActive(false);
                     alreadyCollectedBlock.SetActive(true);
                     
-                    rewardIcon.color = new Color(0.5f, 0.5f, 0.5f, 1f);
+                    // Убираем серость, оставляем оригинальный цвет иконки
+                    rewardIcon.color = Color.white; 
                     rewardCurrencyText.gameObject.SetActive(false);
                     collectedText.text = CollectedTextKey;
+                    
+                    // Можно чуть притемнить только фон, если нужно отделить от активных
+                    if (backgroundImage != null) backgroundImage.color = new Color(0.8f, 0.8f, 0.8f, 1f);
                     break;
 
                 case DayItemState.ReadyToReceive:
@@ -73,6 +77,11 @@ namespace UI.Popups.DailyRewardPopup
                     alreadyCollectedBlock.SetActive(false);
                     
                     lockText.text = LockTextKey;
+                    
+                    // Только для будущих наград делаем иконку сероватой
+                    rewardIcon.color = new Color(0.4f, 0.4f, 0.4f, 1f); 
+                    if (backgroundImage != null) backgroundImage.color = new Color(0.6f, 0.6f, 0.6f, 1f);
+                    
                     PlayLockedSubtleAnimation();
                     break;
             }
@@ -80,49 +89,45 @@ namespace UI.Popups.DailyRewardPopup
 
         private void ResetVisuals()
         {
-            RootTransform.localScale = Vector3.one;
-            RootTransform.localRotation = Quaternion.identity;
-            // Сбрасываем только локальную позицию, не трогаем анкоры
-            RootTransform.localPosition = Vector3.zero; 
-            contentCanvasGroup.alpha = 1f;
+            // Убиваем твины жестко перед сбросом
+            rootTransform.DOKill();
+            
+            rootTransform.localScale = Vector3.one;
+            rootTransform.localRotation = Quaternion.identity;
+            rootTransform.anchoredPosition = Vector2.zero; // Используем anchoredPosition для UI
+            
             rewardIcon.color = Color.white;
             if (backgroundImage != null) backgroundImage.color = Color.white;
         }
 
         public void PlayCurrentDayAnimation()
         {
-            StopAnimations();
-
-            // 1. Увеличиваем и плавно пульсируем
-            RootTransform.DOScale(1f + _readyBounce, 0.8f)
-                .SetEase(Ease.InOutQuad)
-                .SetLoops(-1, LoopType.Yoyo)
-                .SetTarget(RootTransform);
-
-            // 2. Игривое вращение
-            RootTransform.DORotate(new Vector3(0, 0, _readyRotation), 1.2f)
-                .SetEase(Ease.InOutSine)
-                .SetLoops(-1, LoopType.Yoyo)
-                .SetTarget(RootTransform);
-
+            // Используем Sequence для лучшего контроля
+            Sequence s = DOTween.Sequence().SetId(this).KillWith(this);
+            
+            s.Join(rootTransform.DOScale(1f + _readyBounce, 0.8f).SetEase(Ease.InOutQuad));
+            s.Join(rootTransform.DORotate(new Vector3(0, 0, _readyRotation), 1.2f).SetEase(Ease.InOutSine));
+            
+            s.SetLoops(-1, LoopType.Yoyo);
+            
             if (glowParticles != null) glowParticles.Play();
         }
 
         private void PlayLockedSubtleAnimation()
         {
-            StopAnimations();
-            
-            // Просто легкое покачивание для "будущих" элементов
-            RootTransform.DORotate(new Vector3(0, 0, _lockedRotation), 2f)
+            rootTransform.DORotate(new Vector3(0, 0, _lockedRotation), 2f)
                 .SetEase(Ease.InOutSine)
                 .SetLoops(-1, LoopType.Yoyo)
-                .SetTarget(RootTransform);
+                .SetId(this)
+                .KillWith(this);
         }
 
         public void StopAnimations()
         {
-            // Убиваем все твины именно на этом объекте
-            RootTransform.DOKill(true);
+            // Убиваем по ID этого объекта, чтобы не затронуть другие айтемы в списке
+            DOTween.Kill(this);
+            rootTransform.DOKill();
+            
             if (glowParticles != null) glowParticles.Stop();
         }
 
@@ -130,16 +135,38 @@ namespace UI.Popups.DailyRewardPopup
         {
             var promise = new Promise();
             StopAnimations();
+    
+            // Сброс в дефолт
+            rootTransform.localScale = Vector3.one;
+            rootTransform.localRotation = Quaternion.identity;
 
-            // Вместо изменения позиции используем Punch — это не ломает верстку
-            RootTransform.DOPunchScale(Vector3.one * 0.2f, 0.4f, 10, 1f)
-                .OnComplete(() =>
-                {
-                    SetupState(DayItemState.Collected);
-                    promise.Resolve();
-                });
+            Sequence epicSeq = DOTween.Sequence().SetId(this).KillWith(this);
 
-            return promise;
+            // 1. Антиципация (сжатие перед прыжком)
+            epicSeq.Append(rootTransform.DOScale(0.85f, 0.15f).SetEase(Ease.OutQuad));
+
+            // 2. Взрывной прыжок вперед с пружиной
+            epicSeq.Append(rootTransform.DOScale(1.4f, 0.4f).SetEase(Ease.OutElastic, 0.5f, 0.75f));
+    
+            // Параллельно тряхнем иконку награды для акцента
+            epicSeq.Join(rewardIcon.transform.DOPunchPosition(new Vector3(0, 20, 0), 0.5f, 5, 1f));
+    
+            // Вспышка фона (если есть Image)
+            if (backgroundImage != null)
+            {
+                epicSeq.Join(backgroundImage.DOColor(Color.white, 0.1f).SetLoops(2, LoopType.Yoyo));
+            }
+
+            // 3. Возврат к нормальному состоянию и смена стейта
+            epicSeq.Append(rootTransform.DOScale(1.0f, 0.2f).SetEase(Ease.InQuad));
+    
+            epicSeq.OnComplete(() =>
+            {
+                SetupState(DayItemState.Collected);
+                promise.Resolve();
+            });
+
+            return epicSeq.AsPromise();
         }
 
         public void SetRewardIcon(Sprite icon)
