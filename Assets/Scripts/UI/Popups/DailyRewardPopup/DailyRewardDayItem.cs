@@ -13,32 +13,37 @@ namespace UI.Popups.DailyRewardPopup
         [Header("References")]
         [SerializeField] private RectTransform rootTransform;
         [SerializeField] private Image backgroundImage;
+        [SerializeField] private Canvas itemCanvas; // Обязательно добавьте Canvas на префаб
 
         [Header("State Blocks")]
         [SerializeField] private GameObject readyToCollectBlock;
         [SerializeField] private GameObject lockedBlock;
         [SerializeField] private GameObject alreadyCollectedBlock;
 
-        [Header("Content")]
+        [Header("Content Content")]
         [SerializeField] private Image rewardIcon;
         [SerializeField] private TMP_Text rewardCurrencyText;
-        [SerializeField] private Image lockIcon;
-        [SerializeField] private TMP_Text lockText;
         [SerializeField] private Image checkIcon;
         [SerializeField] private TMP_Text collectedText;
         [SerializeField] private ParticleSystem glowParticles;
+        [SerializeField] private ParticleSystem dustParticles;
 
-        [Header("Ready Animation Settings")]
-        [SerializeField] private float _readyBounce = 0.1f;
-        [SerializeField] private float _readyRotation = 5f;
-
-        [Header("Locked Animation Settings")]
-        [SerializeField] private float _lockedRotation = 2f;
+        [Header("Animation Settings")]
+        [SerializeField] private float _readyBounce = 0.12f;
+        [SerializeField] private float _readyRotation = 6f;
 
         private const string LockTextKey = "be unlocked soon";
-        private const string CollectedTextKey = "collected";
+        private const string CollectedTextKey = "COLLECTED";
+        
+        private int _initialSortingOrder;
         
         public RectTransform RootTransform => rootTransform;
+
+        private void Awake()
+        {
+            if (itemCanvas != null) 
+                _initialSortingOrder = itemCanvas.sortingOrder;
+        }
 
         public void SetupState(DayItemState state)
         {
@@ -52,12 +57,10 @@ namespace UI.Popups.DailyRewardPopup
                     lockedBlock.SetActive(false);
                     alreadyCollectedBlock.SetActive(true);
                     
-                    // Убираем серость, оставляем оригинальный цвет иконки
                     rewardIcon.color = Color.white; 
                     rewardCurrencyText.gameObject.SetActive(false);
                     collectedText.text = CollectedTextKey;
                     
-                    // Можно чуть притемнить только фон, если нужно отделить от активных
                     if (backgroundImage != null) backgroundImage.color = new Color(0.8f, 0.8f, 0.8f, 1f);
                     break;
 
@@ -76,10 +79,7 @@ namespace UI.Popups.DailyRewardPopup
                     lockedBlock.SetActive(true);
                     alreadyCollectedBlock.SetActive(false);
                     
-                    lockText.text = LockTextKey;
-                    
-                    // Только для будущих наград делаем иконку сероватой
-                    rewardIcon.color = new Color(0.4f, 0.4f, 0.4f, 1f); 
+                    rewardIcon.color = new Color(0.4f, 0.4f, 0.4f, 1f);
                     if (backgroundImage != null) backgroundImage.color = new Color(0.6f, 0.6f, 0.6f, 1f);
                     
                     PlayLockedSubtleAnimation();
@@ -89,92 +89,81 @@ namespace UI.Popups.DailyRewardPopup
 
         private void ResetVisuals()
         {
-            // Убиваем твины жестко перед сбросом
             rootTransform.DOKill();
-            
             rootTransform.localScale = Vector3.one;
             rootTransform.localRotation = Quaternion.identity;
-            rootTransform.anchoredPosition = Vector2.zero; // Используем anchoredPosition для UI
             
-            rewardIcon.color = Color.white;
-            if (backgroundImage != null) backgroundImage.color = Color.white;
+            // Важно: возвращаем в локальный ноль ячейки
+            rootTransform.anchoredPosition = Vector2.zero; 
+            
+            if (itemCanvas != null)
+            {
+                itemCanvas.overrideSorting = false;
+                itemCanvas.sortingOrder = _initialSortingOrder;
+            }
         }
 
         public void PlayCurrentDayAnimation()
         {
-            // Используем Sequence для лучшего контроля
+            StopAnimations();
             Sequence s = DOTween.Sequence().SetId(this).KillWith(this);
-            
             s.Join(rootTransform.DOScale(1f + _readyBounce, 0.8f).SetEase(Ease.InOutQuad));
-            s.Join(rootTransform.DORotate(new Vector3(0, 0, _readyRotation), 1.2f).SetEase(Ease.InOutSine));
-            
+            s.Join(rootTransform.DORotate(new Vector3(0, 0, _readyRotation), 1f).SetEase(Ease.InOutSine));
             s.SetLoops(-1, LoopType.Yoyo);
-            
+
             if (glowParticles != null) glowParticles.Play();
         }
 
         private void PlayLockedSubtleAnimation()
         {
-            rootTransform.DORotate(new Vector3(0, 0, _lockedRotation), 2f)
+            StopAnimations();
+            // Едва заметное покачивание для заблокированных
+            rootTransform.DORotate(new Vector3(0, 0, 1.5f), 2.5f)
                 .SetEase(Ease.InOutSine)
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetId(this)
                 .KillWith(this);
         }
 
-        public void StopAnimations()
-        {
-            // Убиваем по ID этого объекта, чтобы не затронуть другие айтемы в списке
-            DOTween.Kill(this);
-            rootTransform.DOKill();
-            
-            if (glowParticles != null) glowParticles.Stop();
-        }
-
         public IPromise PlayClaimFeedbackAnimation()
         {
             var promise = new Promise();
             StopAnimations();
-    
-            // Сброс в дефолт
-            rootTransform.localScale = Vector3.one;
-            rootTransform.localRotation = Quaternion.identity;
 
-            Sequence epicSeq = DOTween.Sequence().SetId(this).KillWith(this);
-
-            // 1. Антиципация (сжатие перед прыжком)
-            epicSeq.Append(rootTransform.DOScale(0.85f, 0.15f).SetEase(Ease.OutQuad));
-
-            // 2. Взрывной прыжок вперед с пружиной
-            epicSeq.Append(rootTransform.DOScale(1.4f, 0.4f).SetEase(Ease.OutElastic, 0.5f, 0.75f));
-    
-            // Параллельно тряхнем иконку награды для акцента
-            epicSeq.Join(rewardIcon.transform.DOPunchPosition(new Vector3(0, 20, 0), 0.5f, 5, 1f));
-    
-            // Вспышка фона (если есть Image)
-            if (backgroundImage != null)
+            if (itemCanvas != null)
             {
-                epicSeq.Join(backgroundImage.DOColor(Color.white, 0.1f).SetLoops(2, LoopType.Yoyo));
+                itemCanvas.overrideSorting = true;
+                itemCanvas.sortingOrder = _initialSortingOrder + 100;
             }
 
-            // 3. Возврат к нормальному состоянию и смена стейта
+            var epicSeq = DOTween.Sequence().SetId(this).KillWith(this);
+            epicSeq.Append(rootTransform.DOScale(0.8f, 0.15f).SetEase(Ease.OutQuad));
+            epicSeq.Append(rootTransform.DOScale(1.5f, 0.3f).SetEase(Ease.OutBack));
             epicSeq.Append(rootTransform.DOScale(1.0f, 0.2f).SetEase(Ease.InQuad));
-    
+            
+            epicSeq.AppendCallback(() =>
+            {
+                if (dustParticles != null) dustParticles.Play();
+                //rootTransform.DOShakeRotation(0.3f, 12f, 25).KillWith(this);
+            });
+
             epicSeq.OnComplete(() =>
             {
                 SetupState(DayItemState.Collected);
-                promise.Resolve();
+                promise.SafeResolve();
             });
 
-            return epicSeq.AsPromise();
+            return promise;
         }
 
-        public void SetRewardIcon(Sprite icon)
+        public void StopAnimations()
         {
-            if (icon != null)
-                rewardIcon.sprite = icon;
+            DOTween.Kill(this);
+            rootTransform.DOKill();
+            if (glowParticles != null) glowParticles.Stop();
         }
 
+        public void SetRewardIcon(Sprite icon) => rewardIcon.sprite = icon;
         private void OnDisable() => StopAnimations();
     }
 }
