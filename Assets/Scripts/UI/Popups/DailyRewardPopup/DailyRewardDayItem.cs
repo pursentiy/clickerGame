@@ -3,30 +3,21 @@ using RSG;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Utilities.Disposable;
 
 namespace UI.Popups.DailyRewardPopup
 {
-    public enum DayItemState
-    {
-        Collected,
-        ReadyToReceive,
-        ToBeCollected
-    }
-
     public class DailyRewardDayItem : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private RectTransform RootTransform;
+        [SerializeField] private RectTransform rootTransform;
+        [SerializeField] private Image backgroundImage;
 
-        public RectTransform RootTransformRef => RootTransform;
-
-        [Header("State Blocks (match hierarchy: ReadyToCollectBlock, LockedBlock, AlreadyCollectedBlock)")]
+        [Header("State Blocks")]
         [SerializeField] private GameObject readyToCollectBlock;
         [SerializeField] private GameObject lockedBlock;
         [SerializeField] private GameObject alreadyCollectedBlock;
 
-        [Header("Block Content (optional; for icon, text, check)")]
+        [Header("Content")]
         [SerializeField] private Image rewardIcon;
         [SerializeField] private TMP_Text rewardCurrencyText;
         [SerializeField] private Image lockIcon;
@@ -34,43 +25,45 @@ namespace UI.Popups.DailyRewardPopup
         [SerializeField] private Image checkIcon;
         [SerializeField] private TMP_Text collectedText;
         [SerializeField] private ParticleSystem glowParticles;
-        [SerializeField] private CanvasGroup disabledElementCanvasGroup;
+        [SerializeField] private CanvasGroup contentCanvasGroup;
 
-        [Header("Animation")]
-        [SerializeField] private float _bounceScale = 1.15f;
-        [SerializeField] private float _bounceDuration = 0.5f;
-        [SerializeField] private float _shakeStrength = 5f;
-        [SerializeField] private int _shakeVibrato = 10;
-        [SerializeField] private float _shakeRandomness = 90f;
+        [Header("Ready Animation Settings")]
+        [SerializeField] private float _readyBounce = 0.1f;
+        [SerializeField] private float _readyRotation = 5f;
+
+        [Header("Locked Animation Settings")]
+        [SerializeField] private float _lockedRotation = 2f;
 
         private const string LockTextKey = "be unlocked soon";
         private const string CollectedTextKey = "collected";
+        
+        public RectTransform RootTransform => rootTransform;
 
-        /// <summary>
-        /// Sets visual state by enabling the right block and content. Call from mediator after setting icon.
-        /// </summary>
         public void SetupState(DayItemState state)
         {
+            // Полная остановка всего перед настройкой
+            StopAnimations();
+            ResetVisuals();
+
             switch (state)
             {
                 case DayItemState.Collected:
                     readyToCollectBlock.SetActive(true);
                     lockedBlock.SetActive(false);
                     alreadyCollectedBlock.SetActive(true);
+                    
                     rewardIcon.color = new Color(0.5f, 0.5f, 0.5f, 1f);
                     rewardCurrencyText.gameObject.SetActive(false);
                     collectedText.text = CollectedTextKey;
-                    disabledElementCanvasGroup.alpha = 0f;
-                    StopAnimations();
                     break;
 
                 case DayItemState.ReadyToReceive:
                     readyToCollectBlock.SetActive(true);
                     lockedBlock.SetActive(false);
                     alreadyCollectedBlock.SetActive(false);
+                    
                     rewardIcon.color = Color.white;
                     rewardCurrencyText.gameObject.SetActive(true);
-                    disabledElementCanvasGroup.alpha = 0f;
                     PlayCurrentDayAnimation();
                     break;
 
@@ -78,11 +71,75 @@ namespace UI.Popups.DailyRewardPopup
                     readyToCollectBlock.SetActive(false);
                     lockedBlock.SetActive(true);
                     alreadyCollectedBlock.SetActive(false);
+                    
                     lockText.text = LockTextKey;
-                    disabledElementCanvasGroup.alpha = 0.5f;
-                    StopAnimations();
+                    PlayLockedSubtleAnimation();
                     break;
             }
+        }
+
+        private void ResetVisuals()
+        {
+            RootTransform.localScale = Vector3.one;
+            RootTransform.localRotation = Quaternion.identity;
+            // Сбрасываем только локальную позицию, не трогаем анкоры
+            RootTransform.localPosition = Vector3.zero; 
+            contentCanvasGroup.alpha = 1f;
+            rewardIcon.color = Color.white;
+            if (backgroundImage != null) backgroundImage.color = Color.white;
+        }
+
+        public void PlayCurrentDayAnimation()
+        {
+            StopAnimations();
+
+            // 1. Увеличиваем и плавно пульсируем
+            RootTransform.DOScale(1f + _readyBounce, 0.8f)
+                .SetEase(Ease.InOutQuad)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetTarget(RootTransform);
+
+            // 2. Игривое вращение
+            RootTransform.DORotate(new Vector3(0, 0, _readyRotation), 1.2f)
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetTarget(RootTransform);
+
+            if (glowParticles != null) glowParticles.Play();
+        }
+
+        private void PlayLockedSubtleAnimation()
+        {
+            StopAnimations();
+            
+            // Просто легкое покачивание для "будущих" элементов
+            RootTransform.DORotate(new Vector3(0, 0, _lockedRotation), 2f)
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetTarget(RootTransform);
+        }
+
+        public void StopAnimations()
+        {
+            // Убиваем все твины именно на этом объекте
+            RootTransform.DOKill(true);
+            if (glowParticles != null) glowParticles.Stop();
+        }
+
+        public IPromise PlayClaimFeedbackAnimation()
+        {
+            var promise = new Promise();
+            StopAnimations();
+
+            // Вместо изменения позиции используем Punch — это не ломает верстку
+            RootTransform.DOPunchScale(Vector3.one * 0.2f, 0.4f, 10, 1f)
+                .OnComplete(() =>
+                {
+                    SetupState(DayItemState.Collected);
+                    promise.Resolve();
+                });
+
+            return promise;
         }
 
         public void SetRewardIcon(Sprite icon)
@@ -91,53 +148,6 @@ namespace UI.Popups.DailyRewardPopup
                 rewardIcon.sprite = icon;
         }
 
-        /// <summary>
-        /// Plays glow, bounce and shake for the current claimable day.
-        /// </summary>
-        public void PlayCurrentDayAnimation()
-        {
-            RootTransform.DOKill();
-
-            glowParticles.Stop();
-            glowParticles.Play();
-
-            var originalScale = Vector3.one;
-            var bounceSequence = DOTween.Sequence().KillWith(RootTransform.gameObject);
-            bounceSequence.Append(RootTransform.DOScale(originalScale * _bounceScale, _bounceDuration).SetEase(Ease.OutQuad));
-            bounceSequence.Append(RootTransform.DOScale(originalScale, _bounceDuration).SetEase(Ease.InQuad));
-            bounceSequence.SetLoops(-1, LoopType.Restart);
-
-            RootTransform.DOShakePosition(1f, strength: _shakeStrength, vibrato: _shakeVibrato, randomness: _shakeRandomness, snapping: false, fadeOut: false)
-                .SetLoops(-1, LoopType.Restart)
-                .KillWith(RootTransform.gameObject);
-        }
-
-        /// <summary>
-        /// Stops all tweens and particles on this item.
-        /// </summary>
-        public void StopAnimations()
-        {
-            RootTransform.DOKill();
-            glowParticles.Stop();
-        }
-
-        /// <summary>
-        /// One-shot punch and optional fade for claim feedback. Returns a promise that completes when done.
-        /// </summary>
-        public IPromise PlayClaimFeedbackAnimation()
-        {
-            var promise = new Promise();
-            RootTransform.DOKill();
-            var seq = DOTween.Sequence().KillWith(RootTransform.gameObject);
-            seq.Append(RootTransform.DOPunchScale(Vector3.one * 0.3f, 0.5f, 10, 0.9f));
-            seq.Join(disabledElementCanvasGroup.DOFade(0f, 0.4f).SetDelay(0.1f));
-            seq.OnComplete(() => promise.Resolve());
-            return promise;
-        }
-
-        private void OnDisable()
-        {
-            StopAnimations();
-        }
+        private void OnDisable() => StopAnimations();
     }
 }

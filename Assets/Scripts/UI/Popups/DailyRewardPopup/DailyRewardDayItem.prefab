@@ -184,6 +184,7 @@ GameObject:
   m_Component:
   - component: {fileID: 276806341710375578}
   - component: {fileID: 3685384729780804810}
+  - component: {fileID: 6645939047620413307}
   m_Layer: 5
   m_Name: DailyRewardDayItem
   m_TagString: Untagged
@@ -225,7 +226,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e2f0ac2f9c2496e836ed621815ed9d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Popups.DailyRewardPopup.DailyRewardDayItem
-  RootTransform: {fileID: 276806341710375578}
+  rootTransform: {fileID: 276806341710375578}
+  backgroundImage: {fileID: 1411397034597084012}
   readyToCollectBlock: {fileID: 341997520666305541}
   lockedBlock: {fileID: 2560221414656207976}
   alreadyCollectedBlock: {fileID: 8346945196040704536}
@@ -236,12 +238,24 @@ MonoBehaviour:
   checkIcon: {fileID: 3836387087856590702}
   collectedText: {fileID: 3708927399090113048}
   glowParticles: {fileID: 5245303005907014477}
-  disabledElementCanvasGroup: {fileID: 8545753116787990242}
-  _bounceScale: 1.15
-  _bounceDuration: 0.5
-  _shakeStrength: 5
-  _shakeVibrato: 10
-  _shakeRandomness: 90
+  contentCanvasGroup: {fileID: 6645939047620413307}
+  _floatAmplitude: 10
+  _rotateAngle: 3.5
+  _pulseScale: 1.08
+  _collectedBgColor: {r: 0.2, g: 0.2, b: 0.2, a: 0.8}
+  _collectedAlpha: 0.5
+--- !u!225 &6645939047620413307
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2117633169927855583}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2560221414656207976
 GameObject:
   m_ObjectHideFlags: 0

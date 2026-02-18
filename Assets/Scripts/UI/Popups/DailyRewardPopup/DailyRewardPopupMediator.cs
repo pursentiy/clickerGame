@@ -210,8 +210,8 @@ namespace UI.Popups.DailyRewardPopup
             if (View.DayRewardItems != null && currentItemIndex >= 0 && currentItemIndex < View.DayRewardItems.Length)
             {
                 var currentItem = View.DayRewardItems[currentItemIndex];
-                if (currentItem != null && currentItem.RootTransformRef != null)
-                    return currentItem.RootTransformRef.position;
+                if (currentItem != null && currentItem.RootTransform != null)
+                    return currentItem.RootTransform.position;
             }
 
             return View.FlyingRewardsContainer != null ? View.FlyingRewardsContainer.position : Vector3.zero;
