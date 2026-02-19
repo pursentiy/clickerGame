@@ -32,7 +32,6 @@ namespace UI.Screens.ChoosePack
             base.OnCreated();
             
             InitWidgets();
-            InitText();
             
             View.InfoButton.onClick.MapListenerWithSound(OnInfoButtonClicked).DisposeWith(this);
             View.GoBackButton.onClick.MapListenerWithSound(OnGoBackButtonClicked).DisposeWith(this);
@@ -45,15 +44,6 @@ namespace UI.Screens.ChoosePack
         {
             View.StarsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
             View.PacksWidget.Initialize(View.StarsDisplayWidget, View.AdsButton);
-        }
-
-        private void InitText()
-        {
-            View.HeaderText.SetText(_localizationService.GetValue("choose_pack_header"));
-
-            var text = _localizationService.GetFormattedValue("unlocked_sets",
-                $"{_progressProvider.GetAllAvailablePacksCount()}/{_progressProvider.GetAllPacksCount()}");
-            View.AvailablePacksText.SetText(text);
         }
         
         private void OnInfoButtonClicked()

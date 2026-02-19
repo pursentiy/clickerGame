@@ -1,6 +1,5 @@
 using Components.UI;
 using Handlers.UISystem;
-using TMPro;
 using UI.Screens.ChoosePack.Widgets;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,8 +9,6 @@ namespace UI.Screens.ChoosePack
     public class ChoosePackScreenView : MonoBehaviour, IUIView
     {
         public CurrencyDisplayWidget StarsDisplayWidget;
-        public TextMeshProUGUI HeaderText;
-        public TextMeshProUGUI AvailablePacksText;
         public PacksWidget PacksWidget;
         public Button GoBackButton;
         public Button SettingsButton;
