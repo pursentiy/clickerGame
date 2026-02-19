@@ -3,6 +3,7 @@ using System.Linq;
 using Common.Currency;
 using Common.Data.Info;
 using Components.UI;
+using Configurations.Progress;
 using Controllers;
 using Extensions;
 using Handlers.UISystem;
@@ -60,12 +61,15 @@ namespace UI.Screens.ChoosePack.Widgets
         
         private void InitializePackButtons()
         {
-            _allPacksInfos = _progressProvider.GetAllPacks();
-            if (_allPacksInfos.IsCollectionNullOrEmpty())
+            var allPacks = _progressProvider.GetAllPacks();
+            if (allPacks.IsCollectionNullOrEmpty())
             {
                 LoggerService.LogError(this, $"[{nameof(InitializePackButtons)}]: {nameof(ProgressProvider)} packs params are null or empty.");
                 return;
             }
+
+            // Filter to show only Default packs
+            _allPacksInfos = allPacks.Where(pack => pack != null && pack.PackType == PackType.Default).ToList();
 
             SetupPacksList();
         }

@@ -35,6 +35,7 @@ namespace Extensions
                     configPack.PackName,
                     storagePack.PackImagePrefab,
                     configPack.StarsToUnlock,
+                    configPack.PackType,
                     mergedLevels
                 );
 

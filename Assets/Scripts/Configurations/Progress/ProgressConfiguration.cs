@@ -13,7 +13,7 @@ namespace Configurations.Progress
 
         public void Parse(string csvText)
         {
-            var packsData = new Dictionary<int, (string Name, int Stars, List<LevelInfoConfiguration> Levels)>();
+            var packsData = new Dictionary<int, (string Name, int Stars, PackType PackType, List<LevelInfoConfiguration> Levels)>();
             var uniqueLevelCheck = new HashSet<string>();
 
             var lines = csvText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
@@ -21,7 +21,7 @@ namespace Configurations.Progress
             for (int i = 1; i < lines.Length; i++)
             {
                 var values = lines[i].Split(';');
-                if (values.Length < 10) continue; // Теперь 10 колонок
+                if (values.Length < 11) continue; // Now 11 columns (added PackType)
 
                 try
                 {
@@ -40,6 +40,7 @@ namespace Configurations.Progress
 
                     float figureScale = float.Parse(values[8], CultureInfo.InvariantCulture);
                     LevelDifficulty difficulty = (LevelDifficulty)int.Parse(values[9]);
+                    PackType packType = (PackType)int.Parse(values[10]);
 
                     string levelKey = $"{packId}_{levelId}";
                     if (uniqueLevelCheck.Contains(levelKey)) continue;
@@ -47,7 +48,7 @@ namespace Configurations.Progress
 
                     if (!packsData.ContainsKey(packId))
                     {
-                        packsData[packId] = (packName, starsToUnlock, new List<LevelInfoConfiguration>());
+                        packsData[packId] = (packName, starsToUnlock, packType, new List<LevelInfoConfiguration>());
                     }
 
                     packsData[packId].Levels.Add(new LevelInfoConfiguration(levelId, levelName, beatingTimes, figureScale, difficulty));
@@ -61,7 +62,7 @@ namespace Configurations.Progress
             var finalPacksDict = new Dictionary<int, PackInfoConfiguration>();
             foreach (var kvp in packsData)
             {
-                var packInfo = new PackInfoConfiguration(kvp.Value.Stars, kvp.Value.Name, kvp.Value.Levels.AsReadOnly());
+                var packInfo = new PackInfoConfiguration(kvp.Value.Stars, kvp.Value.Name, kvp.Value.PackType, kvp.Value.Levels.AsReadOnly());
                 finalPacksDict.Add(kvp.Key, packInfo);
             }
             
