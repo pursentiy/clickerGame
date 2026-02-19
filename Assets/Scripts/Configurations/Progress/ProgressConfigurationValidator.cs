@@ -40,8 +40,8 @@ namespace Configurations.Progress
                     errors.Add($"Pack {packId} ({pack.PackName}): StarsToUnlockPack must be >= 0, got {pack.StarsToUnlock}.");
 
                 int packTypeValue = (int)pack.PackType;
-                if (packTypeValue != 10 && packTypeValue != 20 && packTypeValue != 30)
-                    errors.Add($"Pack {packId} ({pack.PackName}): PackType must be 10 (Default), 20 (Freemium), or 30 (Premium), got {packTypeValue}.");
+                if (packTypeValue != 0 && packTypeValue != 20 && packTypeValue != 30)
+                    errors.Add($"Pack {packId} ({pack.PackName}): PackType must be 0 (Default), 20 (Freemium), or 30 (Premium), got {packTypeValue}.");
 
                 if (pack.Levels == null)
                 {

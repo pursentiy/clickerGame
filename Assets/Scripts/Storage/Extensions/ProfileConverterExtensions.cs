@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Common.Currency;
+using Configurations.Progress;
 using Storage.Records;
 using Storage.Snapshots;
 
@@ -39,7 +40,7 @@ namespace Storage.Extensions
             var completedLevelsSnapshots = snapshot.CompletedLevelsSnapshots == null ? new List<LevelRecord>()
                 : snapshot.CompletedLevelsSnapshots.Select(i => i.ToRecord()).Where(i => i != null).ToList();
 
-            return new PackRecord(snapshot.PackId, completedLevelsSnapshots, snapshot.IsUnlocked);
+            return new PackRecord(snapshot.PackId, completedLevelsSnapshots, snapshot.IsUnlocked, snapshot.PackType);
         }
         
         public static LevelRecord ToRecord(this LevelSnapshot snapshot)
@@ -122,7 +123,7 @@ namespace Storage.Extensions
             var completedLevelsSnapshots = record.CompletedLevelsRecords == null ? new List<LevelSnapshot>()
                 : record.CompletedLevelsRecords.Select(i => i.ToSnapshot()).Where(i => i != null).ToList();
 
-            return new PackSnapshot(record.PackNumber, completedLevelsSnapshots);
+            return new PackSnapshot(record.PackNumber, completedLevelsSnapshots, record.PackType);
         }
         
         public static LevelSnapshot ToSnapshot(this LevelRecord record)
