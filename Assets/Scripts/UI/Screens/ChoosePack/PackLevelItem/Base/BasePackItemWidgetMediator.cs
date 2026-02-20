@@ -17,7 +17,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
     {
         int PackId { get; }
         void UpdateWidgetUnlock(bool isUnlocked);
-        void PlayEntranceAnimation();
+        void PlayEntranceAnimation(Action onComplete = null);
         void PlayExitAnimation();
     }
 
@@ -58,7 +58,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             if (View.AnimationWidget == null) return;
 
             // Если анимация уже была проиграна в этой сессии, просто ставим в финальную позицию
-            if (true)
+            if (Data.GetEntranceAnimationsAlreadyTriggered())
             {
                 View.AnimationWidget.SetToRest();
             }
@@ -69,15 +69,19 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             }
         }
 
-        public void PlayEntranceAnimation()
+        public void PlayEntranceAnimation(Action onComplete = null)
         {
-            if (View.AnimationWidget == null)
+            if (Data.GetEntranceAnimationsAlreadyTriggered())
+            {
+                onComplete?.Invoke();
                 return;
+            }
 
-            //Data.SetEntranceAnimationsAlreadyTriggered(true);
+            float delay = Data.IndexInList * View.EntranceStaggerDelay;
             
-            var delay = Data.IndexInList * View.EntranceStaggerDelay;
-            View.AnimationWidget.PlayEntrance(delay, View.EntranceDuration);
+            View.AnimationWidget.PlayEntrance(delay, View.EntranceDuration)
+                .ContinueWithResolved(() => onComplete?.SafeInvoke())
+                .CancelWith(this);
         }
 
         public void PlayExitAnimation()

@@ -1,5 +1,8 @@
 using DG.Tweening;
+using Extensions;
+using RSG;
 using UnityEngine;
+using Utilities.Disposable;
 
 namespace UI.Screens.ChoosePack.PackLevelItem.Base
 {
@@ -36,38 +39,53 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
                 _canvasGroup.alpha = 1f;
         }
 
-        public void PlayEntrance(float delay, float duration)
+        public IPromise PlayEntrance(float delay, float duration)
         {
             CapturePosition();
             _holder.DOKill();
             
-            _holder.DOLocalMove(_initialLocalPos, duration)
+            var canvasPromise = Promise.Resolved();
+            var holderAnimationPromise = _holder.DOLocalMove(_initialLocalPos, duration)
                 .SetEase(Ease.OutCubic)
-                .SetDelay(delay);
+                .SetDelay(delay)
+                .KillWith(this)
+                .AsPromise();
 
             if (_canvasGroup != null)
             {
                 _canvasGroup.DOKill();
-                _canvasGroup.DOFade(1f, duration * 0.8f)
+                canvasPromise = _canvasGroup.DOFade(1f, duration * 0.8f)
                     .SetEase(Ease.OutQuad)
-                    .SetDelay(delay);
+                    .SetDelay(delay)
+                    .KillWith(this)
+                    .AsPromise();
             }
+
+            return Promise.All(canvasPromise, holderAnimationPromise);
         }
 
-        public void PlayExit(float offsetY, float duration)
+        public IPromise PlayExit(float offsetY, float duration)
         {
             CapturePosition();
             _holder.DOKill();
             
-            _holder.DOLocalMove(_initialLocalPos + new Vector3(0, offsetY, 0), duration)
-                .SetEase(Ease.InCubic);
+            var canvasPromise = Promise.Resolved();
+            var holderAnimationPromise = 
+                _holder.DOLocalMove(_initialLocalPos + new Vector3(0, offsetY, 0), duration)
+                .SetEase(Ease.InCubic)
+                .KillWith(this)
+                .AsPromise();
 
             if (_canvasGroup != null)
             {
                 _canvasGroup.DOKill();
-                _canvasGroup.DOFade(0f, duration)
-                    .SetEase(Ease.InQuad);
+                canvasPromise = _canvasGroup.DOFade(0f, duration)
+                    .SetEase(Ease.InQuad)
+                    .KillWith(this)
+                    .AsPromise();
             }
+            
+            return Promise.All(canvasPromise, holderAnimationPromise);
         }
     }
 }
