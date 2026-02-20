@@ -12,7 +12,7 @@ namespace Services
     public class ProgressController
     {
         [Inject] private readonly UserSettingsService _userSettingsService;
-        [Inject] private readonly PlayerProfileManager _playerProfileManager;
+        [Inject] private readonly PlayerProfileController _playerProfileController;
         [Inject] private readonly ProgressProvider _progressProvider;
 
         private LevelParamsSnapshot _currentLevelSnapshot;
@@ -123,13 +123,13 @@ namespace Services
         
         private bool TryAddPackToProfile(int packId)
         {
-            if (!_playerProfileManager.IsInitialized)
+            if (!_playerProfileController.IsInitialized)
             {
-                LoggerService.LogWarning(this,$"[{nameof(TryAddPackToProfile)}]: {nameof(PlayerProfileManager)} is not initialized");
+                LoggerService.LogWarning(this,$"[{nameof(TryAddPackToProfile)}]: {nameof(PlayerProfileController)} is not initialized");
                 return false;
             }
 
-            var maybePack = _playerProfileManager.TryGetPackSnapshot(packId);
+            var maybePack = _playerProfileController.TryGetPackSnapshot(packId);
             if (maybePack != null)
             {
                 LoggerService.LogError(this, $"Pack {packId} already exists at {nameof(TryAddPackToProfile)}");
@@ -137,7 +137,7 @@ namespace Services
             }
             
             var newPack = new PackSnapshot(packId, new List<LevelSnapshot>());
-            var result = _playerProfileManager.CreatePack(newPack);
+            var result = _playerProfileController.CreatePack(newPack);
 
             if (!result)
             {
@@ -150,20 +150,20 @@ namespace Services
         
         private bool TryAddLevelToProfile(int packId, int levelId, float completedTime, Stars starsEarned, UnlockStatus unlockStatus, SavePriority savePriority)
         {
-            if (!_playerProfileManager.IsInitialized)
+            if (!_playerProfileController.IsInitialized)
             {
-                LoggerService.LogWarning(this,$"[{nameof(TryAddLevelToProfile)}]: {nameof(PlayerProfileManager)} is not initialized");
+                LoggerService.LogWarning(this,$"[{nameof(TryAddLevelToProfile)}]: {nameof(PlayerProfileController)} is not initialized");
                 return false;
             }
             
-            var maybePack = _playerProfileManager.TryGetPackSnapshot(packId);
+            var maybePack = _playerProfileController.TryGetPackSnapshot(packId);
             if (maybePack == null)
             {
                 LoggerService.LogError(this, $"No pack for packId {packId} and levelId {levelId} at {nameof(TryAddLevelToProfile)}");
                 return false;
             }
             
-            var maybeLevel = _playerProfileManager.TryGetLevelSnapshot(packId, levelId);
+            var maybeLevel = _playerProfileController.TryGetLevelSnapshot(packId, levelId);
             if (maybeLevel != null)
             {
                 LoggerService.LogError(this, $"Level Already Exists for packId {packId} and levelId {levelId} at {nameof(TryAddLevelToProfile)}");
@@ -171,7 +171,7 @@ namespace Services
             }
             
             var newLevel = new LevelSnapshot(levelId, completedTime, starsEarned, unlockStatus, 1);
-            var result = _playerProfileManager.CreateLevel(packId, newLevel, savePriority);
+            var result = _playerProfileController.CreateLevel(packId, newLevel, savePriority);
             if (!result)
             {
                 LoggerService.LogError(this, $"[{nameof(TryAddLevelToProfile)}]: Failed to add level for {packId} and levelId {levelId}");

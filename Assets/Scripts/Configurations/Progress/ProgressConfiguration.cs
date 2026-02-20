@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Common.Currency;
 using Extensions;
 using Services;
 
@@ -13,7 +14,7 @@ namespace Configurations.Progress
 
         public void Parse(string csvText)
         {
-            var packsData = new Dictionary<int, (string Name, int Stars, PackType PackType, List<LevelInfoConfiguration> Levels)>();
+            var packsData = new Dictionary<int, (string Name, ICurrency CurrencyToUnlock, PackType PackType, List<LevelInfoConfiguration> Levels)>();
             var uniqueLevelCheck = new HashSet<string>();
 
             var lines = csvText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
@@ -27,7 +28,7 @@ namespace Configurations.Progress
                 {
                     int packId = int.Parse(values[0]);
                     string packName = values[1];
-                    int starsToUnlock = int.Parse(values[2]);
+                    var currencyToUnlock = CurrencyParser.Parse(values[2]);
                     int levelId = int.Parse(values[3]);
                     string levelName = values[4];
                     
@@ -48,7 +49,7 @@ namespace Configurations.Progress
 
                     if (!packsData.ContainsKey(packId))
                     {
-                        packsData[packId] = (packName, starsToUnlock, packType, new List<LevelInfoConfiguration>());
+                        packsData[packId] = (packName, currencyToUnlock, packType, new List<LevelInfoConfiguration>());
                     }
 
                     packsData[packId].Levels.Add(new LevelInfoConfiguration(levelId, levelName, beatingTimes, figureScale, difficulty));
@@ -62,7 +63,7 @@ namespace Configurations.Progress
             var finalPacksDict = new Dictionary<int, PackInfoConfiguration>();
             foreach (var kvp in packsData)
             {
-                var packInfo = new PackInfoConfiguration(kvp.Value.Stars, kvp.Value.Name, kvp.Value.PackType, kvp.Value.Levels.AsReadOnly());
+                var packInfo = new PackInfoConfiguration(kvp.Value.CurrencyToUnlock, kvp.Value.Name, kvp.Value.PackType, kvp.Value.Levels.AsReadOnly());
                 finalPacksDict.Add(kvp.Key, packInfo);
             }
             

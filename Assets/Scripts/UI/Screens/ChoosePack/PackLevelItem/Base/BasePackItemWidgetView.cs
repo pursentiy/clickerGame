@@ -1,3 +1,4 @@
+using CoinMaster.App.UI.Screens.Common.Events;
 using ThirdParty.SuperScrollView.Scripts.List;
 using TMPro;
 using UnityEngine;
@@ -13,7 +14,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
         public TMP_Text PackText;
         public Button PackEnterButton;
         public TMP_Text LockedBlockText;
-        public RectTransform LockedBlockHolder;
+        public LockWidget LockWidget;
         public ParticleSystem UnlockParticles;
 
         [Header("Unlock Animation Settings")]

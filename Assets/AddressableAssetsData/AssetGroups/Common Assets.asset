@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: Common Assets
   m_EditorClassIdentifier: 
   m_GroupName: Common Assets
-  m_Data:
-    m_SerializedData: []
   m_GUID: 0c32e54dda0a94461a7ce4c4b6298b3b
   m_SerializeEntries:
   - m_GUID: 8eb2f9b0e24dec64483d59174dddb8e0
@@ -24,11 +22,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 95b22be2b746dff46a95032d1620aae1
     m_Address: Assets/Sprites/Particles/CFX_T_Star.tga
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bbe0f3746b5824fd9ad4f84c307d006a
-    m_Address: Assets/Sprites/Screens/Common/star.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

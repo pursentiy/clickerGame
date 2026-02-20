@@ -11,16 +11,17 @@ namespace UI.Popups.DailyRewardPopup
     public class DailyRewardDayItem : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private RectTransform rootTransform;
+        [SerializeField] private RectTransform rootTransform; // Остается в LayoutGroup
+        [SerializeField] private RectTransform contentHolder; // НОВЫЙ: анимируем ЕГО
         [SerializeField] private Image backgroundImage;
-        [SerializeField] private Canvas itemCanvas; // Обязательно добавьте Canvas на префаб
+        [SerializeField] private Canvas itemCanvas;
 
         [Header("State Blocks")]
         [SerializeField] private GameObject readyToCollectBlock;
         [SerializeField] private GameObject lockedBlock;
         [SerializeField] private GameObject alreadyCollectedBlock;
 
-        [Header("Content Content")]
+        [Header("Content")]
         [SerializeField] private Image rewardIcon;
         [SerializeField] private TMP_Text rewardCurrencyText;
         [SerializeField] private Image checkIcon;
@@ -29,13 +30,10 @@ namespace UI.Popups.DailyRewardPopup
         [SerializeField] private ParticleSystem dustParticles;
 
         [Header("Animation Settings")]
-        [SerializeField] private float _readyBounce = 0.12f;
-        [SerializeField] private float _readyRotation = 6f;
-
-        private const string LockTextKey = "be unlocked soon";
-        private const string CollectedTextKey = "COLLECTED";
+        [SerializeField] private float _readyBounce = 0.1f;
         
         private int _initialSortingOrder;
+        private Vector3 _initialContentScale = Vector3.one;
         
         public RectTransform RootTransform => rootTransform;
 
@@ -43,6 +41,8 @@ namespace UI.Popups.DailyRewardPopup
         {
             if (itemCanvas != null) 
                 _initialSortingOrder = itemCanvas.sortingOrder;
+            
+            if (contentHolder == null) contentHolder = rootTransform; // Fallback
         }
 
         public void SetupState(DayItemState state)
@@ -56,11 +56,8 @@ namespace UI.Popups.DailyRewardPopup
                     readyToCollectBlock.SetActive(true);
                     lockedBlock.SetActive(false);
                     alreadyCollectedBlock.SetActive(true);
-                    
                     rewardIcon.color = Color.white; 
                     rewardCurrencyText.gameObject.SetActive(false);
-                    collectedText.text = CollectedTextKey;
-                    
                     if (backgroundImage != null) backgroundImage.color = new Color(0.8f, 0.8f, 0.8f, 1f);
                     break;
 
@@ -68,7 +65,6 @@ namespace UI.Popups.DailyRewardPopup
                     readyToCollectBlock.SetActive(true);
                     lockedBlock.SetActive(false);
                     alreadyCollectedBlock.SetActive(false);
-                    
                     rewardIcon.color = Color.white;
                     rewardCurrencyText.gameObject.SetActive(true);
                     PlayCurrentDayAnimation();
@@ -78,10 +74,7 @@ namespace UI.Popups.DailyRewardPopup
                     readyToCollectBlock.SetActive(false);
                     lockedBlock.SetActive(true);
                     alreadyCollectedBlock.SetActive(false);
-                    
                     rewardIcon.color = new Color(0.4f, 0.4f, 0.4f, 1f);
-                    if (backgroundImage != null) backgroundImage.color = new Color(0.6f, 0.6f, 0.6f, 1f);
-                    
                     PlayLockedSubtleAnimation();
                     break;
             }
@@ -89,12 +82,10 @@ namespace UI.Popups.DailyRewardPopup
 
         private void ResetVisuals()
         {
-            rootTransform.DOKill();
-            rootTransform.localScale = Vector3.one;
-            rootTransform.localRotation = Quaternion.identity;
-            
-            // Важно: возвращаем в локальный ноль ячейки
-            rootTransform.anchoredPosition = Vector2.zero; 
+            contentHolder.DOKill();
+            contentHolder.localScale = _initialContentScale;
+            contentHolder.localRotation = Quaternion.identity;
+            contentHolder.anchoredPosition = Vector2.zero;
             
             if (itemCanvas != null)
             {
@@ -106,23 +97,26 @@ namespace UI.Popups.DailyRewardPopup
         public void PlayCurrentDayAnimation()
         {
             StopAnimations();
-            Sequence s = DOTween.Sequence().SetId(this).KillWith(this);
-            s.Join(rootTransform.DOScale(1f + _readyBounce, 0.8f).SetEase(Ease.InOutQuad));
-            s.Join(rootTransform.DORotate(new Vector3(0, 0, _readyRotation), 1f).SetEase(Ease.InOutSine));
-            s.SetLoops(-1, LoopType.Yoyo);
+            // Делаем более "живое" дыхание
+            contentHolder.DOScale(_initialContentScale * (1f + _readyBounce), 1.2f)
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetId(this);
+            
+            contentHolder.DORotate(new Vector3(0, 0, 3f), 1.5f)
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetId(this);
 
-            if (glowParticles != null) glowParticles.Play();
+            if (glowParticles != null && !glowParticles.isPlaying) glowParticles.Play();
         }
 
         private void PlayLockedSubtleAnimation()
         {
-            StopAnimations();
-            // Едва заметное покачивание для заблокированных
-            rootTransform.DORotate(new Vector3(0, 0, 1.5f), 2.5f)
-                .SetEase(Ease.InOutSine)
-                .SetLoops(-1, LoopType.Yoyo)
-                .SetId(this)
-                .KillWith(this);
+            contentHolder.DOPunchPosition(new Vector3(2f, 0, 0), 2f, 1, 0.5f)
+                .SetEase(Ease.Linear)
+                .SetLoops(-1)
+                .SetId(this);
         }
 
         public IPromise PlayClaimFeedbackAnimation()
@@ -136,22 +130,30 @@ namespace UI.Popups.DailyRewardPopup
                 itemCanvas.sortingOrder = _initialSortingOrder + 100;
             }
 
-            var epicSeq = DOTween.Sequence().SetId(this).KillWith(this);
-            epicSeq.Append(rootTransform.DOScale(0.8f, 0.15f).SetEase(Ease.OutQuad));
-            epicSeq.Append(rootTransform.DOScale(1.5f, 0.3f).SetEase(Ease.OutBack));
-            epicSeq.Append(rootTransform.DOScale(1.0f, 0.2f).SetEase(Ease.InQuad));
+            // СОЧНАЯ АНИМАЦИЯ (Squash & Stretch + Pop)
+            var seq = DOTween.Sequence().SetId(this);
             
-            epicSeq.AppendCallback(() =>
-            {
+            // 1. Предвкушение (сжимаем вниз)
+            seq.Append(contentHolder.DOScale(new Vector3(1.2f, 0.7f, 1f), 0.1f).SetEase(Ease.OutQuad));
+            
+            // 2. Взрыв (выстреливаем вверх)
+            seq.Append(contentHolder.DOScale(new Vector3(0.8f, 1.4f, 1f), 0.15f).SetEase(Ease.OutBack));
+            seq.Join(contentHolder.DOLocalMoveY(40f, 0.15f).SetRelative().SetEase(Ease.OutCubic));
+            
+            // 3. Удар (возвращаемся и "бахаем")
+            seq.Append(contentHolder.DOScale(new Vector3(1.1f, 1.1f, 1f), 0.1f).SetEase(Ease.InBack));
+            seq.Join(contentHolder.DOLocalMoveY(-40f, 0.1f).SetRelative().SetEase(Ease.InCubic));
+            
+            seq.AppendCallback(() => {
                 if (dustParticles != null) dustParticles.Play();
-                //rootTransform.DOShakeRotation(0.3f, 12f, 25).KillWith(this);
-            });
-
-            epicSeq.OnComplete(() =>
-            {
+                contentHolder.DOShakeRotation(0.3f, 15f, 30);
                 SetupState(DayItemState.Collected);
-                promise.SafeResolve();
             });
+            
+            // 4. Финальный отскок в нормальный размер
+            seq.Append(contentHolder.DOScale(1f, 0.2f).SetEase(Ease.OutElastic));
+
+            seq.OnComplete(() => promise.SafeResolve());
 
             return promise;
         }
@@ -159,7 +161,7 @@ namespace UI.Popups.DailyRewardPopup
         public void StopAnimations()
         {
             DOTween.Kill(this);
-            rootTransform.DOKill();
+            contentHolder.DOKill();
             if (glowParticles != null) glowParticles.Stop();
         }
 

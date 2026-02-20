@@ -18,12 +18,12 @@ namespace Services.Cheats
     {
         [Inject] private readonly PlayerRepositoryService _playerRepositoryService;
         [Inject] private readonly ProfileBuilderService _profileBuilderService;
-        [Inject] private readonly PlayerProfileManager _playerProfileManager;
+        [Inject] private readonly PlayerProfileController _playerProfileController;
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly ReloadService _reloadService;
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly AdsService _adsService;
-        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        [Inject] private readonly PlayerCurrencyManager _playerCurrencyManager;
         [Inject] private readonly BridgeService _bridgeService;
 
         private const string StarsCountKey = "CheatService_StarsCount";
@@ -143,11 +143,11 @@ namespace Services.Cheats
         {
             if (StarsCount > 0)
             {
-                _playerCurrencyService.TryAddCurrency(new Stars(StarsCount));
+                _playerCurrencyManager.TryAddCurrency(new Stars(StarsCount));
             }
             else if (StarsCount < 0)
             {
-                _playerCurrencyService.TrySpendCurrency(new Stars(StarsCount));
+                _playerCurrencyManager.TrySpendCurrency(new Stars(StarsCount));
             }
         }
 
@@ -163,11 +163,11 @@ namespace Services.Cheats
         /// </summary>
         public void ResetDailyRewardsProgress()
         {
-            if (!_playerProfileManager.IsInitialized)
+            if (!_playerProfileController.IsInitialized)
                 return;
 
             var snapshot = new DailyRewardSnapshot(1, 0);
-            _playerProfileManager.UpdateDailyRewardAndSave(snapshot, SavePriority.ImmediateSave);
+            _playerProfileController.UpdateDailyRewardAndSave(snapshot, SavePriority.ImmediateSave);
         }
 
         [CheatGroup("Daily Rewards")]
@@ -176,15 +176,15 @@ namespace Services.Cheats
         /// </summary>
         public void SkipDailyRewardToNextDay()
         {
-            if (!_playerProfileManager.IsInitialized)
+            if (!_playerProfileController.IsInitialized)
                 return;
 
-            var current = _playerProfileManager.TryGetDailyRewardSnapshot();
+            var current = _playerProfileController.TryGetDailyRewardSnapshot();
             var currentDay = current?.CurrentDayIndex ?? 1;
             var yesterdayUtc = DateTime.UtcNow.Date.AddDays(-1).Ticks;
 
             var snapshot = new DailyRewardSnapshot(currentDay, yesterdayUtc);
-            _playerProfileManager.UpdateDailyRewardAndSave(snapshot, SavePriority.ImmediateSave);
+            _playerProfileController.UpdateDailyRewardAndSave(snapshot, SavePriority.ImmediateSave);
         }
 
         [CheatGroup("Daily Rewards")]
@@ -193,10 +193,10 @@ namespace Services.Cheats
         /// </summary>
         public void SkipTheTimeToTheNextDailyRewards()
         {
-            if (!_playerProfileManager.IsInitialized)
+            if (!_playerProfileController.IsInitialized)
                 return;
 
-            var current = _playerProfileManager.TryGetDailyRewardSnapshot();
+            var current = _playerProfileController.TryGetDailyRewardSnapshot();
             var currentDay = current?.CurrentDayIndex ?? 1;
             
             // Set LastClaimUtcTicks to (now - 1 day + 15 seconds) so that in 15 seconds,
@@ -206,7 +206,7 @@ namespace Services.Cheats
             var lastClaimTicks = targetTime.Ticks;
 
             var snapshot = new DailyRewardSnapshot(currentDay, lastClaimTicks);
-            _playerProfileManager.UpdateDailyRewardAndSave(snapshot, SavePriority.ImmediateSave);
+            _playerProfileController.UpdateDailyRewardAndSave(snapshot, SavePriority.ImmediateSave);
         }
 
         [CheatGroup("Other")]

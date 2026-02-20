@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Currency;
@@ -12,7 +13,7 @@ using Zenject;
 
 namespace Services.Player
 {
-    public class PlayerProfileManager : DisposableService
+    public class PlayerProfileController : DisposableService
     {
         [Inject] private readonly PlayerRepositoryService _playerRepositoryService;
         [Inject] private readonly PersistentCoroutinesService _coroutinesService;
@@ -20,64 +21,49 @@ namespace Services.Player
         private ProfileSnapshot _profileSnapshot { get; set; }
         private IPromise _saveDelayPromise;
         private const float SaveDelay = 2.0f;
+        private Dictionary<Type, (Func<ICurrency> getter, Action<ICurrency> setter)> _snapshotCurrencyMap;
         
         public bool IsInitialized { get; private set; }
         public FSignal ProfileSnapshotInitializedSignal { get; private set; } = new();
-        public Stars Stars => _profileSnapshot?.Stars ?? new Stars(0);
-        public SoftCurrency SoftCurrency => _profileSnapshot?.SoftCurrency ?? new SoftCurrency(0);
         public IReadOnlyList<PackSnapshot> PacksSnapshot => _profileSnapshot?.PackSnapshots;
         public GameParamsSnapshot TryGetGameParamsSnapshot() => _profileSnapshot?.GameParamsSnapshot;
         public DailyRewardSnapshot TryGetDailyRewardSnapshot() => _profileSnapshot?.DailyRewardSnapshot;
-
-        public ICurrency GetCurrencyCount(ICurrency currency)
+        public Stars Stars => _profileSnapshot?.Stars ?? Stars.Zero;
+        public SoftCurrency SoftCurrency => _profileSnapshot?.SoftCurrency ?? SoftCurrency.Zero;
+        public HardCurrency HardCurrency => _profileSnapshot?.HardCurrency ?? HardCurrency.Zero;
+        
+        public bool TryGetCurrency(Type type, out ICurrency currency)
         {
-            if (_profileSnapshot == null)
-                return new Stars();
-
-            return currency switch
+            if (!TryGetCurrencyAccessors(type, out var accessors))
             {
-                SoftCurrency _ => _profileSnapshot.SoftCurrency,
-                Stars _=> _profileSnapshot.Stars,
-                HardCurrency _=> _profileSnapshot.HardCurrency,
-                _ => new Stars()
-            };
-        }
-
-        public bool CanSpendCurrency(ICurrency currency)
-        {
-            if (_profileSnapshot == null)
+                currency = null;
                 return false;
+            }
 
-            return currency switch
-            {
-                SoftCurrency _ => _profileSnapshot.SoftCurrency.GetCount() >= currency.GetCount(),
-                Stars _ => _profileSnapshot.Stars.GetCount() >= currency.GetCount(),
-                HardCurrency _ => _profileSnapshot.HardCurrency.GetCount() >= currency.GetCount(),
-                _ => false
-            };
+            currency = accessors.getter();
+            return true;
         }
         
-        public void UpdateCurrencyAndSave(ICurrency currency)
+        public bool UpdateCurrencyAndSave(ICurrency currencyChange, out ICurrency newValue)
         {
-            if (_profileSnapshot == null)
-                return;
-            if (!CanSpendCurrency(currency))
-                return;
+            newValue = null;
+
+            if (_profileSnapshot == null || !TryGetCurrencyAccessors(currencyChange.GetType(), out var accessors))
+                return false;
+
+            var current = accessors.getter();
             
-            switch (currency)
+            if (!InternalCanSpend(current, currencyChange))
             {
-                case SoftCurrency softCurrency:
-                    _profileSnapshot.SoftCurrency += softCurrency;
-                    break;
-                case Stars stars:
-                    _profileSnapshot.Stars += stars;
-                    break;
-                case HardCurrency hardCurrency:
-                    _profileSnapshot.HardCurrency += hardCurrency;
-                    break;
+                newValue = current;
+                return false;
             }
             
+            newValue = current.Add(currencyChange.GetCount());
+            accessors.setter(newValue);
+
             SaveProfile(SavePriority.ImmediateSave);
+            return true;
         }
         
         public void UpdateDailyRewardAndSave(DailyRewardSnapshot dailyRewardSnapshot, SavePriority savePriority)
@@ -136,6 +122,7 @@ namespace Services.Player
             }
             
             _profileSnapshot = profileSnapshot;
+            InitCurrencyMap();
             IsInitialized = true;
             ProfileSnapshotInitializedSignal.Dispatch();
         }
@@ -174,6 +161,41 @@ namespace Services.Player
             //TODO CATCH AND THEN LOGGING LOGIC
             // .Then(() => LoggerService.LogDebug(this, "Profile successfully saved."))
             // .Catch(e => LoggerService.LogError(this, $"Failed to save profile: {e}"));
+        }
+        
+        private void InitCurrencyMap()
+        {
+            if (_profileSnapshot == null)
+            {
+                LoggerService.LogError($"{GetType().Name}.{nameof(InitCurrencyMap)}: ProfileSnapshot is null");
+                return;
+            }
+            
+            _snapshotCurrencyMap = new Dictionary<Type, (Func<ICurrency>, Action<ICurrency>)>
+            {
+                { typeof(Stars), (
+                        () => _profileSnapshot.Stars, 
+                        (val) => _profileSnapshot.Stars = (Stars)val)
+                },
+                { typeof(SoftCurrency), (
+                        () => _profileSnapshot.SoftCurrency, 
+                        (val) => _profileSnapshot.SoftCurrency = (SoftCurrency)val) 
+                },
+                { typeof(HardCurrency), (
+                        () => _profileSnapshot.HardCurrency, 
+                        (val) => _profileSnapshot.HardCurrency = (HardCurrency)val) 
+                }
+            };
+        }
+        
+        private bool TryGetCurrencyAccessors(Type type, out (Func<ICurrency> getter, Action<ICurrency> setter) accessors)
+        {
+            return _snapshotCurrencyMap.TryGetValue(type, out accessors);
+        }
+        
+        private bool InternalCanSpend(ICurrency current, ICurrency change)
+        {
+            return change.GetCount() >= 0 || current.GetCount() >= Math.Abs(change.GetCount());
         }
 
         protected override void OnInitialize()

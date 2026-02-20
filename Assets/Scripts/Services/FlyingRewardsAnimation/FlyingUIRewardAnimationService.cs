@@ -19,7 +19,7 @@ namespace Services.FlyingRewardsAnimation
     {
         [Inject] private readonly FlyingUIRewardDestinationService _destinationService;
         [Inject] private readonly CurrencyLibraryService _currencyLibraryService;
-        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        [Inject] private readonly PlayerCurrencyManager _playerCurrencyManager;
         [Inject] private readonly SoundHandler _soundHandler;
         
         public IPromise Play(FlyingUIRewardAnimationContext context)

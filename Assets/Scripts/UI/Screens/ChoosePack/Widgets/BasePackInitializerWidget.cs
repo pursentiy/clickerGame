@@ -169,14 +169,13 @@ namespace UI.Screens.ChoosePack.Widgets
 
             var packId = packInfo.PackId;
             var isUnlocked = _progressProvider.IsPackAvailable(packId);
-            var maybeStarsRequired = _progressProvider.GetStarsCountForPackUnlocking(packId);
-            var starsRequired = maybeStarsRequired ?? new Stars(0);
+            var currencyToUnlock = _progressProvider.GetCurrencyToUnlock(packId);
             System.Func<bool> getEntranceAlreadyTriggered = () => EntranceAnimationsAlreadyTriggered;
 
-            return CreatePackWidgetInfoInternal(packInfo, packId, isUnlocked, starsRequired, indexInList, getEntranceAlreadyTriggered);
+            return CreatePackWidgetInfoInternal(packInfo, packId, isUnlocked, currencyToUnlock, indexInList, getEntranceAlreadyTriggered);
         }
 
-        protected abstract BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, Stars starsRequired, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered);
+        protected abstract BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, ICurrency currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered);
 
         protected void OnAvailablePackClicked(PackInfo packInfo)
         {

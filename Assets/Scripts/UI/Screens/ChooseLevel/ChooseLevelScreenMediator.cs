@@ -17,11 +17,12 @@ namespace UI.Screens.ChooseLevel
     {
         [Inject] private readonly ProgressProvider _progressProvider;
         [Inject] private readonly ProgressController _progressController;
-        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        [Inject] private readonly PlayerCurrencyManager _playerCurrencyManager;
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly ScreenObserverService _screenObserverService;
         [Inject] private readonly FlowPopupController _flowPopupController;
         [Inject] private readonly FlowScreenController _flowScreenController;
+        [Inject] private readonly PlayerProfileController _playerProfileController;
         
         private HorizontalLayoutGroup _horizontalGroup;
         private int _currentPackId;
@@ -35,7 +36,7 @@ namespace UI.Screens.ChooseLevel
             InitWidgets();
             SetTexts();
 
-            View.StarsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
+            View.StarsDisplayWidget.SetCurrency(_playerProfileController.Stars);
             
             View.GoBackButton.onClick.MapListenerWithSound(OnGoBackButtonClicked).DisposeWith(this);
             View.InfoButton.onClick.MapListenerWithSound(OnInfoButtonClicked).DisposeWith(this);

@@ -19,13 +19,14 @@ namespace UI.Screens.ChoosePack
     public sealed class ChoosePackScreenMediator : UIScreenBase<ChoosePackScreenView>
     {
         [Inject] private readonly ProgressProvider _progressProvider;
-        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        [Inject] private readonly PlayerCurrencyManager _playerCurrencyManager;
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly FlowScreenController _flowScreenController;
         [Inject] private readonly FlowPopupController _flowPopupController;
         [Inject] private readonly CurrencyLibraryService _currencyLibraryService;
         [Inject] private readonly GameInfoProvider _gameInfoProvider;
+        [Inject] private readonly PlayerProfileController _playerProfileController;
         
         public override void OnCreated()
         {
@@ -42,7 +43,7 @@ namespace UI.Screens.ChoosePack
 
         private void InitWidgets()
         {
-            View.StarsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
+            View.StarsDisplayWidget.SetCurrency(_playerProfileController.Stars);
             View.PacksWidget.Initialize(View.StarsDisplayWidget, View.AdsButton);
         }
 

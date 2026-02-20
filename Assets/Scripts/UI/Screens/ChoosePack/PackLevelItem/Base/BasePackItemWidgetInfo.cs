@@ -1,4 +1,5 @@
 using System;
+using Common.Currency;
 using UnityEngine;
 
 namespace UI.Screens.ChoosePack.PackLevelItem.Base
@@ -6,7 +7,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
     public abstract class BasePackItemWidgetInfo
     {
         protected BasePackItemWidgetInfo(string packName, GameObject packImagePrefab, int packId, bool isUnlocked,
-            Action onClickAction, Action onLockedClickAction, int starsRequired, int indexInList = 0,
+            Action onClickAction, Action onLockedClickAction, ICurrency currencyToUnlock, int indexInList = 0,
             Func<bool> getEntranceAnimationsAlreadyTriggered = null)
         {
             PackName = packName;
@@ -15,7 +16,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             IsUnlocked = isUnlocked;
             OnClickAction = onClickAction;
             OnLockedClickAction = onLockedClickAction;
-            StarsRequired = starsRequired;
+            CurrencyToUnlock = currencyToUnlock;
             IndexInList = indexInList;
             _getEntranceAnimationsAlreadyTriggered = getEntranceAnimationsAlreadyTriggered;
         }
@@ -26,7 +27,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
         public bool IsUnlocked { get; set; }
         public Action OnClickAction { get; }
         public Action OnLockedClickAction { get; }
-        public int StarsRequired { get; }
+        public ICurrency CurrencyToUnlock { get; }
         public int IndexInList { get; }
         private readonly Func<bool> _getEntranceAnimationsAlreadyTriggered;
 

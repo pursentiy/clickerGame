@@ -1,4 +1,5 @@
 using System;
+using Common.Currency;
 using UnityEngine;
 
 namespace UI.Screens.ChoosePack.PackLevelItem
@@ -6,7 +7,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem
     public class PackItemWidgetInfo
     {
         public PackItemWidgetInfo(string packName, GameObject packImagePrefab, int packId, bool isUnlocked,
-            Action onClickAction, Action onLockedClickAction, int starsRequired)
+            Action onClickAction, Action onLockedClickAction, ICurrency currencyToUnlock)
         {
             PackName = packName;
             PackImagePrefab = packImagePrefab;
@@ -14,7 +15,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem
             IsUnlocked = isUnlocked;
             OnClickAction = onClickAction;
             OnLockedClickAction = onLockedClickAction;
-            StarsRequired = starsRequired;
+            CurrencyToUnlock = currencyToUnlock;
         }
 
         public string PackName { get; }
@@ -23,6 +24,6 @@ namespace UI.Screens.ChoosePack.PackLevelItem
         public bool IsUnlocked { get; set; }
         public Action OnClickAction { get; }
         public Action OnLockedClickAction { get; }
-        public int StarsRequired { get; }
+        public ICurrency CurrencyToUnlock { get; }
     }
 }

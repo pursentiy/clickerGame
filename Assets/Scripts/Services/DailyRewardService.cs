@@ -10,8 +10,8 @@ using Zenject;
 
 public sealed class DailyRewardService
 {
-    [Inject] private readonly PlayerProfileManager _playerProfileManager;
-    [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+    [Inject] private readonly PlayerProfileController _playerProfileController;
+    [Inject] private readonly PlayerCurrencyManager _playerCurrencyManager;
     [Inject] private readonly GameConfigurationProvider _configurationProvider;
     [Inject] private readonly BridgeService _bridgeService;
 
@@ -21,7 +21,7 @@ public sealed class DailyRewardService
     public bool TryGetTodayRewardPreview(out DailyRewardInfo rewardInfo)
     {
         rewardInfo = default;
-        if (!_playerProfileManager.IsInitialized)
+        if (!_playerProfileController.IsInitialized)
             return false;
 
         var ctx = GetContext();
@@ -41,7 +41,7 @@ public sealed class DailyRewardService
     public bool TryGetDailyRewardPopupInfo(out DailyRewardInfo info)
     {
         if (TryGetTodayRewardPreview(out info)) return true;
-        if (!_playerProfileManager.IsInitialized || Config?.RewardsByDay == null) return false;
+        if (!_playerProfileController.IsInitialized || Config?.RewardsByDay == null) return false;
 
         var ctx = GetContext();
         // Если уже забрали, показываем "следующий" день для красоты сетки
@@ -56,7 +56,7 @@ public sealed class DailyRewardService
 
     public DailyRewardStatus GetRewardStatus()
     {
-        if (!_playerProfileManager.IsInitialized) return new DailyRewardStatus(false, false, TimeSpan.Zero, 0);
+        if (!_playerProfileController.IsInitialized) return new DailyRewardStatus(false, false, TimeSpan.Zero, 0);
 
         var ctx = GetContext();
         var isMissed = ctx.lastClaimDate < ctx.today.AddDays(-1) && ctx.snapshot.LastClaimUtcTicks > 0;
@@ -73,7 +73,7 @@ public sealed class DailyRewardService
         var ctx = GetContext();
         ctx.snapshot.CurrentDayIndex = info.DayIndex;
         ctx.snapshot.LastClaimUtcTicks = ctx.today.Ticks;
-        _playerProfileManager.UpdateDailyRewardAndSave(ctx.snapshot, SavePriority.ImmediateSave);
+        _playerProfileController.UpdateDailyRewardAndSave(ctx.snapshot, SavePriority.ImmediateSave);
         return true;
     }
 
@@ -88,7 +88,7 @@ public sealed class DailyRewardService
 
     private (DailyRewardSnapshot snapshot, DateTime today, DateTime lastClaimDate, bool isClaimedToday) GetContext()
     {
-        var snapshot = _playerProfileManager.TryGetDailyRewardSnapshot() ?? new DailyRewardSnapshot(0, 0);
+        var snapshot = _playerProfileController.TryGetDailyRewardSnapshot() ?? new DailyRewardSnapshot(0, 0);
         var today = _bridgeService.GetServerTime().Date;
         var lastClaimDate = snapshot.LastClaimUtcTicks > 0
             ? new DateTime(snapshot.LastClaimUtcTicks, DateTimeKind.Utc).Date

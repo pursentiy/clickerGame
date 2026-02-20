@@ -1,8 +1,10 @@
 using System;
+using Common.Currency;
 using DG.Tweening;
 using Extensions;
 using Handlers;
 using Services;
+using Services.FlyingRewardsAnimation;
 using ThirdParty.SuperScrollView.Scripts.List;
 using UnityEngine;
 using Utilities.Disposable;
@@ -16,6 +18,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem
     {
         [Inject] private SoundHandler _soundHandler;
         [Inject] private LocalizationService _localization;
+        [Inject] private CurrencyLibraryService _currencyLibraryService;
         
         private GameObject _packImageInstance;
         private bool _isUnlocked;
@@ -38,7 +41,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem
                 _packImageInstance = Object.Instantiate(Data.PackImagePrefab, View.PackImagePrefabContainer);
 
             _isInitialized = true;
-            UpdateMediator(Data.IsUnlocked, Data.OnClickAction, Data.OnLockedClickAction, Data.StarsRequired, immediate: true);
+            UpdateMediator(Data.IsUnlocked, Data.OnClickAction, Data.OnLockedClickAction, Data.CurrencyToUnlock, immediate: true);
         }
 
         public void UpdateWidgetUnlock(bool isUnlocked)
@@ -47,10 +50,10 @@ namespace UI.Screens.ChoosePack.PackLevelItem
                 return;
             
             Data.IsUnlocked = isUnlocked;
-            UpdateMediator(Data.IsUnlocked, Data.OnClickAction, Data.OnLockedClickAction, Data.StarsRequired, false);
+            UpdateMediator(Data.IsUnlocked, Data.OnClickAction, Data.OnLockedClickAction, Data.CurrencyToUnlock, false);
         }
         
-        private void UpdateMediator(bool isUnlocked, Action onClickAction, Action onLockedClickAction, int starsRequired, bool immediate = false)
+        private void UpdateMediator(bool isUnlocked, Action onClickAction, Action onLockedClickAction, ICurrency currencyToUnlock, bool immediate = false)
         {
             if (!_isInitialized)
             {
@@ -75,12 +78,24 @@ namespace UI.Screens.ChoosePack.PackLevelItem
             }
             else
             {
-                View.LockedBlockText.text = _localization.GetFormattedValue("pack_stars_required", $"{starsRequired} <sprite=0>");
+                UpdateLockedBlockText(currencyToUnlock);
                 View.PackEnterButton.onClick.MapListenerWithSound(onLockedClickAction.SafeInvoke).DisposeWith(this);
                 
                 View. FadeImage.gameObject.SetActive(true);
                 View.LockedBlockHolder.gameObject.SetActive(true);
             }
+        }
+
+        private void UpdateLockedBlockText(ICurrency currencyToUnlock)
+        {
+            var currencyName = CurrencyExtensions.GetCurrencyName(currencyToUnlock);
+            var spriteAsset = _currencyLibraryService.GetSpriteAsset(currencyName);
+            
+            if (spriteAsset != null)
+                View.LockedBlockText.spriteAsset = spriteAsset;
+
+            var amount = currencyToUnlock?.GetCount() ?? 0;
+            View.LockedBlockText.text = _localization.GetFormattedValue("pack_stars_required", $"{amount} <sprite=0>");
         }
 
         private void ApplyInstantUnlock()

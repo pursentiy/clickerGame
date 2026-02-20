@@ -15,22 +15,38 @@ MonoBehaviour:
   m_DefaultGroup: 5312c8e0b3bed534c9c20bb87b565825
   m_currentHash:
     serializedVersion: 2
-    Hash: 2652789b255057705b4765a53855a475
+    Hash: 00000000000000000000000000000000
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
-  m_BundleLocalCatalog: 0
   m_CatalogRequestsTimeout: 0
   m_DisableCatalogUpdateOnStart: 0
+  m_InternalIdNamingMode: 0
+  m_InternalBundleIdMode: 1
+  m_AssetLoadMode: 0
+  m_BundledAssetProviderType:
+    m_AssemblyName: Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_ClassName: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+  m_AssetBundleProviderType:
+    m_AssemblyName: Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_ClassName: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider
   m_IgnoreUnsupportedFilesInBuild: 0
   m_UniqueBundleIds: 0
+  m_EnableJsonCatalog: 0
   m_NonRecursiveBuilding: 1
+  m_AllowNestedBundleFolders: 0
   m_CCDEnabled: 0
   m_maxConcurrentWebRequests: 3
+  m_UseUWRForLocalBundles: 0
+  m_BundleTimeout: 0
+  m_BundleRetryCount: 0
+  m_BundleRedirectLimit: -1
+  m_SharedBundleSettings: 0
+  m_SharedBundleSettingsCustomGroupIndex: 0
   m_ContiguousBundles: 1
   m_StripUnityVersionFromBundleBuild: 0
   m_DisableVisibleSubAssetRepresentations: 0
-  m_ShaderBundleNaming: 0
-  m_ShaderBundleCustomNaming: 
+  m_BuiltInBundleNaming: 0
+  mBuiltInBundleCustomNaming: 
   m_MonoScriptBundleNaming: 0
   m_CheckForContentUpdateRestrictionsOption: 0
   m_MonoScriptBundleCustomNaming: 
@@ -51,6 +67,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7fb2a1b0d722c854aaccbc1c2d0e26f0, type: 2}
   - {fileID: 11400000, guid: b19ae3f775fe541e5b4963700a0190dc, type: 2}
   - {fileID: 11400000, guid: 0d68aaf1efa5b47e6801b0ac09b021ab, type: 2}
+  - {fileID: 11400000, guid: 0fccc7907cfbb41b5978b1693cc48c84, type: 2}
   - {fileID: 11400000, guid: e2019909e24b1a1498bdfb700e479449, type: 2}
   - {fileID: 11400000, guid: af51cd9e8102a4b139303bade2bad985, type: 2}
   - {fileID: 11400000, guid: 7a528ac910f130e48b50d8c11563048e, type: 2}
@@ -59,8 +76,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: af77106f3810a7840a686525e9101156, type: 2}
   - {fileID: 11400000, guid: 682609f4323b510488efdf3f70c5ca6a, type: 2}
   m_BuildSettings:
-    m_CompileScriptsInVirtualMode: 0
-    m_CleanupStreamingAssetsAfterBuilds: 1
     m_LogResourceManagerExceptions: 1
     m_BundleBuildPath: Temp/com.unity.addressables/AssetBundles
   m_ProfileSettings:
@@ -70,7 +85,7 @@ MonoBehaviour:
       m_ProfileName: Default
       m_Values:
       - m_Id: 3c4d3cf983934554a9640a72740acef0
-        m_Value: ServerData/[BuildTarget]
+        m_Value: 'ServerData/[BuildTarget]'
       - m_Id: 6eb1a5083a3ee7346ad1fc7de9cd4b0c
         m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
       - m_Id: 998e7b97b02408c468d4262727335940
@@ -78,7 +93,7 @@ MonoBehaviour:
       - m_Id: bdd5220f72267934c892a14e48818bab
         m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
       - m_Id: c392a212a3d66ff4d92b52eebabc749c
-        m_Value: http://[PrivateIpAddress]:[HostingServicePort]
+        m_Value: 'http://[PrivateIpAddress]:[HostingServicePort]'
     m_ProfileEntryNames:
     - m_Id: 3c4d3cf983934554a9640a72740acef0
       m_Name: Remote.BuildPath
@@ -111,16 +126,9 @@ MonoBehaviour:
   m_CertificateHandlerType:
     m_AssemblyName: 
     m_ClassName: 
-  m_ActivePlayerDataBuilderIndex: 3
+  m_ActivePlayerDataBuilderIndex: 2
   m_DataBuilders:
   - {fileID: 11400000, guid: e6b1d1a319c6a6c40bc111c8725ddd37, type: 2}
-  - {fileID: 11400000, guid: c14b0d4e1510b644387a63108ccdd023, type: 2}
   - {fileID: 11400000, guid: 2e714c3e262d9e44581af78c5c9b3743, type: 2}
   - {fileID: 11400000, guid: a44f911179ff99e4dbda49eebfe478fb, type: 2}
   m_ActiveProfileId: 35b58319719951a4c93174eeb324de60
-  m_HostingServicesManager:
-    m_HostingServiceInfos: []
-    m_Settings: {fileID: 11400000}
-    m_NextInstanceId: 0
-    m_RegisteredServiceTypeRefs: []
-    m_PingTimeoutInMilliseconds: 5000

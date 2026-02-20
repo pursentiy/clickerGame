@@ -19,7 +19,7 @@ namespace UI.Popups.SettingsPopup
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly ReloadService _reloadService;
         [Inject] private readonly LocalizationService _localizationService;
-        [Inject] private readonly PlayerProfileManager _playerProfileManager;
+        [Inject] private readonly PlayerProfileController _playerProfileController;
         [Inject] private readonly LanguageConversionService _languageConversionService;
         [Inject] private readonly UserSettingsService _userSettingsService;
 

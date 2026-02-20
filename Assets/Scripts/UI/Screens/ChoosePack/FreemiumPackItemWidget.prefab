@@ -146,12 +146,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &5352855310331127411 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4364638287733391753, guid: 791cd192c6c8046eba1a91469de4ccb9,
+--- !u!114 &3987848753768000118 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4723371930061753740, guid: 791cd192c6c8046eba1a91469de4ccb9,
     type: 3}
   m_PrefabInstance: {fileID: 8564552291232950266}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ff1cdf47aa355c44bb327d6f0edb06a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CoinMaster.App.UI.Screens.Common.Events.EventLockWidget
 --- !u!198 &8056373005429225761 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 1807802169841491675, guid: 791cd192c6c8046eba1a91469de4ccb9,
@@ -194,7 +200,7 @@ MonoBehaviour:
   PackText: {fileID: 8058010706118375755}
   PackEnterButton: {fileID: 8058010706513977790}
   LockedBlockText: {fileID: 3527228917014046989}
-  LockedBlockHolder: {fileID: 5352855310331127411}
+  LockWidget: {fileID: 3987848753768000118}
   UnlockParticles: {fileID: 8056373005429225761}
   UnlockDuration: 0.6
   EntranceSlideOffsetY: 80

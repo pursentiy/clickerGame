@@ -14,7 +14,7 @@ namespace GameState.OnGameEnterSequence
     public class PrepareSessionState : InjectableStateBase<DefaultStateContext>
     {
         [Inject] private readonly UIManager _uiManager;
-        [Inject] private readonly PlayerProfileManager _playerProfileManager;
+        [Inject] private readonly PlayerProfileController _playerProfileController;
         [Inject] private readonly ProfileBuilderService _profileBuilderService;
         
         public override void OnEnter(params object[] arguments)
@@ -22,7 +22,7 @@ namespace GameState.OnGameEnterSequence
             base.OnEnter(arguments);
             
             //TODO CATCH ERROR RELOAD
-            _playerProfileManager.LoadProfile()
+            _playerProfileController.LoadProfile()
                 .Then(SetupPlayer)
                 .Then(SetupScreen)
                 .Then(NextState)
@@ -35,9 +35,9 @@ namespace GameState.OnGameEnterSequence
             var requireProfileSaving = loadedProfileSnapshot == null;
             var finalProfileSnapshot = loadedProfileSnapshot ?? _profileBuilderService.BuildNewProfileSnapshot();
 
-            _playerProfileManager.Initialize(finalProfileSnapshot);
+            _playerProfileController.Initialize(finalProfileSnapshot);
             if (requireProfileSaving)
-                _playerProfileManager.SaveProfile(SavePriority.ImmediateSave);
+                _playerProfileController.SaveProfile(SavePriority.ImmediateSave);
 
             return Promise.Resolved();
         }

@@ -18,7 +18,8 @@ namespace UI.Screens.PuzzleAssembly.Level.FinishLevelSequence
     {
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly SoundHandler _soundHandler;
-        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        [Inject] private readonly PlayerCurrencyManager _playerCurrencyManager;
+        [Inject] private readonly PlayerProfileController _playerProfileController;
         [Inject] private readonly CoroutineService _coroutineService;
 
         public override void OnEnter(params object[] arguments)
@@ -27,7 +28,7 @@ namespace UI.Screens.PuzzleAssembly.Level.FinishLevelSequence
 
             _soundHandler.PlaySound(AudioExtensions.LevelFinishedKey);
 
-            var preRewardsBalance = _playerCurrencyService.Stars;
+            var preRewardsBalance = _playerProfileController.Stars;
             
             _coroutineService.WaitFor(Context.AwaitTimeBeforeShowingPopup)
                 .Then(() => ShowCompletePopup(Context.CurrentStars, Context.InitialStars, preRewardsBalance, Context.LevelCompletingTime, Context.CompletedLevelStatus))

@@ -1,8 +1,11 @@
 using System;
+using Common.Currency;
 using DG.Tweening;
 using Extensions;
 using Handlers;
+using RSG;
 using Services;
+using Services.FlyingRewardsAnimation;
 using ThirdParty.SuperScrollView.Scripts.List;
 using ThirdParty.SuperScrollView.Scripts.ListView;
 using UnityEngine;
@@ -27,6 +30,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
     {
         [Inject] protected readonly SoundHandler _soundHandler;
         [Inject] protected readonly LocalizationService _localization;
+        [Inject] protected readonly CurrencyLibraryService _currencyLibraryService;
         
         protected GameObject _packImageInstance;
         private bool _isUnlocked;
@@ -155,17 +159,30 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             }
             else
             {
-                View.LockedBlockText.text = _localization.GetFormattedValue("pack_stars_required", $"{Data.StarsRequired} <sprite=0>");
+                UpdateLockedBlockText();
                 View.PackEnterButton.onClick.MapListenerWithSound(Data.OnLockedClickAction.SafeInvoke).DisposeWith(this);
                 
                 SetLockedVisuals(true);
             }
         }
 
+        private void UpdateLockedBlockText()
+        {
+            var currencyToUnlock = Data.CurrencyToUnlock;
+            var currencyName = CurrencyExtensions.GetCurrencyName(currencyToUnlock);
+            var spriteAsset = _currencyLibraryService.GetSpriteAsset(currencyName);
+            
+            if (spriteAsset != null)
+                View.LockedBlockText.spriteAsset = spriteAsset;
+
+            var amount = currencyToUnlock?.GetCount() ?? 0;
+            View.LockedBlockText.text = _localization.GetFormattedValue("pack_stars_required", $"{amount} <sprite=0>");
+        }
+
         private void SetLockedVisuals(bool locked)
         {
             View.FadeImage.gameObject.SetActive(locked);
-            View.LockedBlockHolder.gameObject.SetActive(locked);
+            View.LockWidget.HideWidget(locked);
             if (locked)
             {
                 View.FadeImage.color = View.FadeImage.color.SetAlpha(View.FadeImageAlpha);
@@ -181,30 +198,32 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
         protected virtual void UnlockWithAnimation()
         {
             _soundHandler.PlaySound(AudioExtensions.PackUnlockedKey);
-            
-            // "Сочная" последовательность в стиле Cult of the Lamb
-            var seq = DOTween.Sequence().KillWith(View.gameObject);
 
-            // 1. Исчезновение замка
-            seq.Append(View.LockedBlockHolder.DOScale(0, View.UnlockDuration).SetEase(Ease.InBack));
-            seq.Join(View.FadeImage.DOFade(0, View.UnlockDuration).SetEase(Ease.Linear));
+            View.LockWidget.PlayUnlockAnimation()
+                .Then(OnLockAnimationFinished)
+                .Then(() => SetLockedVisuals(false))
+                .CancelWith(this);
 
-            // 2. Прыжок самого пака (Juicy Bounce)
-            seq.Append(View.Holder.DOLocalMoveY(30f, View.UnlockDuration * 0.3f).SetEase(Ease.OutCubic));
-            seq.Append(View.Holder.DOLocalMoveY(0f, View.UnlockDuration * 0.6f).SetEase(Ease.OutBounce));
+            IPromise OnLockAnimationFinished()
+            {
+                var seq = DOTween.Sequence().KillWith(View.gameObject);
+                seq.Join(View.FadeImage.DOFade(0, View.UnlockDuration).SetEase(Ease.Linear));
+                seq.Append(View.Holder.DOLocalMoveY(30f, View.UnlockDuration * 0.3f).SetEase(Ease.OutCubic));
+                seq.Append(View.Holder.DOLocalMoveY(0f, View.UnlockDuration * 0.6f).SetEase(Ease.OutBounce));
 
-            // 3. Эффекты
-            if (View.UnlockParticles != null)
-                seq.InsertCallback(View.UnlockDuration * 0.3f, () => View.UnlockParticles.Play());
+                // 3. Эффекты
+                if (View.UnlockParticles != null)
+                    seq.InsertCallback(View.UnlockDuration * 0.3f, () => View.UnlockParticles.Play());
 
-            seq.OnComplete(() => SetLockedVisuals(false));
+                return seq.AsPromise();
+            }
         }
 
         protected override void OnRelease(ListItemReleaseType type)
         {
             View.Holder.DOKill();
             View.FadeImage.DOKill();
-            View.LockedBlockHolder.DOKill();
+            View.LockWidget.DOKill();
             base.OnRelease(type);
         }
     }

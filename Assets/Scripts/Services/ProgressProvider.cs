@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Currency;
@@ -13,8 +13,8 @@ namespace Services
 {
     public class ProgressProvider
     {
-        [Inject] private PlayerProfileManager _playerProfileManager;
-        [Inject] private PlayerCurrencyService _playerCurrencyService;
+        [Inject] private PlayerProfileController _playerProfileController;
+        [Inject] private PlayerCurrencyManager _playerCurrencyManager;
         [Inject] private GameInfoProvider _gameInfoProvider;
 
         public int GetAllPacksCount() => _gameInfoProvider.IsInitialized ? _gameInfoProvider.GetPacksCount() : 0;
@@ -40,8 +40,11 @@ namespace Services
         
         public bool IsPackAvailable(int packNumber)
         {
-            var starsToUnlock = GetStarsCountForPackUnlocking(packNumber);
-            return starsToUnlock != null && _playerCurrencyService.Stars >= starsToUnlock;
+            var currencyToUnlock = GetCurrencyToUnlock(packNumber);
+            if (currencyToUnlock == null || currencyToUnlock.GetCount() <= 0)
+                return true;
+
+            return _playerCurrencyManager.CanSpend(currencyToUnlock);
         }
         
         public int GetAllAvailablePacksCount()
@@ -55,16 +58,16 @@ namespace Services
             return _gameInfoProvider.GetPacksIds().Count(IsPackAvailable);
         }
         
-        public Stars? GetStarsCountForPackUnlocking(int packNumber)
+        public ICurrency GetCurrencyToUnlock(int packNumber)
         {
             if (!_gameInfoProvider.IsInitialized)
             {
-                LoggerService.LogWarning($"[{nameof(GetStarsCountForPackUnlocking)}]: {nameof(GameInfoProvider)} is not initialized");
+                LoggerService.LogWarning($"[{nameof(GetCurrencyToUnlock)}]: {nameof(GameInfoProvider)} is not initialized");
                 return null;
             }
 
             var pack = _gameInfoProvider.GetPackById(packNumber);
-            return pack?.StarsToUnlock;
+            return pack?.CurrencyToUnlock;
         }
 
         public bool HasLevelBeenCompletedBefore(int packNumber, int levelNumber)
@@ -112,24 +115,24 @@ namespace Services
         
         public PackSnapshot TryGetSavedPackSnapshot(int packId)
         {
-            if (!_playerProfileManager.IsInitialized)
+            if (!_playerProfileController.IsInitialized)
             {
-                LoggerService.LogWarning(this,$"[{nameof(TryGetSavedPackSnapshot)}]: {nameof(PlayerProfileManager)} is not initialized");
+                LoggerService.LogWarning(this,$"[{nameof(TryGetSavedPackSnapshot)}]: {nameof(PlayerProfileController)} is not initialized");
                 return null;
             }
             
-            return _playerProfileManager.TryGetPackSnapshot(packId);
+            return _playerProfileController.TryGetPackSnapshot(packId);
         }
         
         public LevelSnapshot TryGetSavedLevelSnapshot(int packId, int levelId)
         {
-            if (!_playerProfileManager.IsInitialized)
+            if (!_playerProfileController.IsInitialized)
             {
-                LoggerService.LogWarning(this,$"[{nameof(TryGetSavedLevelSnapshot)}]: {nameof(PlayerProfileManager)} is not initialized");
+                LoggerService.LogWarning(this,$"[{nameof(TryGetSavedLevelSnapshot)}]: {nameof(PlayerProfileController)} is not initialized");
                 return null;
             }
             
-            return _playerProfileManager.TryGetLevelSnapshot(packId, levelId);
+            return _playerProfileController.TryGetLevelSnapshot(packId, levelId);
         }
     }
 }

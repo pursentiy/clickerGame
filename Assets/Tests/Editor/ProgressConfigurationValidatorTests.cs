@@ -9,7 +9,7 @@ namespace Editor.Tests
     [TestFixture]
     public class ProgressConfigurationValidatorTests
     {
-        private const string ValidCsvHeader = "PackId;PackName;StarsToUnlockPack;LevelId;LevelName;TimeA;TimeB;TimeC;FigureScale;Difficulty\n";
+        private const string ValidCsvHeader = "PackId;PackName;CurrencyToUnlock;LevelId;LevelName;TimeA;TimeB;TimeC;FigureScale;Difficulty;PackType\n";
 
         private const string RealConfigResourceName = "ProgressConfiguration";
 
@@ -49,7 +49,7 @@ namespace Editor.Tests
         public void Validate_ValidConfig_ReturnsNoErrors()
         {
             // TimeA < TimeB < TimeC: 3.11 < 3.88 < 5.82
-            var csv = ValidCsvHeader + "1;pack1;0;1;Level1;3.11;3.88;5.82;2.5;1\n";
+            var csv = ValidCsvHeader + "1;pack1;Stars 0;1;Level1;3.11;3.88;5.82;2.5;1;0\n";
             var config = new ProgressConfiguration();
             config.Parse(csv);
 
@@ -62,7 +62,7 @@ namespace Editor.Tests
         [Test]
         public void Validate_TimeA_NotLessThan_TimeB_ReturnsError()
         {
-            var csv = ValidCsvHeader + "1;pack1;0;1;Level1;5.0;3.0;6.0;2.5;1\n";
+            var csv = ValidCsvHeader + "1;pack1;Stars 0;1;Level1;5.0;3.0;6.0;2.5;1;0\n";
             var config = new ProgressConfiguration();
             config.Parse(csv);
 
@@ -75,7 +75,7 @@ namespace Editor.Tests
         [Test]
         public void Validate_TimeB_NotLessThan_TimeC_ReturnsError()
         {
-            var csv = ValidCsvHeader + "1;pack1;0;1;Level1;1;10;8;2.5;1\n";
+            var csv = ValidCsvHeader + "1;pack1;Stars 0;1;Level1;1;10;8;2.5;1;0\n";
             var config = new ProgressConfiguration();
             config.Parse(csv);
 
@@ -90,8 +90,8 @@ namespace Editor.Tests
         {
             // Parser dedupes (PackId, LevelId); validator ensures no duplicate (packId, levelId) in config
             var csv = ValidCsvHeader +
-                      "1;pack1;0;1;Level1;3;4;5;2.5;1\n" +
-                      "1;pack1;0;2;Level2;4;5;6;2.5;1\n";
+                      "1;pack1;Stars 0;1;Level1;3;4;5;2.5;1;0\n" +
+                      "1;pack1;Stars 0;2;Level2;4;5;6;2.5;1;0\n";
             var config = new ProgressConfiguration();
             config.Parse(csv);
 
@@ -101,22 +101,22 @@ namespace Editor.Tests
         }
 
         [Test]
-        public void Validate_StarsToUnlockPack_Negative_ReturnsError()
+        public void Validate_CurrencyToUnlock_Negative_ReturnsError()
         {
-            var csv = ValidCsvHeader + "1;pack1;-1;1;Level1;3;4;5;2.5;1\n";
+            var csv = ValidCsvHeader + "1;pack1;Stars -1;1;Level1;3;4;5;2.5;1;0\n";
             var config = new ProgressConfiguration();
             config.Parse(csv);
 
             var errors = ProgressConfigurationValidator.Validate(config);
 
             Assert.Greater(errors.Count, 0);
-            Assert.IsTrue(errors.Any(e => e.Contains("StarsToUnlockPack") || e.Contains("StarsToUnlock")), "Expected StarsToUnlock error. Got: " + string.Join("; ", errors));
+            Assert.IsTrue(errors.Any(e => e.Contains("CurrencyToUnlock")), "Expected CurrencyToUnlock error. Got: " + string.Join("; ", errors));
         }
 
         [Test]
         public void Validate_FigureScale_ZeroOrNegative_ReturnsError()
         {
-            var csv = ValidCsvHeader + "1;pack1;0;1;Level1;3;4;5;0;1\n";
+            var csv = ValidCsvHeader + "1;pack1;Stars 0;1;Level1;3;4;5;0;1;0\n";
             var config = new ProgressConfiguration();
             config.Parse(csv);
 
@@ -129,7 +129,7 @@ namespace Editor.Tests
         [Test]
         public void Validate_Difficulty_OutOfRange_ReturnsError()
         {
-            var csv = ValidCsvHeader + "1;pack1;0;1;Level1;3;4;5;2.5;5\n";
+            var csv = ValidCsvHeader + "1;pack1;Stars 0;1;Level1;3;4;5;2.5;5;0\n";
             var config = new ProgressConfiguration();
             config.Parse(csv);
 
@@ -144,7 +144,7 @@ namespace Editor.Tests
         {
             for (int d = 1; d <= 3; d++)
             {
-                var csv = ValidCsvHeader + $"1;pack1;0;1;Level1;3;4;5;2.5;{d}\n";
+                var csv = ValidCsvHeader + $"1;pack1;Stars 0;1;Level1;3;4;5;2.5;{d};0\n";
                 var config = new ProgressConfiguration();
                 config.Parse(csv);
                 var errors = ProgressConfigurationValidator.Validate(config);
@@ -162,7 +162,7 @@ namespace Editor.Tests
         [Test]
         public void ValidateOrThrow_InvalidConfig_Throws()
         {
-            var csv = ValidCsvHeader + "1;pack1;0;1;Level1;5;2;3;2.5;1\n"; // TimeA not < TimeB < TimeC
+            var csv = ValidCsvHeader + "1;pack1;Stars 0;1;Level1;5;2;3;2.5;1;0\n"; // TimeA not < TimeB < TimeC
             var config = new ProgressConfiguration();
             config.Parse(csv);
 
@@ -172,7 +172,7 @@ namespace Editor.Tests
         [Test]
         public void ValidateOrThrow_ValidConfig_DoesNotThrow()
         {
-            var csv = ValidCsvHeader + "1;pack1;0;1;Level1;3;4;5;2.5;1\n";
+            var csv = ValidCsvHeader + "1;pack1;Stars 0;1;Level1;3;4;5;2.5;1;0\n";
             var config = new ProgressConfiguration();
             config.Parse(csv);
 

@@ -36,8 +36,9 @@ namespace Configurations.Progress
                     continue;
                 }
 
-                if (pack.StarsToUnlock < 0)
-                    errors.Add($"Pack {packId} ({pack.PackName}): StarsToUnlockPack must be >= 0, got {pack.StarsToUnlock}.");
+                var currencyAmount = pack.CurrencyToUnlock?.GetCount() ?? 0;
+                if (currencyAmount < 0)
+                    errors.Add($"Pack {packId} ({pack.PackName}): CurrencyToUnlock amount must be >= 0, got {currencyAmount}.");
 
                 int packTypeValue = (int)pack.PackType;
                 if (packTypeValue != 0 && packTypeValue != 20 && packTypeValue != 30)

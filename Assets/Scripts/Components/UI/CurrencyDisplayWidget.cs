@@ -16,7 +16,7 @@ namespace Components.UI
 {
     public class CurrencyDisplayWidget : InjectableMonoBehaviour
     {
-        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        [Inject] private readonly PlayerCurrencyManager _playerCurrencyManager;
         [Inject] private readonly SoundHandler _soundHandler;
         
         [Header("UI References")] [SerializeField]
@@ -42,7 +42,7 @@ namespace Components.UI
 
         public void Start()
         {
-            _playerCurrencyService.CurrencyChangedSignal.MapListener(OnCurrencyChanged).DisposeWith(this);
+            _playerCurrencyManager.CurrencyChangedSignal.MapListener(OnCurrencyChanged).DisposeWith(this);
         }
 
         private void OnCurrencyChanged(ICurrency newValue, CurrencyChangeMode mode)

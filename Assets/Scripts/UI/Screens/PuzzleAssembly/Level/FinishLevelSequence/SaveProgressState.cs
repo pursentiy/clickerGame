@@ -20,7 +20,7 @@ namespace UI.Screens.PuzzleAssembly.Level.FinishLevelSequence
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly SoundHandler _soundHandler;
         [Inject] private readonly ProgressController _progressController;
-        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        [Inject] private readonly PlayerCurrencyManager _playerCurrencyManager;
         [Inject] private readonly CoroutineService _coroutineService;
         [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
         [Inject] private readonly ProgressProvider _progressProvider;
@@ -53,7 +53,7 @@ namespace UI.Screens.PuzzleAssembly.Level.FinishLevelSequence
             if (Context.CurrentStars <= 0)
                 return;
             
-            _playerCurrencyService.TryAddCurrency(earnedStarsForLevel, CurrencyChangeMode.Animated);
+            _playerCurrencyManager.TryAddCurrency(earnedStarsForLevel, CurrencyChangeMode.Animated);
         }
 
         private void SetLevelCompleted(int packId, int levelId, float levelCompletedTime, Stars starsEarned)

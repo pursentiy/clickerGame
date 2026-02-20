@@ -17,7 +17,8 @@ namespace UI.Screens.ChoosePack.AdsSequence
         
         [Inject] private readonly AdsService _adsService;
         [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
-        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        [Inject] private readonly PlayerCurrencyManager _playerCurrencyManager;
+        [Inject] private readonly PlayerProfileController _playerProfileController;
         [Inject] private readonly GameInfoProvider _gameInfoProvider;
         
         private IUIBlockRef _uiBlockRef;
@@ -51,7 +52,7 @@ namespace UI.Screens.ChoosePack.AdsSequence
                 return Promise<Stars>.Resolved(0);
 
             var starsToEarn = _gameInfoProvider.StarsRewardForAds;
-            if (!_playerCurrencyService.TryAddCurrency(_gameInfoProvider.StarsRewardForAds, CurrencyChangeMode.Animated))
+            if (!_playerCurrencyManager.TryAddCurrency(_gameInfoProvider.StarsRewardForAds, CurrencyChangeMode.Animated))
             {
                 return Promise<Stars>.Resolved(0);
             }
@@ -62,7 +63,7 @@ namespace UI.Screens.ChoosePack.AdsSequence
         private void NextState(Stars stars)
         {
             RevertEnvironment();
-            Sequence.ActivateState<VisualizeAdsRewardsState>(new RewardsEarnedInfo(_playerCurrencyService.Stars, stars));
+            Sequence.ActivateState<VisualizeAdsRewardsState>(new RewardsEarnedInfo(_playerProfileController.Stars, stars));
         }
 
         private void PrepareEnvironment()

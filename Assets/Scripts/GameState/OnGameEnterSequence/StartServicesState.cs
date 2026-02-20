@@ -30,7 +30,7 @@ namespace GameState.OnGameEnterSequence
             _applicationService.RegisterDisposableService<GameSoundManager>();
             _applicationService.RegisterDisposableService<GameInfoProvider>();
             _applicationService.RegisterDisposableService<UserSettingsService>();
-            _applicationService.RegisterDisposableService<PlayerProfileManager>();
+            _applicationService.RegisterDisposableService<PlayerProfileController>();
             _applicationService.RegisterDisposableService<AdsService>();
             _applicationService.RegisterDisposableService<ScreenObserverService>();
             _applicationService.RegisterDisposableService<UIScreenBlocker>();

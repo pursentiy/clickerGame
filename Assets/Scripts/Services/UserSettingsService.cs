@@ -10,7 +10,7 @@ namespace Services
 {
     public class UserSettingsService : DisposableService
     {
-        [Inject] private PlayerProfileManager _playerProfileManager;
+        [Inject] private PlayerProfileController _playerProfileController;
         [Inject] private readonly LanguageConversionService _languageConversionService;
         
         private GameParamsSnapshot _gameParamsSnapshot;
@@ -36,7 +36,7 @@ namespace Services
                 return;
             
             _gameParamsSnapshot.IsMusicOn = isOn;
-            _playerProfileManager.SaveProfile();
+            _playerProfileController.SaveProfile();
             MusicChangedSignal.Dispatch(isOn);
         }
         
@@ -52,7 +52,7 @@ namespace Services
                 return;
             
             _gameParamsSnapshot.IsSoundOn = isOn;
-            _playerProfileManager.SaveProfile();
+            _playerProfileController.SaveProfile();
             SoundChangedSignal.Dispatch(isOn);
         }
         
@@ -71,12 +71,12 @@ namespace Services
             }
         
             _gameParamsSnapshot.Language = languageCode;
-            _playerProfileManager.SaveProfile(SavePriority.ImmediateSave);
+            _playerProfileController.SaveProfile(SavePriority.ImmediateSave);
         }
         
         protected override void OnInitialize()
         {
-            _playerProfileManager.ProfileSnapshotInitializedSignal.MapListener(OnProfileSnapshotInitializedSignal).DisposeWith(this);
+            _playerProfileController.ProfileSnapshotInitializedSignal.MapListener(OnProfileSnapshotInitializedSignal).DisposeWith(this);
         }
 
         protected override void OnDisposing()
@@ -86,7 +86,7 @@ namespace Services
 
         private void OnProfileSnapshotInitializedSignal()
         {
-            _gameParamsSnapshot = _playerProfileManager.TryGetGameParamsSnapshot();
+            _gameParamsSnapshot = _playerProfileController.TryGetGameParamsSnapshot();
             
             if (_gameParamsSnapshot == null)
             {

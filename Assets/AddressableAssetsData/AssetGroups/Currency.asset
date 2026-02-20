@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Currency
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Currency
+  m_GUID: a55bcf08180fa42d6a26c9368807a864
+  m_SerializeEntries:
+  - m_GUID: 1b8ed9d58253f4b3a9674218ea23f8d0
+    m_Address: Assets/Sprites/Currency/Hard_Currency.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e7d03adbb35241cd99a8f69778557f0
+    m_Address: Assets/Sprites/Currency/Stars_Currency.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d583abbd87d649678ac2fea9b7ddf08
+    m_Address: Assets/Sprites/Currency/Hard_Currency.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8818bcd053174b1ba519bab52083b47
+    m_Address: Assets/Sprites/Currency/Stars_Currency.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: e24ffa8b9424ddd438d6f352cb603ea5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 0646426d32b3048e282b012cc7d89995, type: 2}
+    - {fileID: 11400000, guid: 029473ae0a8574492be196173358b903, type: 2}

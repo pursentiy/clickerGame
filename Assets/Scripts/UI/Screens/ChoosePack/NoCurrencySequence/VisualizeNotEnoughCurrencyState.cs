@@ -21,7 +21,7 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
         
         [Inject] private readonly AdsService _adsService;
         [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
-        [Inject] private readonly PlayerCurrencyService _playerCurrencyService;
+        [Inject] private readonly PlayerCurrencyManager _playerCurrencyManager;
         [Inject] private readonly GameInfoProvider _gameInfoProvider;
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly CoroutineService _coroutineService;

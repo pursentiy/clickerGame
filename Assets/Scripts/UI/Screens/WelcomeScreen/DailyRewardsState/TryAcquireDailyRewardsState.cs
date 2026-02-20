@@ -13,7 +13,7 @@ namespace UI.Screens.WelcomeScreen.DailyRewardsState
 {
     public class TryAcquireDailyRewardsState : InjectableStateBase<DefaultStateContext, DailyRewardsAcquireInfo>
     {
-        [Inject] private PlayerCurrencyService _playerCurrencyService;
+        [Inject] private PlayerCurrencyManager _playerCurrencyManager;
         [Inject] CoroutineService _coroutineService;
         [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
         [Inject] private readonly DailyRewardService _dailyRewardService;
@@ -44,7 +44,7 @@ namespace UI.Screens.WelcomeScreen.DailyRewardsState
         {
             foreach (var currency in earnedDailyReward)
             {
-                _playerCurrencyService.TryAddCurrency(currency, CurrencyChangeMode.Animated);
+                _playerCurrencyManager.TryAddCurrency(currency, CurrencyChangeMode.Animated);
             }
             
             return _coroutineService.WaitFrame();
