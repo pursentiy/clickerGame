@@ -124,7 +124,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1803877355706238534
 RectTransform:
   m_ObjectHideFlags: 0
@@ -282,7 +282,6 @@ MonoBehaviour:
   LockedBlockHolder: {fileID: 4364638287733391753}
   UnlockParticles: {fileID: 1807802169841491675}
   UnlockDuration: 0.6
-  EntranceCanvasGroup: {fileID: 0}
   EntranceSlideOffsetY: 80
   EntranceDuration: 0.4
   EntranceStaggerDelay: 0.06

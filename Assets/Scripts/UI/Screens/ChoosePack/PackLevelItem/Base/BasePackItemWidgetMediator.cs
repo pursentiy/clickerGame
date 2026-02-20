@@ -101,7 +101,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             {
                 View.AnimationWidget.ResetPositionCapture();
 
-                DOVirtual.DelayedCall(0.05f, () =>
+                DOVirtual.DelayedCall(3.05f, () =>
                 {
                     if (View == null || View.AnimationWidget == null) return;
                     View.AnimationWidget.Prepare(View.EntranceSlideOffsetY);

@@ -152,12 +152,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8564552291232950266}
   m_PrefabAsset: {fileID: 0}
---- !u!225 &5562627461913632631 stripped
-CanvasGroup:
-  m_CorrespondingSourceObject: {fileID: 4316993652686813325, guid: 791cd192c6c8046eba1a91469de4ccb9,
-    type: 3}
-  m_PrefabInstance: {fileID: 8564552291232950266}
-  m_PrefabAsset: {fileID: 0}
 --- !u!198 &8056373005429225761 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 1807802169841491675, guid: 791cd192c6c8046eba1a91469de4ccb9,
@@ -203,10 +197,10 @@ MonoBehaviour:
   LockedBlockHolder: {fileID: 5352855310331127411}
   UnlockParticles: {fileID: 8056373005429225761}
   UnlockDuration: 0.6
-  EntranceCanvasGroup: {fileID: 5562627461913632631}
   EntranceSlideOffsetY: 80
   EntranceDuration: 0.4
   EntranceStaggerDelay: 0.06
+  FadeImageAlpha: 0.5
   ExitDuration: 0.25
   AnimationWidget: {fileID: 8544623444448436018}
 --- !u!224 &8058010706513977788 stripped
