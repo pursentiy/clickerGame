@@ -23,6 +23,14 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             _isPosCaptured = true;
         }
 
+        /// <summary>
+        /// Сбрасывает захваченную позицию, чтобы следующий CapturePosition взял актуальную.
+        /// </summary>
+        public void ResetPositionCapture()
+        {
+            _isPosCaptured = false;
+        }
+
         public void Prepare(float offsetY)
         {
             CapturePosition();

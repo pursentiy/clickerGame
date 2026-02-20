@@ -95,20 +95,12 @@ namespace UI.Screens.ChoosePack.Widgets
             var mediators = _gridViewAdapter?.GetData()?.OfType<IPackItemWidgetMediator>().ToList();
             if (mediators == null || mediators.Count == 0) return;
 
-            int completedCount = 0;
-            int totalCount = mediators.Count;
-
             foreach (var mediator in mediators)
             {
-                mediator.PlayEntranceAnimation(() => 
-                {
-                    completedCount++;
-                    if (completedCount >= totalCount)
-                    {
-                        EntranceAnimationsAlreadyTriggered = true;
-                    }
-                });
+                mediator.RequestEntranceAnimation();
             }
+
+            EntranceAnimationsAlreadyTriggered = true;
         }
 
         public void PlayExitAnimations()

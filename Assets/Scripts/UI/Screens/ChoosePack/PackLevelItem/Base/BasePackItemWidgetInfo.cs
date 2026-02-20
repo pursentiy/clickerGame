@@ -30,6 +30,11 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
         public int IndexInList { get; }
         private readonly Func<bool> _getEntranceAnimationsAlreadyTriggered;
 
+        /// <summary>
+        /// Set to true when entrance animation should play on next View initialization.
+        /// </summary>
+        public bool EntranceAnimationRequested { get; set; }
+
         public bool GetEntranceAnimationsAlreadyTriggered() => _getEntranceAnimationsAlreadyTriggered?.Invoke() ?? false;
     }
 }

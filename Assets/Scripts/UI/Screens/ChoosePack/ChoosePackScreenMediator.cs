@@ -49,6 +49,12 @@ namespace UI.Screens.ChoosePack
         public override void OnBeginShow()
         {
             base.OnBeginShow();
+        }
+
+        public override void OnEndShow()
+        {
+            base.OnEndShow();
+            
             View.PacksWidget.PlayEntranceAnimations();
         }
 

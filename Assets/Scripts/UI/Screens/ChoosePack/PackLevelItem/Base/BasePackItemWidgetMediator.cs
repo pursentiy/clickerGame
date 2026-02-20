@@ -17,7 +17,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
     {
         int PackId { get; }
         void UpdateWidgetUnlock(bool isUnlocked);
-        void PlayEntranceAnimation(Action onComplete = null);
+        void RequestEntranceAnimation();
         void PlayExitAnimation();
     }
 
@@ -49,45 +49,93 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             _isUnlocked = Data.IsUnlocked;
             SetupState(_isUnlocked, immediate: true);
 
-            // 3. Подготовка к анимации появления
-            PrepareEntrance();
+            // 3. Подготовка к анимации появления (с задержкой для layout)
+            PrepareEntranceDelayed();
         }
 
-        private void PrepareEntrance()
+        private void PrepareEntranceDelayed()
         {
             if (View.AnimationWidget == null) return;
 
-            // Если анимация уже была проиграна в этой сессии, просто ставим в финальную позицию
-            if (Data.GetEntranceAnimationsAlreadyTriggered())
+            // Сразу скрываем если будет анимация
+            bool shouldAnimate = Data.EntranceAnimationRequested || !Data.GetEntranceAnimationsAlreadyTriggered();
+            if (shouldAnimate)
             {
-                View.AnimationWidget.SetToRest();
+                View.AnimationWidget.ResetPositionCapture();
+                // Скрываем сразу, но позицию захватим после layout
+                if (View.EntranceCanvasGroup != null)
+                    View.EntranceCanvasGroup.alpha = 0f;
+            }
+
+            // Даём layout отработать
+            DOVirtual.DelayedCall(0.05f, () =>
+            {
+                if (View == null || View.AnimationWidget == null) return;
+
+                if (shouldAnimate)
+                {
+                    View.AnimationWidget.Prepare(View.EntranceSlideOffsetY);
+                    
+                    // Если анимация была запрошена - играем
+                    if (Data.EntranceAnimationRequested)
+                    {
+                        Data.EntranceAnimationRequested = false;
+                        PlayEntranceAnimationInternal();
+                    }
+                }
+                else
+                {
+                    View.AnimationWidget.SetToRest();
+                }
+            }).KillWith(this);
+        }
+
+        public void RequestEntranceAnimation()
+        {
+            // Если View ещё не инициализирован - ставим флаг, анимация запустится в OnInitialize
+            if (View == null)
+            {
+                Data.EntranceAnimationRequested = true;
+                return;
+            }
+
+            // View уже есть - подготавливаем с задержкой и играем
+            if (View.AnimationWidget != null)
+            {
+                View.AnimationWidget.ResetPositionCapture();
+                if (View.EntranceCanvasGroup != null)
+                    View.EntranceCanvasGroup.alpha = 0f;
+
+                DOVirtual.DelayedCall(0.05f, () =>
+                {
+                    if (View == null || View.AnimationWidget == null) return;
+                    View.AnimationWidget.Prepare(View.EntranceSlideOffsetY);
+                    PlayEntranceAnimationInternal();
+                }).KillWith(this);
             }
             else
             {
-                // Иначе готовим к "вылету"
-                View.AnimationWidget.Prepare(View.EntranceSlideOffsetY);
+                PlayEntranceAnimationInternal();
             }
         }
 
-        public void PlayEntranceAnimation(Action onComplete = null)
+        private void PlayEntranceAnimationInternal()
         {
-            if (Data.GetEntranceAnimationsAlreadyTriggered())
-            {
-                onComplete?.Invoke();
+            if (View == null || View.AnimationWidget == null)
                 return;
-            }
 
             float delay = Data.IndexInList * View.EntranceStaggerDelay;
             
             View.AnimationWidget.PlayEntrance(delay, View.EntranceDuration)
-                .ContinueWithResolved(() => onComplete?.SafeInvoke())
                 .CancelWith(this);
         }
 
         public void PlayExitAnimation()
         {
-            if (View.AnimationWidget != null)
-                View.AnimationWidget.PlayExit(View.EntranceSlideOffsetY, View.ExitDuration);
+            if (View == null || View.AnimationWidget == null)
+                return;
+            
+            View.AnimationWidget.PlayExit(View.EntranceSlideOffsetY, View.ExitDuration);
         }
 
         public void UpdateWidgetUnlock(bool isUnlocked)
@@ -125,7 +173,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             View.LockedBlockHolder.gameObject.SetActive(locked);
             if (locked)
             {
-                View.FadeImage.color = View.FadeImage.color.SetAlpha(1f);
+                View.FadeImage.color = View.FadeImage.color.SetAlpha(View.FadeImageAlpha);
             }
         }
 

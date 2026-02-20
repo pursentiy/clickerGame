@@ -24,6 +24,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
         public float EntranceSlideOffsetY = 80f;
         public float EntranceDuration = 0.4f;
         public float EntranceStaggerDelay = 0.06f;
+        public float FadeImageAlpha = 0.5f;
 
         [Header("Exit Animation")]
         public float ExitDuration = 0.25f;
