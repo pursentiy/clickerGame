@@ -61,6 +61,8 @@ GameObject:
   - component: {fileID: 6523523114057780650}
   - component: {fileID: 5612778418884545272}
   - component: {fileID: 7793116919676981710}
+  - component: {fileID: 4316993652686813325}
+  - component: {fileID: 22517099597428936}
   m_Layer: 5
   m_Name: DefaultPackItemWidget
   m_TagString: Untagged
@@ -227,6 +229,38 @@ MonoBehaviour:
   LockedBlockHolder: {fileID: 4364638287733391753}
   UnlockParticles: {fileID: 1807802169841491675}
   UnlockDuration: 0.6
+  EntranceCanvasGroup: {fileID: 4316993652686813325}
+  EntranceSlideOffsetY: 80
+  EntranceDuration: 0.4
+  EntranceStaggerDelay: 0.06
+  ExitDuration: 0.25
+  AnimationWidget: {fileID: 22517099597428936}
+--- !u!225 &4316993652686813325
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1803877355706238529}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &22517099597428936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1803877355706238529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bcbf738d069d4adf814488c2ecaa156, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Screens.ChoosePack.PackLevelItem.Base.PackItemAnimationWidget
+  _canvasGroup: {fileID: 4316993652686813325}
+  _holder: {fileID: 1803877355706238534}
 --- !u!1 &1803877355841150643
 GameObject:
   m_ObjectHideFlags: 0

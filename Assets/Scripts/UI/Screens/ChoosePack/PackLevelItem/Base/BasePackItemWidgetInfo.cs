@@ -6,7 +6,8 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
     public abstract class BasePackItemWidgetInfo
     {
         protected BasePackItemWidgetInfo(string packName, GameObject packImagePrefab, int packId, bool isUnlocked,
-            Action onClickAction, Action onLockedClickAction, int starsRequired)
+            Action onClickAction, Action onLockedClickAction, int starsRequired, int indexInList = 0,
+            Func<bool> getEntranceAnimationsAlreadyTriggered = null)
         {
             PackName = packName;
             PackImagePrefab = packImagePrefab;
@@ -15,6 +16,8 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             OnClickAction = onClickAction;
             OnLockedClickAction = onLockedClickAction;
             StarsRequired = starsRequired;
+            IndexInList = indexInList;
+            _getEntranceAnimationsAlreadyTriggered = getEntranceAnimationsAlreadyTriggered;
         }
 
         public string PackName { get; }
@@ -24,5 +27,9 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
         public Action OnClickAction { get; }
         public Action OnLockedClickAction { get; }
         public int StarsRequired { get; }
+        public int IndexInList { get; }
+        private readonly Func<bool> _getEntranceAnimationsAlreadyTriggered;
+
+        public bool GetEntranceAnimationsAlreadyTriggered() => _getEntranceAnimationsAlreadyTriggered?.Invoke() ?? false;
     }
 }

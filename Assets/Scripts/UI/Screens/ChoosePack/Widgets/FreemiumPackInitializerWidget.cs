@@ -16,16 +16,18 @@ namespace UI.Screens.ChoosePack.Widgets
             return new FreemiumPackItemWidgetMediator((FreemiumPackItemWidgetInfo)info);
         }
 
-        protected override BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, Stars starsRequired)
+        protected override BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, Stars starsRequired, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered)
         {
             return new FreemiumPackItemWidgetInfo(
-                packInfo.PackName, 
-                packInfo.PackImagePrefab, 
-                packId, 
+                packInfo.PackName,
+                packInfo.PackImagePrefab,
+                packId,
                 isUnlocked,
-                () => OnAvailablePackClicked(packInfo), 
-                OnUnavailablePackClicked, 
-                starsRequired);
+                () => OnAvailablePackClicked(packInfo),
+                OnUnavailablePackClicked,
+                starsRequired,
+                indexInList,
+                getEntranceAnimationsAlreadyTriggered);
         }
     }
 }

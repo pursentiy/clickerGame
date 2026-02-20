@@ -1378,7 +1378,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mItemPrefabDataList:
-  - mItemPrefab: {fileID: 1803877355706238529, guid: bf7d38460177143428fe9d718c04fd34,
+  - mItemPrefab: {fileID: 8058010706513977787, guid: da8b173b025d64157b2ac5c58e9a1af8,
       type: 3}
     mInitCreateCount: 6
   mCenterLastRowElement: 1

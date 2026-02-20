@@ -19,5 +19,17 @@ namespace UI.Screens.ChoosePack.Widgets
             _freemiumPackInitializerWidget?.UpdatePacksState();
             _defaultPackInitializerWidget?.UpdatePacksState();
         }
+
+        public void PlayEntranceAnimations()
+        {
+            _freemiumPackInitializerWidget?.PlayEntranceAnimations();
+            _defaultPackInitializerWidget?.PlayEntranceAnimations();
+        }
+
+        public void PlayExitAnimations()
+        {
+            _freemiumPackInitializerWidget?.PlayExitAnimations();
+            _defaultPackInitializerWidget?.PlayExitAnimations();
+        }
     }
 }

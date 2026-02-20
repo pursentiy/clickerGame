@@ -7,8 +7,9 @@ namespace UI.Screens.ChoosePack.PackLevelItem.DefaultPackItem
     public class DefaultPackItemWidgetInfo : BasePackItemWidgetInfo
     {
         public DefaultPackItemWidgetInfo(string packName, GameObject packImagePrefab, int packId, bool isUnlocked,
-            Action onClickAction, Action onLockedClickAction, int starsRequired)
-            : base(packName, packImagePrefab, packId, isUnlocked, onClickAction, onLockedClickAction, starsRequired)
+            Action onClickAction, Action onLockedClickAction, int starsRequired, int indexInList = 0,
+            Func<bool> getEntranceAnimationsAlreadyTriggered = null)
+            : base(packName, packImagePrefab, packId, isUnlocked, onClickAction, onLockedClickAction, starsRequired, indexInList, getEntranceAnimationsAlreadyTriggered)
         {
         }
     }

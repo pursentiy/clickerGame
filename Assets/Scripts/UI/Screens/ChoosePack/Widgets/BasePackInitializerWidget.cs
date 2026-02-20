@@ -33,12 +33,14 @@ namespace UI.Screens.ChoosePack.Widgets
         protected IReadOnlyCollection<PackInfo> _packsInfos;
 
         protected abstract PackType TargetPackType { get; }
+        
+        public bool EntranceAnimationsAlreadyTriggered { get; set; }
 
         public void Initialize(CurrencyDisplayWidget currencyDisplayWidget, AdsButtonWidget adsButtonWidget)
         {
             _currencyDisplayWidget = currencyDisplayWidget;
             _adsButtonWidget = adsButtonWidget;
-            
+
             InitializePackButtons();
         }
 
@@ -55,6 +57,32 @@ namespace UI.Screens.ChoosePack.Widgets
                     var isUnlocked = _progressProvider.IsPackAvailable(mediator.PackId);
                     mediator.UpdateWidgetUnlock(isUnlocked);
                 }
+            }
+        }
+
+        public void PlayEntranceAnimations()
+        {
+            var data = _gridViewAdapter?.GetData();
+            if (data == null) 
+                return;
+            
+            foreach (var item in data)
+            {
+                if (item is IPackItemWidgetMediator mediator)
+                    mediator.PlayEntranceAnimation();
+            }
+        }
+
+        public void PlayExitAnimations()
+        {
+            var data = _gridViewAdapter?.GetData();
+            if (data == null)
+                return;
+
+            foreach (var item in data)
+            {
+                if (item is IPackItemWidgetMediator mediator)
+                    mediator.PlayExitAnimation();
             }
         }
 
@@ -87,7 +115,9 @@ namespace UI.Screens.ChoosePack.Widgets
         
         protected virtual IList<IListItem> GetMemberItems(IEnumerable<PackInfo> packsInfos)
         {
-            return packsInfos.Select(CreatePackWidgetInfo)
+            var list = packsInfos.ToList();
+            return list
+                .Select((pack, index) => CreatePackWidgetInfo(pack, index))
                 .Where(info => info != null)
                 .Select(CreateMediator)
                 .ToList();
@@ -95,7 +125,7 @@ namespace UI.Screens.ChoosePack.Widgets
         
         protected abstract IListItem CreateMediator(BasePackItemWidgetInfo info);
 
-        protected BasePackItemWidgetInfo CreatePackWidgetInfo(PackInfo packInfo)
+        protected BasePackItemWidgetInfo CreatePackWidgetInfo(PackInfo packInfo, int indexInList)
         {
             if (this == null || gameObject == null)
                 return null;
@@ -104,11 +134,12 @@ namespace UI.Screens.ChoosePack.Widgets
             var isUnlocked = _progressProvider.IsPackAvailable(packId);
             var maybeStarsRequired = _progressProvider.GetStarsCountForPackUnlocking(packId);
             var starsRequired = maybeStarsRequired ?? new Stars(0);
-                
-            return CreatePackWidgetInfoInternal(packInfo, packId, isUnlocked, starsRequired);
+            var getEntranceAlreadyTriggered = (System.Func<bool>)null;
+
+            return CreatePackWidgetInfoInternal(packInfo, packId, isUnlocked, starsRequired, indexInList, getEntranceAlreadyTriggered);
         }
 
-        protected abstract BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, Stars starsRequired);
+        protected abstract BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, Stars starsRequired, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered);
 
         protected void OnAvailablePackClicked(PackInfo packInfo)
         {

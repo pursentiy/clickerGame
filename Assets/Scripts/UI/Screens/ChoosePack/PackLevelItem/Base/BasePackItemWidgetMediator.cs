@@ -4,6 +4,7 @@ using Extensions;
 using Handlers;
 using Services;
 using ThirdParty.SuperScrollView.Scripts.List;
+using ThirdParty.SuperScrollView.Scripts.ListView;
 using UnityEngine;
 using Utilities.Disposable;
 using Zenject;
@@ -16,114 +17,148 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
     {
         int PackId { get; }
         void UpdateWidgetUnlock(bool isUnlocked);
+        void PlayEntranceAnimation();
+        void PlayExitAnimation();
     }
 
     public abstract class BasePackItemWidgetMediator<TView, TInfo> : InjectableListItemMediator<TView, TInfo>, IPackItemWidgetMediator
         where TView : BasePackItemWidgetView
         where TInfo : BasePackItemWidgetInfo
     {
-        [Inject] protected SoundHandler _soundHandler;
-        [Inject] protected LocalizationService _localization;
+        [Inject] protected readonly SoundHandler _soundHandler;
+        [Inject] protected readonly LocalizationService _localization;
         
         protected GameObject _packImageInstance;
-        protected bool _isUnlocked;
-        protected bool _isInitialized;
+        private bool _isUnlocked;
 
         public int PackId => Data.PackId;
         
-        protected BasePackItemWidgetMediator(TInfo data) : base(data)
-        {
-        }
+        protected BasePackItemWidgetMediator(TInfo data) : base(data) { }
 
         protected override void OnInitialize(bool isVisibleOnRefresh)
         {
             base.OnInitialize(isVisibleOnRefresh);
 
-            var packKey = $"pack_{Data.PackName.ToLower()}";
-            View.PackText.SetText(_localization.GetValue(packKey));
+            // 1. Тексты и контент
+            View.PackText.SetText(_localization.GetValue($"pack_{Data.PackName.ToLower()}"));
             
-            if (_packImageInstance == null)
+            if (_packImageInstance == null && Data.PackImagePrefab != null)
                 _packImageInstance = Object.Instantiate(Data.PackImagePrefab, View.PackImagePrefabContainer);
 
-            _isInitialized = true;
-            UpdateMediator(Data.IsUnlocked, Data.OnClickAction, Data.OnLockedClickAction, Data.StarsRequired, immediate: true);
+            // 2. Установка состояния (сразу применяем текущее владение)
+            _isUnlocked = Data.IsUnlocked;
+            SetupState(_isUnlocked, immediate: true);
+
+            // 3. Подготовка к анимации появления
+            PrepareEntrance();
+        }
+
+        private void PrepareEntrance()
+        {
+            if (View.AnimationWidget == null) return;
+
+            // Если анимация уже была проиграна в этой сессии, просто ставим в финальную позицию
+            if (true)
+            {
+                View.AnimationWidget.SetToRest();
+            }
+            else
+            {
+                // Иначе готовим к "вылету"
+                View.AnimationWidget.Prepare(View.EntranceSlideOffsetY);
+            }
+        }
+
+        public void PlayEntranceAnimation()
+        {
+            if (View.AnimationWidget == null)
+                return;
+
+            //Data.SetEntranceAnimationsAlreadyTriggered(true);
+            
+            var delay = Data.IndexInList * View.EntranceStaggerDelay;
+            View.AnimationWidget.PlayEntrance(delay, View.EntranceDuration);
+        }
+
+        public void PlayExitAnimation()
+        {
+            if (View.AnimationWidget != null)
+                View.AnimationWidget.PlayExit(View.EntranceSlideOffsetY, View.ExitDuration);
         }
 
         public void UpdateWidgetUnlock(bool isUnlocked)
         {
-            if (Data.IsUnlocked == isUnlocked)
-                return;
+            if (_isUnlocked == isUnlocked) return;
             
-            Data.IsUnlocked = isUnlocked;
-            UpdateMediator(Data.IsUnlocked, Data.OnClickAction, Data.OnLockedClickAction, Data.StarsRequired, false);
-        }
-        
-        protected virtual void UpdateMediator(bool isUnlocked, Action onClickAction, Action onLockedClickAction, int starsRequired, bool immediate = false)
-        {
-            if (!_isInitialized)
-            {
-                LoggerService.LogWarning(this, $"Widget is not initialized at {nameof(UpdateMediator)}.");
-                return;
-            }
-            
-            if (_isUnlocked == isUnlocked && !immediate) 
-                return;
-
             _isUnlocked = isUnlocked;
+            Data.IsUnlocked = isUnlocked;
+            SetupState(_isUnlocked, immediate: false);
+        }
+
+        private void SetupState(bool isUnlocked, bool immediate)
+        {
             View.PackEnterButton.onClick.RemoveAllListeners();
 
-            if (_isUnlocked)
+            if (isUnlocked)
             {
-                View.PackEnterButton.onClick.MapListenerWithSound(onClickAction.SafeInvoke).DisposeWith(this);
+                View.PackEnterButton.onClick.MapListenerWithSound(Data.OnClickAction.SafeInvoke).DisposeWith(this);
                 
-                if (immediate)
-                    ApplyInstantUnlock();
-                else
-                    UnlockWithAnimation();
+                if (immediate) ApplyInstantUnlock();
+                else UnlockWithAnimation();
             }
             else
             {
-                View.LockedBlockText.text = _localization.GetFormattedValue("pack_stars_required", $"{starsRequired} <sprite=0>");
-                View.PackEnterButton.onClick.MapListenerWithSound(onLockedClickAction.SafeInvoke).DisposeWith(this);
+                View.LockedBlockText.text = _localization.GetFormattedValue("pack_stars_required", $"{Data.StarsRequired} <sprite=0>");
+                View.PackEnterButton.onClick.MapListenerWithSound(Data.OnLockedClickAction.SafeInvoke).DisposeWith(this);
                 
-                View.FadeImage.gameObject.SetActive(true);
-                View.LockedBlockHolder.gameObject.SetActive(true);
+                SetLockedVisuals(true);
+            }
+        }
+
+        private void SetLockedVisuals(bool locked)
+        {
+            View.FadeImage.gameObject.SetActive(locked);
+            View.LockedBlockHolder.gameObject.SetActive(locked);
+            if (locked)
+            {
+                View.FadeImage.color = View.FadeImage.color.SetAlpha(1f);
             }
         }
 
         protected virtual void ApplyInstantUnlock()
         {
-            View.FadeImage.gameObject.SetActive(false);
-            View.LockedBlockHolder.gameObject.SetActive(false);
-            View.LockedBlockText.gameObject.SetActive(false);
+            SetLockedVisuals(false);
             View.PackImagePrefabContainer.localScale = Vector3.one;
         }
         
         protected virtual void UnlockWithAnimation()
         {
-            View.LockedBlockHolder.gameObject.SetActive(true);
             _soundHandler.PlaySound(AudioExtensions.PackUnlockedKey);
-    
-            View.FadeImage.DOFade(0, View.UnlockDuration).SetEase(Ease.Linear)
-                .OnComplete(() => View.FadeImage.gameObject.SetActive(false))
-                .KillWith(this);
+            
+            // "Сочная" последовательность в стиле Cult of the Lamb
+            var seq = DOTween.Sequence().KillWith(View.gameObject);
 
-            View.LockedBlockHolder.DOScale(0, View.UnlockDuration).SetEase(Ease.InBack)
-                .OnComplete(() => View.LockedBlockHolder.gameObject.SetActive(false))
-                .KillWith(this);
-    
-            View.Holder.DOComplete();
-    
-            var unlockSequence = DOTween.Sequence().KillWith(View.gameObject);
+            // 1. Исчезновение замка
+            seq.Append(View.LockedBlockHolder.DOScale(0, View.UnlockDuration).SetEase(Ease.InBack));
+            seq.Join(View.FadeImage.DOFade(0, View.UnlockDuration).SetEase(Ease.Linear));
 
-            unlockSequence.Append(View.Holder.DOLocalMoveY(30f, View.UnlockDuration * 0.3f).SetEase(Ease.OutCubic));
-            unlockSequence.AppendInterval(View.UnlockDuration * 0.7f);
-            unlockSequence.Append(View.Holder.DOLocalMoveY(0f, View.UnlockDuration * 0.7f).SetEase(Ease.OutBounce));
-    
+            // 2. Прыжок самого пака (Juicy Bounce)
+            seq.Append(View.Holder.DOLocalMoveY(30f, View.UnlockDuration * 0.3f).SetEase(Ease.OutCubic));
+            seq.Append(View.Holder.DOLocalMoveY(0f, View.UnlockDuration * 0.6f).SetEase(Ease.OutBounce));
+
+            // 3. Эффекты
             if (View.UnlockParticles != null)
-            {
-                DOVirtual.DelayedCall(View.UnlockDuration * 0.3f, () => View.UnlockParticles.Play()).KillWith(this);
-            }
+                seq.InsertCallback(View.UnlockDuration * 0.3f, () => View.UnlockParticles.Play());
+
+            seq.OnComplete(() => SetLockedVisuals(false));
+        }
+
+        protected override void OnRelease(ListItemReleaseType type)
+        {
+            View.Holder.DOKill();
+            View.FadeImage.DOKill();
+            View.LockedBlockHolder.DOKill();
+            base.OnRelease(type);
         }
     }
 }

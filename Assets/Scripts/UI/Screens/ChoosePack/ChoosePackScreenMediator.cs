@@ -1,5 +1,6 @@
 using Attributes;
 using Controllers;
+using DG.Tweening;
 using Extensions;
 using Handlers.UISystem;
 using Handlers.UISystem.Screens;
@@ -44,6 +45,18 @@ namespace UI.Screens.ChoosePack
         {
             View.StarsDisplayWidget.SetCurrency(_playerCurrencyService.Stars);
             View.PacksWidget.Initialize(View.StarsDisplayWidget, View.AdsButton);
+        }
+
+        public override void OnBeginShow()
+        {
+            base.OnBeginShow();
+            View.PacksWidget.PlayEntranceAnimations();
+        }
+
+        public override void OnBeginHide()
+        {
+            base.OnBeginHide();
+            View.PacksWidget.PlayExitAnimations();
         }
         
         private void OnInfoButtonClicked()
