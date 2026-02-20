@@ -51,49 +51,65 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
         {
             CapturePosition();
             _holder.DOKill();
-            
-            var canvasPromise = Promise.Resolved();
-            var holderAnimationPromise = _holder.DOLocalMove(_initialLocalPos, duration)
-                .SetEase(Ease.OutCubic)
-                .SetDelay(delay)
-                .KillWith(this)
-                .AsPromise();
+    
+            // Создаем последовательность для "дорогого" эффекта
+            var seq = DOTween.Sequence().SetDelay(delay).SetTarget(this);
 
+            // 1. Плавный вылет с небольшим перехлестом (Back)
+            seq.Append(_holder.DOLocalMove(_initialLocalPos, duration)
+                .SetEase(Ease.OutBack, 1.2f)); // 1.2f - коэффициент "прыгучести"
+
+            // 2. Squash & Stretch при приземлении (эффект живого объекта)
+            // Объект чуть сплющивается в конце движения
+            seq.Join(_holder.DOScaleX(1.05f, duration * 0.5f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.InOutSine));
+            seq.Join(_holder.DOScaleY(0.95f, duration * 0.5f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.InOutSine));
+
+            // 3. Плавное появление альфы
             if (_canvasGroup != null)
             {
                 _canvasGroup.DOKill();
-                canvasPromise = _canvasGroup.DOFade(1f, duration * 0.8f)
-                    .SetEase(Ease.OutQuad)
-                    .SetDelay(delay)
-                    .KillWith(this)
-                    .AsPromise();
+                _canvasGroup.alpha = 0;
+                seq.Join(_canvasGroup.DOFade(1f, duration * 0.7f).SetEase(Ease.OutQuad));
             }
 
-            return Promise.All(canvasPromise, holderAnimationPromise);
+            return seq.KillWith(this).AsPromise();
         }
 
         public IPromise PlayExit(float offsetY, float duration)
         {
             CapturePosition();
             _holder.DOKill();
-            
-            var canvasPromise = Promise.Resolved();
-            var holderAnimationPromise = 
-                _holder.DOLocalMove(_initialLocalPos + new Vector3(0, offsetY, 0), duration)
-                .SetEase(Ease.InCubic)
-                .KillWith(this)
-                .AsPromise();
+            if (_canvasGroup != null) _canvasGroup.DOKill();
 
+            // Создаем Sequence, чтобы объединить подготовку и вылет
+            var seq = DOTween.Sequence().SetTarget(this);
+
+            // 1. Anticipation: Объект слегка "приседает" вниз и расширяется перед прыжком
+            // Это добавляет физического веса
+            float anticipationTime = duration * 0.25f;
+            seq.Append(_holder.DOBlendableLocalMoveBy(new Vector3(0, -20f, 0), anticipationTime)
+                .SetEase(Ease.OutQuad));
+            seq.Join(_holder.DOScaleX(1.1f, anticipationTime).SetEase(Ease.OutQuad));
+            seq.Join(_holder.DOScaleY(0.9f, anticipationTime).SetEase(Ease.OutQuad));
+
+            // 2. Launch: Резкий выстрел вверх
+            // Используем InBack для эффекта ускорения в конце
+            float launchTime = duration * 0.75f;
+            seq.Append(_holder.DOLocalMove(_initialLocalPos + new Vector3(0, offsetY, 0), launchTime)
+                .SetEase(Ease.InBack, 1.5f));
+
+            // 3. Stretch: Объект вытягивается по вертикали во время полета
+            seq.Join(_holder.DOScaleX(0.85f, launchTime).SetEase(Ease.InSine));
+            seq.Join(_holder.DOScaleY(1.2f, launchTime).SetEase(Ease.InSine));
+
+            // 4. Fade: Исчезновение начинается чуть позже старта прыжка
             if (_canvasGroup != null)
             {
-                _canvasGroup.DOKill();
-                canvasPromise = _canvasGroup.DOFade(0f, duration)
-                    .SetEase(Ease.InQuad)
-                    .KillWith(this)
-                    .AsPromise();
+                seq.Join(_canvasGroup.DOFade(0f, launchTime).SetEase(Ease.InQuad));
             }
-            
-            return Promise.All(canvasPromise, holderAnimationPromise);
+
+            // Возвращаем как Promise для синхронизации с другими элементами
+            return seq.KillWith(this).AsPromise();
         }
     }
 }

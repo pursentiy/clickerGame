@@ -62,9 +62,6 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             if (shouldAnimate)
             {
                 View.AnimationWidget.ResetPositionCapture();
-                // Скрываем сразу, но позицию захватим после layout
-                if (View.EntranceCanvasGroup != null)
-                    View.EntranceCanvasGroup.alpha = 0f;
             }
 
             // Даём layout отработать
@@ -103,8 +100,6 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             if (View.AnimationWidget != null)
             {
                 View.AnimationWidget.ResetPositionCapture();
-                if (View.EntranceCanvasGroup != null)
-                    View.EntranceCanvasGroup.alpha = 0f;
 
                 DOVirtual.DelayedCall(0.05f, () =>
                 {
