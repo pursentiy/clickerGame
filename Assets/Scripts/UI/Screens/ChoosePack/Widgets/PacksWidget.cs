@@ -8,6 +8,10 @@ namespace UI.Screens.ChoosePack.Widgets
         [SerializeField] private FreemiumPackInitializerWidget _freemiumPackInitializerWidget;
         [SerializeField] private DefaultPackInitializerWidget _defaultPackInitializerWidget;
 
+        public bool EntranceAnimationsAlreadyTriggered =>
+            (_freemiumPackInitializerWidget?.EntranceAnimationsAlreadyTriggered ?? false) ||
+            (_defaultPackInitializerWidget?.EntranceAnimationsAlreadyTriggered ?? false);
+
         public void Initialize(CurrencyDisplayWidget currencyDisplayWidget, AdsButtonWidget adsButtonWidget)
         {
             _freemiumPackInitializerWidget?.Initialize(currencyDisplayWidget, adsButtonWidget);
@@ -22,8 +26,8 @@ namespace UI.Screens.ChoosePack.Widgets
 
         public void PlayEntranceAnimations()
         {
-            _freemiumPackInitializerWidget?.PlayEntranceAnimations();
-            _defaultPackInitializerWidget?.PlayEntranceAnimations();
+            _freemiumPackInitializerWidget?.RequestItemsEntranceAnimation();
+            _defaultPackInitializerWidget?.RequestItemsEntranceAnimation();
         }
 
         public void PlayExitAnimations()

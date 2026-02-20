@@ -8,7 +8,9 @@ using Configurations.Progress;
 using Controllers;
 using Extensions;
 using Installers;
+using Plugins.FSignal;
 using Services;
+using Services.CoroutineServices;
 using ThirdParty.SuperScrollView.Scripts.GridView;
 using ThirdParty.SuperScrollView.Scripts.List;
 using UI.Screens.ChoosePack.NoCurrencySequence;
@@ -24,6 +26,7 @@ namespace UI.Screens.ChoosePack.Widgets
     {
         [Inject] protected readonly ProgressProvider _progressProvider;
         [Inject] protected readonly FlowScreenController _flowScreenController;
+        [Inject] private readonly CoroutineService _coroutineService;
         
         [SerializeField] protected LoopGridView _loopGridView;
         
@@ -32,9 +35,21 @@ namespace UI.Screens.ChoosePack.Widgets
         protected GridViewAdapter _gridViewAdapter;
         protected IReadOnlyCollection<PackInfo> _packsInfos;
 
+        private bool _gridInitialized;
+        private bool _entryAnimationRequested;
+
+        public FSignal GridInitializationDoneSignal { get; } = new();
+
         protected abstract PackType TargetPackType { get; }
         
         public bool EntranceAnimationsAlreadyTriggered { get; set; }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            
+            GridInitializationDoneSignal.MapListener(TryPlayEntranceAnimation).DisposeWith(this);
+        }
 
         public void Initialize(CurrencyDisplayWidget currencyDisplayWidget, AdsButtonWidget adsButtonWidget)
         {
@@ -60,21 +75,47 @@ namespace UI.Screens.ChoosePack.Widgets
             }
         }
 
-        public void PlayEntranceAnimations()
+        public void RequestItemsEntranceAnimation()
         {
-            var data = _gridViewAdapter?.GetData();
-            if (data == null) 
+            _entryAnimationRequested = true;
+            TryPlayEntranceAnimation();
+        }
+
+        private void TryPlayEntranceAnimation()
+        {
+            if (!_entryAnimationRequested || !_gridInitialized)
                 return;
             
-            foreach (var item in data)
+            _entryAnimationRequested = false;
+            PlayEntranceAnimationsInternal();
+        }
+
+        private void PlayEntranceAnimationsInternal()
+        {
+            var mediators = _gridViewAdapter?.GetData()?.OfType<IPackItemWidgetMediator>().ToList();
+            if (mediators == null || mediators.Count == 0) return;
+
+            int completedCount = 0;
+            int totalCount = mediators.Count;
+
+            foreach (var mediator in mediators)
             {
-                if (item is IPackItemWidgetMediator mediator)
-                    mediator.PlayEntranceAnimation();
+                mediator.PlayEntranceAnimation(() => 
+                {
+                    completedCount++;
+                    if (completedCount >= totalCount)
+                    {
+                        EntranceAnimationsAlreadyTriggered = true;
+                    }
+                });
             }
         }
 
         public void PlayExitAnimations()
         {
+            if (!_gridInitialized)
+                return;
+
             var data = _gridViewAdapter?.GetData();
             if (data == null)
                 return;
@@ -111,6 +152,10 @@ namespace UI.Screens.ChoosePack.Widgets
                 _gridViewAdapter = new GridViewAdapter(_loopGridView);
                 _gridViewAdapter.InitScroll(GetMemberItems(_packsInfos));
             }
+
+            _gridInitialized = true;
+            _coroutineService.WaitFrame()
+                .ContinueWithResolved(() => GridInitializationDoneSignal?.Dispatch());
         }
         
         protected virtual IList<IListItem> GetMemberItems(IEnumerable<PackInfo> packsInfos)
@@ -134,7 +179,7 @@ namespace UI.Screens.ChoosePack.Widgets
             var isUnlocked = _progressProvider.IsPackAvailable(packId);
             var maybeStarsRequired = _progressProvider.GetStarsCountForPackUnlocking(packId);
             var starsRequired = maybeStarsRequired ?? new Stars(0);
-            var getEntranceAlreadyTriggered = (System.Func<bool>)null;
+            System.Func<bool> getEntranceAlreadyTriggered = () => EntranceAnimationsAlreadyTriggered;
 
             return CreatePackWidgetInfoInternal(packInfo, packId, isUnlocked, starsRequired, indexInList, getEntranceAlreadyTriggered);
         }

@@ -676,6 +676,7 @@ namespace Handlers.UISystem.Screens
             }
             catch (Exception e)
             {
+                LoggerService.LogError(e);
                 OnFatalError?.Invoke(e);
                 promise.RejectSilent(e);
                 return promise;

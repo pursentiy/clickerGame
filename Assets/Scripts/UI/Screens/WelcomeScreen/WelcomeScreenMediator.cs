@@ -2,12 +2,7 @@ using Attributes;
 using Controllers;
 using Extensions;
 using Handlers.UISystem.Screens;
-using Services;
-using UI.Popups.MessagePopup;
-using UI.Screens.WelcomeScreen.AuthenticateSequence;
-using UI.Screens.WelcomeScreen.DailyRewardsState;
 using Utilities.Disposable;
-using Utilities.StateMachine;
 using Zenject;
 
 namespace UI.Screens.WelcomeScreen

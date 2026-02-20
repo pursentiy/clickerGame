@@ -1,6 +1,5 @@
 using Attributes;
 using Controllers;
-using DG.Tweening;
 using Extensions;
 using Handlers.UISystem;
 using Handlers.UISystem.Screens;
