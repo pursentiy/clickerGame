@@ -57,7 +57,7 @@ namespace UI.Screens.ChoosePack.AdsSequence
 
         private IPromise VisualizeRewardsUpdate(ICurrency totalStars)
         {
-            Context.CurrencyDisplayWidget.SetCurrency(totalStars.GetCount(), true);
+            Context.CurrencyDisplayWidget.SetCurrency(totalStars, true);
 
             return _coroutineService.WaitFor(0.2f) 
                 .Then(Context.UpdatePacksAction.SafeInvoke)

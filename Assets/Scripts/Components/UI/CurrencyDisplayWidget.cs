@@ -1,120 +1,142 @@
 using System;
+using System.Collections.Generic;
 using Common.Currency;
-using UnityEngine;
-using TMPro;
-using DG.Tweening;
 using Extensions;
-using Handlers;
+using UnityEngine;
 using Installers;
 using RSG;
 using Services.Player;
 using Utilities.Disposable;
 using Zenject;
-using AudioExtensions = Extensions.AudioExtensions;
 
 namespace Components.UI
 {
+    [Serializable]
+    public class CurrencyDisplayEntry
+    {
+        public CurrencyType CurrencyType;
+        public SingleCurrencyDisplayWidget DisplayWidget;
+    }
+
     public class CurrencyDisplayWidget : InjectableMonoBehaviour
     {
         [Inject] private readonly PlayerCurrencyManager _playerCurrencyManager;
-        [Inject] private readonly SoundHandler _soundHandler;
         
-        [Header("UI References")] [SerializeField]
-        private TextMeshProUGUI currencyText;
+        [Header("Currency Display Mappings")]
+        [SerializeField] private List<CurrencyDisplayEntry> _currencyDisplays = new();
+        
+        [Header("Default Currency (for backward compatibility)")]
+        [SerializeField] private CurrencyType _defaultCurrencyType = CurrencyType.Stars;
 
-        [SerializeField] private RectTransform animationTarget;
-        [SerializeField] private ParticleSystem confettiParticles;
-        [SerializeField] private RectTransform bumpTransform;
+        private Dictionary<CurrencyType, SingleCurrencyDisplayWidget> _displayMap;
 
-        [Header("Animation Settings")] [SerializeField]
-        private float animationDuration = 0.5f;
-
-        [SerializeField] private float punchStrength = 0.2f; // 0.2 means +20% scale at peak
-        [SerializeField] private int vibrato = 10; // How much it vibrates/shakes
-        [SerializeField] private float elasticity = 1f; // Bounciness
-        [SerializeField] private string numberFormat = "N0";
-
-        private long _currentDisplayValue;
-        private long _targetValue;
-        private Tween _countTween;
-
-        public RectTransform AnimationTarget => animationTarget;
+        public RectTransform AnimationTarget => GetAnimationTarget(_defaultCurrencyType);
 
         public void Start()
         {
+            BuildDisplayMap();
             _playerCurrencyManager.CurrencyChangedSignal.MapListener(OnCurrencyChanged).DisposeWith(this);
+        }
+
+        private void BuildDisplayMap()
+        {
+            _displayMap = new Dictionary<CurrencyType, SingleCurrencyDisplayWidget>();
+            foreach (var entry in _currencyDisplays)
+            {
+                if (entry.DisplayWidget != null && !_displayMap.ContainsKey(entry.CurrencyType))
+                {
+                    _displayMap[entry.CurrencyType] = entry.DisplayWidget;
+                }
+            }
         }
 
         private void OnCurrencyChanged(ICurrency newValue, CurrencyChangeMode mode)
         {
             if (mode != CurrencyChangeMode.Instant)
                 return;
-            
-            SetCurrency(newValue.GetCount(), false);
+
+            var currencyType = CurrencyParser.GetCurrencyType(newValue);
+            if (TryGetDisplayWidget(currencyType, out var widget))
+            {
+                widget.SetCurrency(newValue, false);
+            }
         }
 
-        public void SetCurrency(long newValue, bool withAnimation = false)
+        public void SetCurrency(ICurrency currency, bool withAnimation = false)
         {
-            if (newValue == _targetValue)
-                return;
+            if (currency == null) return;
             
-            _targetValue = newValue;
-
-            if (withAnimation)
+            var currencyType = CurrencyParser.GetCurrencyType(currency);
+            if (TryGetDisplayWidget(currencyType, out var widget))
             {
-                TriggerUpdateEffects();
+                widget.SetCurrency(currency, withAnimation);
             }
-            else
+        }
+
+        // public void SetCurrency(long value, bool withAnimation = false)
+        // {
+        //     SetCurrencyValue(_defaultCurrencyType, value, withAnimation);
+        // }
+
+        public void SetCurrencyValue(CurrencyType currencyType, long value, bool withAnimation = false)
+        {
+            if (TryGetDisplayWidget(currencyType, out var widget))
             {
-                _currentDisplayValue = newValue;
-                UpdateText(_targetValue);
+                widget.SetValue(value, withAnimation);
             }
         }
 
         public IPromise Bump()
         {
-            bumpTransform.DOComplete();
+            return Bump(_defaultCurrencyType);
+        }
+
+        public IPromise Bump(CurrencyType currencyType)
+        {
+            if (TryGetDisplayWidget(currencyType, out var widget))
+            {
+                return widget.Bump();
+            }
+            return Promise.Resolved();
+        }
+
+        public IPromise BumpAll()
+        {
+            var promises = new List<IPromise>();
+            foreach (var widget in _displayMap.Values)
+            {
+                promises.Add(widget.Bump());
+            }
+            return Promise.All(promises);
+        }
+
+        public bool TryGetDisplayWidget(CurrencyType currencyType, out SingleCurrencyDisplayWidget widget)
+        {
+            if (_displayMap == null)
+                BuildDisplayMap();
             
-            _soundHandler.PlaySound(AudioExtensions.BumpPanelKey);
-            return bumpTransform.DOPunchScale(Vector3.one * punchStrength, animationDuration, vibrato, elasticity)
-                .KillWith(this)
-                .AsPromise();
-        }
-        
-        // DEBUG
-        [ContextMenu("Test Add 100")]
-        public void TestAdd100() => SetCurrency(100, true);
-
-        private void TriggerUpdateEffects()
-        {
-            // 1. Particle Burst
-            if (confettiParticles != null)
-            {
-                confettiParticles.Stop();
-                confettiParticles.Play();
-            }
-
-            Bump(); 
-
-            _countTween?.Kill();
-            _countTween = DOTween.To(
-                () => _currentDisplayValue,
-                x =>
-                {
-                    _currentDisplayValue = x;
-                    UpdateText(_currentDisplayValue);
-                },
-                _targetValue,
-                animationDuration
-            ).SetEase(Ease.OutQuad).KillWith(this);
+            return _displayMap.TryGetValue(currencyType, out widget);
         }
 
-        private void UpdateText(long value)
+        public SingleCurrencyDisplayWidget GetDisplayWidget(CurrencyType currencyType)
         {
-            if (currencyText != null)
+            TryGetDisplayWidget(currencyType, out var widget);
+            return widget;
+        }
+
+        public RectTransform GetAnimationTarget(CurrencyType currencyType)
+        {
+            if (TryGetDisplayWidget(currencyType, out var widget))
             {
-                currencyText.text = value.ToString(numberFormat);
+                return widget.AnimationTarget;
             }
+            return null;
+        }
+
+        public RectTransform GetAnimationTarget(ICurrency currency)
+        {
+            var currencyType = CurrencyParser.GetCurrencyType(currency);
+            return GetAnimationTarget(currencyType);
         }
     }
 }

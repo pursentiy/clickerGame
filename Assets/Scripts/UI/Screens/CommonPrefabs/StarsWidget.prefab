@@ -5640,15 +5640,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb69e5b1e4a549d3990592a3c81dcd54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currencyText: {fileID: 6035581737092229778}
-  animationTarget: {fileID: 4791460756429245177}
-  confettiParticles: {fileID: 4761143323773388728}
-  bumpTransform: {fileID: 4791460756429245177}
-  animationDuration: 0.5
-  punchStrength: 0.2
-  vibrato: 7
-  elasticity: 1
-  numberFormat: N0
+  _currencyDisplays:
+  - CurrencyType: 0
+    DisplayWidget: {fileID: 0}
+  _defaultCurrencyType: 1
 --- !u!114 &1493906881176459603
 MonoBehaviour:
   m_ObjectHideFlags: 0

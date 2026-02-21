@@ -151,7 +151,7 @@ namespace UI.Popups.DailyRewardPopup
             var blockRef = _uiGlobalBlocker.Block(30f);
             PlayClaimAnimationSequence()
                 .Then(() => VisualizeRewardsFlight(Context.EarnedDailyReward))
-                .Then(() => View.CurrencyDisplayWidget.SetCurrency(Context.EarnedDailyReward.First().GetCount(), true))
+                .Then(() => View.CurrencyDisplayWidget.SetCurrency(Context.EarnedDailyReward.First(), true))
                 .Then(() =>
                 {
                     blockRef.Dispose();
