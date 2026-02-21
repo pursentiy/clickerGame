@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Common.Currency;
 using DG.Tweening;
 using Extensions;
@@ -160,7 +161,8 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             else
             {
                 UpdateLockedBlockText();
-                View.PackEnterButton.onClick.MapListenerWithSound(Data.OnLockedClickAction.SafeInvoke).DisposeWith(this);
+                var desiredCurrency = Data.CurrencyToUnlock != null ? new List<ICurrency>(Data.CurrencyToUnlock) : new List<ICurrency>();
+                View.PackEnterButton.onClick.MapListenerWithSound(() => Data.OnLockedClickAction?.Invoke(desiredCurrency)).DisposeWith(this);
                 
                 SetLockedVisuals(true);
             }
@@ -168,7 +170,8 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
 
         private void UpdateLockedBlockText()
         {
-            var currencyToUnlock = Data.CurrencyToUnlock;
+            var list = Data.CurrencyToUnlock;
+            var currencyToUnlock = list != null && list.Count > 0 ? list[0] : null;
             var currencyName = CurrencyExtensions.GetCurrencyName(currencyToUnlock);
             var spriteAsset = _currencyLibraryService.GetSpriteAsset(currencyName);
             

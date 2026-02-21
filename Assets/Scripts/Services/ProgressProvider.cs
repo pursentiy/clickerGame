@@ -41,10 +41,15 @@ namespace Services
         public bool IsPackAvailable(int packNumber)
         {
             var currencyToUnlock = GetCurrencyToUnlock(packNumber);
-            if (currencyToUnlock == null || currencyToUnlock.GetCount() <= 0)
+            if (currencyToUnlock == null || currencyToUnlock.Count == 0)
                 return true;
 
-            return _playerCurrencyManager.CanSpend(currencyToUnlock);
+            foreach (var currency in currencyToUnlock)
+            {
+                if (currency != null && currency.GetCount() > 0 && !_playerCurrencyManager.CanSpend(currency))
+                    return false;
+            }
+            return true;
         }
         
         public int GetAllAvailablePacksCount()
@@ -58,7 +63,7 @@ namespace Services
             return _gameInfoProvider.GetPacksIds().Count(IsPackAvailable);
         }
         
-        public ICurrency GetCurrencyToUnlock(int packNumber)
+        public List<ICurrency> GetCurrencyToUnlock(int packNumber)
         {
             if (!_gameInfoProvider.IsInitialized)
             {
@@ -67,7 +72,10 @@ namespace Services
             }
 
             var pack = _gameInfoProvider.GetPackById(packNumber);
-            return pack?.CurrencyToUnlock;
+            if (pack?.CurrencyToUnlock == null)
+                return new List<ICurrency>();
+
+            return new List<ICurrency> { pack.CurrencyToUnlock };
         }
 
         public bool HasLevelBeenCompletedBefore(int packNumber, int levelNumber)

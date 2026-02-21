@@ -58,7 +58,7 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
 
         private IPromise VisualizeCurrencyWidgetAnimation()
         {
-            return Context.CurrencyDisplayWidget.Bump();
+            return Context.CurrencyDisplayWidget.BumpCurrencies(Context.DesiredCurrency);
         }
 
         private IPromise<MediatorFlowInfo> ShowMessagePopup()

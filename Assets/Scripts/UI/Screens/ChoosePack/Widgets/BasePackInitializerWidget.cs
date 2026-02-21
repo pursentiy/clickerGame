@@ -41,6 +41,7 @@ namespace UI.Screens.ChoosePack.Widgets
         public FSignal GridInitializationDoneSignal { get; } = new();
 
         protected abstract PackType TargetPackType { get; }
+        protected abstract BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, List<ICurrency> currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered);
         
         public bool EntranceAnimationsAlreadyTriggered { get; set; }
 
@@ -169,27 +170,26 @@ namespace UI.Screens.ChoosePack.Widgets
 
             var packId = packInfo.PackId;
             var isUnlocked = _progressProvider.IsPackAvailable(packId);
-            var currencyToUnlock = _progressProvider.GetCurrencyToUnlock(packId);
+            var currencyToUnlock = _progressProvider.GetCurrencyToUnlock(packId) ?? new List<ICurrency>();
             System.Func<bool> getEntranceAlreadyTriggered = () => EntranceAnimationsAlreadyTriggered;
 
             return CreatePackWidgetInfoInternal(packInfo, packId, isUnlocked, currencyToUnlock, indexInList, getEntranceAlreadyTriggered);
         }
-
-        protected abstract BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, ICurrency currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered);
-
+        
         protected void OnAvailablePackClicked(PackInfo packInfo)
         {
             _flowScreenController.GoToChooseLevelScreen(packInfo);
         }
             
-        protected void OnUnavailablePackClicked()
+        protected void OnUnavailablePackClicked(List<ICurrency> desiredCurrency)
         {
             if (_currencyDisplayWidget == null || _adsButtonWidget == null)
             {
                 LoggerService.LogWarning(this, $"[{nameof(OnUnavailablePackClicked)}]: {nameof(CurrencyDisplayWidget)} or {nameof(AdsButtonWidget)} is null");
+                return;
             }
             StateMachine
-                .CreateMachine(new VisualizeNotEnoughCurrencyContext(_currencyDisplayWidget, _adsButtonWidget))
+                .CreateMachine(new VisualizeNotEnoughCurrencyContext(_currencyDisplayWidget, _adsButtonWidget, desiredCurrency))
                 .StartSequence<VisualizeNotEnoughCurrencyState>()
                 .FinishWith(this);
         }

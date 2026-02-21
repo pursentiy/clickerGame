@@ -76,6 +76,23 @@ namespace Components.UI
             return Promise.Resolved();
         }
 
+        public IPromise BumpCurrencies(IReadOnlyList<ICurrency> desiredCurrency)
+        {
+            if (desiredCurrency == null || desiredCurrency.Count == 0)
+                return Promise.Resolved();
+
+            var seenTypes = new HashSet<Type>();
+            var promises = new List<IPromise>();
+            foreach (var currency in desiredCurrency)
+            {
+                if (currency == null) continue;
+                var type = currency.GetType();
+                if (!seenTypes.Add(type)) continue;
+                promises.Add(Bump(type));
+            }
+            return promises.Count == 0 ? Promise.Resolved() : Promise.All(promises);
+        }
+
         public IPromise BumpAll()
         {
             var promises = new List<IPromise>();

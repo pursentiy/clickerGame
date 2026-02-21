@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Common.Currency;
 using Common.Data.Info;
 using Configurations.Progress;
@@ -16,7 +17,7 @@ namespace UI.Screens.ChoosePack.Widgets
             return new DefaultPackItemWidgetMediator((DefaultPackItemWidgetInfo)info);
         }
 
-        protected override BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, ICurrency currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered)
+        protected override BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, List<ICurrency> currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered)
         {
             return new DefaultPackItemWidgetInfo(
                 packInfo.PackName,
