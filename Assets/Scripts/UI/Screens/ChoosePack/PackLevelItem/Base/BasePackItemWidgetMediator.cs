@@ -32,76 +32,51 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
         [Inject] protected readonly SoundHandler _soundHandler;
         [Inject] protected readonly LocalizationService _localization;
         [Inject] protected readonly CurrencyLibraryService _currencyLibraryService;
-        
+
         protected GameObject _packImageInstance;
         private bool _isUnlocked;
 
         public int PackId => Data.PackId;
-        
+
         protected BasePackItemWidgetMediator(TInfo data) : base(data) { }
 
-        protected override void OnInitialize(bool isVisibleOnRefresh)
+        protected virtual void ApplyInstantUnlock()
         {
-            base.OnInitialize(isVisibleOnRefresh);
-
-            // 1. Тексты и контент
-            View.PackText.SetText(_localization.GetValue($"pack_{Data.PackName.ToLower()}"));
-            
-            if (_packImageInstance == null && Data.PackImagePrefab != null)
-                _packImageInstance = Object.Instantiate(Data.PackImagePrefab, View.PackImagePrefabContainer);
-
-            // 2. Установка состояния (сразу применяем текущее владение)
-            _isUnlocked = Data.IsUnlocked;
-            SetupState(_isUnlocked, immediate: true);
-
-            // 3. Подготовка к анимации появления (с задержкой для layout)
-            PrepareEntranceDelayed();
+            SetLockedVisuals(false);
+            View.PackImagePrefabContainer.localScale = Vector3.one;
         }
 
-        private void PrepareEntranceDelayed()
+        protected virtual void UnlockWithAnimation()
         {
-            if (View.AnimationWidget == null) return;
+            _soundHandler.PlaySound(AudioExtensions.PackUnlockedKey);
 
-            // Сразу скрываем если будет анимация
-            bool shouldAnimate = Data.EntranceAnimationRequested || !Data.GetEntranceAnimationsAlreadyTriggered();
-            if (shouldAnimate)
+            View.LockWidget.PlayUnlockAnimation()
+                .Then(OnLockAnimationFinished)
+                .Then(() => SetLockedVisuals(false))
+                .CancelWith(this);
+
+            IPromise OnLockAnimationFinished()
             {
-                View.AnimationWidget.ResetPositionCapture();
+                var seq = DOTween.Sequence().KillWith(View.gameObject);
+                seq.Join(View.FadeImage.DOFade(0, View.UnlockDuration).SetEase(Ease.Linear));
+                seq.Append(View.Holder.DOLocalMoveY(30f, View.UnlockDuration * 0.3f).SetEase(Ease.OutCubic));
+                seq.Append(View.Holder.DOLocalMoveY(0f, View.UnlockDuration * 0.6f).SetEase(Ease.OutBounce));
+
+                if (View.UnlockParticles != null)
+                    seq.InsertCallback(View.UnlockDuration * 0.3f, () => View.UnlockParticles.Play());
+
+                return seq.AsPromise();
             }
-
-            // Даём layout отработать
-            DOVirtual.DelayedCall(0.05f, () =>
-            {
-                if (View == null || View.AnimationWidget == null) return;
-
-                if (shouldAnimate)
-                {
-                    View.AnimationWidget.Prepare(View.EntranceSlideOffsetY);
-                    
-                    // Если анимация была запрошена - играем
-                    if (Data.EntranceAnimationRequested)
-                    {
-                        Data.EntranceAnimationRequested = false;
-                        PlayEntranceAnimationInternal();
-                    }
-                }
-                else
-                {
-                    View.AnimationWidget.SetToRest();
-                }
-            }).KillWith(this);
         }
 
         public void RequestEntranceAnimation()
         {
-            // Если View ещё не инициализирован - ставим флаг, анимация запустится в OnInitialize
             if (View == null)
             {
                 Data.EntranceAnimationRequested = true;
                 return;
             }
 
-            // View уже есть - подготавливаем с задержкой и играем
             if (View.AnimationWidget != null)
             {
                 View.AnimationWidget.ResetPositionCapture();
@@ -119,32 +94,86 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             }
         }
 
-        private void PlayEntranceAnimationInternal()
-        {
-            if (View == null || View.AnimationWidget == null)
-                return;
-
-            float delay = Data.IndexInList * View.EntranceStaggerDelay;
-            
-            View.AnimationWidget.PlayEntrance(delay, View.EntranceDuration)
-                .CancelWith(this);
-        }
-
         public void PlayExitAnimation()
         {
             if (View == null || View.AnimationWidget == null)
                 return;
-            
+
             View.AnimationWidget.PlayExit(View.EntranceSlideOffsetY, View.ExitDuration);
         }
 
         public void UpdateWidgetUnlock(bool isUnlocked)
         {
             if (_isUnlocked == isUnlocked) return;
-            
+
             _isUnlocked = isUnlocked;
             Data.IsUnlocked = isUnlocked;
             SetupState(_isUnlocked, immediate: false);
+        }
+
+        protected override void OnInitialize(bool isVisibleOnRefresh)
+        {
+            base.OnInitialize(isVisibleOnRefresh);
+
+            View.PackText.SetText(_localization.GetValue($"pack_{Data.PackName.ToLower()}"));
+
+            if (_packImageInstance == null && Data.PackImagePrefab != null)
+                _packImageInstance = Object.Instantiate(Data.PackImagePrefab, View.PackImagePrefabContainer);
+
+            _isUnlocked = Data.IsUnlocked;
+            SetupState(_isUnlocked, immediate: true);
+
+            PrepareEntranceDelayed();
+        }
+
+        protected override void OnRelease(ListItemReleaseType type)
+        {
+            View.Holder.DOKill();
+            View.FadeImage.DOKill();
+            View.LockWidget.DOKill();
+            base.OnRelease(type);
+        }
+
+        private void PrepareEntranceDelayed()
+        {
+            if (View.AnimationWidget == null) return;
+
+            bool shouldAnimate = Data.EntranceAnimationRequested || !Data.GetEntranceAnimationsAlreadyTriggered();
+            if (shouldAnimate)
+            {
+                View.AnimationWidget.ResetPositionCapture();
+            }
+
+            DOVirtual.DelayedCall(0.05f, () =>
+            {
+                if (View == null || View.AnimationWidget == null) return;
+
+                if (shouldAnimate)
+                {
+                    View.AnimationWidget.Prepare(View.EntranceSlideOffsetY);
+
+                    if (Data.EntranceAnimationRequested)
+                    {
+                        Data.EntranceAnimationRequested = false;
+                        PlayEntranceAnimationInternal();
+                    }
+                }
+                else
+                {
+                    View.AnimationWidget.SetToRest();
+                }
+            }).KillWith(this);
+        }
+
+        private void PlayEntranceAnimationInternal()
+        {
+            if (View == null || View.AnimationWidget == null)
+                return;
+
+            float delay = Data.IndexInList * View.EntranceStaggerDelay;
+
+            View.AnimationWidget.PlayEntrance(delay, View.EntranceDuration)
+                .CancelWith(this);
         }
 
         private void SetupState(bool isUnlocked, bool immediate)
@@ -154,7 +183,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             if (isUnlocked)
             {
                 View.PackEnterButton.onClick.MapListenerWithSound(Data.OnClickAction.SafeInvoke).DisposeWith(this);
-                
+
                 if (immediate) ApplyInstantUnlock();
                 else UnlockWithAnimation();
             }
@@ -162,8 +191,9 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             {
                 UpdateLockedBlockText();
                 var desiredCurrency = Data.CurrencyToUnlock != null ? new List<ICurrency>(Data.CurrencyToUnlock) : new List<ICurrency>();
-                View.PackEnterButton.onClick.MapListenerWithSound(() => Data.OnLockedClickAction?.Invoke(desiredCurrency)).DisposeWith(this);
-                
+                var packRect = View.transform as RectTransform;
+                View.PackEnterButton.onClick.MapListenerWithSound(() => Data.OnLockedClickAction?.Invoke(desiredCurrency, packRect)).DisposeWith(this);
+
                 SetLockedVisuals(true);
             }
         }
@@ -174,7 +204,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             var currencyToUnlock = list != null && list.Count > 0 ? list[0] : null;
             var currencyName = CurrencyExtensions.GetCurrencyName(currencyToUnlock);
             var spriteAsset = _currencyLibraryService.GetSpriteAsset(currencyName);
-            
+
             if (spriteAsset != null)
                 View.LockedBlockText.spriteAsset = spriteAsset;
 
@@ -190,44 +220,6 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             {
                 View.FadeImage.color = View.FadeImage.color.SetAlpha(View.FadeImageAlpha);
             }
-        }
-
-        protected virtual void ApplyInstantUnlock()
-        {
-            SetLockedVisuals(false);
-            View.PackImagePrefabContainer.localScale = Vector3.one;
-        }
-        
-        protected virtual void UnlockWithAnimation()
-        {
-            _soundHandler.PlaySound(AudioExtensions.PackUnlockedKey);
-
-            View.LockWidget.PlayUnlockAnimation()
-                .Then(OnLockAnimationFinished)
-                .Then(() => SetLockedVisuals(false))
-                .CancelWith(this);
-
-            IPromise OnLockAnimationFinished()
-            {
-                var seq = DOTween.Sequence().KillWith(View.gameObject);
-                seq.Join(View.FadeImage.DOFade(0, View.UnlockDuration).SetEase(Ease.Linear));
-                seq.Append(View.Holder.DOLocalMoveY(30f, View.UnlockDuration * 0.3f).SetEase(Ease.OutCubic));
-                seq.Append(View.Holder.DOLocalMoveY(0f, View.UnlockDuration * 0.6f).SetEase(Ease.OutBounce));
-
-                // 3. Эффекты
-                if (View.UnlockParticles != null)
-                    seq.InsertCallback(View.UnlockDuration * 0.3f, () => View.UnlockParticles.Play());
-
-                return seq.AsPromise();
-            }
-        }
-
-        protected override void OnRelease(ListItemReleaseType type)
-        {
-            View.Holder.DOKill();
-            View.FadeImage.DOKill();
-            View.LockWidget.DOKill();
-            base.OnRelease(type);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem.DefaultPackItem
     public class DefaultPackItemWidgetInfo : BasePackItemWidgetInfo
     {
         public DefaultPackItemWidgetInfo(string packName, GameObject packImagePrefab, int packId, bool isUnlocked,
-            Action onClickAction, Action<List<ICurrency>> onLockedClickAction, List<ICurrency> currencyToUnlock, int indexInList = 0,
+            Action onClickAction, Action<List<ICurrency>, RectTransform> onLockedClickAction, List<ICurrency> currencyToUnlock, int indexInList = 0,
             Func<bool> getEntranceAnimationsAlreadyTriggered = null)
             : base(packName, packImagePrefab, packId, isUnlocked, onClickAction, onLockedClickAction, currencyToUnlock, indexInList, getEntranceAnimationsAlreadyTriggered)
         {

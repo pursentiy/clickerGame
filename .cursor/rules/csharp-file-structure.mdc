@@ -1,0 +1,81 @@
+---
+description: C# file structure — field order, abstract/virtual at top, private methods last
+globs: **/*.cs
+alwaysApply: false
+---
+
+# C# File Structure
+
+When writing or refactoring C# files, follow this order. Put **abstract and virtual members** near the top (in their sections); keep **private methods only at the end**.
+
+## 1. Const fields
+```csharp
+private const float AnimationDuration = 0.5f;
+```
+
+## 2. [SerializeField] fields
+```csharp
+[SerializeField] private TextMeshProUGUI _currencyText;
+[SerializeField] private RectTransform _animationTarget;
+```
+
+## 3. Private fields
+```csharp
+private long _currentDisplayValue;
+private Dictionary<Type, SingleCurrencyDisplayWidgetBase> _displayMap;
+```
+
+## 4. Private get/set (properties)
+```csharp
+private ProfileSnapshot _profileSnapshot { get; set; }
+```
+
+## 5. Public get/set (properties)
+```csharp
+public RectTransform AnimationTarget => _animationTarget;
+public IReadOnlyList<ICurrency> CurrencyToUnlock { get; }
+```
+
+## 6. Abstract initializer / abstract methods
+```csharp
+protected abstract BasePackItemWidgetInfo CreatePackWidgetInfoInternal(...);
+```
+
+## 7. Virtual initializer / virtual methods
+```csharp
+protected virtual void ApplyInstantUnlock() { ... }
+```
+
+## 8. Public methods
+```csharp
+public void SetCurrency(ICurrency currency, bool withAnimation = false) { ... }
+public IPromise Bump(Type currencyType) { ... }
+```
+
+## 9. Override abstract methods
+```csharp
+protected override BasePackItemWidgetInfo CreatePackWidgetInfoInternal(...) { ... }
+```
+
+## 10. Override virtual methods
+```csharp
+protected override void OnInitialize(bool isVisibleOnRefresh) { ... }
+public override void OnEnter(params object[] arguments) { ... }
+```
+
+## 11. Event / Unity lifecycle (Start, Update, OnEnable, etc.)
+```csharp
+public void Start() { ... }
+private void OnEnable() { ... }
+```
+
+## 12. Private methods (only at the end)
+```csharp
+private void BuildDisplayMap() { ... }
+private void UpdateLockedBlockText() { ... }
+private IPromise VisualizeCurrencyWidgetAnimation() { ... }
+```
+
+---
+
+**Summary:** Constants → SerializedField → private fields → properties (private then public) → abstract → virtual → public → override abstract → override virtual → event/lifecycle → **private methods last**.

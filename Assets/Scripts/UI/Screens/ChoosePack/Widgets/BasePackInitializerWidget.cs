@@ -9,6 +9,7 @@ using Controllers;
 using Extensions;
 using Installers;
 using Plugins.FSignal;
+using RSG;
 using Services;
 using Services.CoroutineServices;
 using ThirdParty.SuperScrollView.Scripts.GridView;
@@ -16,6 +17,7 @@ using ThirdParty.SuperScrollView.Scripts.List;
 using UI.Screens.ChoosePack.NoCurrencySequence;
 using UI.Screens.ChoosePack.PackLevelItem.Base;
 using UnityEngine;
+using Utilities;
 using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
@@ -24,12 +26,14 @@ namespace UI.Screens.ChoosePack.Widgets
 {
     public abstract class BasePackInitializerWidget : InjectableMonoBehaviour
     {
+        protected const float MessagePopupFontSize = 175f;
+
         [Inject] protected readonly ProgressProvider _progressProvider;
         [Inject] protected readonly FlowScreenController _flowScreenController;
         [Inject] private readonly CoroutineService _coroutineService;
-        
+
         [SerializeField] protected LoopGridView _loopGridView;
-        
+
         protected CurrencyDisplayWidget _currencyDisplayWidget;
         protected AdsButtonWidget _adsButtonWidget;
         protected GridViewAdapter _gridViewAdapter;
@@ -39,17 +43,52 @@ namespace UI.Screens.ChoosePack.Widgets
         private bool _entryAnimationRequested;
 
         public FSignal GridInitializationDoneSignal { get; } = new();
+        public bool EntranceAnimationsAlreadyTriggered { get; set; }
 
         protected abstract PackType TargetPackType { get; }
         protected abstract BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, List<ICurrency> currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered);
-        
-        public bool EntranceAnimationsAlreadyTriggered { get; set; }
+        protected abstract IListItem CreateMediator(BasePackItemWidgetInfo info);
+        protected abstract Func<IDisposeProvider, IPromise<MediatorFlowInfo>> GetShowMessagePopupPromiseFunc(RectTransform popupAnchorRect);
 
-        protected override void Awake()
+        protected virtual void InitializePackButtons()
         {
-            base.Awake();
-            
-            GridInitializationDoneSignal.MapListener(TryPlayEntranceAnimation).DisposeWith(this);
+            var allPacks = _progressProvider.GetAllPacks();
+            if (allPacks.IsCollectionNullOrEmpty())
+            {
+                LoggerService.LogError(this, $"[{nameof(InitializePackButtons)}]: {nameof(ProgressProvider)} packs params are null or empty.");
+                return;
+            }
+
+            _packsInfos = allPacks.Where(pack => pack != null && pack.PackType == TargetPackType).ToList();
+            SetupPacksList();
+        }
+
+        protected virtual void SetupPacksList()
+        {
+            if (_packsInfos.IsCollectionNullOrEmpty())
+            {
+                LoggerService.LogWarning(this, $"[{nameof(SetupPacksList)}]: {TargetPackType} packs collection is empty");
+            }
+
+            if (_gridViewAdapter == null && _loopGridView != null)
+            {
+                _gridViewAdapter = new GridViewAdapter(_loopGridView);
+                _gridViewAdapter.InitScroll(GetMemberItems(_packsInfos));
+            }
+
+            _gridInitialized = true;
+            _coroutineService.WaitFrame()
+                .ContinueWithResolved(() => GridInitializationDoneSignal?.Dispatch());
+        }
+
+        protected virtual IList<IListItem> GetMemberItems(IEnumerable<PackInfo> packsInfos)
+        {
+            var list = packsInfos.ToList();
+            return list
+                .Select((pack, index) => CreatePackWidgetInfo(pack, index))
+                .Where(info => info != null)
+                .Select(CreateMediator)
+                .ToList();
         }
 
         public void Initialize(CurrencyDisplayWidget currencyDisplayWidget, AdsButtonWidget adsButtonWidget)
@@ -63,9 +102,9 @@ namespace UI.Screens.ChoosePack.Widgets
         public void UpdatePacksState()
         {
             var data = _gridViewAdapter?.GetData();
-            if (data == null) 
+            if (data == null)
                 return;
-            
+
             foreach (var item in data)
             {
                 if (item is IPackItemWidgetMediator mediator)
@@ -80,28 +119,6 @@ namespace UI.Screens.ChoosePack.Widgets
         {
             _entryAnimationRequested = true;
             TryPlayEntranceAnimation();
-        }
-
-        private void TryPlayEntranceAnimation()
-        {
-            if (!_entryAnimationRequested || !_gridInitialized)
-                return;
-            
-            _entryAnimationRequested = false;
-            PlayEntranceAnimationsInternal();
-        }
-
-        private void PlayEntranceAnimationsInternal()
-        {
-            var mediators = _gridViewAdapter?.GetData()?.OfType<IPackItemWidgetMediator>().ToList();
-            if (mediators == null || mediators.Count == 0) return;
-
-            foreach (var mediator in mediators)
-            {
-                mediator.RequestEntranceAnimation();
-            }
-
-            EntranceAnimationsAlreadyTriggered = true;
         }
 
         public void PlayExitAnimations()
@@ -120,48 +137,12 @@ namespace UI.Screens.ChoosePack.Widgets
             }
         }
 
-        protected virtual void InitializePackButtons()
+        protected override void Awake()
         {
-            var allPacks = _progressProvider.GetAllPacks();
-            if (allPacks.IsCollectionNullOrEmpty())
-            {
-                LoggerService.LogError(this, $"[{nameof(InitializePackButtons)}]: {nameof(ProgressProvider)} packs params are null or empty.");
-                return;
-            }
+            base.Awake();
 
-            _packsInfos = allPacks.Where(pack => pack != null && pack.PackType == TargetPackType).ToList();
-            SetupPacksList();
+            GridInitializationDoneSignal.MapListener(TryPlayEntranceAnimation).DisposeWith(this);
         }
-        
-        protected virtual void SetupPacksList()
-        {
-            if (_packsInfos.IsCollectionNullOrEmpty())
-            {
-                LoggerService.LogWarning(this, $"[{nameof(SetupPacksList)}]: {TargetPackType} packs collection is empty");
-            }
-            
-            if (_gridViewAdapter == null && _loopGridView != null)
-            {
-                _gridViewAdapter = new GridViewAdapter(_loopGridView);
-                _gridViewAdapter.InitScroll(GetMemberItems(_packsInfos));
-            }
-
-            _gridInitialized = true;
-            _coroutineService.WaitFrame()
-                .ContinueWithResolved(() => GridInitializationDoneSignal?.Dispatch());
-        }
-        
-        protected virtual IList<IListItem> GetMemberItems(IEnumerable<PackInfo> packsInfos)
-        {
-            var list = packsInfos.ToList();
-            return list
-                .Select((pack, index) => CreatePackWidgetInfo(pack, index))
-                .Where(info => info != null)
-                .Select(CreateMediator)
-                .ToList();
-        }
-        
-        protected abstract IListItem CreateMediator(BasePackItemWidgetInfo info);
 
         protected BasePackItemWidgetInfo CreatePackWidgetInfo(PackInfo packInfo, int indexInList)
         {
@@ -175,13 +156,13 @@ namespace UI.Screens.ChoosePack.Widgets
 
             return CreatePackWidgetInfoInternal(packInfo, packId, isUnlocked, currencyToUnlock, indexInList, getEntranceAlreadyTriggered);
         }
-        
+
         protected void OnAvailablePackClicked(PackInfo packInfo)
         {
             _flowScreenController.GoToChooseLevelScreen(packInfo);
         }
-            
-        protected void OnUnavailablePackClicked(List<ICurrency> desiredCurrency)
+
+        protected void OnUnavailablePackClicked(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect)
         {
             if (_currencyDisplayWidget == null || _adsButtonWidget == null)
             {
@@ -189,9 +170,31 @@ namespace UI.Screens.ChoosePack.Widgets
                 return;
             }
             StateMachine
-                .CreateMachine(new VisualizeNotEnoughCurrencyContext(_currencyDisplayWidget, _adsButtonWidget, desiredCurrency))
+                .CreateMachine(new VisualizeNotEnoughCurrencyContext(_currencyDisplayWidget, _adsButtonWidget, desiredCurrency, GetShowMessagePopupPromiseFunc(popupAnchorRect)))
                 .StartSequence<VisualizeNotEnoughCurrencyState>()
                 .FinishWith(this);
+        }
+
+        private void TryPlayEntranceAnimation()
+        {
+            if (!_entryAnimationRequested || !_gridInitialized)
+                return;
+
+            _entryAnimationRequested = false;
+            PlayEntranceAnimationsInternal();
+        }
+
+        private void PlayEntranceAnimationsInternal()
+        {
+            var mediators = _gridViewAdapter?.GetData()?.OfType<IPackItemWidgetMediator>().ToList();
+            if (mediators == null || mediators.Count == 0) return;
+
+            foreach (var mediator in mediators)
+            {
+                mediator.RequestEntranceAnimation();
+            }
+
+            EntranceAnimationsAlreadyTriggered = true;
         }
     }
 }

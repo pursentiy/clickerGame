@@ -16,40 +16,11 @@ namespace Components.UI
     public class CurrencyDisplayWidget : InjectableMonoBehaviour
     {
         [Inject] private readonly PlayerCurrencyManager _playerCurrencyManager;
-        
+
         [Header("Currency Display Mappings")]
         [SerializeField] private List<SingleCurrencyDisplayWidgetBase> _currencyDisplayWidgets = new();
 
         private Dictionary<Type, SingleCurrencyDisplayWidgetBase> _displayMap;
-
-        public void Start()
-        {
-            BuildDisplayMap();
-            _playerCurrencyManager.CurrencyChangedSignal.MapListener(OnCurrencyChanged).DisposeWith(this);
-        }
-
-        private void BuildDisplayMap()
-        {
-            _displayMap = new Dictionary<Type, SingleCurrencyDisplayWidgetBase>();
-            foreach (var widgetBase in _currencyDisplayWidgets)
-            {
-                if (widgetBase != null)
-                {
-                    _displayMap.TryAdd(widgetBase.CurrencyType, widgetBase);
-                }
-            }
-        }
-
-        private void OnCurrencyChanged(ICurrency newValue, CurrencyChangeMode mode)
-        {
-            if (mode != CurrencyChangeMode.Instant)
-                return;
-            
-            if (TryGetDisplayWidget(newValue.GetType(), out var widget))
-            {
-                widget.SetCurrency(newValue, false);
-            }
-        }
 
         public void SetCurrency(ICurrency currency, bool withAnimation = false)
         {
@@ -111,7 +82,7 @@ namespace Components.UI
             widgetBase = null;
             if (_displayMap == null)
                 return false;
-            
+
             return _displayMap.TryGetValue(currencyType, out widgetBase);
         }
 
@@ -139,8 +110,37 @@ namespace Components.UI
                 LoggerService.LogWarning(this, $"Target for {currency.GetType().Name} not found at {nameof(GetAnimationTarget)}");
                 return Vector3.zero;
             }
-            
+
             return rectTransform.position;
+        }
+
+        public void Start()
+        {
+            BuildDisplayMap();
+            _playerCurrencyManager.CurrencyChangedSignal.MapListener(OnCurrencyChanged).DisposeWith(this);
+        }
+
+        private void BuildDisplayMap()
+        {
+            _displayMap = new Dictionary<Type, SingleCurrencyDisplayWidgetBase>();
+            foreach (var widgetBase in _currencyDisplayWidgets)
+            {
+                if (widgetBase != null)
+                {
+                    _displayMap.TryAdd(widgetBase.CurrencyType, widgetBase);
+                }
+            }
+        }
+
+        private void OnCurrencyChanged(ICurrency newValue, CurrencyChangeMode mode)
+        {
+            if (mode != CurrencyChangeMode.Instant)
+                return;
+
+            if (TryGetDisplayWidget(newValue.GetType(), out var widget))
+            {
+                widget.SetCurrency(newValue, false);
+            }
         }
     }
 }

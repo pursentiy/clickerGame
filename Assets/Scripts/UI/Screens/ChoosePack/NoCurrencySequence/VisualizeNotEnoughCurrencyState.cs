@@ -17,31 +17,25 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
 {
     public class VisualizeNotEnoughCurrencyState : InjectableStateBase<VisualizeNotEnoughCurrencyContext>
     {
-        private const float MessagePopupFontSize = 175f;
-        
         [Inject] private readonly AdsService _adsService;
         [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
         [Inject] private readonly PlayerCurrencyManager _playerCurrencyManager;
-        [Inject] private readonly GameInfoProvider _gameInfoProvider;
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly CoroutineService _coroutineService;
-        [Inject] private readonly LocalizationService _localizationService;
-        [Inject] private readonly CurrencyLibraryService _currencyLibraryService;
-        [Inject] private readonly FlowPopupController _flowPopupController;
 
         private IUIBlockRef _uiBlockRef;
-        
+
         public override void OnEnter(params object[] arguments)
         {
             base.OnEnter(arguments);
 
             EnableBlocker();
-            
+
             VisualizeCurrencyWidgetAnimation()
                 .Then(() =>
                 {
                     VisualizeAdsButton();
-                    return ShowMessagePopup();
+                    return Context.ShowMessagePopup(this);
                 })
                 .Then(flowInfo =>
                 {
@@ -61,16 +55,6 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
             return Context.CurrencyDisplayWidget.BumpCurrencies(Context.DesiredCurrency);
         }
 
-        private IPromise<MediatorFlowInfo> ShowMessagePopup()
-        {
-            var currencyToEarnViaAds = _gameInfoProvider.StarsRewardForAds;
-            var spriteAsset = _currencyLibraryService.GetSpriteAsset(CurrencyExtensions.StarsCurrencyName);
-            var context = new MessagePopupContext(_localizationService.GetFormattedValue(LocalizationExtensions.AdsInfo, currencyToEarnViaAds), Context.AdsButtonWidget.RectTransform, MessagePopupFontSize, spriteAsset);
-            var flowInfo = _flowPopupController.ShowMessagePopup(context, overrideDisposeProvider: this);
-
-            return Promise<MediatorFlowInfo>.Resolved(flowInfo);
-        }
-
         private void VisualizeAdsButton()
         {
             Context.AdsButtonWidget.BumpButton();
@@ -85,7 +69,7 @@ namespace UI.Screens.ChoosePack.NoCurrencySequence
         {
             _uiBlockRef?.Dispose();
         }
-        
+
         private void FinishSequence()
         {
             Sequence.Finish();
