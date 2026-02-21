@@ -38,7 +38,7 @@ namespace UI.Popups.CompleteLevelInfoPopup
             var starsEarned = Math.Max(0, Context.CurrentStars - Context.InitialStars);
             var finalStarsCount = Context.PreRewardBalance + starsEarned;
             
-            View.StarsDisplayWidget.SetCurrency(Context.PreRewardBalance);
+            View.CurrencyWidget.SetCurrency(Context.PreRewardBalance);
             
             AnimateTime(Context.BeatTime);
             Promise.All(AnimateNewStarText(starsEarned, Context.LevelStatus), AnimateStarsSequence(Context.InitialStars, starsEarned))
@@ -51,7 +51,7 @@ namespace UI.Popups.CompleteLevelInfoPopup
                 .Then(() =>
                 {
                     if (finalStarsCount > Context.PreRewardBalance)
-                        View.StarsDisplayWidget.SetCurrency(finalStarsCount, true);
+                        View.CurrencyWidget.SetCurrency(finalStarsCount, true);
                 })
                 .CancelWith(this);
             
@@ -218,12 +218,14 @@ namespace UI.Popups.CompleteLevelInfoPopup
         {
             if (earnedStars.Value <= 0)
                 return Promise.Resolved();
+
+            var targetPlaces = new Vector3[] { View.CurrencyWidget.GetAnimationTarget(earnedStars) };
             
             var context = new FlyingUIRewardAnimationContext(
                 new ICurrency[]{earnedStars}, 
                 View.FlyingRewardsContainer, 
                 new Vector3[] {View.StarsFlightStartPlace.position},
-                new Vector3[] {View.StarsDisplayWidget.AnimationTarget.position});
+                targetPlaces);
             
             return _flyingUIRewardAnimationService.PlayAnimation(context).CancelWith(this);
         }

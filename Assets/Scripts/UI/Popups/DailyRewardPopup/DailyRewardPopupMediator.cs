@@ -189,17 +189,17 @@ namespace UI.Popups.DailyRewardPopup
             if (View.FlyingRewardsContainer == null)
                 return Promise.Resolved();
 
-            if (View.CurrencyDisplayWidget == null || View.CurrencyDisplayWidget.AnimationTarget == null)
+            if (View.CurrencyDisplayWidget == null)
                 return Promise.Resolved();
 
             Vector3 startPosition = GetRewardFlightStartPosition();
-            Vector3 targetPosition = View.CurrencyDisplayWidget.AnimationTarget.position;
+            var targetPositions = rewards.Select(r => View.CurrencyDisplayWidget.GetAnimationTarget(r)).ToArray();
 
             var context = new FlyingUIRewardAnimationContext(
                 rewards.ToArray(),
                 View.FlyingRewardsContainer,
                 new[] { startPosition },
-                new[] { targetPosition });
+                targetPositions);
 
             return _flyingUIRewardAnimationService.PlayAnimation(context).CancelWith(this);
         }

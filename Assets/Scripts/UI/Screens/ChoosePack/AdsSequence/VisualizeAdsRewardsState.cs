@@ -47,7 +47,7 @@ namespace UI.Screens.ChoosePack.AdsSequence
                 new [] {totalStars}, 
                 Context.AdsRewardsVisualizationContainer, 
                 new [] {Context.AdsButtonTransform.position},
-                new [] {Context.CurrencyDisplayWidget.AnimationTarget.position},
+                new [] {Context.CurrencyDisplayWidget.GetAnimationTarget(totalStars)},
                 rewardsMoveTimeSpeedupFactor: 2f,
                 spawnSettings: new ValueTuple<float, float>(1f, 3f));
 

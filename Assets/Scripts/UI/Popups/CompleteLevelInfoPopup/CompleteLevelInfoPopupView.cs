@@ -19,7 +19,7 @@ namespace UI.Popups.CompleteLevelInfoPopup
         public TMP_Text NewStarText;
         public CanvasGroup NewStarTextCanvasGroup;
         public Color AlreadyEarnedStarColor = new Color(1.0f, 0.83f, 0.74f, 1.0f);
-        public CurrencyDisplayWidget StarsDisplayWidget;
+        public CurrencyDisplayWidget CurrencyWidget;
         public RectTransform StarsFlightStartPlace;
         public RectTransform FlyingRewardsContainer;
     }

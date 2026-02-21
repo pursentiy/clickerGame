@@ -1,18 +1,19 @@
+using System;
 using Common.Currency;
-using UnityEngine;
-using TMPro;
 using DG.Tweening;
 using Extensions;
 using Handlers;
 using Installers;
 using RSG;
+using TMPro;
+using UnityEngine;
 using Utilities.Disposable;
 using Zenject;
 using AudioExtensions = Extensions.AudioExtensions;
 
-namespace Components.UI
+namespace Components.UI.Base
 {
-    public class SingleCurrencyDisplayWidget : InjectableMonoBehaviour
+    public abstract class SingleCurrencyDisplayWidgetBase : InjectableMonoBehaviour
     {
         [Inject] private readonly SoundHandler _soundHandler;
         
@@ -33,6 +34,7 @@ namespace Components.UI
         private long _targetValue;
         private Tween _countTween;
 
+        public abstract Type CurrencyType { get; }
         public RectTransform AnimationTarget => _animationTarget;
 
         public void SetValue(long newValue, bool withAnimation = false)
