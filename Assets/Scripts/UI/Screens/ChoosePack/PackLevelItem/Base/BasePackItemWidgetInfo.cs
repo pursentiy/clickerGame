@@ -14,13 +14,13 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
         public int PackId { get; }
         public bool IsUnlocked { get; set; }
         public Action OnClickAction { get; }
-        public Action<List<ICurrency>, RectTransform> OnLockedClickAction { get; }
+        public Action<List<ICurrency>, RectTransform, int> OnLockedClickAction { get; }
         public IReadOnlyList<ICurrency> CurrencyToUnlock { get; }
         public int IndexInList { get; }
         public bool EntranceAnimationRequested { get; set; }
 
         protected BasePackItemWidgetInfo(string packName, GameObject packImagePrefab, int packId, bool isUnlocked,
-            Action onClickAction, Action<List<ICurrency>, RectTransform> onLockedClickAction, List<ICurrency> currencyToUnlock, int indexInList = 0,
+            Action onClickAction, Action<List<ICurrency>, RectTransform, int> onLockedClickAction, List<ICurrency> currencyToUnlock, int indexInList = 0,
             Func<bool> getEntranceAnimationsAlreadyTriggered = null)
         {
             PackName = packName;

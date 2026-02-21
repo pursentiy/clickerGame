@@ -34,7 +34,7 @@ namespace UI.Screens.ChoosePack.Widgets
                 var currencyToEarnViaAds = _gameInfoProvider.StarsRewardForAds;
                 var spriteAsset = _currencyLibraryService.GetSpriteAsset(CurrencyExtensions.StarsCurrencyName);
                 var anchorRect = _adsButtonWidget != null ? _adsButtonWidget.RectTransform : popupAnchorRect;
-                var context = new MessagePopupContext(_localizationService.GetFormattedValue(LocalizationExtensions.AdsInfo, currencyToEarnViaAds), _adsButtonWidget.RectTransform, MessagePopupFontSize, spriteAsset);
+                var context = new MessagePopupContext(_localizationService.GetFormattedValue(LocalizationExtensions.AdsInfo, currencyToEarnViaAds), anchorRect, MessagePopupFontSize, spriteAsset);
                 var flowInfo = _flowPopupController.ShowMessagePopup(context, overrideDisposeProvider: disposeProvider);
                 return Promise<MediatorFlowInfo>.Resolved(flowInfo);
             };

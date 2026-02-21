@@ -192,7 +192,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
                 UpdateLockedBlockText();
                 var desiredCurrency = Data.CurrencyToUnlock != null ? new List<ICurrency>(Data.CurrencyToUnlock) : new List<ICurrency>();
                 var packRect = View.transform as RectTransform;
-                View.PackEnterButton.onClick.MapListenerWithSound(() => Data.OnLockedClickAction?.Invoke(desiredCurrency, packRect)).DisposeWith(this);
+                View.PackEnterButton.onClick.MapListenerWithSound(() => Data.OnLockedClickAction?.Invoke(desiredCurrency, packRect, Data.PackId)).DisposeWith(this);
 
                 SetLockedVisuals(true);
             }
