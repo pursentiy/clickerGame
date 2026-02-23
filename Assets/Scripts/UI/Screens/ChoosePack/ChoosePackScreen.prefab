@@ -59,6 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fadf06a22ae7e4fa391821a09f60eac4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Screens.ChoosePack.Widgets.FreemiumPackInitializerWidget
+  _container: {fileID: 117561625304093589}
   _loopGridView: {fileID: 8763985752359252926}
 --- !u!114 &1020463488489592571
 MonoBehaviour:
@@ -855,7 +856,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0010986328}
+  m_AnchoredPosition: {x: 0, y: 0.00030517578}
   m_SizeDelta: {x: 0, y: 90}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &1856397989855478248
@@ -1480,7 +1481,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 790622565765744297}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.999999
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1702,7 +1703,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 3189853066402275063}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999973
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2376,6 +2377,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c39ab38bf93f841fcb019de6a40ada5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Screens.ChoosePack.Widgets.DefaultPackInitializerWidget
+  _container: {fileID: 7251409516490716759}
   _loopGridView: {fileID: 5351377824517126931}
 --- !u!114 &8223521182411195255
 MonoBehaviour:
@@ -2628,7 +2630,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0009765625}
+  m_AnchoredPosition: {x: 0, y: 0.00024414062}
   m_SizeDelta: {x: 0, y: 90}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &7251409518089273464

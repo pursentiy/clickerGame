@@ -13,7 +13,7 @@ using Zenject;
 
 namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.UnlockFreemiumPackSequence
 {
-    public class AnimateFreemiumPackUnlockingState : InjectableStateBase<UnlockFreemiumPackSequenceContext>
+    public class AnimateFreemiumPackUnlockingState : InjectableStateBase<UnlockFreemiumPackSequenceContext, List<ICurrency>>
     {
         private const float ScreenBlockTime = 10;
         
@@ -30,7 +30,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.UnlockFreemiu
             PrepareEnvironment();
             
             VisualizeRewardsFlight(Context.PackCost)
-                .Then(() => VisualizeRewardsUpdate(TypedArgument.NewTotalCurrency))
+                .Then(() => VisualizeRewardsUpdate(TypedArgument))
                 .ContinueWithResolved(FinishSequence)
                 .CancelWith(this);
         }
@@ -53,9 +53,12 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.UnlockFreemiu
         
         private IPromise VisualizeRewardsUpdate(List<ICurrency> newRewardsValues)
         {
-            Context.CurrencyDisplayWidget.SetCurrency(totalStars, true);
+            if (newRewardsValues.IsCollectionNullOrEmpty())
+                return Promise.Resolved();
+            
+            Context.CurrencyDisplayWidget.SetCurrency(newRewardsValues, true);
 
-            return _coroutineService.WaitFor(0.2f) 
+            return _coroutineService.WaitFor(0.25f) 
                 .Then(Context.UpdatePacksAction.SafeInvoke)
                 .CancelWith(this);
         }

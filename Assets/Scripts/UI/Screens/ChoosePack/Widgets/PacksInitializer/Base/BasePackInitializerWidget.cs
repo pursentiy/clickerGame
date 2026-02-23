@@ -33,10 +33,12 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Base
         [Inject] protected readonly FlowScreenController _flowScreenController;
         [Inject] private readonly CoroutineService _coroutineService;
 
+        [SerializeField] protected RectTransform _container;
         [SerializeField] protected LoopGridView _loopGridView;
 
         protected CurrencyDisplayWidget _currencyDisplayWidget;
         protected AdsButtonWidget _adsButtonWidget;
+        protected Action _updatePacksState;
         private GridViewAdapter _gridViewAdapter;
         private IReadOnlyCollection<PackInfo> _packsInfos;
 
@@ -50,7 +52,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Base
         protected abstract BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, List<ICurrency> currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered, Action<IPackClickAction> onPackClicked);
         protected abstract IListItem CreateMediator(BasePackItemWidgetInfo info);
         protected abstract Func<IDisposeProvider, IPromise<MediatorFlowInfo>> GetShowMessagePopupPromiseFunc(RectTransform popupAnchorRect);
-        protected abstract void LaunchUnlockPackSequenceOnClick(List<ICurrency> desiredCurrency, PackClickAction clickAction);
+        protected abstract void LaunchUnlockPackSequenceOnClick(int packId, List<ICurrency> currencyToUnlock, PackClickAction clickAction);
   
         protected void OnPackClicked(int packId, IPackClickAction clickAction)
         {
@@ -100,14 +102,14 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Base
 
         protected void OnUnlockablePackClicked(PackInfo packInfo, IPackClickAction clickAction)
         {
-            var desiredCurrency = _progressProvider.GetCurrencyToUnlock(packInfo.PackId) ?? new List<ICurrency>();
-            if (desiredCurrency.IsCollectionNullOrEmpty())
+            var currencyToUnlock = _progressProvider.GetCurrencyToUnlock(packInfo.PackId) ?? new List<ICurrency>();
+            if (currencyToUnlock.IsCollectionNullOrEmpty())
             {
                 LoggerService.LogError(this, $"desiredCurrency is null or empty for PackId {packInfo.PackId} at {nameof(OnUnlockablePackClicked)}");
                 return;
             }
             
-            LaunchUnlockPackSequenceOnClick(desiredCurrency, clickAction.AsPackClickAction());
+            LaunchUnlockPackSequenceOnClick(packInfo.PackId, currencyToUnlock, clickAction.AsPackClickAction());
         }
         
         protected virtual void LaunchLockedActionPackSequenceOnClick(List<ICurrency> desiredCurrency, PackClickAction clickAction)

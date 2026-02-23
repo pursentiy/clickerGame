@@ -30,6 +30,17 @@ namespace Components.UI
             }
         }
 
+        /// <summary>Updates display for multiple currencies.</summary>
+        public void SetCurrency(IReadOnlyList<ICurrency> currencies, bool withAnimation = false)
+        {
+            if (currencies == null) return;
+            foreach (var currency in currencies)
+            {
+                if (currency != null)
+                    SetCurrency(currency, withAnimation);
+            }
+        }
+
         public void SetCurrencyValue(Type currencyType, long value, bool withAnimation = false)
         {
             if (TryGetDisplayWidget(currencyType, out var widget))
@@ -112,6 +123,25 @@ namespace Components.UI
             }
 
             return rectTransform.position;
+        }
+
+        /// <summary>Returns animation target positions for the given currencies (skips null; one target per currency type).</summary>
+        public Vector3[] GetAnimationTarget(IReadOnlyList<ICurrency> currencies)
+        {
+            if (currencies == null || currencies.Count == 0)
+                return Array.Empty<Vector3>();
+
+            var seenTypes = new HashSet<Type>();
+            var result = new List<Vector3>();
+            foreach (var currency in currencies)
+            {
+                if (currency == null || !seenTypes.Add(currency.GetType()))
+                    continue;
+                if (!TryGetDisplayWidget(currency.GetType(), out var widget))
+                    continue;
+                result.Add(widget.AnimationTarget != null ? widget.AnimationTarget.position : Vector3.zero);
+            }
+            return result.ToArray();
         }
 
         public void Start()

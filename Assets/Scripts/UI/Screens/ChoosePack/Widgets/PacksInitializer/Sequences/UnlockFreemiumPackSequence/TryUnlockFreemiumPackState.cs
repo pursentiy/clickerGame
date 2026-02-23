@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Collections.Generic;
+using Common.Currency;
 using Extensions;
 using Services;
 using Services.Player;
@@ -23,7 +26,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.UnlockFreemiu
                 return;
             }
 
-            if (!_playerCurrencyManager.TrySpendCurrencies(Context.PackCost, CurrencyChangeMode.Animated))
+            if (!_playerCurrencyManager.TrySpendCurrencies(Context.PackCost, out var newCurrencies, CurrencyChangeMode.Animated))
             {
                 FinishSequence();
                 return;
@@ -36,7 +39,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.UnlockFreemiu
             }
 
             _playerProfileController.SaveProfile(SavePriority.ImmediateSave);
-            NextState();
+            NextState(newCurrencies);
         }
 
         private bool CanBuyPack()
@@ -62,9 +65,9 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.UnlockFreemiu
             return false;
         }
 
-        private void NextState()
+        private void NextState(List<ICurrency> newCurrencies)
         {
-            Sequence.ActivateState<AnimateFreemiumPackUnlockingState>();
+            Sequence.ActivateState<AnimateFreemiumPackUnlockingState>(newCurrencies);
         }
 
         private void FinishSequence()

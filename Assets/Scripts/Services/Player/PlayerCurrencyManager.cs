@@ -45,11 +45,13 @@ namespace Services.Player
         
         public bool TrySpendCurrency(ICurrency amount, CurrencyChangeMode mode = CurrencyChangeMode.Instant)
         {
-            return amount is not null && TrySpendCurrencies(new List<ICurrency> { amount }, mode);
+            return amount is not null && TrySpendCurrencies(new List<ICurrency> { amount }, out var newCurrencies, mode);
         }
         
-        public bool TrySpendCurrencies(List<ICurrency> currencies, CurrencyChangeMode mode = CurrencyChangeMode.Instant)
+        public bool TrySpendCurrencies(List<ICurrency> currencies, out List<ICurrency> newCurrencies, CurrencyChangeMode mode = CurrencyChangeMode.Instant)
         {
+            newCurrencies = new List<ICurrency>();
+            
             if (currencies is not { Count: > 0 }) 
                 return false;
             
@@ -63,6 +65,7 @@ namespace Services.Player
             if (!_playerProfileController.UpdateCurrencyAndSave(spendDeltas, out var newValues))
                 return false;
 
+            newCurrencies = newValues;
             foreach (var newValue in newValues)
                 CurrencyChangedSignal.Dispatch(newValue, mode);
 

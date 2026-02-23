@@ -35,7 +35,7 @@ namespace UI.Screens.ChoosePack.Widgets
 
         protected override PackType TargetPackType => PackType.Default;
 
-        protected override void LaunchUnlockPackSequenceOnClick(List<ICurrency> desiredCurrency, PackClickAction clickAction)
+        protected override void LaunchUnlockPackSequenceOnClick(int packId, List<ICurrency> currencyToUnlock, PackClickAction clickAction)
         {
             return;
         }

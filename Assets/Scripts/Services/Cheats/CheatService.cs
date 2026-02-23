@@ -27,6 +27,7 @@ namespace Services.Cheats
         [Inject] private readonly BridgeService _bridgeService;
 
         private const string StarsCountKey = "CheatService_StarsCount";
+        private const string HardCurrencyCountKey = "CheatService_HardCurrencyCount";
         private const string EarnedStarsKey = "CheatService_EarnedStars";
         private const string TimeScaleKey = "CheatService_TimeScale";
         private const string UpdateProfileKey = "CheatService_UpdateProfile";
@@ -37,6 +38,13 @@ namespace Services.Cheats
         {
             get => PlayerPrefs.GetInt(StarsCountKey, 5);
             set => PlayerPrefs.SetInt(StarsCountKey, value);
+        }
+
+        [CheatGroup("Settings")]
+        public int HardCurrencyCount
+        {
+            get => PlayerPrefs.GetInt(HardCurrencyCountKey, 100);
+            set => PlayerPrefs.SetInt(HardCurrencyCountKey, value);
         }
 
         [CheatGroup("Settings")]
@@ -148,6 +156,19 @@ namespace Services.Cheats
             else if (StarsCount < 0)
             {
                 _playerCurrencyManager.TrySpendCurrency(new Stars(StarsCount));
+            }
+        }
+
+        [CheatGroup("Currency")]
+        public void AddHardCurrency()
+        {
+            if (HardCurrencyCount > 0)
+            {
+                _playerCurrencyManager.TryAddCurrency(new HardCurrency(HardCurrencyCount));
+            }
+            else if (HardCurrencyCount < 0)
+            {
+                _playerCurrencyManager.TrySpendCurrency(new HardCurrency(Math.Abs(HardCurrencyCount)));
             }
         }
 

@@ -50,7 +50,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
             };
         }
 
-        protected override void LaunchUnlockPackSequenceOnClick(List<ICurrency> desiredCurrency, PackClickAction clickAction)
+        protected override void LaunchUnlockPackSequenceOnClick(int packId, List<ICurrency> currencyToUnlock, PackClickAction clickAction)
         {
             if (_currencyDisplayWidget == null)
             {
@@ -65,9 +65,8 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
             }
             
             var popupAnchorRect = EvaluatePopupAnchorRectFromClickAction(clickAction);
-
-            //TODO REFRESH ACTION
-            var context = new UnlockFreemiumPackSequenceContext(_currencyDisplayWidget, popupAnchorRect, () => { });
+            
+            var context = new UnlockFreemiumPackSequenceContext(currencyToUnlock, packId, _currencyDisplayWidget, popupAnchorRect, UpdatePacksState, PackType.Freemium, _container);
             
             StateMachine
                 .CreateMachine(context)
