@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Common.Currency;
+using UI.Screens.ChoosePack.PackLevelItem.Base.PackClickAction;
 using UnityEngine;
 
 namespace UI.Screens.ChoosePack.PackLevelItem.Base
@@ -13,22 +14,21 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
         public GameObject PackImagePrefab { get; }
         public int PackId { get; }
         public bool IsUnlocked { get; set; }
-        public Action OnClickAction { get; }
-        public Action<List<ICurrency>, RectTransform, int> OnLockedClickAction { get; }
+        /// <summary>Single click handler; receives <see cref="IPackClickAction"/> (e.g. popup anchor, extensible). Handler decides behavior from current state (e.g. GetPackStatus).</summary>
+        public Action<IPackClickAction> OnClickAction { get; }
         public IReadOnlyList<ICurrency> CurrencyToUnlock { get; }
         public int IndexInList { get; }
         public bool EntranceAnimationRequested { get; set; }
 
         protected BasePackItemWidgetInfo(string packName, GameObject packImagePrefab, int packId, bool isUnlocked,
-            Action onClickAction, Action<List<ICurrency>, RectTransform, int> onLockedClickAction, List<ICurrency> currencyToUnlock, int indexInList = 0,
+            Action<IPackClickAction> onPackClicked, List<ICurrency> currencyToUnlock, int indexInList = 0,
             Func<bool> getEntranceAnimationsAlreadyTriggered = null)
         {
             PackName = packName;
             PackImagePrefab = packImagePrefab;
             PackId = packId;
             IsUnlocked = isUnlocked;
-            OnClickAction = onClickAction;
-            OnLockedClickAction = onLockedClickAction;
+            OnClickAction = onPackClicked;
             CurrencyToUnlock = currencyToUnlock ?? new List<ICurrency>();
             IndexInList = indexInList;
             _getEntranceAnimationsAlreadyTriggered = getEntranceAnimationsAlreadyTriggered;

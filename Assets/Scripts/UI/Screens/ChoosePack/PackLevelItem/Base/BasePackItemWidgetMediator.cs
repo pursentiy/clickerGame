@@ -180,20 +180,17 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
         {
             View.PackEnterButton.onClick.RemoveAllListeners();
 
+            var packAction = new PackClickAction.PackClickAction(View.transform as RectTransform);
+            View.PackEnterButton.onClick.MapListenerWithSound(() => Data.OnClickAction?.Invoke(packAction)).DisposeWith(this);
+
             if (isUnlocked)
             {
-                View.PackEnterButton.onClick.MapListenerWithSound(Data.OnClickAction.SafeInvoke).DisposeWith(this);
-
                 if (immediate) ApplyInstantUnlock();
                 else UnlockWithAnimation();
             }
             else
             {
                 UpdateLockedBlockText();
-                var desiredCurrency = Data.CurrencyToUnlock != null ? new List<ICurrency>(Data.CurrencyToUnlock) : new List<ICurrency>();
-                var packRect = View.transform as RectTransform;
-                View.PackEnterButton.onClick.MapListenerWithSound(() => Data.OnLockedClickAction?.Invoke(desiredCurrency, packRect, Data.PackId)).DisposeWith(this);
-
                 SetLockedVisuals(true);
             }
         }

@@ -14,7 +14,9 @@ using Services.Player;
 using ThirdParty.SuperScrollView.Scripts.List;
 using UI.Popups.MessagePopup;
 using UI.Screens.ChoosePack.PackLevelItem.Base;
+using UI.Screens.ChoosePack.PackLevelItem.Base.PackClickAction;
 using UI.Screens.ChoosePack.PackLevelItem.FreemiumPackItem;
+using UI.Screens.ChoosePack.Widgets.PacksInitializer.Base;
 using UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.NoCurrencySequence;
 using UnityEngine;
 using Utilities;
@@ -34,11 +36,11 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
 
         protected override PackType TargetPackType => PackType.Freemium;
 
-        protected override void LaunchUnavailablePackSequenceOnClick(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect)
+        protected override void LaunchLockedActionPackSequenceOnClick(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect)
         {
             if (_currencyDisplayWidget == null || _adsButtonWidget == null)
             {
-                LoggerService.LogWarning(this, $"[{nameof(OnUnavailablePackClicked)}]: {nameof(CurrencyDisplayWidget)} or {nameof(AdsButtonWidget)} is null");
+                LoggerService.LogWarning(this, $"[{nameof(OnLockedPackClicked)}]: {nameof(CurrencyDisplayWidget)} or {nameof(AdsButtonWidget)} is null");
                 return;
             }
             
@@ -66,7 +68,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
             return new FreemiumPackItemWidgetMediator((FreemiumPackItemWidgetInfo)info);
         }
 
-        protected override bool TryStartBuySequenceIfAffordable(List<ICurrency> desiredCurrency, UnityEngine.RectTransform popupAnchorRect, int packId)
+        protected override bool TryStartBuySequenceIfAffordable(List<ICurrency> desiredCurrency, IPackClickAction clickAction, int packId)
         {
             if (_progressProvider.GetPackStatus(packId) != PackStatus.CanBeUnlocked)
                 return false;
@@ -85,15 +87,14 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
             UpdatePacksState();
         }
 
-        protected override BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, List<ICurrency> currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered)
+        protected override BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, List<ICurrency> currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered, Action<IPackClickAction> onPackClicked)
         {
             return new FreemiumPackItemWidgetInfo(
                 packInfo.PackName,
                 packInfo.PackImagePrefab,
                 packId,
                 isUnlocked,
-                () => OnAvailablePackClicked(packInfo),
-                OnUnavailablePackClicked,
+                onPackClicked,
                 currencyToUnlock,
                 indexInList,
                 getEntranceAnimationsAlreadyTriggered);

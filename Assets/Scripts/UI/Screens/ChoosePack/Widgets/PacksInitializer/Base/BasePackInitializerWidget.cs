@@ -15,13 +15,15 @@ using Services.CoroutineServices;
 using ThirdParty.SuperScrollView.Scripts.GridView;
 using ThirdParty.SuperScrollView.Scripts.List;
 using UI.Screens.ChoosePack.PackLevelItem.Base;
+using UI.Screens.ChoosePack.PackLevelItem.Base.PackClickAction;
+using UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.NoCurrencySequence;
 using UnityEngine;
 using Utilities;
 using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
 
-namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
+namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Base
 {
     public abstract class BasePackInitializerWidget : InjectableMonoBehaviour
     {
@@ -35,8 +37,8 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
 
         protected CurrencyDisplayWidget _currencyDisplayWidget;
         protected AdsButtonWidget _adsButtonWidget;
-        protected GridViewAdapter _gridViewAdapter;
-        protected IReadOnlyCollection<PackInfo> _packsInfos;
+        private GridViewAdapter _gridViewAdapter;
+        private IReadOnlyCollection<PackInfo> _packsInfos;
 
         private bool _gridInitialized;
         private bool _entryAnimationRequested;
@@ -45,27 +47,77 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
         public bool EntranceAnimationsAlreadyTriggered { get; set; }
 
         protected abstract PackType TargetPackType { get; }
-        protected abstract BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, List<ICurrency> currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered);
+        protected abstract BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, List<ICurrency> currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered, Action<IPackClickAction> onPackClicked);
         protected abstract IListItem CreateMediator(BasePackItemWidgetInfo info);
         protected abstract Func<IDisposeProvider, IPromise<MediatorFlowInfo>> GetShowMessagePopupPromiseFunc(RectTransform popupAnchorRect);
-        protected abstract void LaunchUnavailablePackSequenceOnClick(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect);
-
-        protected void OnUnavailablePackClicked(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect, int packId)
+        protected abstract void LaunchUnlockPackSequenceOnClick(List<ICurrency> desiredCurrency, PackClickAction clickAction);
+  
+        protected void OnPackClicked(int packId, IPackClickAction clickAction)
         {
-            var status = _progressProvider.GetPackStatus(packId);
-            if (!status.IsUnavailablePack())
+            var packInfo = _progressProvider.GetPackInfo(packId);
+            if (packInfo == null)
             {
-                LoggerService.LogWarning(this, $"Pack {packId} status is {status}");
+                LoggerService.LogError(this, $"Pack {packId} doesn't exist at {nameof(OnPackClicked)}");
                 return;
             }
             
-            if (_currencyDisplayWidget == null || _adsButtonWidget == null)
+            var status = _progressProvider.GetPackStatus(packId);
+            HandleClickedPackStatus(packInfo, status, clickAction);
+        }
+
+        private void HandleClickedPackStatus(PackInfo packInfo, PackStatus status, IPackClickAction clickAction)
+        {
+            if (status.IsAvailable())
             {
-                LoggerService.LogWarning(this, $"[{nameof(OnUnavailablePackClicked)}]: {nameof(CurrencyDisplayWidget)} or {nameof(AdsButtonWidget)} is null");
+                OnAvailablePackClicked(packInfo);
                 return;
             }
 
-            LaunchUnavailablePackSequenceOnClick();
+            if (status.IsLocked())
+            {
+                OnLockedPackClicked(packInfo, clickAction);
+            }
+
+            if (status.IsCanBeUnlocked())
+            {
+                OnUnlockablePackClicked(packInfo, clickAction);
+            }
+            
+            LoggerService.LogWarning(this,  $"Exiting {nameof(HandleClickedPackStatus)} for Pack {packInfo.PackName} with status {status}");
+        }
+        
+        protected void OnLockedPackClicked(PackInfo packInfo, IPackClickAction clickAction)
+        {
+            var desiredCurrency = _progressProvider.GetCurrencyToUnlock(packInfo.PackId) ?? new List<ICurrency>();
+            if (desiredCurrency.IsCollectionNullOrEmpty())
+            {
+                LoggerService.LogError(this, $"desiredCurrency is null or empty for PackId {packInfo.PackId} at {nameof(OnLockedPackClicked)}");
+                return;
+            }
+            
+            LaunchLockedActionPackSequenceOnClick(desiredCurrency, clickAction);
+        }
+
+        protected void OnUnlockablePackClicked(PackInfo packInfo, IPackClickAction clickAction)
+        {
+            var desiredCurrency = _progressProvider.GetCurrencyToUnlock(packInfo.PackId) ?? new List<ICurrency>();
+            if (desiredCurrency.IsCollectionNullOrEmpty())
+            {
+                LoggerService.LogError(this, $"desiredCurrency is null or empty for PackId {packInfo.PackId} at {nameof(OnUnlockablePackClicked)}");
+                return;
+            }
+            
+            LaunchUnlockPackSequenceOnClick(desiredCurrency, clickAction);
+        }
+        
+        protected virtual void LaunchLockedActionPackSequenceOnClick(List<ICurrency> desiredCurrency, PackClickAction clickAction)
+        {
+            var popupAnchorRect = EvaluatePopupAnchorRectFromClickAction(clickAction);
+            
+            StateMachine
+                .CreateMachine(new VisualizeNotEnoughCurrencyContext(_currencyDisplayWidget, _adsButtonWidget, desiredCurrency, GetShowMessagePopupPromiseFunc(popupAnchorRect)))
+                .StartSequence<VisualizeNotEnoughCurrencyState>()
+                .FinishWith(this);
         }
 
         protected virtual void InitializePackButtons()
@@ -107,6 +159,17 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
                 .Where(info => info != null)
                 .Select(CreateMediator)
                 .ToList();
+        }
+        
+        protected RectTransform EvaluatePopupAnchorRectFromClickAction(IPackClickAction clickAction)
+        {
+            if (clickAction.PopupAnchorRect == null)
+            {
+                LoggerService.LogWarning(this, $"PopupAnchorRect is null at {nameof(EvaluatePopupAnchorRectFromClickAction)}");
+                return GetComponent<RectTransform>();
+            }
+            
+            return clickAction.PopupAnchorRect;
         }
 
         public void Initialize(CurrencyDisplayWidget currencyDisplayWidget, AdsButtonWidget adsButtonWidget)
@@ -171,8 +234,9 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
             var isUnlocked = _progressProvider.IsPackAvailableForUnlocking(packId);
             var currencyToUnlock = _progressProvider.GetCurrencyToUnlock(packId) ?? new List<ICurrency>();
             System.Func<bool> getEntranceAlreadyTriggered = () => EntranceAnimationsAlreadyTriggered;
+            Action<IPackClickAction> onPackClicked = action => OnPackClicked(packId, action);
 
-            return CreatePackWidgetInfoInternal(packInfo, packId, isUnlocked, currencyToUnlock, indexInList, getEntranceAlreadyTriggered);
+            return CreatePackWidgetInfoInternal(packInfo, packId, isUnlocked, currencyToUnlock, indexInList, getEntranceAlreadyTriggered, onPackClicked);
         }
 
         protected void OnAvailablePackClicked(PackInfo packInfo)

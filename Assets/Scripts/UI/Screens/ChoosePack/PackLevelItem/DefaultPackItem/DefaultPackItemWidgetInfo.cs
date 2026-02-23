@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using Common.Currency;
 using UnityEngine;
 using UI.Screens.ChoosePack.PackLevelItem.Base;
+using UI.Screens.ChoosePack.PackLevelItem.Base.PackClickAction;
 
 namespace UI.Screens.ChoosePack.PackLevelItem.DefaultPackItem
 {
     public class DefaultPackItemWidgetInfo : BasePackItemWidgetInfo
     {
         public DefaultPackItemWidgetInfo(string packName, GameObject packImagePrefab, int packId, bool isUnlocked,
-            Action onClickAction, Action<List<ICurrency>, RectTransform, int> onLockedClickAction, List<ICurrency> currencyToUnlock, int indexInList = 0,
+            Action<IPackClickAction> onPackClicked, List<ICurrency> currencyToUnlock, int indexInList = 0,
             Func<bool> getEntranceAnimationsAlreadyTriggered = null)
-            : base(packName, packImagePrefab, packId, isUnlocked, onClickAction, onLockedClickAction, currencyToUnlock, indexInList, getEntranceAnimationsAlreadyTriggered)
+            : base(packName, packImagePrefab, packId, isUnlocked, onPackClicked, currencyToUnlock, indexInList, getEntranceAnimationsAlreadyTriggered)
         {
         }
     }

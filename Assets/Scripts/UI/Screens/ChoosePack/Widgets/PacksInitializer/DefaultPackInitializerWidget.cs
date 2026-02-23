@@ -13,8 +13,10 @@ using Services.FlyingRewardsAnimation;
 using ThirdParty.SuperScrollView.Scripts.List;
 using UI.Popups.MessagePopup;
 using UI.Screens.ChoosePack.PackLevelItem.Base;
+using UI.Screens.ChoosePack.PackLevelItem.Base.PackClickAction;
 using UI.Screens.ChoosePack.PackLevelItem.DefaultPackItem;
 using UI.Screens.ChoosePack.Widgets.PacksInitializer;
+using UI.Screens.ChoosePack.Widgets.PacksInitializer.Base;
 using UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.NoCurrencySequence;
 using UnityEngine;
 using Utilities;
@@ -33,12 +35,19 @@ namespace UI.Screens.ChoosePack.Widgets
 
         protected override PackType TargetPackType => PackType.Default;
         
-        protected override void LaunchUnavailablePackSequenceOnClick(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect)
+        protected override void LaunchLockedActionPackSequenceOnClick(List<ICurrency> desiredCurrency, PackClickAction clickAction)
         {
+            var popupAnchorRect = EvaluatePopupAnchorRectFromClickAction(clickAction);
+            
             StateMachine
                 .CreateMachine(new VisualizeNotEnoughCurrencyContext(_currencyDisplayWidget, _adsButtonWidget, desiredCurrency, GetShowMessagePopupPromiseFunc(popupAnchorRect)))
                 .StartSequence<VisualizeNotEnoughCurrencyState>()
                 .FinishWith(this);
+        }
+
+        protected override void LaunchUnlockPackSequenceOnClick(List<ICurrency> desiredCurrency, PackClickAction clickAction)
+        {
+            return;
         }
 
         protected override Func<IDisposeProvider, IPromise<MediatorFlowInfo>> GetShowMessagePopupPromiseFunc(UnityEngine.RectTransform popupAnchorRect)
@@ -59,15 +68,14 @@ namespace UI.Screens.ChoosePack.Widgets
             return new DefaultPackItemWidgetMediator((DefaultPackItemWidgetInfo)info);
         }
 
-        protected override BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, List<ICurrency> currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered)
+        protected override BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, List<ICurrency> currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered, Action<IPackClickAction> onPackClicked)
         {
             return new DefaultPackItemWidgetInfo(
                 packInfo.PackName,
                 packInfo.PackImagePrefab,
                 packId,
                 isUnlocked,
-                () => OnAvailablePackClicked(packInfo),
-                OnUnavailablePackClicked,
+                onPackClicked,
                 currencyToUnlock,
                 indexInList,
                 getEntranceAnimationsAlreadyTriggered);
