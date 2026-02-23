@@ -4,13 +4,10 @@ using Common.Currency;
 using Components.UI;
 using Controllers;
 using RSG;
-using UI.Screens.ChoosePack.Widgets;
-using UnityEngine;
 using Utilities;
-using Utilities.Disposable;
 using Utilities.StateMachine;
 
-namespace UI.Screens.ChoosePack.NoCurrencySequence
+namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.NoCurrencySequence
 {
     public class VisualizeNotEnoughCurrencyContext : IStateContext
     {

@@ -4,6 +4,7 @@ namespace Configurations.Progress
     {
         FreePack,
         AvailableToUnlock,
-        NotEnoughCurrency
+        NotEnoughCurrency,
+        UnavailablePack
     }
 }

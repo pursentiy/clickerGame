@@ -17,7 +17,7 @@ using UI.Screens.ChoosePack.PackLevelItem.FreemiumPackItem;
 using Utilities;
 using Zenject;
 
-namespace UI.Screens.ChoosePack.Widgets
+namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
 {
     public class FreemiumPackInitializerWidget : BasePackInitializerWidget
     {
@@ -29,6 +29,28 @@ namespace UI.Screens.ChoosePack.Widgets
 
         protected override PackType TargetPackType => PackType.Freemium;
 
+        
+        protected override void OnUnavailablePackClicked(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect, int packId)
+        {
+            if (!_progressProvider.GetCurrentPackStatus(packId).IsFreePack())
+            {
+                LoggerService.LogWarning(this, $"Pack {packId} unavailable is not free");
+                return;
+            }
+
+            if (_currencyDisplayWidget == null || _adsButtonWidget == null)
+            {
+                LoggerService.LogWarning(this, $"[{nameof(OnUnavailablePackClicked)}]: {nameof(CurrencyDisplayWidget)} or {nameof(AdsButtonWidget)} is null");
+                return;
+            }
+            
+            StateMachine
+                .CreateMachine(new VisualizeNotEnoughCurrencyContext(_currencyDisplayWidget, _adsButtonWidget, desiredCurrency, GetShowMessagePopupPromiseFunc(popupAnchorRect)))
+                .StartSequence<VisualizeNotEnoughCurrencyState>()
+                .FinishWith(this);
+        }
+        
+        
         protected override Func<IDisposeProvider, IPromise<MediatorFlowInfo>> GetShowMessagePopupPromiseFunc(UnityEngine.RectTransform popupAnchorRect)
         {
             return (disposeProvider) =>
@@ -48,7 +70,7 @@ namespace UI.Screens.ChoosePack.Widgets
 
         protected override bool TryStartBuySequenceIfAffordable(List<ICurrency> desiredCurrency, UnityEngine.RectTransform popupAnchorRect, int packId)
         {
-            if (_progressProvider.EnoughCurrencyToUnlockPack(packId) != PackUnlockCurrencyStatus.AvailableToUnlock)
+            if (_progressProvider.GetCurrentPackStatus(packId) != PackUnlockCurrencyStatus.AvailableToUnlock)
                 return false;
 
             RunBuyPackSequence(desiredCurrency, packId);

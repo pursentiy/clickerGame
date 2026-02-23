@@ -14,7 +14,6 @@ using Services;
 using Services.CoroutineServices;
 using ThirdParty.SuperScrollView.Scripts.GridView;
 using ThirdParty.SuperScrollView.Scripts.List;
-using UI.Screens.ChoosePack.NoCurrencySequence;
 using UI.Screens.ChoosePack.PackLevelItem.Base;
 using UnityEngine;
 using Utilities;
@@ -22,7 +21,7 @@ using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
 
-namespace UI.Screens.ChoosePack.Widgets
+namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
 {
     public abstract class BasePackInitializerWidget : InjectableMonoBehaviour
     {
@@ -49,6 +48,7 @@ namespace UI.Screens.ChoosePack.Widgets
         protected abstract BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, List<ICurrency> currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered);
         protected abstract IListItem CreateMediator(BasePackItemWidgetInfo info);
         protected abstract Func<IDisposeProvider, IPromise<MediatorFlowInfo>> GetShowMessagePopupPromiseFunc(RectTransform popupAnchorRect);
+        protected abstract void OnUnavailablePackClicked(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect, int packId);
 
         protected virtual void InitializePackButtons()
         {
@@ -161,31 +161,7 @@ namespace UI.Screens.ChoosePack.Widgets
         {
             _flowScreenController.GoToChooseLevelScreen(packInfo);
         }
-
-        protected void OnUnavailablePackClicked(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect, int packId)
-        {
-            if (TryStartBuySequenceIfAffordable(desiredCurrency, popupAnchorRect, packId))
-                return;
-
-            if (_currencyDisplayWidget == null || _adsButtonWidget == null)
-            {
-                LoggerService.LogWarning(this, $"[{nameof(OnUnavailablePackClicked)}]: {nameof(CurrencyDisplayWidget)} or {nameof(AdsButtonWidget)} is null");
-                return;
-            }
-            StateMachine
-                .CreateMachine(new VisualizeNotEnoughCurrencyContext(_currencyDisplayWidget, _adsButtonWidget, desiredCurrency, GetShowMessagePopupPromiseFunc(popupAnchorRect)))
-                .StartSequence<VisualizeNotEnoughCurrencyState>()
-                .FinishWith(this);
-        }
-
-        /// <summary>
-        /// When true, the caller should not run the "not enough currency" flow (e.g. a buy sequence was started).
-        /// Default: false. Override in Freemium to start buy sequence when the player has enough currency.
-        /// </summary>
-        protected virtual bool TryStartBuySequenceIfAffordable(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect, int packId)
-        {
-            return false;
-        }
+        
 
         private void TryPlayEntranceAnimation()
         {

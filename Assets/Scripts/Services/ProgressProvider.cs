@@ -172,11 +172,11 @@ namespace Services
         /// <summary>
         /// Default: FreePack. Freemium with enough currency: AvailableToUnlock. Otherwise: NotEnoughCurrency.
         /// </summary>
-        public PackUnlockCurrencyStatus EnoughCurrencyToUnlockPack(int packId)
+        public PackUnlockCurrencyStatus GetCurrentPackStatus(int packId)
         {
             var packInfo = GetPackInfo(packId);
             if (packInfo == null)
-                return PackUnlockCurrencyStatus.NotEnoughCurrency;
+                return PackUnlockCurrencyStatus.UnavailablePack;
 
             if (packInfo.PackType == PackType.Default)
                 return PackUnlockCurrencyStatus.FreePack;

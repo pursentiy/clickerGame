@@ -1,4 +1,5 @@
 using Components.UI;
+using UI.Screens.ChoosePack.Widgets.PacksInitializer;
 using UnityEngine;
 
 namespace UI.Screens.ChoosePack.Widgets
@@ -7,10 +8,6 @@ namespace UI.Screens.ChoosePack.Widgets
     {
         [SerializeField] private FreemiumPackInitializerWidget _freemiumPackInitializerWidget;
         [SerializeField] private DefaultPackInitializerWidget _defaultPackInitializerWidget;
-
-        public bool EntranceAnimationsAlreadyTriggered =>
-            (_freemiumPackInitializerWidget?.EntranceAnimationsAlreadyTriggered ?? false) ||
-            (_defaultPackInitializerWidget?.EntranceAnimationsAlreadyTriggered ?? false);
 
         public void Initialize(CurrencyDisplayWidget currencyDisplayWidget, AdsButtonWidget adsButtonWidget)
         {

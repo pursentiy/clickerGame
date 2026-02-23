@@ -1,19 +1,14 @@
-using Controllers;
-using Extensions;
 using Handlers.UISystem;
 using RSG;
 using Services;
-using Services.Configuration;
 using Services.CoroutineServices;
-using Services.FlyingRewardsAnimation;
 using Services.Player;
 using Services.ScreenBlocker;
-using UI.Popups.MessagePopup;
 using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
 
-namespace UI.Screens.ChoosePack.NoCurrencySequence
+namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.NoCurrencySequence
 {
     public class VisualizeNotEnoughCurrencyState : InjectableStateBase<VisualizeNotEnoughCurrencyContext>
     {
