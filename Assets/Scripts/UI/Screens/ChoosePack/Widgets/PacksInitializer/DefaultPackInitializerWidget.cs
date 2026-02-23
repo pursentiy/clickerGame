@@ -34,16 +34,6 @@ namespace UI.Screens.ChoosePack.Widgets
         [Inject] private readonly FlowPopupController _flowPopupController;
 
         protected override PackType TargetPackType => PackType.Default;
-        
-        protected override void LaunchLockedActionPackSequenceOnClick(List<ICurrency> desiredCurrency, PackClickAction clickAction)
-        {
-            var popupAnchorRect = EvaluatePopupAnchorRectFromClickAction(clickAction);
-            
-            StateMachine
-                .CreateMachine(new VisualizeNotEnoughCurrencyContext(_currencyDisplayWidget, _adsButtonWidget, desiredCurrency, GetShowMessagePopupPromiseFunc(popupAnchorRect)))
-                .StartSequence<VisualizeNotEnoughCurrencyState>()
-                .FinishWith(this);
-        }
 
         protected override void LaunchUnlockPackSequenceOnClick(List<ICurrency> desiredCurrency, PackClickAction clickAction)
         {

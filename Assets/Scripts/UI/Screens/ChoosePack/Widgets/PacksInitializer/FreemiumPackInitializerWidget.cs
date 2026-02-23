@@ -18,6 +18,7 @@ using UI.Screens.ChoosePack.PackLevelItem.Base.PackClickAction;
 using UI.Screens.ChoosePack.PackLevelItem.FreemiumPackItem;
 using UI.Screens.ChoosePack.Widgets.PacksInitializer.Base;
 using UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.NoCurrencySequence;
+using UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.UnlockFreemiumPackSequence;
 using UnityEngine;
 using Utilities;
 using Utilities.Disposable;
@@ -35,20 +36,6 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
         [Inject] private readonly PlayerCurrencyManager _playerCurrencyManager;
 
         protected override PackType TargetPackType => PackType.Freemium;
-
-        protected override void LaunchLockedActionPackSequenceOnClick(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect)
-        {
-            if (_currencyDisplayWidget == null || _adsButtonWidget == null)
-            {
-                LoggerService.LogWarning(this, $"[{nameof(OnLockedPackClicked)}]: {nameof(CurrencyDisplayWidget)} or {nameof(AdsButtonWidget)} is null");
-                return;
-            }
-            
-            StateMachine
-                .CreateMachine(new VisualizeNotEnoughCurrencyContext(_currencyDisplayWidget, _adsButtonWidget, desiredCurrency, GetShowMessagePopupPromiseFunc(popupAnchorRect)))
-                .StartSequence<VisualizeNotEnoughCurrencyState>()
-                .FinishWith(this);
-        }
         
         
         protected override Func<IDisposeProvider, IPromise<MediatorFlowInfo>> GetShowMessagePopupPromiseFunc(UnityEngine.RectTransform popupAnchorRect)
@@ -63,18 +50,34 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
             };
         }
 
+        protected override void LaunchUnlockPackSequenceOnClick(List<ICurrency> desiredCurrency, PackClickAction clickAction)
+        {
+            if (_currencyDisplayWidget == null)
+            {
+                LoggerService.LogError(this, $"{nameof(CurrencyDisplayWidget)} is null at  {nameof(LaunchLockedActionPackSequenceOnClick)}");
+                return;
+            }
+
+            if (_adsButtonWidget == null)
+            {
+                LoggerService.LogError(this, $"{nameof(_adsButtonWidget)} is null at  {nameof(LaunchLockedActionPackSequenceOnClick)}");
+                return;
+            }
+            
+            var popupAnchorRect = EvaluatePopupAnchorRectFromClickAction(clickAction);
+
+            //TODO REFRESH ACTION
+            var context = new UnlockFreemiumPackSequenceContext(_currencyDisplayWidget, popupAnchorRect, () => { });
+            
+            StateMachine
+                .CreateMachine(context)
+                .StartSequence<TryUnlockFreemiumPackState>()
+                .FinishWith(this);
+        }
+
         protected override IListItem CreateMediator(BasePackItemWidgetInfo info)
         {
             return new FreemiumPackItemWidgetMediator((FreemiumPackItemWidgetInfo)info);
-        }
-
-        protected override bool TryStartBuySequenceIfAffordable(List<ICurrency> desiredCurrency, IPackClickAction clickAction, int packId)
-        {
-            if (_progressProvider.GetPackStatus(packId) != PackStatus.CanBeUnlocked)
-                return false;
-
-            RunBuyPackSequence(desiredCurrency, packId);
-            return true;
         }
 
         private void RunBuyPackSequence(List<ICurrency> desiredCurrency, int packId)

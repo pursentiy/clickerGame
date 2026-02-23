@@ -40,10 +40,16 @@ namespace Services
             return level;
         }
         
-        public bool IsPackAvailableForUnlocking(int packNumber)
+        public bool IsPackAvailableForUnlocking(int packId)
         {
-            var currencyToUnlock = GetCurrencyToUnlock(packNumber);
-            if (currencyToUnlock == null || currencyToUnlock.Count == 0)
+            var currencyToUnlock = GetCurrencyToUnlock(packId);
+            if (currencyToUnlock == null)
+            {
+                LoggerService.LogError($"No currency to unlock for {packId}");
+                return false;
+            }
+            
+            if (currencyToUnlock.Count == 0)
                 return true;
 
             foreach (var currency in currencyToUnlock)
@@ -51,6 +57,7 @@ namespace Services
                 if (currency != null && currency.GetCount() > 0 && !_playerCurrencyManager.CanSpend(currency))
                     return false;
             }
+            
             return true;
         }
         
@@ -65,7 +72,7 @@ namespace Services
             return _gameInfoProvider.GetPacksIds().Count(IsPackAvailableForUnlocking);
         }
         
-        public List<ICurrency> GetCurrencyToUnlock(int packNumber)
+        public List<ICurrency> GetCurrencyToUnlock(int packId)
         {
             if (!_gameInfoProvider.IsInitialized)
             {
@@ -73,16 +80,16 @@ namespace Services
                 return null;
             }
 
-            var pack = _gameInfoProvider.GetPackById(packNumber);
+            var pack = _gameInfoProvider.GetPackById(packId);
             if (pack?.CurrencyToUnlock == null)
                 return new List<ICurrency>();
 
             return new List<ICurrency> { pack.CurrencyToUnlock };
         }
 
-        public bool HasLevelBeenCompletedBefore(int packNumber, int levelNumber)
+        public bool HasLevelBeenCompletedBefore(int packId, int levelNumber)
         {
-            return TryGetSavedLevelSnapshot(packNumber, levelNumber) != null;
+            return TryGetSavedLevelSnapshot(packId, levelNumber) != null;
         }
         
         public bool IsLevelAvailableToPlay(int packId, int levelId)

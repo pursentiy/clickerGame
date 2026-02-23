@@ -65,6 +65,43 @@ namespace Services.Player
             SaveProfile(SavePriority.ImmediateSave);
             return true;
         }
+
+        /// <summary>
+        /// Applies multiple currency spends and saves the profile once. Returns false if any spend cannot be applied; then no changes are made.
+        /// </summary>
+        /// <param name="amountsToSpend">Positive amounts to deduct (one per currency type).</param>
+        /// <param name="newValues">Resulting currency values after applying all spends, in the same order. Only set when returning true.</param>
+        public bool UpdateCurrenciesAndSaveOnce(List<ICurrency> amountsToSpend, out List<ICurrency> newValues)
+        {
+            newValues = null;
+
+            if (_profileSnapshot == null || amountsToSpend.IsCollectionNullOrEmpty())
+                return false;
+
+            var results = new List<ICurrency>(amountsToSpend.Count);
+            var accessorsList = new List<(Func<ICurrency> getter, Action<ICurrency> setter)>();
+
+            foreach (var amount in amountsToSpend)
+            {
+                if (amount == null || amount.GetCount() <= 0 || !TryGetCurrencyAccessors(amount.GetType(), out var accessors))
+                    return false;
+
+                var current = accessors.getter();
+                if (current.GetCount() < amount.GetCount())
+                    return false;
+
+                var newValue = current.Add(-amount.GetCount());
+                results.Add(newValue);
+                accessorsList.Add(accessors);
+            }
+
+            for (var i = 0; i < results.Count; i++)
+                accessorsList[i].setter(results[i]);
+
+            SaveProfile(SavePriority.ImmediateSave);
+            newValues = results;
+            return true;
+        }
         
         public void UpdateDailyRewardAndSave(DailyRewardSnapshot dailyRewardSnapshot, SavePriority savePriority)
         {

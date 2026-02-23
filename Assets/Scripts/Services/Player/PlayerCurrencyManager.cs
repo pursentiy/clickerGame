@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Common.Currency;
+using Extensions;
 using Plugins.FSignal;
 using Zenject;
 
@@ -48,6 +50,32 @@ namespace Services.Player
             _playerProfileController.UpdateCurrencyAndSave(amount, out var newValue);
 
             CurrencyChangedSignal.Dispatch(newValue, mode);
+            return true;
+        }
+        
+        public bool TrySpendCurrencies(List<ICurrency> currencies, CurrencyChangeMode mode = CurrencyChangeMode.Instant)
+        {
+            if (currencies.IsCollectionNullOrEmpty())
+                return false;
+
+            var spendableCurrencies = new List<ICurrency>();
+            foreach (var currency in currencies)
+            {
+                if (currency == null || !CanSpend(currency))
+                    continue;
+
+                spendableCurrencies.Add(currency);
+            }
+
+            if (spendableCurrencies.Count == 0)
+                return false;
+
+            if (!_playerProfileController.UpdateCurrenciesAndSaveOnce(spendableCurrencies, out var newValues))
+                return false;
+
+            foreach (var newValue in newValues)
+                CurrencyChangedSignal.Dispatch(newValue, mode);
+
             return true;
         }
     }

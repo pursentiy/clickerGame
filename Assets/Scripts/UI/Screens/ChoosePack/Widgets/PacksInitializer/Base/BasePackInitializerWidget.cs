@@ -78,7 +78,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Base
                 OnLockedPackClicked(packInfo, clickAction);
             }
 
-            if (status.IsCanBeUnlocked())
+            if (status.CanBeUnlocked())
             {
                 OnUnlockablePackClicked(packInfo, clickAction);
             }
@@ -95,7 +95,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Base
                 return;
             }
             
-            LaunchLockedActionPackSequenceOnClick(desiredCurrency, clickAction);
+            LaunchLockedActionPackSequenceOnClick(desiredCurrency, clickAction.AsPackClickAction());
         }
 
         protected void OnUnlockablePackClicked(PackInfo packInfo, IPackClickAction clickAction)
@@ -107,11 +107,23 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Base
                 return;
             }
             
-            LaunchUnlockPackSequenceOnClick(desiredCurrency, clickAction);
+            LaunchUnlockPackSequenceOnClick(desiredCurrency, clickAction.AsPackClickAction());
         }
         
         protected virtual void LaunchLockedActionPackSequenceOnClick(List<ICurrency> desiredCurrency, PackClickAction clickAction)
         {
+            if (_currencyDisplayWidget == null)
+            {
+                LoggerService.LogError(this, $"{nameof(CurrencyDisplayWidget)} is null at  {nameof(LaunchLockedActionPackSequenceOnClick)}");
+                return;
+            }
+
+            if (_adsButtonWidget == null)
+            {
+                LoggerService.LogError(this, $"{nameof(_adsButtonWidget)} is null at  {nameof(LaunchLockedActionPackSequenceOnClick)}");
+                return;
+            }
+            
             var popupAnchorRect = EvaluatePopupAnchorRectFromClickAction(clickAction);
             
             StateMachine
