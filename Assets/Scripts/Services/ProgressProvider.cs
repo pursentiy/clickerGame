@@ -40,7 +40,7 @@ namespace Services
             return level;
         }
         
-        public bool IsPackAvailable(int packNumber)
+        public bool IsPackAvailableForUnlocking(int packNumber)
         {
             var currencyToUnlock = GetCurrencyToUnlock(packNumber);
             if (currencyToUnlock == null || currencyToUnlock.Count == 0)
@@ -62,7 +62,7 @@ namespace Services
                 return 0;
             }
 
-            return _gameInfoProvider.GetPacksIds().Count(IsPackAvailable);
+            return _gameInfoProvider.GetPacksIds().Count(IsPackAvailableForUnlocking);
         }
         
         public List<ICurrency> GetCurrencyToUnlock(int packNumber)
@@ -93,7 +93,7 @@ namespace Services
                 return false;
             }
             
-            if (!IsPackAvailable(packId))
+            if (!IsPackAvailableForUnlocking(packId))
                 return false;
             
             if (levelId == 1)
@@ -135,14 +135,15 @@ namespace Services
         }
 
         /// <summary>
-        /// Default: Unlocked if pack is in snapshot OR the previous pack (same type) is unlocked.
-        /// Freemium: Unlocked if pack is in snapshot (and considered unlocked).
+        /// Returns: Available (free/default or already unlocked), Locked, CanBeUnlocked (Freemium with enough currency), or UnavailablePack (e.g. pack not found).
+        /// Default: Available if pack is in snapshot and unlocked, or previous pack (same type) is unlocked; else Locked.
+        /// Freemium: Available if unlocked in snapshot; CanBeUnlocked if enough currency; else Locked.
         /// </summary>
         public PackStatus GetPackStatus(int packId)
         {
             var packInfo = GetPackInfo(packId);
             if (packInfo == null)
-                return PackStatus.Locked;
+                return PackStatus.UnavailablePack;
 
             var packType = packInfo.PackType;
             var snapshot = TryGetSavedPackSnapshot(packId);
@@ -153,38 +154,24 @@ namespace Services
                 var defaultPacks = _gameInfoProvider.PacksInfo.Where(p => p.PackType == PackType.Default).ToList();
                 var index = defaultPacks.FindIndex(p => p.PackId == packId);
                 if (index < 0)
-                    return PackStatus.Locked;
+                    return PackStatus.UnavailablePack;
                 bool hasInSnapshot = snapshot != null;
                 if (index == 0)
-                    return (hasInSnapshot && isUnlockedInSnapshot) ? PackStatus.Unlocked : PackStatus.Locked;
+                    return (hasInSnapshot && isUnlockedInSnapshot) ? PackStatus.Available : PackStatus.Locked;
                 var previousPackId = defaultPacks[index - 1].PackId;
                 var previousSnapshot = TryGetSavedPackSnapshot(previousPackId);
                 bool previousUnlocked = previousSnapshot != null && previousSnapshot.IsUnlocked != UnlockStatus.NotUnlocked;
-                return (hasInSnapshot && isUnlockedInSnapshot) || previousUnlocked ? PackStatus.Unlocked : PackStatus.Locked;
+                return (hasInSnapshot && isUnlockedInSnapshot) || previousUnlocked ? PackStatus.Available : PackStatus.Locked;
             }
 
             if (packType == PackType.Freemium)
-                return isUnlockedInSnapshot ? PackStatus.Unlocked : PackStatus.Locked;
+            {
+                if (isUnlockedInSnapshot)
+                    return PackStatus.Available;
+                return IsPackAvailableForUnlocking(packId) ? PackStatus.CanBeUnlocked : PackStatus.Locked;
+            }
 
             return PackStatus.Locked;
-        }
-
-        /// <summary>
-        /// Default: FreePack. Freemium with enough currency: AvailableToUnlock. Otherwise: NotEnoughCurrency.
-        /// </summary>
-        public PackUnlockCurrencyStatus GetCurrentPackStatus(int packId)
-        {
-            var packInfo = GetPackInfo(packId);
-            if (packInfo == null)
-                return PackUnlockCurrencyStatus.UnavailablePack;
-
-            if (packInfo.PackType == PackType.Default)
-                return PackUnlockCurrencyStatus.FreePack;
-
-            if (packInfo.PackType == PackType.Freemium)
-                return IsPackAvailable(packId) ? PackUnlockCurrencyStatus.AvailableToUnlock : PackUnlockCurrencyStatus.NotEnoughCurrency;
-
-            return PackUnlockCurrencyStatus.NotEnoughCurrency;
         }
         
         public LevelSnapshot TryGetSavedLevelSnapshot(int packId, int levelId)

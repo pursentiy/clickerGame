@@ -33,20 +33,8 @@ namespace UI.Screens.ChoosePack.Widgets
 
         protected override PackType TargetPackType => PackType.Default;
         
-        protected override void OnUnavailablePackClicked(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect, int packId)
+        protected override void LaunchUnavailablePackSequenceOnClick(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect)
         {
-            if (!_progressProvider.GetCurrentPackStatus(packId).IsFreePack())
-            {
-                LoggerService.LogWarning(this, $"Pack {packId} unavailable is not free");
-                return;
-            }
-
-            if (_currencyDisplayWidget == null || _adsButtonWidget == null)
-            {
-                LoggerService.LogWarning(this, $"[{nameof(OnUnavailablePackClicked)}]: {nameof(CurrencyDisplayWidget)} or {nameof(AdsButtonWidget)} is null");
-                return;
-            }
-            
             StateMachine
                 .CreateMachine(new VisualizeNotEnoughCurrencyContext(_currencyDisplayWidget, _adsButtonWidget, desiredCurrency, GetShowMessagePopupPromiseFunc(popupAnchorRect)))
                 .StartSequence<VisualizeNotEnoughCurrencyState>()

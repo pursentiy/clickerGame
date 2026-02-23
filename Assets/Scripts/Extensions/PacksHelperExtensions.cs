@@ -4,19 +4,9 @@ namespace Extensions
 {
     public static class PacksHelperExtensions
     {
-        public static bool IsFreePack(this PackUnlockCurrencyStatus status)
-        {
-            return status == PackUnlockCurrencyStatus.FreePack;
-        }
-        
-        public static bool IsFreemiumPack(this PackUnlockCurrencyStatus status)
-        {
-            return !IsFreePack(status);
-        }
-
-        public static bool EnoughCurrencyToUnlockPack(this PackUnlockCurrencyStatus status)
-        {
-            return status == PackUnlockCurrencyStatus.AvailableToUnlock;
-        }
+        public static bool IsAvailable(this PackStatus status) => status == PackStatus.Available;
+        public static bool IsLocked(this PackStatus status) => status == PackStatus.Locked;
+        public static bool IsCanBeUnlocked(this PackStatus status) => status == PackStatus.CanBeUnlocked;
+        public static bool IsUnavailablePack(this PackStatus status) => status == PackStatus.UnavailablePack;
     }
 }

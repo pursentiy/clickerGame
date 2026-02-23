@@ -48,7 +48,25 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
         protected abstract BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, List<ICurrency> currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered);
         protected abstract IListItem CreateMediator(BasePackItemWidgetInfo info);
         protected abstract Func<IDisposeProvider, IPromise<MediatorFlowInfo>> GetShowMessagePopupPromiseFunc(RectTransform popupAnchorRect);
-        protected abstract void OnUnavailablePackClicked(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect, int packId);
+        protected abstract void LaunchUnavailablePackSequenceOnClick(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect);
+
+        protected void OnUnavailablePackClicked(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect, int packId)
+        {
+            var status = _progressProvider.GetPackStatus(packId);
+            if (!status.IsUnavailablePack())
+            {
+                LoggerService.LogWarning(this, $"Pack {packId} status is {status}");
+                return;
+            }
+            
+            if (_currencyDisplayWidget == null || _adsButtonWidget == null)
+            {
+                LoggerService.LogWarning(this, $"[{nameof(OnUnavailablePackClicked)}]: {nameof(CurrencyDisplayWidget)} or {nameof(AdsButtonWidget)} is null");
+                return;
+            }
+
+            LaunchUnavailablePackSequenceOnClick();
+        }
 
         protected virtual void InitializePackButtons()
         {
@@ -109,7 +127,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
             {
                 if (item is IPackItemWidgetMediator mediator)
                 {
-                    var isUnlocked = _progressProvider.IsPackAvailable(mediator.PackId);
+                    var isUnlocked = _progressProvider.IsPackAvailableForUnlocking(mediator.PackId);
                     mediator.UpdateWidgetUnlock(isUnlocked);
                 }
             }
@@ -150,7 +168,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
                 return null;
 
             var packId = packInfo.PackId;
-            var isUnlocked = _progressProvider.IsPackAvailable(packId);
+            var isUnlocked = _progressProvider.IsPackAvailableForUnlocking(packId);
             var currencyToUnlock = _progressProvider.GetCurrencyToUnlock(packId) ?? new List<ICurrency>();
             System.Func<bool> getEntranceAlreadyTriggered = () => EntranceAnimationsAlreadyTriggered;
 

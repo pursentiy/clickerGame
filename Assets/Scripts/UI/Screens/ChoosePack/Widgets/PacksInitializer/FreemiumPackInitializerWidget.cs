@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Common.Currency;
 using Common.Data.Info;
+using Components.UI;
 using Configurations.Progress;
 using Controllers;
 using Extensions;
@@ -14,7 +15,11 @@ using ThirdParty.SuperScrollView.Scripts.List;
 using UI.Popups.MessagePopup;
 using UI.Screens.ChoosePack.PackLevelItem.Base;
 using UI.Screens.ChoosePack.PackLevelItem.FreemiumPackItem;
+using UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.NoCurrencySequence;
+using UnityEngine;
 using Utilities;
+using Utilities.Disposable;
+using Utilities.StateMachine;
 using Zenject;
 
 namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
@@ -29,15 +34,8 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
 
         protected override PackType TargetPackType => PackType.Freemium;
 
-        
-        protected override void OnUnavailablePackClicked(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect, int packId)
+        protected override void LaunchUnavailablePackSequenceOnClick(List<ICurrency> desiredCurrency, RectTransform popupAnchorRect)
         {
-            if (!_progressProvider.GetCurrentPackStatus(packId).IsFreePack())
-            {
-                LoggerService.LogWarning(this, $"Pack {packId} unavailable is not free");
-                return;
-            }
-
             if (_currencyDisplayWidget == null || _adsButtonWidget == null)
             {
                 LoggerService.LogWarning(this, $"[{nameof(OnUnavailablePackClicked)}]: {nameof(CurrencyDisplayWidget)} or {nameof(AdsButtonWidget)} is null");
@@ -70,7 +68,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
 
         protected override bool TryStartBuySequenceIfAffordable(List<ICurrency> desiredCurrency, UnityEngine.RectTransform popupAnchorRect, int packId)
         {
-            if (_progressProvider.GetCurrentPackStatus(packId) != PackUnlockCurrencyStatus.AvailableToUnlock)
+            if (_progressProvider.GetPackStatus(packId) != PackStatus.CanBeUnlocked)
                 return false;
 
             RunBuyPackSequence(desiredCurrency, packId);
