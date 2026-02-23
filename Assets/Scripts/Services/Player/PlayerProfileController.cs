@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Currency;
+using Configurations.Progress;
 using Extensions;
 using Plugins.FSignal;
 using RSG;
@@ -47,51 +48,32 @@ namespace Services.Player
         public bool UpdateCurrencyAndSave(ICurrency currencyChange, out ICurrency newValue)
         {
             newValue = null;
-
-            if (_profileSnapshot == null || !TryGetCurrencyAccessors(currencyChange.GetType(), out var accessors))
+            if (!UpdateCurrencyAndSave(new List<ICurrency> { currencyChange }, out var newValues))
                 return false;
-
-            var current = accessors.getter();
-            
-            if (!InternalCanSpend(current, currencyChange))
-            {
-                newValue = current;
-                return false;
-            }
-            
-            newValue = current.Add(currencyChange.GetCount());
-            accessors.setter(newValue);
-
-            SaveProfile(SavePriority.ImmediateSave);
+            newValue = newValues[0];
             return true;
         }
-
-        /// <summary>
-        /// Applies multiple currency spends and saves the profile once. Returns false if any spend cannot be applied; then no changes are made.
-        /// </summary>
-        /// <param name="amountsToSpend">Positive amounts to deduct (one per currency type).</param>
-        /// <param name="newValues">Resulting currency values after applying all spends, in the same order. Only set when returning true.</param>
-        public bool UpdateCurrenciesAndSaveOnce(List<ICurrency> amountsToSpend, out List<ICurrency> newValues)
+        
+        public bool UpdateCurrencyAndSave(List<ICurrency> currencyChanges, out List<ICurrency> newValues)
         {
             newValues = null;
 
-            if (_profileSnapshot == null || amountsToSpend.IsCollectionNullOrEmpty())
+            if (_profileSnapshot is null || currencyChanges is not { Count: > 0 })
                 return false;
 
-            var results = new List<ICurrency>(amountsToSpend.Count);
+            var results = new List<ICurrency>(currencyChanges.Count);
             var accessorsList = new List<(Func<ICurrency> getter, Action<ICurrency> setter)>();
 
-            foreach (var amount in amountsToSpend)
+            foreach (var change in currencyChanges)
             {
-                if (amount == null || amount.GetCount() <= 0 || !TryGetCurrencyAccessors(amount.GetType(), out var accessors))
+                if (change == null || !TryGetCurrencyAccessors(change.GetType(), out var accessors))
                     return false;
 
                 var current = accessors.getter();
-                if (current.GetCount() < amount.GetCount())
+                if (!InternalCanSpend(current, change))
                     return false;
 
-                var newValue = current.Add(-amount.GetCount());
-                results.Add(newValue);
+                results.Add(current.Add(change.GetCount()));
                 accessorsList.Add(accessors);
             }
 
@@ -120,6 +102,11 @@ namespace Services.Player
         public LevelSnapshot TryGetLevelSnapshot(int packId, int levelId)
         {
             return TryGetPackSnapshot(packId)?.CompletedLevelsSnapshots?.FirstOrDefault(p => p.LevelId == levelId);
+        }
+
+        public bool CreateEmptyPack(int packId, PackType packType)
+        {
+            return CreatePack(new PackSnapshot(packId, new List<LevelSnapshot>(), packType));
         }
         
         public bool CreatePack(PackSnapshot packSnapshot)

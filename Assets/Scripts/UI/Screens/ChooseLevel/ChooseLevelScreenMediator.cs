@@ -16,15 +16,7 @@ namespace UI.Screens.ChooseLevel
     public class ChooseLevelScreenMediator : UIScreenBase<ChooseLevelScreenView, ChooseLevelScreenContext>
     {
         [Inject] private readonly ProgressProvider _progressProvider;
-        [Inject] private readonly ProgressController _progressController;private void RunBuyPackSequence(List<ICurrency> desiredCurrency, int packId)
-        {
-            foreach (var currency in desiredCurrency)
-            {
-                if (currency != null && currency.GetCount() > 0)
-                    _playerCurrencyManager.TrySpendCurrency(currency);
-            }
-            UpdatePacksState();
-        }
+        [Inject] private readonly ProgressController _progressController;
         [Inject] private readonly LocalizationService _localizationService;
         [Inject] private readonly ScreenObserverService _screenObserverService;
         [Inject] private readonly FlowPopupController _flowPopupController;

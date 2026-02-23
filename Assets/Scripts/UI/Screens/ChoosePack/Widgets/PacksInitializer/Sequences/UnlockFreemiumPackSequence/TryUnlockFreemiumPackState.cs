@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using Common.Currency;
 using Extensions;
 using Services;
 using Services.Player;
@@ -8,27 +6,37 @@ using Zenject;
 
 namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.UnlockFreemiumPackSequence
 {
-    public class TryUnlockFreemiumPackState: InjectableStateBase<UnlockFreemiumPackSequenceContext>
+    public class TryUnlockFreemiumPackState : InjectableStateBase<UnlockFreemiumPackSequenceContext>
     {
         
         [Inject] private readonly ProgressProvider _progressProvider;
         [Inject] private readonly PlayerCurrencyManager _playerCurrencyManager;
+        [Inject] private readonly PlayerProfileController _playerProfileController;
         
         public override void OnEnter(params object[] arguments)
         {
             base.OnEnter(arguments);
 
-            
-        }
-        
-        private void RunBuyPackSequence(List<ICurrency> desiredCurrency, int packId)
-        {
-            foreach (var currency in desiredCurrency)
+            if (!CanBuyPack())
             {
-                if (currency != null && currency.GetCount() > 0)
-                    _playerCurrencyManager.TrySpendCurrency(currency);
+                FinishSequence();
+                return;
             }
-            UpdatePacksState();
+
+            if (!_playerCurrencyManager.TrySpendCurrencies(Context.PackCost, CurrencyChangeMode.Animated))
+            {
+                FinishSequence();
+                return;
+            }
+
+            if (!_playerProfileController.CreateEmptyPack(Context.PackId, Context.PackType))
+            {
+                FinishSequence();
+                return;
+            }
+
+            _playerProfileController.SaveProfile(SavePriority.ImmediateSave);
+            NextState();
         }
 
         private bool CanBuyPack()
@@ -45,7 +53,24 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.UnlockFreemiu
                 return false;
             }
 
+            if (_playerProfileController.TryGetPackSnapshot(Context.PackId) != null)
+            {
+                LoggerService.LogWarning(this, $"Pack {Context.PackId} already exists in profile");
+                return false;
+            }
+
             return false;
+        }
+
+        private void NextState()
+        {
+            Sequence.ActivateState<AnimateFreemiumPackUnlockingState>();
+        }
+
+        private void FinishSequence()
+        {
+            LoggerService.LogWarning(this, $"Finish sequence without unlocking {Context.PackId}");
+            Sequence.Finish();
         }
     }
 }

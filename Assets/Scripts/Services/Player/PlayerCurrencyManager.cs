@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Common.Currency;
 using Extensions;
 using Plugins.FSignal;
@@ -44,33 +45,22 @@ namespace Services.Player
         
         public bool TrySpendCurrency(ICurrency amount, CurrencyChangeMode mode = CurrencyChangeMode.Instant)
         {
-            if (!CanSpend(amount))
-                return false;
-
-            _playerProfileController.UpdateCurrencyAndSave(amount, out var newValue);
-
-            CurrencyChangedSignal.Dispatch(newValue, mode);
-            return true;
+            return amount is not null && TrySpendCurrencies(new List<ICurrency> { amount }, mode);
         }
         
         public bool TrySpendCurrencies(List<ICurrency> currencies, CurrencyChangeMode mode = CurrencyChangeMode.Instant)
         {
-            if (currencies.IsCollectionNullOrEmpty())
+            if (currencies is not { Count: > 0 }) 
+                return false;
+            
+            if (!currencies.All(c => c is not null && CanSpend(c)))
                 return false;
 
-            var spendableCurrencies = new List<ICurrency>();
-            foreach (var currency in currencies)
-            {
-                if (currency == null || !CanSpend(currency))
-                    continue;
+            var spendDeltas = currencies
+                .Select(c => c.SetCount(-c.GetCount()))
+                .ToList();
 
-                spendableCurrencies.Add(currency);
-            }
-
-            if (spendableCurrencies.Count == 0)
-                return false;
-
-            if (!_playerProfileController.UpdateCurrenciesAndSaveOnce(spendableCurrencies, out var newValues))
+            if (!_playerProfileController.UpdateCurrencyAndSave(spendDeltas, out var newValues))
                 return false;
 
             foreach (var newValue in newValues)

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Common.Currency;
 using Extensions;
 using RSG;
@@ -9,53 +11,47 @@ using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
 
-namespace UI.Screens.ChoosePack.AdsSequence
+namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.UnlockFreemiumPackSequence
 {
-    public class VisualizeAdsRewardsState : InjectableStateBase<RewardedAdsSequenceContext, RewardsEarnedInfo>
+    public class AnimateFreemiumPackUnlockingState : InjectableStateBase<UnlockFreemiumPackSequenceContext>
     {
         private const float ScreenBlockTime = 10;
         
-        [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
         [Inject] private readonly FlyingUIRewardAnimationService _flyingUIRewardAnimationService;
+        [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
         [Inject] private readonly CoroutineService _coroutineService;
 
         private IUIBlockRef _uiBlockRef;
         
-        private bool HaveAnyAdsRewards => TypedArgument.EarnedCurrency != null && TypedArgument.EarnedCurrency.GetCount() > 0 && TypedArgument.NewTotalCurrency.GetCount() > 0;
-
         public override void OnEnter(params object[] arguments)
         {
             base.OnEnter(arguments);
-
-            if (!HaveAnyAdsRewards)
-            {
-                FinishSequence();
-                return;
-            }
-
+            
             PrepareEnvironment();
             
-            VisualizeRewardsFlight(TypedArgument.EarnedCurrency)
+            VisualizeRewardsFlight(Context.PackCost)
                 .Then(() => VisualizeRewardsUpdate(TypedArgument.NewTotalCurrency))
                 .ContinueWithResolved(FinishSequence)
                 .CancelWith(this);
         }
-
-        private IPromise VisualizeRewardsFlight(ICurrency totalStars)
+        
+        private IPromise VisualizeRewardsFlight(List<ICurrency> rewards)
         {
+            var rewardPlaces = rewards.Select(Context.CurrencyDisplayWidget.GetAnimationTarget).ToArray();
+            
             var context = new FlyingUIRewardAnimationContext(
-                new [] {totalStars}, 
-                Context.AdsRewardsVisualizationContainer, 
-                new [] {Context.AdsButtonTransform.position},
-                new [] {Context.CurrencyDisplayWidget.GetAnimationTarget(totalStars)},
+                rewards.ToArray(), 
+                Context.VisualizerFlightRewardsContainer, 
+                rewardPlaces,
+                new [] {Context.PackTransform.position},
                 rewardsMoveTimeSpeedupFactor: 2f,
                 spawnSettings: new ValueTuple<float, float>(1f, 3f));
 
             return _flyingUIRewardAnimationService.PlayAnimation(context)
                 .CancelWith(this);
         }
-
-        private IPromise VisualizeRewardsUpdate(ICurrency totalStars)
+        
+        private IPromise VisualizeRewardsUpdate(List<ICurrency> newRewardsValues)
         {
             Context.CurrencyDisplayWidget.SetCurrency(totalStars, true);
 
@@ -63,7 +59,7 @@ namespace UI.Screens.ChoosePack.AdsSequence
                 .Then(Context.UpdatePacksAction.SafeInvoke)
                 .CancelWith(this);
         }
-
+        
         private void FinishSequence()
         {
             RevertEnvironment();
@@ -78,18 +74,6 @@ namespace UI.Screens.ChoosePack.AdsSequence
         private void RevertEnvironment()
         {
             _uiBlockRef?.Dispose();
-        }
-    }
-
-    public struct RewardsEarnedInfo
-    {
-        public ICurrency NewTotalCurrency;
-        public ICurrency EarnedCurrency;
-
-        public RewardsEarnedInfo(ICurrency newTotalCurrency, ICurrency earnedCurrency)
-        {
-            NewTotalCurrency = newTotalCurrency;
-            EarnedCurrency = earnedCurrency;
         }
     }
 }
