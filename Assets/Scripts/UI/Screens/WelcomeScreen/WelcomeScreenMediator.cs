@@ -12,7 +12,6 @@ namespace UI.Screens.WelcomeScreen
     {
         [Inject] private readonly FlowScreenController _flowScreenController;
         [Inject] private readonly FlowPopupController _flowPopupController;
-        [Inject] private readonly DailyRewardService _dailyRewardService;
 
         public override void OnCreated()
         {

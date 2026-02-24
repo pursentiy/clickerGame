@@ -1,18 +1,20 @@
 namespace Storage.Snapshots
 {
     /// <summary>
-    /// Runtime representation of daily reward progression.
+    /// Immutable runtime representation of daily reward progression.
     /// </summary>
-    public class DailyRewardSnapshot
+    public sealed class DailyRewardSnapshot
     {
+        public static DailyRewardSnapshot Default => new DailyRewardSnapshot(0, 0);
+        
         public DailyRewardSnapshot(int currentDayIndex, long lastClaimUtcTicks)
         {
             CurrentDayIndex = currentDayIndex;
             LastClaimUtcTicks = lastClaimUtcTicks;
         }
 
-        public int CurrentDayIndex { get; set; }
-        public long LastClaimUtcTicks { get; set; }
+        public int CurrentDayIndex { get; }
+        public long LastClaimUtcTicks { get; }
     }
 }
 

@@ -9,6 +9,7 @@ using Handlers.UISystem;
 using RSG;
 using Services;
 using Services.CoroutineServices;
+using Services.DailyReward;
 using Services.FlyingRewardsAnimation;
 using Services.ScreenBlocker;
 using TMPro;
@@ -29,7 +30,7 @@ namespace UI.Popups.DailyRewardPopup
         private const string CollectRewardText = "Collect Reward";
         private const string ClosePopupText = "Close Popup";
         
-        [Inject] private readonly DailyRewardService _dailyRewardService;
+        [Inject] private readonly DailyRewardsInfoProvider _dailyRewardsInfoProvider;
         [Inject] private readonly FlowPopupController _flowPopupController;
         [Inject] private readonly CurrencyLibraryService _currencyLibraryService;
         [Inject] private readonly FlyingUIRewardAnimationService _flyingUIRewardAnimationService;
@@ -134,7 +135,7 @@ namespace UI.Popups.DailyRewardPopup
 
         private void RefreshAvailability()
         {
-            _canReceiveToday = _dailyRewardService.TryGetTodayRewardPreview(out var preview) &&
+            _canReceiveToday = _dailyRewardsInfoProvider.TryGetTodayRewardPreview(out var preview) &&
                                preview.DayIndex == Context.DayIndex;
         }
 

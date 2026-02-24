@@ -2,6 +2,7 @@ using Controllers;
 using RSG;
 using Services;
 using Services.CoroutineServices;
+using Services.DailyReward;
 using Utilities.Disposable;
 using Utilities.StateMachine;
 using Zenject;
@@ -10,7 +11,7 @@ namespace UI.Screens.WelcomeScreen.DailyRewardsState
 {
     public class TryShowDailyRewardsPopupState : InjectableStateBase<DefaultStateContext>
     {
-        [Inject] private readonly DailyRewardService _dailyRewardService;
+        [Inject] private readonly DailyRewardsInfoProvider _dailyRewardsInfoProvider;
         [Inject] private readonly FlowPopupController _flowPopupController;
         [Inject] private readonly CoroutineService _coroutineService;
         
@@ -24,7 +25,7 @@ namespace UI.Screens.WelcomeScreen.DailyRewardsState
         
         private IPromise<DailyRewardsAcquireInfo> TryShowDailyRewardPopup()
         {
-            if (!_dailyRewardService.TryGetDailyRewardPopupInfo(out var rewardInfo))
+            if (!_dailyRewardsInfoProvider.TryGetDailyRewardPopupInfo(out var rewardInfo))
                 return Promise<DailyRewardsAcquireInfo>.Resolved(null);
 
             var context = new Popups.DailyRewardPopup.DailyRewardPopupContext(
@@ -36,7 +37,7 @@ namespace UI.Screens.WelcomeScreen.DailyRewardsState
 
             return info.MediatorHidePromise
                 .Then(() => Promise<DailyRewardsAcquireInfo>.Resolved(
-                    _dailyRewardService.TryGetTodayRewardPreview(out var preview)
+                    _dailyRewardsInfoProvider.TryGetTodayRewardPreview(out var preview)
                         ? new DailyRewardsAcquireInfo(preview.EarnedDailyReward)
                         : null))
                 .CancelWith(this);

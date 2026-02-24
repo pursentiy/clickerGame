@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1b8ed9d58253f4b3a9674218ea23f8d0
+guid: a3bf183ebcaf34ac6b8170f35b4e34e0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6902050108953637239
-    second: 32 (1)_0
+      213: 8131665697502971408
+    second: daily_rewards_collect_state_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -98,14 +98,14 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
     buildTarget: WebGL
-    maxTextureSize: 256
+    maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 12
+    textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
-    overridden: 1
+    overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 32 (1)_0
+      name: daily_rewards_collect_state_0
       rect:
         serializedVersion: 2
         x: 3
-        y: 3
-        width: 568
-        height: 634
+        y: 0
+        width: 1019
+        height: 1019
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 771b026610209cf50800000000000000
-      internalID: 6902050108953637239
+      spriteID: 016c4e35eda79d070800000000000000
+      internalID: 8131665697502971408
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      32 (1)_0: 6902050108953637239
+      daily_rewards_collect_state_0: 8131665697502971408
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -3,6 +3,7 @@ using Common.Currency;
 using RSG;
 using Services;
 using Services.CoroutineServices;
+using Services.DailyReward;
 using Services.Player;
 using Services.ScreenBlocker;
 using Utilities.Disposable;
@@ -16,7 +17,7 @@ namespace UI.Screens.WelcomeScreen.DailyRewardsState
         [Inject] private PlayerCurrencyManager _playerCurrencyManager;
         [Inject] CoroutineService _coroutineService;
         [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
-        [Inject] private readonly DailyRewardService _dailyRewardService;
+        [Inject] private readonly DailyRewardController _dailyRewardController;
         
         private IUIBlockRef _uiBlockRef;
 
@@ -28,7 +29,7 @@ namespace UI.Screens.WelcomeScreen.DailyRewardsState
 
             PrepareEnvironment();
             
-            if (HasAcquireDailyRewards && _dailyRewardService.TryClaimTodayReward())
+            if (HasAcquireDailyRewards && _dailyRewardController.TryClaimTodayReward())
             {
                 AcquireEarnedStars(TypedArgument.EarnedDailyReward)
                     .ContinueWithResolved(FinishSequence)

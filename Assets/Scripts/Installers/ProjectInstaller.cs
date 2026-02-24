@@ -4,6 +4,7 @@ using Services;
 using Services.Configuration;
 using Services.ContentDeliveryService;
 using Services.CoroutineServices;
+using Services.DailyReward;
 using Services.FlyingRewardsAnimation;
 using Services.Player;
 using Services.ScreenBlocker;
@@ -52,7 +53,8 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<UserSettingsService>().AsSingle();
             Container.BindInterfacesAndSelfTo<AdsService>().AsSingle();
             Container.BindInterfacesAndSelfTo<BridgeService>().AsSingle();
-            Container.BindInterfacesAndSelfTo<DailyRewardService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<DailyRewardsInfoProvider>().AsSingle();
+            Container.BindInterfacesAndSelfTo<DailyRewardController>().AsSingle();
             
             Container.BindInterfacesAndSelfTo<SoundHandler>().FromInstance(_soundHandler).AsSingle();
             Container.BindInterfacesAndSelfTo<LevelsParamsStorageData>().FromScriptableObject(_levelsParamsStorageData).AsSingle();

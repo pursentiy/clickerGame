@@ -3,6 +3,7 @@ using Controllers;
 using DG.Tweening;
 using Extensions;
 using Services;
+using Services.DailyReward;
 using UI.Popups.DailyRewardPopup;
 using UI.Screens.WelcomeScreen.DailyRewardsState;
 using UnityEngine;
@@ -18,7 +19,7 @@ namespace UI.Screens.WelcomeScreen.Widgets
     /// </summary>
     public class DailyRewardsButton : ButtonWithTimerBase
     {
-        [Inject] private readonly DailyRewardService _dailyRewardService;
+        [Inject] private readonly DailyRewardsInfoProvider _dailyRewardsInfoProvider;
         [Inject] private readonly FlowPopupController _flowPopupController;
 
         [Header("Button")]
@@ -42,9 +43,9 @@ namespace UI.Screens.WelcomeScreen.Widgets
             // Stop any running timer first
             StopTimer();
 
-            var status = _dailyRewardService.GetRewardStatus();
+            var status = _dailyRewardsInfoProvider.GetRewardStatus();
 
-            if (status.IsAvailable && _dailyRewardService.TryGetTodayRewardPreview(out _))
+            if (status.IsAvailable && _dailyRewardsInfoProvider.TryGetTodayRewardPreview(out _))
             {
                 // Reward is available - show available text and start animations
                 // No timer needed in this case
