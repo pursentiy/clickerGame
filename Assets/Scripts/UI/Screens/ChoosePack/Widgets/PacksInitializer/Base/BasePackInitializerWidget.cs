@@ -33,7 +33,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Base
         [Inject] protected readonly FlowScreenController _flowScreenController;
         [Inject] private readonly CoroutineService _coroutineService;
 
-        [SerializeField] protected RectTransform _container;
+        [SerializeField] protected RectTransform _currencyContainer;
         [SerializeField] protected LoopGridView _loopGridView;
 
         protected CurrencyDisplayWidget _currencyDisplayWidget;
@@ -49,7 +49,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Base
         public bool EntranceAnimationsAlreadyTriggered { get; set; }
 
         protected abstract PackType TargetPackType { get; }
-        protected abstract BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, List<ICurrency> currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered, Action<IPackClickAction> onPackClicked);
+        protected abstract BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, PackStatus packStatus, List<ICurrency> currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered, Action<IPackClickAction> onPackClicked);
         protected abstract IListItem CreateMediator(BasePackItemWidgetInfo info);
         protected abstract Func<IDisposeProvider, IPromise<MediatorFlowInfo>> GetShowMessagePopupPromiseFunc(RectTransform popupAnchorRect);
         protected abstract void LaunchUnlockPackSequenceOnClick(int packId, List<ICurrency> currencyToUnlock, PackClickAction clickAction);
@@ -78,11 +78,13 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Base
             if (status.IsLocked())
             {
                 OnLockedPackClicked(packInfo, clickAction);
+                return;
             }
 
             if (status.CanBeUnlocked())
             {
                 OnUnlockablePackClicked(packInfo, clickAction);
+                return;
             }
             
             LoggerService.LogWarning(this,  $"Exiting {nameof(HandleClickedPackStatus)} for Pack {packInfo.PackName} with status {status}");
@@ -204,8 +206,8 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Base
             {
                 if (item is IPackItemWidgetMediator mediator)
                 {
-                    var isUnlocked = _progressProvider.IsPackAvailableForUnlocking(mediator.PackId);
-                    mediator.UpdateWidgetUnlock(isUnlocked);
+                    var status = _progressProvider.GetPackStatus(mediator.PackId);
+                    mediator.UpdateWidgetStatus(status);
                 }
             }
         }
@@ -245,12 +247,12 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Base
                 return null;
 
             var packId = packInfo.PackId;
-            var isUnlocked = _progressProvider.IsPackAvailableForUnlocking(packId);
+            var packStatus = _progressProvider.GetPackStatus(packId);
             var currencyToUnlock = _progressProvider.GetCurrencyToUnlock(packId) ?? new List<ICurrency>();
-            System.Func<bool> getEntranceAlreadyTriggered = () => EntranceAnimationsAlreadyTriggered;
+            Func<bool> getEntranceAlreadyTriggered = () => EntranceAnimationsAlreadyTriggered;
             Action<IPackClickAction> onPackClicked = action => OnPackClicked(packId, action);
 
-            return CreatePackWidgetInfoInternal(packInfo, packId, isUnlocked, currencyToUnlock, indexInList, getEntranceAlreadyTriggered, onPackClicked);
+            return CreatePackWidgetInfoInternal(packInfo, packId, packStatus, currencyToUnlock, indexInList, getEntranceAlreadyTriggered, onPackClicked);
         }
 
         protected void OnAvailablePackClicked(PackInfo packInfo)

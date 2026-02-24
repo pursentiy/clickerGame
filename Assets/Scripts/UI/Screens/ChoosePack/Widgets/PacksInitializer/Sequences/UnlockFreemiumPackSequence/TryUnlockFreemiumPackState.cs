@@ -62,7 +62,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.UnlockFreemiu
                 return false;
             }
 
-            return false;
+            return true;
         }
 
         private void NextState(List<ICurrency> newCurrencies)

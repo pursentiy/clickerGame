@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Common.Currency;
+using Configurations.Progress;
 using DG.Tweening;
 using Extensions;
 using Handlers;
@@ -20,7 +21,7 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
     public interface IPackItemWidgetMediator
     {
         int PackId { get; }
-        void UpdateWidgetUnlock(bool isUnlocked);
+        void UpdateWidgetStatus(PackStatus status);
         void RequestEntranceAnimation();
         void PlayExitAnimation();
     }
@@ -33,8 +34,8 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
         [Inject] protected readonly LocalizationService _localization;
         [Inject] protected readonly CurrencyLibraryService _currencyLibraryService;
 
-        protected GameObject _packImageInstance;
-        private bool _isUnlocked;
+        private GameObject _packImageInstance;
+        private PackStatus _currentStatus;
 
         public int PackId => Data.PackId;
 
@@ -102,13 +103,13 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             View.AnimationWidget.PlayExit(View.EntranceSlideOffsetY, View.ExitDuration);
         }
 
-        public void UpdateWidgetUnlock(bool isUnlocked)
+        public void UpdateWidgetStatus(PackStatus status)
         {
-            if (_isUnlocked == isUnlocked) return;
+            if (_currentStatus == status) return;
 
-            _isUnlocked = isUnlocked;
-            Data.IsUnlocked = isUnlocked;
-            SetupState(_isUnlocked, immediate: false);
+            _currentStatus = status;
+            Data.PackStatus = status;
+            SetupState(status, immediate: false);
         }
 
         protected override void OnInitialize(bool isVisibleOnRefresh)
@@ -120,17 +121,18 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
             if (_packImageInstance == null && Data.PackImagePrefab != null)
                 _packImageInstance = Object.Instantiate(Data.PackImagePrefab, View.PackImagePrefabContainer);
 
-            _isUnlocked = Data.IsUnlocked;
-            SetupState(_isUnlocked, immediate: true);
+            _currentStatus = Data.PackStatus;
+            SetupState(Data.PackStatus, immediate: true);
 
             PrepareEntranceDelayed();
         }
 
-        protected override void OnRelease(ListItemReleaseType type)
+        protected override void OnRelease(ListItemReleaseType type = ListItemReleaseType.Default)
         {
             View.Holder.DOKill();
             View.FadeImage.DOKill();
             View.LockWidget.DOKill();
+            
             base.OnRelease(type);
         }
 
@@ -176,14 +178,14 @@ namespace UI.Screens.ChoosePack.PackLevelItem.Base
                 .CancelWith(this);
         }
 
-        private void SetupState(bool isUnlocked, bool immediate)
+        private void SetupState(PackStatus status, bool immediate)
         {
             View.PackEnterButton.onClick.RemoveAllListeners();
 
             var packAction = new PackClickAction.PackClickAction(View.transform as RectTransform);
             View.PackEnterButton.onClick.MapListenerWithSound(() => Data.OnClickAction?.Invoke(packAction)).DisposeWith(this);
-
-            if (isUnlocked)
+            
+            if (status.IsAvailable())
             {
                 if (immediate) ApplyInstantUnlock();
                 else UnlockWithAnimation();

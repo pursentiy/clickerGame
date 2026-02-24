@@ -143,7 +143,7 @@ namespace Services
 
         /// <summary>
         /// Returns: Available (free/default or already unlocked), Locked, CanBeUnlocked (Freemium with enough currency), or UnavailablePack (e.g. pack not found).
-        /// Default: Available if pack is in snapshot and unlocked, or previous pack (same type) is unlocked; else Locked.
+        /// Default: Available if pack is in snapshot OR player currency is >= CurrencyToUnlock from PackInfo; else Locked.
         /// Freemium: Available if unlocked in snapshot; CanBeUnlocked if enough currency; else Locked.
         /// </summary>
         public PackStatus GetPackStatus(int packId)
@@ -158,17 +158,9 @@ namespace Services
 
             if (packType == PackType.Default)
             {
-                var defaultPacks = _gameInfoProvider.PacksInfo.Where(p => p.PackType == PackType.Default).ToList();
-                var index = defaultPacks.FindIndex(p => p.PackId == packId);
-                if (index < 0)
-                    return PackStatus.UnavailablePack;
                 bool hasInSnapshot = snapshot != null;
-                if (index == 0)
-                    return (hasInSnapshot && isUnlockedInSnapshot) ? PackStatus.Available : PackStatus.Locked;
-                var previousPackId = defaultPacks[index - 1].PackId;
-                var previousSnapshot = TryGetSavedPackSnapshot(previousPackId);
-                bool previousUnlocked = previousSnapshot != null && previousSnapshot.IsUnlocked != UnlockStatus.NotUnlocked;
-                return (hasInSnapshot && isUnlockedInSnapshot) || previousUnlocked ? PackStatus.Available : PackStatus.Locked;
+                bool hasEnoughCurrency = IsPackAvailableForUnlocking(packId);
+                return (hasInSnapshot || hasEnoughCurrency) ? PackStatus.Available : PackStatus.Locked;
             }
 
             if (packType == PackType.Freemium)

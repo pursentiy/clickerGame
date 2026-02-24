@@ -42,6 +42,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
         {
             return (disposeProvider) =>
             {
+                //TODO FIX TEXT
                 var currencyToEarnViaAds = _gameInfoProvider.StarsRewardForAds;
                 var spriteAsset = _currencyLibraryService.GetSpriteAsset(CurrencyExtensions.StarsCurrencyName);
                 var context = new MessagePopupContext(_localizationService.GetFormattedValue(LocalizationExtensions.AdsInfo, currencyToEarnViaAds), popupAnchorRect, MessagePopupFontSize, spriteAsset);
@@ -66,7 +67,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
             
             var popupAnchorRect = EvaluatePopupAnchorRectFromClickAction(clickAction);
             
-            var context = new UnlockFreemiumPackSequenceContext(currencyToUnlock, packId, _currencyDisplayWidget, popupAnchorRect, UpdatePacksState, PackType.Freemium, _container);
+            var context = new UnlockFreemiumPackSequenceContext(currencyToUnlock, packId, _currencyDisplayWidget, popupAnchorRect, UpdatePacksState, PackType.Freemium, _currencyContainer);
             
             StateMachine
                 .CreateMachine(context)
@@ -89,13 +90,13 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer
             UpdatePacksState();
         }
 
-        protected override BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, bool isUnlocked, List<ICurrency> currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered, Action<IPackClickAction> onPackClicked)
+        protected override BasePackItemWidgetInfo CreatePackWidgetInfoInternal(PackInfo packInfo, int packId, PackStatus packStatus, List<ICurrency> currencyToUnlock, int indexInList, System.Func<bool> getEntranceAnimationsAlreadyTriggered, Action<IPackClickAction> onPackClicked)
         {
             return new FreemiumPackItemWidgetInfo(
                 packInfo.PackName,
                 packInfo.PackImagePrefab,
                 packId,
-                isUnlocked,
+                packStatus,
                 onPackClicked,
                 currencyToUnlock,
                 indexInList,
