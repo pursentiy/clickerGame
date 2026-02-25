@@ -1,4 +1,4 @@
-namespace UI.Popups.DailyRewardPopup
+namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
 {
     public enum DayItemState
     {

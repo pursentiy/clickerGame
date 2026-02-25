@@ -12,22 +12,19 @@ namespace UI.Popups.DailyRewardPopup
     {
         [Header("Root")]
         public RectTransform MainTransform;
-        public RectTransform FlyingRewardsContainer;
 
         [Header("Texts")]
         public TMP_Text TitleText;
         public TMP_Text DayText;
 
         [Header("Buttons")]
-        public Button ClaimRewardsButton;
-        public TMP_Text ClaimRewardsButtonText;
         public Button CloseButton;
         public Button BackgroundButton;
         public Button InfoButton;
-        public CurrencyDisplayWidget CurrencyDisplayWidget;
 
         [Header("Daily Rewards")]
-        public DailyRewardDayItem[] DayRewardItems;
+        public DailyRewardDayItem.DailyRewardDayItem[] DayRewardItems;
+        public DailyRewardsDaysController DaysController;
     }
 }
 
