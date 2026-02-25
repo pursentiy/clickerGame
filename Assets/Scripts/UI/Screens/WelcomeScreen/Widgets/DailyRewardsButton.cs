@@ -143,7 +143,7 @@ namespace UI.Screens.WelcomeScreen.Widgets
             StopAnimations();
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             StopAnimations();
         }

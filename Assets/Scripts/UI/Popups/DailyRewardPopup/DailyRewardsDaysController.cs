@@ -15,6 +15,7 @@ using UnityEngine.UI;
 using Utilities.Disposable;
 using Zenject;
 using Components.UI;
+using Services.CoroutineServices;
 using UI.Popups.DailyRewardPopup.DailyRewardDayItem;
 
 namespace UI.Popups.DailyRewardPopup
@@ -23,10 +24,13 @@ namespace UI.Popups.DailyRewardPopup
     {
         private const string CollectRewardText = "Collect Reward";
         private const string ClosePopupText = "Close Popup";
+        private const float ClaimToFlightDelay = 0.5f;
+        private const float FlightTimeoutSeconds = 10f;
 
         [Inject] private FlyingUIRewardAnimationService _flyingUIRewardAnimationService;
         [Inject] private DailyRewardsInfoProvider _dailyRewardsInfoProvider;
         [Inject] private UIGlobalBlocker _uiGlobalBlocker;
+        [Inject] private CoroutineService _coroutineService;
 
         [Header("Claim")]
         [SerializeField] private Button claimRewardsButton;
@@ -68,23 +72,42 @@ namespace UI.Popups.DailyRewardPopup
             if (_items == null || _items.Length != DailyRewardConfiguration.CycleLength)
                 return;
 
-            var currentDayIndex = _context.DayIndex;
-
-            for (int day = 1; day <= DailyRewardConfiguration.CycleLength; day++)
-            {
-                var itemIndex = day - 1;
-                if (itemIndex >= _items.Length || _items[itemIndex] == null)
-                    continue;
-
-                var item = _items[itemIndex];
-                var state = day < currentDayIndex ? DayItemState.Collected
-                    : day == currentDayIndex ? (_canReceiveToday ? DayItemState.ReadyToReceive : DayItemState.ToBeCollected)
-                    : DayItemState.ToBeCollected;
-
-                SetupDayRewardItem(item, day, state);
-            }
-
+            SetupDayItemsState();
+            HideItemsForEntrance();
             UpdatePrimaryButtonUI();
+        }
+
+        public IPromise PlayEntranceAnimation()
+        {
+            if (_items == null)
+                return Promise.Resolved();
+            const float stagger = 0.07f;
+            const float duration = 0.45f;
+            var promises = new List<IPromise>();
+            for (int i = 0; i < _items.Length; i++)
+            {
+                if (_items[i] == null)
+                    continue;
+                promises.Add(_items[i].PlayEntranceAnimation(i * stagger, duration));
+            }
+            return promises.Count > 0 ? Promise.All(promises).CancelWith(this) : Promise.Resolved();
+        }
+
+        public IPromise PlayExitAnimation()
+        {
+            if (_items == null)
+                return Promise.Resolved();
+            
+            const float duration = 0.25f;
+            var promises = new List<IPromise>();
+            for (int i = 0; i < _items.Length; i++)
+            {
+                if (_items[i] == null)
+                    continue;
+                
+                promises.Add(_items[i].PlayExitAnimation(duration));
+            }
+            return promises.Count > 0 ? Promise.All(promises) : Promise.Resolved();
         }
 
         private void RefreshAvailability()
@@ -110,8 +133,14 @@ namespace UI.Popups.DailyRewardPopup
             claimRewardsButton.interactable = false;
 
             var blockRef = _uiGlobalBlocker.Block(30f);
-            return PlayClaimAnimationSequence()
-                .Then(() => VisualizeRewardsFlight(_context.EarnedDailyReward, flyingRewardsContainer, currencyDisplayWidget))
+
+            IPromise flightPromise = PlayClaimAnimationSequence()
+                .Then(() => _coroutineService.WaitFor(ClaimToFlightDelay))
+                .Then(() => Promise.Race(
+                    VisualizeRewardsFlight(_context.EarnedDailyReward, flyingRewardsContainer, currencyDisplayWidget),
+                    _coroutineService.WaitFor(FlightTimeoutSeconds)));
+
+            return flightPromise
                 .Then(() =>
                 {
                     if (currencyDisplayWidget != null && _context?.EarnedDailyReward is { Count: > 0 })
@@ -127,6 +156,8 @@ namespace UI.Popups.DailyRewardPopup
                 {
                     LoggerService.LogError($"Failed to claim rewards for day {_context?.DayIndex} with exception: {e}");
                     blockRef.Dispose();
+                    RefreshAvailability();
+                    UpdatePrimaryButtonUI();
                     _hideAction?.Invoke();
                 });
         }
@@ -184,6 +215,33 @@ namespace UI.Popups.DailyRewardPopup
                 return currentItem.RootTransform.position;
 
             return fallbackContainer != null ? fallbackContainer.position : Vector3.zero;
+        }
+
+        private void SetupDayItemsState()
+        {
+            var currentDayIndex = _context.DayIndex;
+            for (int day = 1; day <= DailyRewardConfiguration.CycleLength; day++)
+            {
+                var itemIndex = day - 1;
+                if (itemIndex >= _items.Length || _items[itemIndex] == null)
+                    continue;
+
+                var item = _items[itemIndex];
+                var state = day < currentDayIndex ? DayItemState.Collected
+                    : day == currentDayIndex ? (_canReceiveToday ? DayItemState.ReadyToReceive : DayItemState.ToBeCollected)
+                    : DayItemState.ToBeCollected;
+
+                SetupDayRewardItem(item, day, state);
+            }
+        }
+
+        private void HideItemsForEntrance()
+        {
+            for (int i = 0; i < _items.Length; i++)
+            {
+                if (_items[i] != null && _items[i].RootTransform != null)
+                    _items[i].RootTransform.localScale = Vector3.zero;
+            }
         }
 
         private void SetupDayRewardItem(DailyRewardDayItem.DailyRewardDayItem item, int dayIndex, DayItemState state)

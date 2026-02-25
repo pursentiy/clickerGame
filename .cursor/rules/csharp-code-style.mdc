@@ -1,0 +1,23 @@
+---
+description: C# code style — smaller functions, minimal comments, method ordering
+globs: **/*.cs
+alwaysApply: false
+---
+
+# C# Code Style
+
+## Function size
+
+- Prefer **small, focused functions** over long blocks in one method.
+- Extract logical steps into named methods (e.g. setup, validation, one clear side-effect).
+- Stay **reasonable**: don’t split every 2 lines; only extract when it improves readability or reuse.
+
+## Comments
+
+- **Avoid unnecessary comments.** Prefer clear names and small functions.
+- Comment only when logic is non-obvious, domain-specific, or workaround-heavy.
+
+## Method ordering
+
+- Follow the **file structure rule** (public/override first, private methods last).
+- **Within private methods**: order by flow — higher-level or callers first, helpers they use below (or group by concern), so the file reads top-to-bottom.

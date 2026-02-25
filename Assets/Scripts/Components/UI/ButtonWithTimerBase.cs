@@ -102,7 +102,7 @@ namespace Components.UI
             StopTimer();
         }
 
-        protected void OnDestroy()
+        protected virtual void OnDestroy()
         {
             StopTimer();
         }

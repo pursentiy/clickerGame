@@ -103,7 +103,7 @@ namespace Configurations.DailyReward
             return list;
         }
 
-        private static ICurrency? CreateCurrency(string name, int amount)
+        private static ICurrency CreateCurrency(string name, int amount)
         {
             switch (name)
             {

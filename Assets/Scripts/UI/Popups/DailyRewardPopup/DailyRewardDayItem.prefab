@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 567120359743888449}
+  - component: {fileID: 7963132489068588637}
   m_Layer: 5
   m_Name: Container
   m_TagString: Untagged
@@ -38,6 +39,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &7963132489068588637
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 23831838821215914}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &62818683258782708
 GameObject:
   m_ObjectHideFlags: 0
@@ -201,6 +214,7 @@ GameObject:
   - component: {fileID: 4297635624520202764}
   - component: {fileID: 6645939047620413307}
   - component: {fileID: 24247694781259151}
+  - component: {fileID: 4368449952664919873}
   m_Layer: 5
   m_Name: DailyRewardDayItem
   m_TagString: Untagged
@@ -241,12 +255,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Popups.DailyRewardPopup.DailyRewardDayItem.DailyRewardDayItem
   rootTransform: {fileID: 276806341710375578}
-  contentHolder: {fileID: 567120359743888449}
-  itemCanvas: {fileID: 24247694781259151}
+  animationWidget: {fileID: 4368449952664919873}
   alreadyCollectedView: {fileID: 9093331595697918584}
   lockedView: {fileID: 7894565406242339389}
   readyToCollectView: {fileID: 8537130805287030620}
-  _readyBounce: 0.1
 --- !u!225 &6645939047620413307
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -282,6 +294,24 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &4368449952664919873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2117633169927855583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66751c1ac4ef645cea11d91fcdf4ff4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Popups.DailyRewardPopup.DailyRewardDayItem.DailyRewardItemAnimationWidget
+  rootTransform: {fileID: 276806341710375578}
+  contentHolder: {fileID: 567120359743888449}
+  itemCanvas: {fileID: 24247694781259151}
+  itemCanvasGroup: {fileID: 7963132489068588637}
+  readyToCollectView: {fileID: 8537130805287030620}
+  _readyBounce: 0.1
 --- !u!1 &2192829462842186779
 GameObject:
   m_ObjectHideFlags: 0

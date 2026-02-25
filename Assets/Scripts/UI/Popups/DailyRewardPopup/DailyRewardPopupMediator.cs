@@ -24,10 +24,38 @@ namespace UI.Popups.DailyRewardPopup
     public class DailyRewardPopupMediator : UIPopupBase<DailyRewardPopupView, DailyRewardPopupContext>
     {
         [Inject] private readonly FlowPopupController _flowPopupController;
-
-        private DailyRewardsDaysController _daysController;
+        [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
 
         public override IUIPopupAnimation Animation => new ScalePopupAnimation(View.MainTransform);
+
+        public override void OnEndShow()
+        {
+            base.OnEndShow();
+            PlayEntranceDayItemsAnimation();
+        }
+
+        private void PlayEntranceDayItemsAnimation()
+        {
+            var blockRef = _uiScreenBlocker.Block();
+
+            View.DaysController.PlayEntranceAnimation()
+                .Then(Unblock)
+                .CancelWith(this)
+                .Catch(_ => Unblock());
+
+            void Unblock()
+            {
+                if (!blockRef.IsDisposed)
+                    blockRef.Dispose();
+            }
+        }
+
+        public override void OnBeginHide()
+        {
+            base.OnBeginHide();
+            
+            View.DaysController.PlayExitAnimation();
+        }
 
         public override void OnCreated()
         {
@@ -35,7 +63,12 @@ namespace UI.Popups.DailyRewardPopup
 
             SetupTexts();
             SetupButtons();
-            InitializeDaysController();
+            SetupWidgets();
+        }
+
+        private void SetupWidgets()
+        {
+            View.DaysController.Initialize(View.DayRewardItems, Context, Hide);
         }
 
         private void SetupTexts()
@@ -67,16 +100,10 @@ namespace UI.Popups.DailyRewardPopup
             _flowPopupController.ShowMessagePopup(context);
         }
 
-        private void InitializeDaysController()
-        {
-            _daysController = View.DaysController;
-            if (_daysController != null)
-                _daysController.Initialize(View.DayRewardItems, Context, Hide);
-        }
 
         public void PlayClaimReceivingAnimation()
         {
-            _daysController?.PlayClaimReceivingAnimation();
+            View.DaysController.PlayClaimReceivingAnimation();
         }
     }
 }
