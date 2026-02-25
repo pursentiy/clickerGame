@@ -33,6 +33,14 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
                 _initialContentScale = contentHolder.localScale;
         }
 
+        public void PrepareForEntrance()
+        {
+            if (contentHolder != null)
+                contentHolder.localScale = Vector3.zero;
+            if (itemCanvasGroup != null)
+                itemCanvasGroup.alpha = 0f;
+        }
+
         public IPromise PlayEntranceAnimation(float delay, float duration = 0.5f)
         {
             // Сброс начального состояния перед анимацией

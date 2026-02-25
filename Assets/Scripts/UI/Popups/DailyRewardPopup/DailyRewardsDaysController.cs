@@ -239,8 +239,8 @@ namespace UI.Popups.DailyRewardPopup
         {
             for (int i = 0; i < _items.Length; i++)
             {
-                if (_items[i] != null && _items[i].RootTransform != null)
-                    _items[i].RootTransform.localScale = Vector3.zero;
+                if (_items[i] != null)
+                    _items[i].PrepareForEntrance();
             }
         }
 

@@ -53,6 +53,11 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
             ApplyState(state);
         }
         
+        public void PrepareForEntrance()
+        {
+            animationWidget?.PrepareForEntrance();
+        }
+
         public IPromise PlayEntranceAnimation(float delay, float duration = 0.45f)
         {
             return animationWidget != null ? animationWidget.PlayEntranceAnimation(delay, duration) : Promise.Resolved();
