@@ -88,10 +88,16 @@ namespace Tests.Editor
 
             DailyRewardSnapshot afterOpening = ctx.ProfileController.TryGetDailyRewardSnapshot();
             Assert.IsNotNull(afterOpening);
-            Assert.AreEqual(1, afterOpening.CurrentDayIndex,
-                "Upon opening after skip, snapshot should be at first index (day 1).");
-            Assert.AreEqual(0, afterOpening.ClaimedDaysIndexes?.Count ?? 0,
-                "Snapshot should be reset with empty ClaimedDaysIndexes.");
+            Assert.AreEqual(3, afterOpening.CurrentDayIndex,
+                "Stored snapshot is not reset on open; only controller persists when user claims.");
+
+            bool claimAfterReset = ctx.Controller.TryClaimTodayReward();
+            Assert.IsTrue(claimAfterReset, "Claim after streak break should succeed.");
+            DailyRewardSnapshot afterClaim = ctx.ProfileController.TryGetDailyRewardSnapshot();
+            Assert.IsNotNull(afterClaim);
+            Assert.AreEqual(1, afterClaim.CurrentDayIndex);
+            Assert.That(afterClaim.ClaimedDaysIndexes, Is.EquivalentTo(new[] { 1 }),
+                "After claiming, controller should persist reset snapshot (day 1, [1]).");
         }
     }
 }

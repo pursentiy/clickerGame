@@ -75,7 +75,7 @@ namespace UI.Popups.DailyRewardPopup
 
             RefreshAvailability();
 
-            if (_items == null || _items.Length != DailyRewardConfiguration.CycleLength)
+            if (_items == null || _items.Length != DailyRewardsSettingsConfiguration.CycleLength)
                 return;
 
             SetupDayItemsState();
@@ -246,7 +246,7 @@ namespace UI.Popups.DailyRewardPopup
             LayoutRebuilder.ForceRebuildLayoutImmediate(layoutGroupTransform);
 
             var currentDayIndex = _context.DayIndex;
-            for (int day = 1; day <= DailyRewardConfiguration.CycleLength; day++)
+            for (int day = 1; day <= DailyRewardsSettingsConfiguration.CycleLength; day++)
             {
                 var itemIndex = day - 1;
                 if (itemIndex >= _items.Length || _items[itemIndex] == null)

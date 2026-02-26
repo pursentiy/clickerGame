@@ -28,10 +28,10 @@ namespace Services.DailyReward
                 return false;
 
             var ctx = GetContext();
-            if (ctx.isClaimedToday)
+            if (ctx.isClaimedInCurrentPeriod)
                 return false;
 
-            int nextDay = CalculateNextDayIndex(ctx.snapshot.CurrentDayIndex, ctx.lastClaimDate, ctx.today);
+            int nextDay = CalculateNextDayIndex(ctx.snapshot.CurrentDayIndex, ctx.lastClaimUtc, ctx.nowUtc, ctx.intervalMinutes);
             var rewards = Config?.GetRewardsForDay(nextDay);
 
             if (rewards == null || rewards.Count == 0)
@@ -47,9 +47,9 @@ namespace Services.DailyReward
             if (!_playerProfileController.IsInitialized || Config?.RewardsByDay == null) return false;
 
             var ctx = GetContext();
-            int displayDay = ctx.isClaimedToday
+            int displayDay = ctx.isClaimedInCurrentPeriod
                 ? ctx.snapshot.CurrentDayIndex
-                : CalculateNextDayIndex(ctx.snapshot.CurrentDayIndex, ctx.lastClaimDate, ctx.today);
+                : CalculateNextDayIndex(ctx.snapshot.CurrentDayIndex, ctx.lastClaimUtc, ctx.nowUtc, ctx.intervalMinutes);
 
             info = new DailyRewardInfo(displayDay, Config.RewardsByDay,
                 Config.GetRewardsForDay(displayDay) ?? Array.Empty<ICurrency>());
@@ -61,11 +61,19 @@ namespace Services.DailyReward
             if (!_playerProfileController.IsInitialized) return new DailyRewardStatus(false, false, TimeSpan.Zero, 0);
 
             var ctx = GetContext();
-            var isMissed = ctx.lastClaimDate < ctx.today.AddDays(-1) && ctx.snapshot.LastClaimUtcTicks > 0;
-            var timeUntilNext = ctx.isClaimedToday ? ctx.today.AddDays(1) - _bridgeService.GetServerTime() : TimeSpan.Zero;
+            var isMissed = IsStreakBroken(ctx.lastClaimUtc, ctx.nowUtc, ctx.intervalMinutes) && ctx.snapshot.LastClaimUtcTicks > 0;
+            var timeUntilNext = TimeSpan.Zero;
 
-            return new DailyRewardStatus(!ctx.isClaimedToday, isMissed, timeUntilNext, ctx.snapshot.CurrentDayIndex);
+            if (ctx.isClaimedInCurrentPeriod && ctx.lastClaimUtc != DateTime.MinValue)
+            {
+                var nextAvailableTime = ctx.lastClaimUtc.AddMinutes(ctx.intervalMinutes);
+                timeUntilNext = Max(TimeSpan.Zero, nextAvailableTime - ctx.nowUtc);
+            }
+
+            return new DailyRewardStatus(!ctx.isClaimedInCurrentPeriod, isMissed, timeUntilNext, ctx.snapshot.CurrentDayIndex);
         }
+
+        private static TimeSpan Max(TimeSpan a, TimeSpan b) => a > b ? a : b;
 
         public bool IsCollectedDay(int dayIndex)
         {
@@ -77,39 +85,74 @@ namespace Services.DailyReward
             return snapshot.ClaimedDaysIndexes.Contains(dayIndex);
         }
 
-        internal int CalculateNextDayIndex(int current, DateTime lastClaim, DateTime today)
-        {
-            bool isStreakBroken = lastClaim < today.AddDays(-1);
-            if (isStreakBroken || lastClaim == DateTime.MinValue) return 1;
 
-            return (current % DailyRewardConfiguration.CycleLength) + 1;
+        public bool IsStreakBrokenAndNotReset()
+        {
+            if (!_playerProfileController.IsInitialized)
+                return false;
+            var snapshot = _playerProfileController.TryGetDailyRewardSnapshot() ?? new DailyRewardSnapshot(0, 0);
+            var nowUtc = _bridgeService.GetServerTime().ToUniversalTime();
+            var lastClaimUtc = snapshot.LastClaimUtcTicks > 0
+                ? new DateTime(snapshot.LastClaimUtcTicks, DateTimeKind.Utc)
+                : DateTime.MinValue;
+            var intervalMinutes = Config?.RewardIntervalMinutes ?? DailyRewardsSettingsConfiguration.DefaultRewardIntervalMinutes;
+            return IsStreakBroken(lastClaimUtc, nowUtc, intervalMinutes) && !IsSnapshotReset(snapshot);
         }
 
-        internal (DailyRewardSnapshot snapshot, DateTime today, DateTime lastClaimDate, bool isClaimedToday) GetContext()
+
+        public bool TryGetResetSnapshotIfStreakBroken(out DailyRewardSnapshot resetSnapshot)
+        {
+            resetSnapshot = null;
+            if (!_playerProfileController.IsInitialized)
+                return false;
+            var snapshot = _playerProfileController.TryGetDailyRewardSnapshot() ?? new DailyRewardSnapshot(0, 0);
+            var nowUtc = _bridgeService.GetServerTime().ToUniversalTime();
+            var lastClaimUtc = snapshot.LastClaimUtcTicks > 0
+                ? new DateTime(snapshot.LastClaimUtcTicks, DateTimeKind.Utc)
+                : DateTime.MinValue;
+            var intervalMinutes = Config?.RewardIntervalMinutes ?? DailyRewardsSettingsConfiguration.DefaultRewardIntervalMinutes;
+            if (!IsStreakBroken(lastClaimUtc, nowUtc, intervalMinutes) || IsSnapshotReset(snapshot))
+                return false;
+            resetSnapshot = new DailyRewardSnapshot(1, snapshot.LastClaimUtcTicks, null);
+            return true;
+        }
+
+        internal int CalculateNextDayIndex(int current, DateTime lastClaimUtc, DateTime nowUtc, int intervalMinutes)
+        {
+            if (IsStreakBroken(lastClaimUtc, nowUtc, intervalMinutes))
+                return 1;
+
+            return (current % DailyRewardsSettingsConfiguration.CycleLength) + 1;
+        }
+
+        internal (DailyRewardSnapshot snapshot, DateTime nowUtc, DateTime lastClaimUtc, bool isClaimedInCurrentPeriod, int intervalMinutes) GetContext()
         {
             var snapshot = _playerProfileController.TryGetDailyRewardSnapshot() ?? new DailyRewardSnapshot(0, 0);
 
-            var today = _bridgeService.GetServerTime().ToUniversalTime().Date;
+            var nowUtc = _bridgeService.GetServerTime().ToUniversalTime();
+            var lastClaimUtc = snapshot.LastClaimUtcTicks > 0
+                ? new DateTime(snapshot.LastClaimUtcTicks, DateTimeKind.Utc)
+                : DateTime.MinValue;
 
-            var lastClaimDate = snapshot.LastClaimUtcTicks switch
-            {
-                > 0 => new DateTime(snapshot.LastClaimUtcTicks, DateTimeKind.Utc).Date,
-                _ => DateTime.MinValue
-            };
+            var intervalMinutes = Config?.RewardIntervalMinutes ?? DailyRewardsSettingsConfiguration.DefaultRewardIntervalMinutes;
+            var isClaimedInCurrentPeriod = lastClaimUtc != DateTime.MinValue &&
+                (nowUtc - lastClaimUtc).TotalMinutes < intervalMinutes;
 
-            if (IsStreakBroken(lastClaimDate, today) && !IsSnapshotReset(snapshot))
+            if (IsStreakBroken(lastClaimUtc, nowUtc, intervalMinutes) && !IsSnapshotReset(snapshot))
             {
-                var resetSnapshot = new DailyRewardSnapshot(1, snapshot.LastClaimUtcTicks, null);
-                _playerProfileController.UpdateDailyRewardAndSave(resetSnapshot, SavePriority.ImmediateSave);
-                return (resetSnapshot, today, lastClaimDate, lastClaimDate == today);
+                var effectiveResetSnapshot = new DailyRewardSnapshot(1, snapshot.LastClaimUtcTicks, null);
+                return (effectiveResetSnapshot, nowUtc, lastClaimUtc, isClaimedInCurrentPeriod, intervalMinutes);
             }
 
-            return (snapshot, today, lastClaimDate, lastClaimDate == today);
+            return (snapshot, nowUtc, lastClaimUtc, isClaimedInCurrentPeriod, intervalMinutes);
         }
 
-        private static bool IsStreakBroken(DateTime lastClaimDate, DateTime today)
+        private static bool IsStreakBroken(DateTime lastClaimUtc, DateTime nowUtc, int intervalMinutes)
         {
-            return lastClaimDate == DateTime.MinValue || lastClaimDate < today.AddDays(-1);
+            if (lastClaimUtc == DateTime.MinValue) return true;
+            double minutesPassed = (nowUtc - lastClaimUtc).TotalMinutes;
+            double gracePeriodMinutes = intervalMinutes * DailyRewardsSettingsConfiguration.GracePeriodMultiplier;
+            return minutesPassed >= gracePeriodMinutes;
         }
 
         private static bool IsSnapshotReset(DailyRewardSnapshot snapshot)
