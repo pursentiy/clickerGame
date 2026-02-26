@@ -76,18 +76,25 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem.Animations
         {
             Stop();
     
-            // Создаем Sequence для сложной, "дорогой" анимации покоя
-            var seq = DOTween.Sequence()
-                .KillWith(_ctx.DisposeProvider)
-                .SetLoops(-1, LoopType.Yoyo);
-            
-            seq.Append(_ctx.ContentHolder.DOScale(_ctx.InitialScale * 0.97f, 3f).SetEase(Ease.InOutSine));
-            seq.Join(_ctx.ContentHolder.DOAnchorPosY(_ctx.InitialPos.y - 5f, 3f).SetEase(Ease.InOutSine));
+            // Просто мягкое дыхание. Без смещений, чтобы не бесить LayoutGroup.
+            // Если 0.97f мало, поставим 0.95f - это будет заметно и плавно.
+            _ctx.ContentHolder.DOScale(_ctx.InitialScale * 0.95f, 2f)
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetId(_ctx)
+                .KillWith(_ctx.DisposeProvider);
+
+            // Сделаем пак чуть прозрачнее, чтобы он выглядел "закрытым"
             if (_ctx.ItemCanvasGroup != null)
             {
-                seq.Join(_ctx.ItemCanvasGroup.DOFade(0.85f, 3f).SetEase(Ease.InOutSine));
+                _ctx.ItemCanvasGroup.DOFade(0.9f, 2f)
+                    .SetEase(Ease.InOutSine)
+                    .SetLoops(-1, LoopType.Yoyo)
+                    .SetId(_ctx)
+                    .KillWith(_ctx.DisposeProvider);
             }
         }
+        
         public IPromise PlayClaim(Action onMidPoint)
         {
             Stop();

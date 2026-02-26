@@ -56,17 +56,12 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
 
         public void InitializeItem(int dayIndex, DayItemState state, ICurrency rewardCurrency)
         {
+            SaveInitialParams();
+            
             _dayIndex = dayIndex;
-            if (rewardCurrency != null)
-            {
-                _rewardIconSprite = _currencyLibraryService.GetMainIcon(rewardCurrency.GetType().Name);
-                _rewardAmountText = rewardCurrency.GetCount().ToString();
-            }
-            else
-            {
-                _rewardIconSprite = null;
-                _rewardAmountText = string.Empty;
-            }
+            
+            _rewardIconSprite = _currencyLibraryService.GetMainIcon(rewardCurrency.GetType().Name);
+            _rewardAmountText = rewardCurrency.GetCount().ToString();
 
             ApplyState(state);
         }
@@ -92,12 +87,6 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
 
         private void Awake()
         {
-            if (itemCanvas != null) InitialSortingOrder = itemCanvas.sortingOrder;
-            if (contentHolder != null)
-            {
-                InitialScale = contentHolder.localScale;
-                InitialPos = contentHolder.anchoredPosition;
-            }
             _animator = new DailyRewardItemAnimator(this);
         }
         
@@ -106,8 +95,19 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
         private void ApplyState(DayItemState state)
         {
             _animator.Reset(); 
+            
             UpdateViewVisuals(state);
             PlayIdleAnimationForState(state);
+        }
+
+        private void SaveInitialParams()
+        {
+            if (itemCanvas != null) InitialSortingOrder = itemCanvas.sortingOrder;
+            if (contentHolder != null)
+            {
+                InitialScale = contentHolder.localScale;
+                InitialPos = contentHolder.anchoredPosition;
+            }
         }
         
         private void UpdateViewVisuals(DayItemState state)
