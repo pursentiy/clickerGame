@@ -182,10 +182,12 @@ namespace UI.Popups.DailyRewardPopup
         public IPromise PlayClaimAnimationSequence()
         {
             var currentItem = GetCurrentItem();
-            if (currentItem != null)
-                return currentItem.PlayClaimFeedbackAnimation();
-
-            return Promise.Resolved();
+            if (currentItem == null)
+                return Promise.Resolved();
+            
+            return currentItem.PlayClaimFeedbackAnimation(
+                () => currentItem.SetState(DayItemState.Collected),
+                () => currentItem.SetState(DayItemState.Collected));
         }
 
         public IPromise VisualizeRewardsFlight(IList<ICurrency> rewards, UnityEngine.RectTransform flyingRewardsContainer, CurrencyDisplayWidget currencyDisplayWidget)

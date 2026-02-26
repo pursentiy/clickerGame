@@ -42,18 +42,24 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem.Animations
 
         public IPromise PlayEntrance(float delay)
         {
-            Reset();
+            Stop(); 
             
-            _ctx.ContentHolder.localScale = _ctx.InitialScale * 0.7f;
-            _ctx.ContentHolder.anchoredPosition = _ctx.InitialPos + new Vector2(0, -40f);
-            
+            _ctx.ContentHolder.localScale = _ctx.InitialScale * 0.4f; 
+            _ctx.ContentHolder.anchoredPosition = _ctx.InitialPos + new Vector2(0, -100f);
+            _ctx.ContentHolder.localRotation = Quaternion.Euler(0, 0, -10f); // Легкий наклон
+    
             if (_ctx.ItemCanvasGroup != null) _ctx.ItemCanvasGroup.alpha = 0;
 
-            return DOTween.Sequence().KillWith(_ctx.DisposeProvider).SetDelay(delay)
-                .Append(_ctx.ItemCanvasGroup.DOFade(1f, 0.3f))
-                .Join(_ctx.ContentHolder.DOScale(_ctx.InitialScale, 0.5f).SetEase(Ease.OutBack, 1.2f))
-                .Join(_ctx.ContentHolder.DOAnchorPos(_ctx.InitialPos, 0.5f).SetEase(Ease.OutCubic))
-                .AsPromise();
+            var seq = DOTween.Sequence()
+                .KillWith(_ctx.DisposeProvider)
+                .SetDelay(delay);
+            
+            seq.Append(_ctx.ItemCanvasGroup.DOFade(1f, 0.25f).SetEase(Ease.OutCubic));
+            seq.Join(_ctx.ContentHolder.DOAnchorPos(_ctx.InitialPos, 0.6f).SetEase(Ease.OutQuint));
+            seq.Join(_ctx.ContentHolder.DOScale(_ctx.InitialScale, 0.75f).SetEase(Ease.OutBack, 1.5f));
+            seq.Join(_ctx.ContentHolder.DOLocalRotate(Vector3.zero, 0.8f).SetEase(Ease.OutElastic, 0.6f, 0.4f));
+
+            return seq.AsPromise().CancelWith(_ctx.DisposeProvider);
         }
 
         public void PlayReadyLoop()
@@ -69,10 +75,19 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem.Animations
         public void PlayLockedSubtle()
         {
             Stop();
-            _ctx.ContentHolder.DOScale(_ctx.InitialScale * 0.98f, 2f)
-                .SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo).KillWith(_ctx.DisposeProvider);
+    
+            // Создаем Sequence для сложной, "дорогой" анимации покоя
+            var seq = DOTween.Sequence()
+                .KillWith(_ctx.DisposeProvider)
+                .SetLoops(-1, LoopType.Yoyo);
+            
+            seq.Append(_ctx.ContentHolder.DOScale(_ctx.InitialScale * 0.97f, 3f).SetEase(Ease.InOutSine));
+            seq.Join(_ctx.ContentHolder.DOAnchorPosY(_ctx.InitialPos.y - 5f, 3f).SetEase(Ease.InOutSine));
+            if (_ctx.ItemCanvasGroup != null)
+            {
+                seq.Join(_ctx.ItemCanvasGroup.DOFade(0.85f, 3f).SetEase(Ease.InOutSine));
+            }
         }
-
         public IPromise PlayClaim(Action onMidPoint)
         {
             Stop();
@@ -108,6 +123,16 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem.Animations
                 .Join(_ctx.ItemCanvasGroup.DOFade(0f, duration * 0.8f))
                 .Join(_ctx.ContentHolder.DOAnchorPosY(_ctx.InitialPos.y - 20f, duration).SetEase(Ease.InCubic))
                 .AsPromise();
+        }
+        
+        public void PlayCollectedSubtle()
+        {
+            Stop();
+            
+            _ctx.ContentHolder.DOLocalRotate(new Vector3(0, 0, 1.2f), 3f)
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetId(_ctx);
         }
 
         public void Dispose() => Stop();

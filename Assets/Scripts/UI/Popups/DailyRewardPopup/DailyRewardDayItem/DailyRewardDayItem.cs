@@ -1,4 +1,6 @@
+using System;
 using Common.Currency;
+using Extensions;
 using RSG;
 using Services.FlyingRewardsAnimation;
 using UI.Popups.DailyRewardPopup.DailyRewardDayItem.Animations;
@@ -72,7 +74,21 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
         public void PrepareForEntrance() => _animator.SetupInvisibleState();
         public IPromise PlayEntranceAnimation(float delay) => _animator.PlayEntrance(delay);
         public IPromise PlayExitAnimation(float duration = 0.25f) => _animator.PlayExit(duration);
-        public IPromise PlayClaimFeedbackAnimation() => _animator.PlayClaim(() => UpdateViewVisuals(DayItemState.Collected));
+        public IPromise PlayClaimFeedbackAnimation(Action onImpact, Action onComplete)
+        {
+            return _animator.PlayClaim(() => onImpact?.SafeInvoke())
+                .Then(() => onComplete?.SafeInvoke())
+                .CancelWith(this);
+        }
+        
+        public void SetState(DayItemState state, bool resetAnimation = true)
+        {
+            if (resetAnimation)
+                _animator.Reset();
+
+            UpdateViewVisuals(state);
+            PlayIdleAnimationForState(state);
+        }
 
         private void Awake()
         {
@@ -89,9 +105,9 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
         
         private void ApplyState(DayItemState state)
         {
-            // Полный сброс только при обычной смене стейта
             _animator.Reset(); 
             UpdateViewVisuals(state);
+            PlayIdleAnimationForState(state);
         }
         
         private void UpdateViewVisuals(DayItemState state)
@@ -100,13 +116,29 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
             SetViewActive(lockedView, state == DayItemState.ToBeCollected);
             SetViewActive(readyToCollectView, state == DayItemState.ReadyToReceive);
 
-            DailyRewardViewBase activeView = GetViewForState(state);
+            var activeView = GetViewForState(state);
             if (activeView != null)
             {
                 activeView.SetRewardIcon(_rewardIconSprite);
                 activeView.SetRewardText(_rewardAmountText);
                 activeView.SetInfoText(GetInfoText(state));
                 activeView.ApplyVisuals(state);
+            }
+        }
+        
+        private void PlayIdleAnimationForState(DayItemState state)
+        {
+            switch (state)
+            {
+                case DayItemState.ReadyToReceive:
+                    _animator.PlayReadyLoop();
+                    break;
+                case DayItemState.ToBeCollected:
+                    _animator.PlayLockedSubtle();
+                    break;
+                case DayItemState.Collected:
+                    _animator.PlayCollectedSubtle(); 
+                    break;
             }
         }
 
