@@ -35,6 +35,7 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
         private Sprite _rewardIconSprite;
         private string _rewardAmountText = string.Empty;
         private DailyRewardItemAnimator _animator;
+        private DayItemState _currentState;
         
         public RectTransform ContentHolder => contentHolder;
         public Canvas ItemCanvas => itemCanvas;
@@ -52,7 +53,8 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
             _animator = _animatorFactory.Create(this);
         }
         
-        public void PlayGlow() => readyToCollectView?.PlayGlow();
+        public void PlayRaysAnimation() => readyToCollectView?.PlayRaysAnimation();
+        public void StopRaysAnimation() => readyToCollectView?.StopRayAnimation();
         public void PlayDust() => readyToCollectView?.PlayDust();
 
         public void InitializeItem(int dayIndex, DayItemState state, ICurrency rewardCurrency)
@@ -60,6 +62,7 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
             _dayIndex = dayIndex;
             _rewardIconSprite = _currencyLibraryService.GetMainIcon(rewardCurrency.GetType().Name);
             _rewardAmountText = rewardCurrency.GetCount().ToString();
+            _currentState = state;
 
             // Заставляем Layout расставиться ПРЯМО СЕЙЧАС
             Canvas.ForceUpdateCanvases();
@@ -71,7 +74,14 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
         }
 
         public void PrepareForEntrance() => _animator.SetupInvisibleState();
-        public IPromise PlayEntranceAnimation(float delay) => _animator.PlayEntrance(delay);
+        public IPromise PlayEntranceAnimation(float delay)
+        {
+            
+            return _animator.PlayEntrance(delay)
+                .Then(() => PlayIdleAnimationForState(_currentState))
+                .CancelWith(this);
+        }
+
         public IPromise PlayExitAnimation(float duration = 0.25f) => _animator.PlayExit(duration);
         public IPromise PlayClaimFeedbackAnimation(Action onImpact, Action onComplete)
         {
@@ -82,6 +92,8 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
         
         public void SetState(DayItemState state, bool resetAnimation = true)
         {
+            _currentState = state;
+            
             if (resetAnimation)
                 _animator.Reset();
 

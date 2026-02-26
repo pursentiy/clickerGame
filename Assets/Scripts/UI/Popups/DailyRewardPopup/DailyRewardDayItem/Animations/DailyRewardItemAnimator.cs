@@ -79,8 +79,8 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem.Animations
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetId(_ctx) // ОБЯЗАТЕЛЬНО
                 .KillWith(_ctx.DisposeProvider);
-
-            _ctx.PlayGlow();
+            
+            _ctx.PlayRaysAnimation();
         }
 
         public void PlayLockedSubtle()
@@ -106,7 +106,7 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem.Animations
         public IPromise PlayClaim(Action onMidPoint)
         {
             Reset(); // Карточка должна стоять ровно перед прыжком
-            
+    
             if (_ctx.ItemCanvas != null)
             {
                 _ctx.ItemCanvas.overrideSorting = true;
@@ -114,28 +114,36 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem.Animations
             }
 
             var seq = DOTween.Sequence()
-                .SetId(_ctx) // ОБЯЗАТЕЛЬНО
+                .SetId(_ctx) 
                 .KillWith(_ctx.DisposeProvider);
 
-            // Взлет вверх от изначальной позиции
-            seq.Append(_ctx.ContentHolder.DOAnchorPosY(_ctx.InitialPos.y + 120f, 0.5f).SetEase(Ease.OutCubic))
-                .Join(_ctx.ContentHolder.DOScale(_ctx.InitialScale * 1.35f, 0.5f).SetEase(Ease.OutBack))
-                .Join(_ctx.ContentHolder.DOLocalRotate(new Vector3(0, 0, 6f), 0.5f).SetEase(Ease.OutSine));
+            // 1. ВЗЛЕТ И 3D-НАКЛОН
+            // Поднимаем ОЧЕНЬ высоко (150f), делаем ОГРОМНОЙ (1.65f) 
+            // Vector3(-25f, 0, 8f) -> -25 по X дает тот самый эффект откидывания в 3D
+            seq.Append(_ctx.ContentHolder.DOAnchorPosY(_ctx.InitialPos.y + 150f, 0.6f).SetEase(Ease.OutCubic))
+                .Join(_ctx.ContentHolder.DOScale(_ctx.InitialScale * 1.65f, 0.6f).SetEase(Ease.OutBack, 1.2f))
+                .Join(_ctx.ContentHolder.DOLocalRotate(new Vector3(-25f, 0, 8f), 0.6f).SetEase(Ease.OutCubic));
 
-            seq.AppendInterval(0.05f);
+            // Добавляем микро-паузу (зависание в наивысшей точке)
+            seq.AppendInterval(0.08f);
+            seq.AppendCallback(() => _ctx.StopRaysAnimation());
 
-            // Падение ровно в InitialPos
+            // 2. УДАР ОБ ЗЕМЛЮ
+            // Резко (InQuint) сбрасываем координаты, масштаб и наклон в дефолт
             seq.Append(_ctx.ContentHolder.DOAnchorPos(_ctx.InitialPos, 0.15f).SetEase(Ease.InQuint))
                 .Join(_ctx.ContentHolder.DOScale(_ctx.InitialScale, 0.15f).SetEase(Ease.InQuint))
                 .Join(_ctx.ContentHolder.DOLocalRotate(Vector3.zero, 0.15f).SetEase(Ease.InQuint));
 
+            // 3. ПАРТИКЛЫ И ТРЯСКА В МОМЕНТ УДАРА
             seq.AppendCallback(() => {
                 _ctx.PlayDust();
-                _ctx.ContentHolder.DOShakePosition(0.4f, 15f, 20).SetId(_ctx).KillWith(_ctx.DisposeProvider);
+                // Тряска стала сильнее, так как падали с бОльшей высоты
+                _ctx.ContentHolder.DOShakePosition(0.4f, 20f, 25).SetId(_ctx).KillWith(_ctx.DisposeProvider);
                 onMidPoint?.Invoke();
             });
 
-            seq.Append(_ctx.ContentHolder.DOPunchScale(new Vector3(0.15f, -0.15f, 0), 0.5f, 10, 1f).SetId(_ctx));
+            // 4. ЭЛАСТИЧНАЯ ПРУЖИНА ПОСЛЕ УДАРА
+            seq.Append(_ctx.ContentHolder.DOPunchScale(new Vector3(0.18f, -0.18f, 0), 0.5f, 10, 1f).SetId(_ctx));
 
             seq.OnComplete(() => {
                 if (_ctx.ItemCanvas != null) _ctx.ItemCanvas.overrideSorting = false;

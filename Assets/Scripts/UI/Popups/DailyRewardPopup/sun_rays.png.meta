@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 25595fd3c872d4db08e9a57ce98f20be
+guid: b982c3b3216fb4736913cda8505013e2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5989825938551823976
-    second: sun_rays_0
+      213: -8788737641466103956
+    second: sun_rays 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: sun_rays_0
+      name: sun_rays 1_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 1
-        width: 1216
-        height: 876
+        y: 0
+        width: 1236
+        height: 877
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 86e5dc5a4f2202350800000000000000
-      internalID: 5989825938551823976
+      spriteID: c67fe480ea1280680800000000000000
+      internalID: -8788737641466103956
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      sun_rays_0: 5989825938551823976
+      sun_rays 1_0: -8788737641466103956
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

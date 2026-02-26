@@ -15,7 +15,8 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem.Animations
         Vector3 InitialScale { get; }
         Vector2 InitialPos { get; }
 
-        void PlayGlow();
+        void PlayRaysAnimation();
+        void StopRaysAnimation();
         void PlayDust();
     }
 }
