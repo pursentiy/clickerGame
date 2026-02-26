@@ -5,6 +5,7 @@ using RSG;
 using Services.FlyingRewardsAnimation;
 using UI.Popups.DailyRewardPopup.DailyRewardDayItem.Animations;
 using UnityEngine;
+using UnityEngine.UI;
 using Utilities;
 using Utilities.Disposable;
 using Zenject;
@@ -56,13 +57,16 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
 
         public void InitializeItem(int dayIndex, DayItemState state, ICurrency rewardCurrency)
         {
-            SaveInitialParams();
-            
             _dayIndex = dayIndex;
-            
             _rewardIconSprite = _currencyLibraryService.GetMainIcon(rewardCurrency.GetType().Name);
             _rewardAmountText = rewardCurrency.GetCount().ToString();
 
+            // Заставляем Layout расставиться ПРЯМО СЕЙЧАС
+            Canvas.ForceUpdateCanvases();
+            if (transform.parent is RectTransform parentRT) 
+                LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
+
+            SaveInitialParams();
             ApplyState(state);
         }
 
@@ -83,11 +87,6 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
 
             UpdateViewVisuals(state);
             PlayIdleAnimationForState(state);
-        }
-
-        private void Awake()
-        {
-            _animator = new DailyRewardItemAnimator(this);
         }
         
         private void OnDestroy() => _animator?.Dispose();

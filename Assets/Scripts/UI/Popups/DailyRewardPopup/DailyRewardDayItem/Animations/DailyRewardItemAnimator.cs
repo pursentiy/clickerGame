@@ -65,32 +65,35 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem.Animations
         public void PlayReadyLoop()
         {
             Stop();
-            _ctx.ContentHolder.DOScale(_ctx.InitialScale * (1f + _ctx.ReadyBounce), 1.5f)
-                .SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo).KillWith(_ctx.DisposeProvider);
-            _ctx.ContentHolder.DOAnchorPosY(_ctx.InitialPos.y + 15f, 2f)
-                .SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo).KillWith(_ctx.DisposeProvider);
+            // Парение делаем через LocalMoveY, чтобы не конфликтовать с сеткой
+            _ctx.ContentHolder.DOScale(_ctx.InitialScale * 1.05f, 1.5f)
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo)
+                .KillWith(_ctx.DisposeProvider);
+        
+            _ctx.ContentHolder.DOLocalMoveY(15f, 1.5f) // Относительно центра, а не AnchoredPos
+                .SetRelative(true)
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo)
+                .KillWith(_ctx.DisposeProvider);
+
             _ctx.PlayGlow();
         }
 
         public void PlayLockedSubtle()
         {
             Stop();
-    
-            // Просто мягкое дыхание. Без смещений, чтобы не бесить LayoutGroup.
-            // Если 0.97f мало, поставим 0.95f - это будет заметно и плавно.
-            _ctx.ContentHolder.DOScale(_ctx.InitialScale * 0.95f, 2f)
+            // Только пульсация масштаба. Это ГАРАНТИРОВАННО не ломает Layout.
+            _ctx.ContentHolder.DOScale(_ctx.InitialScale * 0.96f, 2f)
                 .SetEase(Ease.InOutSine)
                 .SetLoops(-1, LoopType.Yoyo)
-                .SetId(_ctx)
                 .KillWith(_ctx.DisposeProvider);
 
-            // Сделаем пак чуть прозрачнее, чтобы он выглядел "закрытым"
             if (_ctx.ItemCanvasGroup != null)
             {
-                _ctx.ItemCanvasGroup.DOFade(0.9f, 2f)
+                _ctx.ItemCanvasGroup.DOFade(0.8f, 2f)
                     .SetEase(Ease.InOutSine)
                     .SetLoops(-1, LoopType.Yoyo)
-                    .SetId(_ctx)
                     .KillWith(_ctx.DisposeProvider);
             }
         }
@@ -105,20 +108,31 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem.Animations
             }
 
             var seq = DOTween.Sequence().KillWith(_ctx.DisposeProvider);
-            seq.Append(_ctx.ContentHolder.DOScale(new Vector3(1.15f, 0.8f, 1f), 0.12f).SetEase(Ease.OutQuad))
-               .Append(_ctx.ContentHolder.DOScale(new Vector3(0.85f, 1.25f, 1f), 0.15f).SetEase(Ease.OutQuad))
-               .Join(_ctx.ContentHolder.DOAnchorPosY(_ctx.InitialPos.y + 80f, 0.2f).SetEase(Ease.OutCubic))
-               .Append(_ctx.ContentHolder.DOScale(_ctx.InitialScale * 1.25f, 0.1f).SetEase(Ease.InQuad))
-               .Join(_ctx.ContentHolder.DOAnchorPos(_ctx.InitialPos, 0.1f).SetEase(Ease.InQuad))
-               .AppendCallback(() => {
-                   _ctx.PlayDust();
-                   _ctx.ContentHolder.DOShakeRotation(0.5f, 15f).KillWith(_ctx.DisposeProvider);
-                   onMidPoint?.Invoke();
-               })
-               .Append(_ctx.ContentHolder.DOScale(_ctx.InitialScale, 0.6f).SetEase(Ease.OutElastic, 0.4f, 0.6f))
-               .OnComplete(() => {
-                   DOVirtual.DelayedCall(0.1f, () => { if (_ctx.ItemCanvas != null) _ctx.ItemCanvas.overrideSorting = false; }).KillWith(_ctx.DisposeProvider);
-               });
+
+            // ВЗЛЕТ (Относительно текущего места)
+            seq.Append(_ctx.ContentHolder.DOLocalMoveY(120f, 0.5f).SetRelative(true).SetEase(Ease.OutCubic))
+                .Join(_ctx.ContentHolder.DOScale(_ctx.InitialScale * 1.35f, 0.5f).SetEase(Ease.OutBack))
+                .Join(_ctx.ContentHolder.DOLocalRotate(new Vector3(0, 0, 6f), 0.5f).SetEase(Ease.OutSine));
+
+            seq.AppendInterval(0.05f);
+
+            // ПАДЕНИЕ (Возврат в локальный ноль)
+            seq.Append(_ctx.ContentHolder.DOLocalMove(Vector3.zero, 0.15f).SetEase(Ease.InQuint))
+                .Join(_ctx.ContentHolder.DOScale(_ctx.InitialScale, 0.15f).SetEase(Ease.InQuint))
+                .Join(_ctx.ContentHolder.DOLocalRotate(Vector3.zero, 0.15f).SetEase(Ease.InQuint));
+
+            seq.AppendCallback(() => {
+                _ctx.PlayDust();
+                _ctx.ContentHolder.DOShakePosition(0.4f, 15f, 20).KillWith(_ctx.DisposeProvider);
+                onMidPoint?.Invoke();
+            });
+
+            seq.Append(_ctx.ContentHolder.DOPunchScale(new Vector3(0.15f, -0.15f, 0), 0.5f, 10, 1f));
+
+            seq.OnComplete(() => {
+                if (_ctx.ItemCanvas != null) _ctx.ItemCanvas.overrideSorting = false;
+            });
+
             return seq.AsPromise().CancelWith(_ctx.DisposeProvider);
         }
 
@@ -139,7 +153,7 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem.Animations
             _ctx.ContentHolder.DOLocalRotate(new Vector3(0, 0, 1.2f), 3f)
                 .SetEase(Ease.InOutSine)
                 .SetLoops(-1, LoopType.Yoyo)
-                .SetId(_ctx);
+                .KillWith(_ctx.DisposeProvider);
         }
 
         public void Dispose() => Stop();
