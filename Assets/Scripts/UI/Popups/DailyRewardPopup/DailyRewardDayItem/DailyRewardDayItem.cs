@@ -1,40 +1,56 @@
 using Common.Currency;
 using RSG;
 using Services.FlyingRewardsAnimation;
+using UI.Popups.DailyRewardPopup.DailyRewardDayItem.Animations;
 using UnityEngine;
+using Utilities;
+using Utilities.Disposable;
 using Zenject;
 
 namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
 {
-    public class DailyRewardDayItem : MonoBehaviour
+    public class DailyRewardDayItem : MonoBehaviour, IDailyRewardAnimationContext
     {
         [Inject] private CurrencyLibraryService _currencyLibraryService;
+        [Inject] private DailyRewardItemAnimator.Factory _animatorFactory;
 
         [Header("References")]
         [SerializeField] private RectTransform rootTransform;
-        [SerializeField] private DailyRewardItemAnimationWidget animationWidget;
 
         [Header("State views (one active per state)")]
         [SerializeField] private DailyRewardAlreadyCollectedView alreadyCollectedView;
         [SerializeField] private DailyRewardLockedView lockedView;
         [SerializeField] private DailyRewardAlreadyReadyToCollectView readyToCollectView;
-
+        
+        [Header("Animation References")]
+        [SerializeField] private RectTransform contentHolder;
+        [SerializeField] private Canvas itemCanvas;
+        [SerializeField] private CanvasGroup itemCanvasGroup;
+        [SerializeField] private float readyBounce = 0.08f;
+        
         private int _dayIndex = 1;
         private Sprite _rewardIconSprite;
         private string _rewardAmountText = string.Empty;
-
+        private DailyRewardItemAnimator _animator;
+        
+        public RectTransform ContentHolder => contentHolder;
+        public Canvas ItemCanvas => itemCanvas;
+        public CanvasGroup ItemCanvasGroup => itemCanvasGroup;
+        public IDisposeProvider DisposeProvider => gameObject.GetDisposeProvider();
+        public float ReadyBounce => readyBounce;
+        public int InitialSortingOrder { get; private set; }
+        public Vector3 InitialScale { get; private set; }
+        public Vector2 InitialPos { get; private set; }
         public RectTransform RootTransform => rootTransform;
-
-        private void Awake()
+        
+        [Inject]
+        public void Construct()
         {
-            if (animationWidget != null && readyToCollectView != null)
-            {
-                animationWidget.SetReadyToCollectCallbacks(
-                    readyToCollectView.PlayGlow,
-                    readyToCollectView.PlayDust,
-                    readyToCollectView.StopGlow);
-            }
+            _animator = _animatorFactory.Create(this);
         }
+        
+        public void PlayGlow() => readyToCollectView?.PlayGlow();
+        public void PlayDust() => readyToCollectView?.PlayDust();
 
         public void InitializeItem(int dayIndex, DayItemState state, ICurrency rewardCurrency)
         {
@@ -52,68 +68,49 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
 
             ApplyState(state);
         }
+
+        public void PrepareForEntrance() => _animator.SetupInvisibleState();
+        public IPromise PlayEntranceAnimation(float delay) => _animator.PlayEntrance(delay);
+        public IPromise PlayExitAnimation(float duration = 0.25f) => _animator.PlayExit(duration);
+        public IPromise PlayClaimFeedbackAnimation() => _animator.PlayClaim(() => UpdateViewVisuals(DayItemState.Collected));
+
+        private void Awake()
+        {
+            if (itemCanvas != null) InitialSortingOrder = itemCanvas.sortingOrder;
+            if (contentHolder != null)
+            {
+                InitialScale = contentHolder.localScale;
+                InitialPos = contentHolder.anchoredPosition;
+            }
+            _animator = new DailyRewardItemAnimator(this);
+        }
         
-        public void PrepareForEntrance()
-        {
-            animationWidget?.PrepareForEntrance();
-        }
-
-        public IPromise PlayEntranceAnimation(float delay, float duration = 0.45f)
-        {
-            return animationWidget != null ? animationWidget.PlayEntranceAnimation(delay, duration) : Promise.Resolved();
-        }
-
-        public IPromise PlayExitAnimation(float duration = 0.25f)
-        {
-            return animationWidget != null ? animationWidget.PlayExitAnimation(duration) : Promise.Resolved();
-        }
-
-        public IPromise PlayClaimFeedbackAnimation()
-        {
-            if (animationWidget == null)
-                return Promise.Resolved();
-            
-            return animationWidget.PlayClaimFeedbackAnimation(() => UpdateState(DayItemState.Collected));
-        }
-
-        private void UpdateState(DayItemState state)
-        {
-            ApplyState(state);
-        }
-
+        private void OnDestroy() => _animator?.Dispose();
+        
         private void ApplyState(DayItemState state)
         {
-            if (animationWidget != null)
-            {
-                animationWidget.StopAnimations();
-                animationWidget.ResetVisuals();
-            }
-
+            // Полный сброс только при обычной смене стейта
+            _animator.Reset(); 
+            UpdateViewVisuals(state);
+        }
+        
+        private void UpdateViewVisuals(DayItemState state)
+        {
             SetViewActive(alreadyCollectedView, state == DayItemState.Collected);
             SetViewActive(lockedView, state == DayItemState.ToBeCollected);
             SetViewActive(readyToCollectView, state == DayItemState.ReadyToReceive);
 
             DailyRewardViewBase activeView = GetViewForState(state);
-            activeView.SetRewardIcon(_rewardIconSprite);
-            activeView.SetRewardText(_rewardAmountText);
-            activeView.SetInfoText(GetInfoText(state));
-            activeView.ApplyVisuals(state);
-
-            if (animationWidget == null)
-                return;
-
-            switch (state)
+            if (activeView != null)
             {
-                case DayItemState.ReadyToReceive:
-                    animationWidget.PlayCurrentDayAnimation();
-                    break;
-                case DayItemState.ToBeCollected:
-                    animationWidget.PlayLockedSubtleAnimation();
-                    break;
+                activeView.SetRewardIcon(_rewardIconSprite);
+                activeView.SetRewardText(_rewardAmountText);
+                activeView.SetInfoText(GetInfoText(state));
+                activeView.ApplyVisuals(state);
             }
         }
 
-        private static void SetViewActive(DailyRewardViewBase view, bool active)
+        private void SetViewActive(DailyRewardViewBase view, bool active)
         {
             view.gameObject.SetActive(active);
         }

@@ -5,6 +5,7 @@ using Level.Widgets;
 using Services;
 using Services.CoroutineServices;
 using Services.FlyingRewardsAnimation;
+using UI.Popups.DailyRewardPopup.DailyRewardDayItem.Animations;
 using UnityEngine;
 using Zenject;
 #if UNITY_EDITOR
@@ -40,6 +41,9 @@ namespace Installers
             
             Container.BindInterfacesAndSelfTo<FlyingUIRewardAnimationService>().AsSingle();
             Container.BindInterfacesAndSelfTo<FlyingUIRewardDestinationService>().AsSingle();
+            
+            //Factory
+            Container.BindFactory<IDailyRewardAnimationContext, DailyRewardItemAnimator, DailyRewardItemAnimator.Factory>();
             
 #if UNITY_EDITOR
             Container.BindInterfacesAndSelfTo<CheatService>().AsSingle().NonLazy();

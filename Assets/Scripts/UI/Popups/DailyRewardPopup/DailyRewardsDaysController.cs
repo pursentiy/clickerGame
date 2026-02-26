@@ -73,7 +73,7 @@ namespace UI.Popups.DailyRewardPopup
                 return;
 
             SetupDayItemsState();
-            HideItemsForEntrance();
+            PrepareItemsForEntrance();
             UpdatePrimaryButtonUI();
         }
 
@@ -88,7 +88,7 @@ namespace UI.Popups.DailyRewardPopup
             {
                 if (_items[i] == null)
                     continue;
-                promises.Add(_items[i].PlayEntranceAnimation(i * stagger, duration));
+                promises.Add(_items[i].PlayEntranceAnimation(i * stagger));
             }
             return promises.Count > 0 ? Promise.All(promises).CancelWith(this) : Promise.Resolved();
         }
@@ -234,15 +234,15 @@ namespace UI.Popups.DailyRewardPopup
                 SetupDayRewardItem(item, day, state);
             }
         }
-
-        private void HideItemsForEntrance()
-        {
-            for (int i = 0; i < _items.Length; i++)
-            {
-                if (_items[i] != null)
-                    _items[i].PrepareForEntrance();
-            }
-        }
+        
+         private void PrepareItemsForEntrance()
+         {
+             for (var i = 0; i < _items.Length; i++)
+             {
+                 if (_items[i] != null)
+                     _items[i].PrepareForEntrance();
+             }
+         }
 
         private void SetupDayRewardItem(DailyRewardDayItem.DailyRewardDayItem item, int dayIndex, DayItemState state)
         {
