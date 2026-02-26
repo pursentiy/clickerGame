@@ -239,7 +239,7 @@ namespace UI.Popups.DailyRewardPopup
                 var item = _items[itemIndex];
                 DayItemState state;
                 if (day < currentDayIndex)
-                    state = day <= _context.LastClaimedDayIndex ? DayItemState.Collected : DayItemState.MissedDay;
+                    state = _dailyRewardsInfoProvider.IsCollectedDay(day) ? DayItemState.Collected : DayItemState.MissedDay;
                 else if (day == currentDayIndex)
                     state = _canReceiveToday ? DayItemState.ReadyToReceive : DayItemState.Collected;
                 else

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Services.Player;
 using Storage.Snapshots;
 using Zenject;
@@ -25,7 +26,16 @@ namespace Services.DailyReward
             if (!_playerProfileController.IsInitialized)
                 return false;
 
-            var newSnapshot = new DailyRewardSnapshot(info.DayIndex, _bridgeService.GetServerTime().Date.Ticks);
+            var current = _playerProfileController.TryGetDailyRewardSnapshot();
+            var claimedList = current?.ClaimedDaysIndexes != null && current.ClaimedDaysIndexes.Count > 0
+                ? new List<int>(current.ClaimedDaysIndexes)
+                : new List<int>();
+            if (info.DayIndex == 1)
+                claimedList = new List<int> { 1 };
+            else if (!claimedList.Contains(info.DayIndex))
+                claimedList.Add(info.DayIndex);
+
+            var newSnapshot = new DailyRewardSnapshot(info.DayIndex, _bridgeService.GetServerTime().Date.Ticks, claimedList);
             _playerProfileController.UpdateDailyRewardAndSave(newSnapshot, SavePriority.ImmediateSave);
             return true;
         }

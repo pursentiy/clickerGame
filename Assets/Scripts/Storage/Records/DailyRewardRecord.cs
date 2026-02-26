@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Storage.Records
 {
@@ -10,11 +11,13 @@ namespace Storage.Records
     {
         public int CurrentDayIndex;
         public long LastClaimUtcTicks;
+        public List<int> ClaimedDaysIndexes;
 
-        public DailyRewardRecord(int currentDayIndex, long lastClaimUtcTicks)
+        public DailyRewardRecord(int currentDayIndex, long lastClaimUtcTicks, List<int> claimedDaysIndexes = null)
         {
             CurrentDayIndex = currentDayIndex;
             LastClaimUtcTicks = lastClaimUtcTicks;
+            ClaimedDaysIndexes = claimedDaysIndexes ?? new List<int>();
         }
     }
 }

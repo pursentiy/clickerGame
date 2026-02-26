@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Common.Currency;
 using Configurations.DailyReward;
 using Services.Configuration;
@@ -64,6 +65,16 @@ namespace Services.DailyReward
             var timeUntilNext = ctx.isClaimedToday ? ctx.today.AddDays(1) - _bridgeService.GetServerTime() : TimeSpan.Zero;
 
             return new DailyRewardStatus(!ctx.isClaimedToday, isMissed, timeUntilNext, ctx.snapshot.CurrentDayIndex);
+        }
+
+        public bool IsCollectedDay(int dayIndex)
+        {
+            if (!_playerProfileController.IsInitialized)
+                return false;
+            var snapshot = _playerProfileController.TryGetDailyRewardSnapshot();
+            if (snapshot?.ClaimedDaysIndexes == null)
+                return false;
+            return snapshot.ClaimedDaysIndexes.Contains(dayIndex);
         }
 
         internal int CalculateNextDayIndex(int current, DateTime lastClaim, DateTime today)

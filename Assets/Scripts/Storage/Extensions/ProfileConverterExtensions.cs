@@ -142,15 +142,21 @@ namespace Storage.Extensions
             if (snapshot == null)
                 return null;
 
-            return new DailyRewardRecord(snapshot.CurrentDayIndex, snapshot.LastClaimUtcTicks);
+            var claimedList = snapshot.ClaimedDaysIndexes != null
+                ? new List<int>(snapshot.ClaimedDaysIndexes)
+                : new List<int>();
+            return new DailyRewardRecord(snapshot.CurrentDayIndex, snapshot.LastClaimUtcTicks, claimedList);
         }
-        
+
         public static DailyRewardSnapshot ToSnapshot(this DailyRewardRecord record)
         {
             if (record == null)
                 return null;
 
-            return new DailyRewardSnapshot(record.CurrentDayIndex, record.LastClaimUtcTicks);
+            var claimedList = record.ClaimedDaysIndexes != null && record.ClaimedDaysIndexes.Count > 0
+                ? new List<int>(record.ClaimedDaysIndexes)
+                : null;
+            return new DailyRewardSnapshot(record.CurrentDayIndex, record.LastClaimUtcTicks, claimedList);
         }
     }
 }
