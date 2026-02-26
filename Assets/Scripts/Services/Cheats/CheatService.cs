@@ -228,14 +228,17 @@ namespace Services.Cheats
                 ? new DateTime(snapshot.LastClaimUtcTicks, DateTimeKind.Utc).Date
                 : DateTime.MinValue;
             var isClaimedToday = lastClaimDate == today;
+            var currentDayIndex = snapshot?.CurrentDayIndex ?? 0;
 
             long lastClaimTicks;
             if (isClaimedToday)
-                lastClaimTicks = today.AddDays(-3).Ticks;
+            {
+                lastClaimTicks = today.AddDays(1).Ticks;
+            }
             else
-                lastClaimTicks = today.AddDays(-2).Ticks;
+                lastClaimTicks = today.AddDays(2).Ticks;
 
-            var newSnapshot = new DailyRewardSnapshot(0, lastClaimTicks, null);
+            var newSnapshot = new DailyRewardSnapshot(currentDayIndex, lastClaimTicks, snapshot?.ClaimedDaysIndexes);
             _playerProfileController.UpdateDailyRewardAndSave(newSnapshot, SavePriority.ImmediateSave);
         }
 
