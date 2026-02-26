@@ -20,7 +20,8 @@ namespace UI.Screens.WelcomeScreen.DailyRewardsState
             base.OnEnter(arguments);
 
             TryShowDailyRewardPopup()
-                .Then(NextState);
+                .Then(NextState)
+                .CancelWith(this);
         }
         
         private IPromise<DailyRewardsAcquireInfo> TryShowDailyRewardPopup()
@@ -28,17 +29,20 @@ namespace UI.Screens.WelcomeScreen.DailyRewardsState
             if (!_dailyRewardsInfoProvider.TryGetDailyRewardPopupInfo(out var rewardInfo))
                 return Promise<DailyRewardsAcquireInfo>.Resolved(null);
 
+            var claimedPromise = new Promise<bool>();
             var context = new Popups.DailyRewardPopup.DailyRewardPopupContext(
                 rewardInfo.DayIndex,
                 rewardInfo.RewardsByDay,
-                rewardInfo.EarnedDailyReward);
+                rewardInfo.EarnedDailyReward,
+                claimedPromise);
 
             var info = _flowPopupController.ShowDailyRewardPopup(context, PopupShowingOptions.Enqueue);
 
             return info.MediatorHidePromise
-                .Then(() => Promise<DailyRewardsAcquireInfo>.Resolved(
-                    _dailyRewardsInfoProvider.TryGetTodayRewardPreview(out var preview)
-                        ? new DailyRewardsAcquireInfo(preview.EarnedDailyReward)
+                .Then(() => context.ClaimedRewards)
+                .Then(claimed => Promise<DailyRewardsAcquireInfo>.Resolved(
+                    claimed && context.EarnedDailyReward is { Count: > 0 }
+                        ? new DailyRewardsAcquireInfo(context.EarnedDailyReward)
                         : null))
                 .CancelWith(this);
         }

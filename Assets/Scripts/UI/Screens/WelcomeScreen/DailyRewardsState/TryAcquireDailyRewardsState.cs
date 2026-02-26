@@ -18,7 +18,7 @@ namespace UI.Screens.WelcomeScreen.DailyRewardsState
         [Inject] CoroutineService _coroutineService;
         [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
         [Inject] private readonly DailyRewardController _dailyRewardController;
-        
+
         private IUIBlockRef _uiBlockRef;
 
         private bool HasAcquireDailyRewards => TypedArgument is { EarnedDailyReward: { Count: > 0 } };

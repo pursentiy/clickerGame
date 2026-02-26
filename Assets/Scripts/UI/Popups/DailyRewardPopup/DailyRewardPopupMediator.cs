@@ -53,7 +53,7 @@ namespace UI.Popups.DailyRewardPopup
         public override void OnBeginHide()
         {
             base.OnBeginHide();
-            
+            ResolvedClaimedRewards(false);
             View.DaysController.PlayExitAnimation();
         }
 
@@ -68,7 +68,15 @@ namespace UI.Popups.DailyRewardPopup
 
         private void SetupWidgets()
         {
-            View.DaysController.Initialize(View.DayRewardItems, Context, Hide);
+            View.DaysController.Initialize(View.DayRewardItems, Context, Hide, ResolvedClaimedRewards);
+        }
+
+        private void ResolvedClaimedRewards(bool isClaimed)
+        {
+            if (Context.ClaimedRewards is not { IsPending: true })
+                return;
+            
+            Context.ClaimedRewards.SafeResolve(isClaimed);
         }
 
         private void SetupTexts()

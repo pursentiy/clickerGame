@@ -187,7 +187,7 @@ namespace Services.Cheats
             if (!_playerProfileController.IsInitialized)
                 return;
 
-            var snapshot = new DailyRewardSnapshot(1, 0);
+            var snapshot = new DailyRewardSnapshot(1, 0, null);
             _playerProfileController.UpdateDailyRewardAndSave(snapshot, SavePriority.ImmediateSave);
         }
 
@@ -202,14 +202,14 @@ namespace Services.Cheats
 
             var current = _playerProfileController.TryGetDailyRewardSnapshot();
             var currentDay = current?.CurrentDayIndex ?? 1;
-            
+
             // Set LastClaimUtcTicks to (now - 1 day + 15 seconds) so that in 15 seconds,
             // lastClaimDate will still be yesterday, making the reward available
             var now = _bridgeService.GetServerTime();
             var targetTime = now - TimeSpan.FromDays(1) + TimeSpan.FromSeconds(15);
             var lastClaimTicks = targetTime.Ticks;
 
-            var snapshot = new DailyRewardSnapshot(currentDay, lastClaimTicks);
+            var snapshot = new DailyRewardSnapshot(currentDay, lastClaimTicks, current?.ClaimedDaysIndexes);
             _playerProfileController.UpdateDailyRewardAndSave(snapshot, SavePriority.ImmediateSave);
         }
 
@@ -235,7 +235,7 @@ namespace Services.Cheats
             else
                 lastClaimTicks = today.AddDays(-2).Ticks;
 
-            var newSnapshot = new DailyRewardSnapshot(0, lastClaimTicks);
+            var newSnapshot = new DailyRewardSnapshot(0, lastClaimTicks, null);
             _playerProfileController.UpdateDailyRewardAndSave(newSnapshot, SavePriority.ImmediateSave);
         }
 

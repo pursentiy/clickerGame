@@ -29,6 +29,7 @@ namespace UI.Popups.DailyRewardPopup
 
         [Inject] private FlyingUIRewardAnimationService _flyingUIRewardAnimationService;
         [Inject] private DailyRewardsInfoProvider _dailyRewardsInfoProvider;
+        [Inject] private DailyRewardController _dailyRewardController;
         [Inject] private UIGlobalBlocker _uiGlobalBlocker;
         [Inject] private CoroutineService _coroutineService;
 
@@ -43,7 +44,9 @@ namespace UI.Popups.DailyRewardPopup
         private DailyRewardDayItem.DailyRewardDayItem[] _items;
         private DailyRewardPopupContext _context;
         private Action _hideAction;
+        private Action<bool> _onClaimed;
         private bool _canReceiveToday;
+        private bool _isClaimInProgress;
 
         public bool CanReceiveToday => _canReceiveToday;
 
@@ -59,15 +62,16 @@ namespace UI.Popups.DailyRewardPopup
                 _hideAction?.SafeInvoke();
                 return;
             }
-            
+
             RunClaimFlow().CancelWith(this);
         }
 
-        public void Initialize(DailyRewardDayItem.DailyRewardDayItem[] items, DailyRewardPopupContext context, Action hideAction)
+        public void Initialize(DailyRewardDayItem.DailyRewardDayItem[] items, DailyRewardPopupContext context, Action hideAction, Action<bool> onClaimed = null)
         {
             _items = items;
             _context = context;
             _hideAction = hideAction;
+            _onClaimed = onClaimed;
 
             RefreshAvailability();
 
@@ -123,7 +127,7 @@ namespace UI.Popups.DailyRewardPopup
 
         private void UpdatePrimaryButtonUI()
         {
-            claimRewardsButton.interactable = true;
+            claimRewardsButton.interactable = !_isClaimInProgress;
             claimRewardsButtonText.text = _canReceiveToday ? CollectRewardText : ClosePopupText;
         }
 
@@ -132,7 +136,16 @@ namespace UI.Popups.DailyRewardPopup
             if (_context == null)
                 return Promise.Resolved();
 
+            _isClaimInProgress = true;
             claimRewardsButton.interactable = false;
+
+            if (!_dailyRewardController.TryClaimTodayReward())
+            {
+                _isClaimInProgress = false;
+                RefreshAvailability();
+                UpdatePrimaryButtonUI();
+                return Promise.Resolved();
+            }
 
             var blockRef = _uiGlobalBlocker.Block(30f);
 
@@ -151,13 +164,16 @@ namespace UI.Popups.DailyRewardPopup
                 .Then(() =>
                 {
                     blockRef.Dispose();
+                    _isClaimInProgress = false;
                     RefreshAvailability();
                     UpdatePrimaryButtonUI();
+                    _onClaimed?.Invoke(true);
                 })
                 .Catch(e =>
                 {
                     LoggerService.LogError($"Failed to claim rewards for day {_context?.DayIndex} with exception: {e}");
                     blockRef.Dispose();
+                    _isClaimInProgress = false;
                     RefreshAvailability();
                     UpdatePrimaryButtonUI();
                     _hideAction?.Invoke();

@@ -48,7 +48,7 @@ namespace Services.DailyReward
 
             var ctx = GetContext();
             int displayDay = ctx.isClaimedToday
-                ? (ctx.snapshot.CurrentDayIndex % DailyRewardConfiguration.CycleLength + 1)
+                ? ctx.snapshot.CurrentDayIndex
                 : CalculateNextDayIndex(ctx.snapshot.CurrentDayIndex, ctx.lastClaimDate, ctx.today);
 
             info = new DailyRewardInfo(displayDay, Config.RewardsByDay,
@@ -72,7 +72,7 @@ namespace Services.DailyReward
             if (!_playerProfileController.IsInitialized)
                 return false;
             var snapshot = _playerProfileController.TryGetDailyRewardSnapshot();
-            if (snapshot?.ClaimedDaysIndexes == null)
+            if (snapshot?.ClaimedDaysIndexes == null || snapshot.ClaimedDaysIndexes.Count == 0)
                 return false;
             return snapshot.ClaimedDaysIndexes.Contains(dayIndex);
         }
