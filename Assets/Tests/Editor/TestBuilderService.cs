@@ -99,6 +99,29 @@ namespace Tests.Editor
             return new DailyRewardFlowContext(bridge, config, profileController, infoProvider, controller);
         }
 
+        public sealed class DailyRewardFlowContext
+        {
+            public TestBridgeService Bridge { get; }
+            public DailyRewardConfiguration Config { get; }
+            public TestPlayerProfileController ProfileController { get; }
+            public DailyRewardsInfoProvider InfoProvider { get; }
+            public DailyRewardController Controller { get; }
+
+            public DailyRewardFlowContext(
+                TestBridgeService bridge,
+                DailyRewardConfiguration config,
+                TestPlayerProfileController profileController,
+                DailyRewardsInfoProvider infoProvider,
+                DailyRewardController controller)
+            {
+                Bridge = bridge;
+                Config = config;
+                ProfileController = profileController;
+                InfoProvider = infoProvider;
+                Controller = controller;
+            }
+        }
+
         private static void Inject(object target, string fieldName, object value)
         {
             var type = target.GetType();

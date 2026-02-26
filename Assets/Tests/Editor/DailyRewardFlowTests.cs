@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using Configurations.DailyReward;
-using Editor.Tests;
 using NUnit.Framework;
 using Services.DailyReward;
 using Storage.Snapshots;
@@ -10,7 +9,7 @@ using Storage.Snapshots;
 namespace Tests.Editor
 {
     [TestFixture]
-    public class DailyRewardClaimFlowTests
+    public class DailyRewardFlowTests
     {
         private const int CycleLength = 6;
 
@@ -34,7 +33,7 @@ namespace Tests.Editor
 
                 var expectedForDay = ctx.Config.GetRewardsForDay(day);
                 Assert.IsNotNull(expectedForDay, $"Config should have rewards for day {day}.");
-                Assert.Greater(expectedForDay.Count, 0f, $"Config should have at least one reward for day {day}.");
+                Assert.Greater(expectedForDay.Count, 0, $"Config should have at least one reward for day {day}.");
 
                 ctx.Bridge.AdvanceDays(1);
             }
@@ -54,28 +53,45 @@ namespace Tests.Editor
                 Assert.IsTrue(finalSnapshot.ClaimedDaysIndexes.Contains(day), $"ClaimedDaysIndexes should contain day {day}.");
             }
         }
-    }
-    
-    public sealed class DailyRewardFlowContext
-    {
-        public TestBridgeService Bridge { get; }
-        public DailyRewardConfiguration Config { get; }
-        public TestPlayerProfileController ProfileController { get; }
-        public DailyRewardsInfoProvider InfoProvider { get; }
-        public DailyRewardController Controller { get; }
 
-        public DailyRewardFlowContext(
-            TestBridgeService bridge,
-            DailyRewardConfiguration config,
-            TestPlayerProfileController profileController,
-            DailyRewardsInfoProvider infoProvider,
-            DailyRewardController controller)
+        [Test]
+        public void AfterClaimingDayOne_WhenReturningAfterFiveDays_StreakResetsAndOnlyDayOneIsAvailableToClaim()
         {
-            Bridge = bridge;
-            Config = config;
-            ProfileController = profileController;
-            InfoProvider = infoProvider;
-            Controller = controller;
+            var today = DateTime.UtcNow.Date;
+            var ctx = _builder.BuildDailyRewardFlowContext(today);
+
+            ctx.Controller.TryClaimTodayReward();
+            DailyRewardSnapshot afterFirst = ctx.ProfileController.TryGetDailyRewardSnapshot();
+            Assert.IsNotNull(afterFirst);
+            Assert.AreEqual(1, afterFirst.CurrentDayIndex);
+            Assert.That(afterFirst.ClaimedDaysIndexes, Is.EquivalentTo(new[] { 1 }), "After first claim: day 1.");
+
+            ctx.Bridge.AdvanceDays(1);
+            ctx.Controller.TryClaimTodayReward();
+            DailyRewardSnapshot afterSecond = ctx.ProfileController.TryGetDailyRewardSnapshot();
+            Assert.IsNotNull(afterSecond);
+            Assert.AreEqual(2, afterSecond.CurrentDayIndex);
+            Assert.That(afterSecond.ClaimedDaysIndexes, Is.EquivalentTo(new[] { 1, 2 }), "After second claim: days 1, 2.");
+
+            ctx.Bridge.AdvanceDays(1);
+            ctx.Controller.TryClaimTodayReward();
+            DailyRewardSnapshot afterThird = ctx.ProfileController.TryGetDailyRewardSnapshot();
+            Assert.IsNotNull(afterThird);
+            Assert.AreEqual(3, afterThird.CurrentDayIndex);
+            Assert.That(afterThird.ClaimedDaysIndexes, Is.EquivalentTo(new[] { 1, 2, 3 }), "After third claim: days 1, 2, 3.");
+
+            ctx.Bridge.AdvanceDays(2);
+
+            bool hasPreview = ctx.InfoProvider.TryGetTodayRewardPreview(out var rewardInfo);
+            Assert.IsTrue(hasPreview, "After skipping day 4 there should be one reward available (day 1).");
+            Assert.AreEqual(1, rewardInfo.DayIndex, "Streak broken; next claimable is day 1.");
+
+            DailyRewardSnapshot afterOpening = ctx.ProfileController.TryGetDailyRewardSnapshot();
+            Assert.IsNotNull(afterOpening);
+            Assert.AreEqual(1, afterOpening.CurrentDayIndex,
+                "Upon opening after skip, snapshot should be at first index (day 1).");
+            Assert.AreEqual(0, afterOpening.ClaimedDaysIndexes?.Count ?? 0,
+                "Snapshot should be reset with empty ClaimedDaysIndexes.");
         }
     }
 }

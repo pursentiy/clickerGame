@@ -88,16 +88,33 @@ namespace Services.DailyReward
         internal (DailyRewardSnapshot snapshot, DateTime today, DateTime lastClaimDate, bool isClaimedToday) GetContext()
         {
             var snapshot = _playerProfileController.TryGetDailyRewardSnapshot() ?? new DailyRewardSnapshot(0, 0);
-            
+
             var today = _bridgeService.GetServerTime().ToUniversalTime().Date;
-            
+
             var lastClaimDate = snapshot.LastClaimUtcTicks switch
             {
                 > 0 => new DateTime(snapshot.LastClaimUtcTicks, DateTimeKind.Utc).Date,
-                _   => DateTime.MinValue 
+                _ => DateTime.MinValue
             };
 
+            if (IsStreakBroken(lastClaimDate, today) && !IsSnapshotReset(snapshot))
+            {
+                var resetSnapshot = new DailyRewardSnapshot(1, snapshot.LastClaimUtcTicks, null);
+                _playerProfileController.UpdateDailyRewardAndSave(resetSnapshot, SavePriority.ImmediateSave);
+                return (resetSnapshot, today, lastClaimDate, lastClaimDate == today);
+            }
+
             return (snapshot, today, lastClaimDate, lastClaimDate == today);
+        }
+
+        private static bool IsStreakBroken(DateTime lastClaimDate, DateTime today)
+        {
+            return lastClaimDate == DateTime.MinValue || lastClaimDate < today.AddDays(-1);
+        }
+
+        private static bool IsSnapshotReset(DailyRewardSnapshot snapshot)
+        {
+            return snapshot.CurrentDayIndex == 1 && (snapshot.ClaimedDaysIndexes == null || snapshot.ClaimedDaysIndexes.Count == 0);
         }
     }
 }
