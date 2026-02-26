@@ -29,7 +29,7 @@ namespace UI.Screens.WelcomeScreen.DailyRewardsState
 
             PrepareEnvironment();
             
-            if (HasAcquireDailyRewards && _dailyRewardController.TryClaimTodayReward())
+            if (HasAcquireDailyRewards)
             {
                 AcquireEarnedStars(TypedArgument.EarnedDailyReward)
                     .ContinueWithResolved(FinishSequence)

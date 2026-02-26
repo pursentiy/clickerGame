@@ -28,7 +28,7 @@ namespace Services.Player
         public FSignal ProfileSnapshotInitializedSignal { get; private set; } = new();
         public IReadOnlyList<PackSnapshot> PacksSnapshot => _profileSnapshot?.PackSnapshots;
         public GameParamsSnapshot TryGetGameParamsSnapshot() => _profileSnapshot?.GameParamsSnapshot;
-        public DailyRewardSnapshot TryGetDailyRewardSnapshot() => _profileSnapshot?.DailyRewardSnapshot;
+        public virtual DailyRewardSnapshot TryGetDailyRewardSnapshot() => _profileSnapshot?.DailyRewardSnapshot;
         public Stars Stars => _profileSnapshot?.Stars ?? Stars.Zero;
         public SoftCurrency SoftCurrency => _profileSnapshot?.SoftCurrency ?? SoftCurrency.Zero;
         public HardCurrency HardCurrency => _profileSnapshot?.HardCurrency ?? HardCurrency.Zero;
@@ -85,7 +85,7 @@ namespace Services.Player
             return true;
         }
         
-        public void UpdateDailyRewardAndSave(DailyRewardSnapshot dailyRewardSnapshot, SavePriority savePriority)
+        public virtual void UpdateDailyRewardAndSave(DailyRewardSnapshot dailyRewardSnapshot, SavePriority savePriority)
         {
             if (_profileSnapshot == null || dailyRewardSnapshot == null)
                 return;

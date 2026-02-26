@@ -11,7 +11,7 @@ namespace Services.Configuration
         // Кэш для хранения разных типов конфигов
         private readonly Dictionary<Type, ICSVConfig> _configsCache = new();
 
-        public T GetConfig<T>() where T : class, ICSVConfig, new()
+        public virtual T GetConfig<T>() where T : class, ICSVConfig, new()
         {
             var type = typeof(T);
 

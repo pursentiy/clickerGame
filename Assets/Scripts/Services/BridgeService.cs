@@ -104,7 +104,7 @@ namespace Services
         /// <summary>
         /// Gets the current server time from Bridge. Falls back to DateTime.UtcNow if Bridge is not available.
         /// </summary>
-        public DateTime GetServerTime()
+        public virtual DateTime GetServerTime()
         {
             // TODO: Implement Bridge.platform.getServerTime() callback handling
             // For now, returns UTC time. Bridge time should be integrated via JS callback.
