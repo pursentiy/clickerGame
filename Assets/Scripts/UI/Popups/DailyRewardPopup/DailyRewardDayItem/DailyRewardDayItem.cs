@@ -24,6 +24,7 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
         [SerializeField] private DailyRewardAlreadyCollectedView alreadyCollectedView;
         [SerializeField] private DailyRewardLockedView lockedView;
         [SerializeField] private DailyRewardAlreadyReadyToCollectView readyToCollectView;
+        [SerializeField] private DailyRewardMissedDayView missedDayView;
         
         [Header("Animation References")]
         [SerializeField] private RectTransform contentHolder;
@@ -126,6 +127,7 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
             SetViewActive(alreadyCollectedView, state == DayItemState.Collected);
             SetViewActive(lockedView, state == DayItemState.ToBeCollected);
             SetViewActive(readyToCollectView, state == DayItemState.ReadyToReceive);
+            SetViewActive(missedDayView, state == DayItemState.MissedDay);
 
             var activeView = GetViewForState(state);
             if (activeView != null)
@@ -148,7 +150,10 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
                     _animator.PlayLockedSubtle();
                     break;
                 case DayItemState.Collected:
-                    _animator.PlayCollectedSubtle(); 
+                    _animator.PlayCollectedSubtle();
+                    break;
+                case DayItemState.MissedDay:
+                    _animator.PlayMissedIdle();
                     break;
             }
         }
@@ -165,6 +170,7 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
                 DayItemState.Collected => alreadyCollectedView,
                 DayItemState.ToBeCollected => lockedView,
                 DayItemState.ReadyToReceive => readyToCollectView,
+                DayItemState.MissedDay => missedDayView,
                 _ => null
             };
         }
@@ -176,6 +182,7 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
                 DayItemState.Collected => "Collected",
                 DayItemState.ReadyToReceive => "Ready to be collected!",
                 DayItemState.ToBeCollected => $"Day {_dayIndex}",
+                DayItemState.MissedDay => "Missed",
                 _ => $"Day {_dayIndex}"
             };
         }

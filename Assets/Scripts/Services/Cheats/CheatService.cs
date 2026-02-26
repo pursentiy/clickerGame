@@ -193,23 +193,6 @@ namespace Services.Cheats
 
         [CheatGroup("Daily Rewards")]
         /// <summary>
-        /// Skips daily reward so the next day's reward can be collected again (last claim set to yesterday).
-        /// </summary>
-        public void SkipDailyRewardToNextDay()
-        {
-            if (!_playerProfileController.IsInitialized)
-                return;
-
-            var current = _playerProfileController.TryGetDailyRewardSnapshot();
-            var currentDay = current?.CurrentDayIndex ?? 1;
-            var yesterdayUtc = DateTime.UtcNow.Date.AddDays(-1).Ticks;
-
-            var snapshot = new DailyRewardSnapshot(currentDay, yesterdayUtc);
-            _playerProfileController.UpdateDailyRewardAndSave(snapshot, SavePriority.ImmediateSave);
-        }
-
-        [CheatGroup("Daily Rewards")]
-        /// <summary>
         /// Sets last claim time so the next daily reward will be available in 15 seconds.
         /// </summary>
         public void SkipTheTimeToTheNextDailyRewards()
@@ -228,6 +211,32 @@ namespace Services.Cheats
 
             var snapshot = new DailyRewardSnapshot(currentDay, lastClaimTicks);
             _playerProfileController.UpdateDailyRewardAndSave(snapshot, SavePriority.ImmediateSave);
+        }
+
+        [CheatGroup("Daily Rewards")]
+        /// <summary>
+        /// Simulates missing daily reward(s): streak resets to day 1. If reward not claimed today, adds 1 day missed; if already claimed today, adds 2 days missed.
+        /// </summary>
+        public void MissDailyReward()
+        {
+            if (!_playerProfileController.IsInitialized)
+                return;
+
+            var snapshot = _playerProfileController.TryGetDailyRewardSnapshot();
+            var today = _bridgeService.GetServerTime().ToUniversalTime().Date;
+            var lastClaimDate = snapshot?.LastClaimUtcTicks > 0
+                ? new DateTime(snapshot.LastClaimUtcTicks, DateTimeKind.Utc).Date
+                : DateTime.MinValue;
+            var isClaimedToday = lastClaimDate == today;
+
+            long lastClaimTicks;
+            if (isClaimedToday)
+                lastClaimTicks = today.AddDays(-3).Ticks;
+            else
+                lastClaimTicks = today.AddDays(-2).Ticks;
+
+            var newSnapshot = new DailyRewardSnapshot(0, lastClaimTicks);
+            _playerProfileController.UpdateDailyRewardAndSave(newSnapshot, SavePriority.ImmediateSave);
         }
 
         [CheatGroup("Other")]

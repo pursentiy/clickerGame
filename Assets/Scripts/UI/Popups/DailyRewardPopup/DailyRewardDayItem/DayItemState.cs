@@ -4,6 +4,7 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
     {
         Collected,
         ReadyToReceive,
-        ToBeCollected
+        ToBeCollected,
+        MissedDay
     }
 }

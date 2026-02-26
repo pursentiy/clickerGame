@@ -27,7 +27,8 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem
 
         public virtual void ApplyVisuals(DayItemState state)
         {
-            rewardIcon.color = state == DayItemState.ToBeCollected ? new Color(0.4f, 0.4f, 0.4f, 1f) : Color.white;
+            var grayed = state == DayItemState.ToBeCollected || state == DayItemState.MissedDay;
+            rewardIcon.color = grayed ? new Color(0.4f, 0.4f, 0.4f, 1f) : Color.white;
             rewardCurrencyText.gameObject.SetActive(true);
         }
     }

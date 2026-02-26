@@ -103,6 +103,37 @@ namespace UI.Popups.DailyRewardPopup.DailyRewardDayItem.Animations
             }
         }
         
+        public void PlayMissedIdle()
+        {
+            Reset(); // Гарантируем чистый старт без наслоения твинов
+
+            // 1. Делаем элемент чуть меньше, чем закрытый (0.92f вместо 0.96f)
+            // Это создает эффект "сдувшегося" или менее значимого элемента
+            _ctx.ContentHolder.DOScale(_ctx.InitialScale * 0.92f, 3f)
+                .SetEase(Ease.InOutQuad)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetId(_ctx)
+                .KillWith(_ctx.DisposeProvider);
+
+            if (_ctx.ItemCanvasGroup != null)
+            {
+                // 2. Сильнее приглушаем прозрачность (до 0.5f - 0.6f)
+                // Пропущенный день должен выглядеть более "призрачным"
+                _ctx.ItemCanvasGroup.DOFade(0.55f, 3f)
+                    .SetEase(Ease.InOutQuad)
+                    .SetLoops(-1, LoopType.Yoyo)
+                    .SetId(_ctx)
+                    .KillWith(_ctx.DisposeProvider);
+            }
+    
+            // 3. Опционально: можно добавить небольшое смещение вниз (эффект тяжести)
+            _ctx.ContentHolder.DOAnchorPosY(_ctx.ContentHolder.anchoredPosition.y - 5f, 3f)
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetId(_ctx)
+                .KillWith(_ctx.DisposeProvider);
+        }
+        
         public IPromise PlayClaim(Action onMidPoint)
         {
             Reset(); // Карточка должна стоять ровно перед прыжком
