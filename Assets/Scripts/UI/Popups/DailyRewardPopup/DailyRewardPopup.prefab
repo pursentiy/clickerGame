@@ -231,6 +231,8 @@ MonoBehaviour:
   claimRewardsButtonText: {fileID: 5091458449343175654}
   flyingRewardsContainer: {fileID: 4303779283134089369}
   currencyDisplayWidget: {fileID: 3720816163368712249}
+  layoutGroup: {fileID: 896165342673082529}
+  layoutGroupTransform: {fileID: 2644083954325254318}
 --- !u!1 &4303779283134089368
 GameObject:
   m_ObjectHideFlags: 0

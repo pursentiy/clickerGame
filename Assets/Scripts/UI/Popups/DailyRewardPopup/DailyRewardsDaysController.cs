@@ -37,6 +37,8 @@ namespace UI.Popups.DailyRewardPopup
         [SerializeField] private TMP_Text claimRewardsButtonText;
         [SerializeField] private RectTransform flyingRewardsContainer;
         [SerializeField] private CurrencyDisplayWidget currencyDisplayWidget;
+        [SerializeField] private LayoutGroup layoutGroup;
+        [SerializeField] private RectTransform layoutGroupTransform;
 
         private DailyRewardDayItem.DailyRewardDayItem[] _items;
         private DailyRewardPopupContext _context;
@@ -221,6 +223,12 @@ namespace UI.Popups.DailyRewardPopup
 
         private void SetupDayItemsState()
         {
+
+            layoutGroup.enabled = true;
+    
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(layoutGroupTransform);
+
             var currentDayIndex = _context.DayIndex;
             for (int day = 1; day <= DailyRewardConfiguration.CycleLength; day++)
             {
@@ -235,6 +243,8 @@ namespace UI.Popups.DailyRewardPopup
 
                 SetupDayRewardItem(item, day, state);
             }
+
+            layoutGroup.enabled = false;
         }
         
          private void PrepareItemsForEntrance()
