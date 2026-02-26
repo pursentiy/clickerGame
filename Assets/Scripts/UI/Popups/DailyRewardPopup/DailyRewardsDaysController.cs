@@ -88,7 +88,6 @@ namespace UI.Popups.DailyRewardPopup
             if (_items == null)
                 return Promise.Resolved();
             const float stagger = 0.07f;
-            const float duration = 0.45f;
             var promises = new List<IPromise>();
             for (int i = 0; i < _items.Length; i++)
             {
