@@ -37,7 +37,6 @@ namespace UI.Popups.DailyRewardPopup
         [SerializeField] private Button claimRewardsButton;
         [SerializeField] private TMP_Text claimRewardsButtonText;
         [SerializeField] private RectTransform flyingRewardsContainer;
-        [SerializeField] private CurrencyDisplayWidget currencyDisplayWidget;
         [SerializeField] private LayoutGroup layoutGroup;
         [SerializeField] private RectTransform layoutGroupTransform;
 
@@ -47,6 +46,7 @@ namespace UI.Popups.DailyRewardPopup
         private Action<bool> _onClaimed;
         private bool _canReceiveToday;
         private bool _isClaimInProgress;
+        private CurrencyDisplayWidget _currencyDisplayWidget;
 
         public bool CanReceiveToday => _canReceiveToday;
 
@@ -66,13 +66,14 @@ namespace UI.Popups.DailyRewardPopup
             RunClaimFlow().CancelWith(this);
         }
 
-        public void Initialize(DailyRewardDayItem.DailyRewardDayItem[] items, DailyRewardPopupContext context, Action hideAction, Action<bool> onClaimed = null)
+        public void Initialize(DailyRewardDayItem.DailyRewardDayItem[] items, DailyRewardPopupContext context, Action hideAction, CurrencyDisplayWidget currencyDisplayWidget, Action<bool> onClaimed = null)
         {
             _items = items;
             _context = context;
             _hideAction = hideAction;
             _onClaimed = onClaimed;
-
+            _currencyDisplayWidget = currencyDisplayWidget;
+            
             RefreshAvailability();
 
             if (_items == null || _items.Length != DailyRewardsSettingsConfiguration.CycleLength)
@@ -151,14 +152,14 @@ namespace UI.Popups.DailyRewardPopup
             IPromise flightPromise = PlayClaimAnimationSequence()
                 .Then(() => _coroutineService.WaitFor(ClaimToFlightDelay))
                 .Then(() => Promise.Race(
-                    VisualizeRewardsFlight(_context.EarnedDailyReward, flyingRewardsContainer, currencyDisplayWidget),
+                    VisualizeRewardsFlight(_context.EarnedDailyReward, flyingRewardsContainer, _currencyDisplayWidget),
                     _coroutineService.WaitFor(FlightTimeoutSeconds)));
 
             return flightPromise
                 .Then(() =>
                 {
-                    if (currencyDisplayWidget != null && _context?.EarnedDailyReward is { Count: > 0 })
-                        currencyDisplayWidget.SetCurrency(_context.EarnedDailyReward.First(), true);
+                    if (_currencyDisplayWidget != null && _context?.EarnedDailyReward is { Count: > 0 })
+                        _currencyDisplayWidget.AddCurrency(_context.EarnedDailyReward.First(), true);
                 })
                 .Then(() =>
                 {

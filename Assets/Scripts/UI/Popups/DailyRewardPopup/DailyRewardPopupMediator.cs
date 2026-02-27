@@ -5,10 +5,12 @@ using Common.Currency;
 using Controllers;
 using Extensions;
 using Handlers.UISystem;
+using NUnit.Framework;
 using RSG;
 using Services;
 using Services.CoroutineServices;
 using Services.DailyReward;
+using Services.Player;
 using Services.ScreenBlocker;
 using TMPro;
 using UI.Popups.CommonPopup;
@@ -25,6 +27,7 @@ namespace UI.Popups.DailyRewardPopup
     {
         [Inject] private readonly FlowPopupController _flowPopupController;
         [Inject] private readonly UIScreenBlocker _uiScreenBlocker;
+        [Inject] private readonly PlayerProfileController _playerProfileController;
 
         public override IUIPopupAnimation Animation => new ScalePopupAnimation(View.MainTransform);
 
@@ -68,7 +71,8 @@ namespace UI.Popups.DailyRewardPopup
 
         private void SetupWidgets()
         {
-            View.DaysController.Initialize(View.DayRewardItems, Context, Hide, ResolvedClaimedRewards);
+            View.CurrencyDisplayWidget.SetCurrencies(_playerProfileController.AllCurrencies);
+            View.DaysController.Initialize(View.DayRewardItems, Context, Hide, View.CurrencyDisplayWidget, ResolvedClaimedRewards);
         }
 
         private void ResolvedClaimedRewards(bool isClaimed)

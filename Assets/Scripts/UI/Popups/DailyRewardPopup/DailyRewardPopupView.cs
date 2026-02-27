@@ -25,6 +25,7 @@ namespace UI.Popups.DailyRewardPopup
         [Header("Daily Rewards")]
         public DailyRewardDayItem.DailyRewardDayItem[] DayRewardItems;
         public DailyRewardsDaysController DaysController;
+        public CurrencyDisplayWidget CurrencyDisplayWidget;
     }
 }
 

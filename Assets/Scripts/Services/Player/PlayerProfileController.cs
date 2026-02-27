@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Common.Currency;
 using Configurations.Progress;
@@ -32,6 +33,7 @@ namespace Services.Player
         public Stars Stars => _profileSnapshot?.Stars ?? Stars.Zero;
         public SoftCurrency SoftCurrency => _profileSnapshot?.SoftCurrency ?? SoftCurrency.Zero;
         public HardCurrency HardCurrency => _profileSnapshot?.HardCurrency ?? HardCurrency.Zero;
+        public IReadOnlyList<ICurrency> AllCurrencies => new List<ICurrency>() { Stars, SoftCurrency, HardCurrency };
         
         public bool TryGetCurrency(Type type, out ICurrency currency)
         {
@@ -144,7 +146,8 @@ namespace Services.Player
             {
                 LoggerService.LogError($"{GetType().Name}.{nameof(Initialize)}: ProfileSnapshot is null");
             }
-            
+
+            _snapshotCurrencyMap?.Clear();
             _profileSnapshot = profileSnapshot;
             InitCurrencyMap();
             IsInitialized = true;

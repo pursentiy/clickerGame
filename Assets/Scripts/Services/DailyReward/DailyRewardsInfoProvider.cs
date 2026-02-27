@@ -95,7 +95,7 @@ namespace Services.DailyReward
             var lastClaimUtc = snapshot.LastClaimUtcTicks > 0
                 ? new DateTime(snapshot.LastClaimUtcTicks, DateTimeKind.Utc)
                 : DateTime.MinValue;
-            var intervalMinutes = Config?.RewardIntervalMinutes ?? DailyRewardsSettingsConfiguration.DefaultRewardIntervalMinutes;
+            var intervalMinutes = DailyRewardsSettingsConfiguration.DefaultRewardIntervalMinutes;
             return IsStreakBroken(lastClaimUtc, nowUtc, intervalMinutes) && !IsSnapshotReset(snapshot);
         }
 
@@ -110,7 +110,7 @@ namespace Services.DailyReward
             var lastClaimUtc = snapshot.LastClaimUtcTicks > 0
                 ? new DateTime(snapshot.LastClaimUtcTicks, DateTimeKind.Utc)
                 : DateTime.MinValue;
-            var intervalMinutes = Config?.RewardIntervalMinutes ?? DailyRewardsSettingsConfiguration.DefaultRewardIntervalMinutes;
+            var intervalMinutes = DailyRewardsSettingsConfiguration.DefaultRewardIntervalMinutes;
             if (!IsStreakBroken(lastClaimUtc, nowUtc, intervalMinutes) || IsSnapshotReset(snapshot))
                 return false;
             resetSnapshot = new DailyRewardSnapshot(1, snapshot.LastClaimUtcTicks, null);
@@ -134,7 +134,7 @@ namespace Services.DailyReward
                 ? new DateTime(snapshot.LastClaimUtcTicks, DateTimeKind.Utc)
                 : DateTime.MinValue;
 
-            var intervalMinutes = Config?.RewardIntervalMinutes ?? DailyRewardsSettingsConfiguration.DefaultRewardIntervalMinutes;
+            var intervalMinutes = DailyRewardsSettingsConfiguration.DefaultRewardIntervalMinutes;
             var isClaimedInCurrentPeriod = lastClaimUtc != DateTime.MinValue &&
                 (nowUtc - lastClaimUtc).TotalMinutes < intervalMinutes;
 

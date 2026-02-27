@@ -403,7 +403,6 @@ GameObject:
   - component: {fileID: 4297635624520202764}
   - component: {fileID: 6645939047620413307}
   - component: {fileID: 24247694781259151}
-  - component: {fileID: 4368449952664919873}
   - component: {fileID: 4097894349495978424}
   m_Layer: 5
   m_Name: DailyRewardDayItem
@@ -488,22 +487,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &4368449952664919873
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2117633169927855583}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66751c1ac4ef645cea11d91fcdf4ff4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI.Popups.DailyRewardPopup.DailyRewardDayItem.DailyRewardItemAnimationWidget
-  contentHolder: {fileID: 567120359743888449}
-  itemCanvas: {fileID: 24247694781259151}
-  itemCanvasGroup: {fileID: 7963132489068588637}
-  _readyBounce: 0.1
 --- !u!114 &4097894349495978424
 MonoBehaviour:
   m_ObjectHideFlags: 0

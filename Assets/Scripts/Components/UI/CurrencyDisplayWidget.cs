@@ -30,8 +30,19 @@ namespace Components.UI
             }
         }
 
+        public void AddCurrency(ICurrency currency, bool withAnimation = false)
+        {
+            if (currency == null)
+                return;
+            
+            if (TryGetDisplayWidget(currency.GetType(), out var widget))
+            {
+                widget.AddValue(currency.GetCount(), withAnimation);
+            }
+        }
+
         /// <summary>Updates display for multiple currencies.</summary>
-        public void SetCurrency(IReadOnlyList<ICurrency> currencies, bool withAnimation = false)
+        public void SetCurrencies(IReadOnlyList<ICurrency> currencies, bool withAnimation = false)
         {
             if (currencies == null) return;
             foreach (var currency in currencies)
@@ -41,11 +52,30 @@ namespace Components.UI
             }
         }
 
+        /// <summary>Adds values for multiple currencies.</summary>
+        public void AddCurrencies(IReadOnlyList<ICurrency> currencies, bool withAnimation = false)
+        {
+            if (currencies == null) return;
+            foreach (var currency in currencies)
+            {
+                if (currency != null)
+                    AddCurrency(currency, withAnimation);
+            }
+        }
+
         public void SetCurrencyValue(Type currencyType, long value, bool withAnimation = false)
         {
             if (TryGetDisplayWidget(currencyType, out var widget))
             {
                 widget.SetValue(value, withAnimation);
+            }
+        }
+
+        public void AddCurrencyValue(Type currencyType, long value, bool withAnimation = false)
+        {
+            if (TryGetDisplayWidget(currencyType, out var widget))
+            {
+                widget.AddValue(value, withAnimation);
             }
         }
 

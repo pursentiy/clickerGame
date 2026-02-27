@@ -37,6 +37,14 @@ namespace Components.UI.Base
         public abstract Type CurrencyType { get; }
         public RectTransform AnimationTarget => _animationTarget;
 
+        public void AddValue(long value, bool withAnimation = false)
+        {
+            if (value == 0)
+                return;
+            
+            SetValue(_targetValue + value, withAnimation);
+        }
+
         public void SetValue(long newValue, bool withAnimation = false)
         {
             if (newValue == _targetValue)

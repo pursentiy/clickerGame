@@ -56,7 +56,7 @@ namespace UI.Screens.ChoosePack.Widgets.PacksInitializer.Sequences.UnlockFreemiu
             if (newRewardsValues.IsCollectionNullOrEmpty())
                 return Promise.Resolved();
             
-            Context.CurrencyDisplayWidget.SetCurrency(newRewardsValues, true);
+            Context.CurrencyDisplayWidget.SetCurrencies(newRewardsValues, true);
 
             return _coroutineService.WaitFor(0.25f) 
                 .Then(Context.UpdatePacksAction.SafeInvoke)

@@ -230,7 +230,6 @@ MonoBehaviour:
   claimRewardsButton: {fileID: 4995292288417103503}
   claimRewardsButtonText: {fileID: 5091458449343175654}
   flyingRewardsContainer: {fileID: 4303779283134089369}
-  currencyDisplayWidget: {fileID: 3720816163368712249}
   layoutGroup: {fileID: 896165342673082529}
   layoutGroupTransform: {fileID: 2644083954325254318}
 --- !u!1 &4303779283134089368
@@ -320,6 +319,7 @@ MonoBehaviour:
   - {fileID: 7156210161176788783}
   - {fileID: 2331959286073748868}
   DaysController: {fileID: 2626816283474903787}
+  CurrencyDisplayWidget: {fileID: 3720816163368712249}
 --- !u!114 &51233319889140113
 MonoBehaviour:
   m_ObjectHideFlags: 0

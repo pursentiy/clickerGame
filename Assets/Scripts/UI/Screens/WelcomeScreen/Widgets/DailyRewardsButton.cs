@@ -1,10 +1,7 @@
 using Components.UI;
-using Controllers;
 using DG.Tweening;
 using Extensions;
-using Services;
 using Services.DailyReward;
-using UI.Popups.DailyRewardPopup;
 using UI.Screens.WelcomeScreen.DailyRewardsState;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,79 +11,45 @@ using Zenject;
 
 namespace UI.Screens.WelcomeScreen.Widgets
 {
-    /// <summary>
-    /// Daily rewards button widget that displays timer and handles daily reward popup opening.
-    /// </summary>
     public class DailyRewardsButton : ButtonWithTimerBase
     {
-        [Inject] private readonly DailyRewardsInfoProvider _dailyRewardsInfoProvider;
-        [Inject] private readonly FlowPopupController _flowPopupController;
+        [Inject] private readonly DailyRewardsInfoProvider _infoProvider;
 
-        [Header("Button")]
-        [SerializeField] private Button Button;
+        [Header("References")]
+        [SerializeField] private Button button;
+        [SerializeField] private RectTransform buttonTransform;
+        [SerializeField] private ParticleSystem glowParticles;
 
-        [Header("Animation")]
-        [SerializeField] private RectTransform ButtonTransform;
-        [SerializeField] private ParticleSystem GlowParticles;
-        [SerializeField] private float ShakeStrength = 5f;
-        [SerializeField] private int ShakeVibrato = 10;
-        [SerializeField] private float ShakeRandomness = 90f;
+        [Header("Animation Settings")]
+        [SerializeField] private float pulseScale = 1.08f;
+        [SerializeField] private float duration = 1.2f;
+
+        private Sequence _activeSequence;
 
         public void Initialize()
         {
-            SetupButton();
-            UpdateTimer();
+            button?.onClick.MapListenerWithSound(OnButtonClicked).DisposeWith(this);
+            
+            Refresh();
         }
 
-        public void UpdateTimer()
+        protected void OnEnable() => Refresh();
+
+        private void Refresh()
         {
-            // Stop any running timer first
             StopTimer();
+            StopAnimations();
 
-            var status = _dailyRewardsInfoProvider.GetRewardStatus();
+            var status = _infoProvider.GetRewardStatus();
 
-            if (status.IsAvailable && _dailyRewardsInfoProvider.TryGetTodayRewardPreview(out _))
+            if (status.IsAvailable)
             {
-                // Reward is available - show available text and start animations
-                // No timer needed in this case
-                if (TimerText != null)
-                {
-                    TimerText.text = AvailableText;
-                }
+                if (TimerText != null) TimerText.text = AvailableText;
                 StartAnimations();
             }
-            else
+            else if (status.TimeUntilNext.TotalSeconds > 0)
             {
-                // Start countdown timer
-                StopAnimations();
-                
-                // Only start timer if there's time remaining
-                if (status.TimeUntilNext.TotalSeconds > 0)
-                {
-                    StartTimer(status.TimeUntilNext, OnTimerComplete);
-                }
-                else
-                {
-                    // Edge case: time is zero or negative, treat as available
-                    if (TimerText != null)
-                    {
-                        TimerText.text = AvailableText;
-                    }
-                    StartAnimations();
-                }
-            }
-        }
-
-        protected void OnEnable()
-        {
-            UpdateTimer();
-        }
-
-        private void SetupButton()
-        {
-            if (Button != null)
-            {
-                Button.onClick.MapListenerWithSound(OnButtonClicked).DisposeWith(this);
+                StartTimer(status.TimeUntilNext, Refresh);
             }
         }
 
@@ -97,54 +60,60 @@ namespace UI.Screens.WelcomeScreen.Widgets
                 .FinishWith(this);
         }
 
-        private void OnTimerComplete()
-        {
-            // Timer reached zero - reward is now available
-            StartAnimations();
-            UpdateTimer(); // Check again to ensure it's still available
-        }
-
         private void StartAnimations()
         {
-            if (ButtonTransform == null)
-                return;
+            if (buttonTransform == null) return;
+    
+            glowParticles?.Play();
+    
+            // 1. Полная очистка и сброс перед стартом
+            buttonTransform.DOKill();
+            buttonTransform.localScale = Vector3.one;
+            buttonTransform.localRotation = Quaternion.identity;
+            buttonTransform.anchoredPosition = Vector3.zero; // Сбрасываем позицию!
 
-            // Glow particles
-            if (GlowParticles != null)
-            {
-                GlowParticles.Stop();
-                GlowParticles.Play();
-            }
+            _activeSequence = DOTween.Sequence();
 
-            // Shake animation
-            ButtonTransform.DOKill();
-            ButtonTransform.DOShakePosition(1f, strength: ShakeStrength, vibrato: ShakeVibrato, 
-                randomness: ShakeRandomness, snapping: false, fadeOut: false)
-                .SetLoops(-1, LoopType.Restart)
-                .KillWith(ButtonTransform.gameObject);
+            _activeSequence
+                // === ОСНОВНОЙ ЦИКЛ ПУЛЬСАЦИИ ===
+                // Очень медленно увеличиваем (Ease.InOutSine гарантирует плавный старт и стоп)
+                .Append(buttonTransform.DOScale(pulseScale, duration * 0.7f).SetEase(Ease.InOutSine))
+                // Так же медленно возвращаем в норму
+                .Append(buttonTransform.DOScale(1f, duration * 0.7f).SetEase(Ease.InOutSine))
+        
+                // === ПАРАЛЛЕЛЬНОЕ ПАРИШЕЕ ДВИЖЕНИЕ ===
+                // Это самое важное для "спокойствия". Мы Join (объединяем) плавные качания.
+        
+                // Покачивание ВВЕРХ-ВНИЗ (Floating)
+                .Join(buttonTransform.DOAnchorPosY(5f, duration * 1.4f).SetEase(Ease.InOutSine).SetLoops(2, LoopType.Yoyo))
+        
+                // Очень легкий наклон влево-вправо (как маятник, но очень медленно)
+                // new Vector3(0, 0, 3f) - 3 градуса, это почти незаметно, но глаз это ловит.
+                .Join(buttonTransform.DORotate(new Vector3(0, 0, 3f), duration * 1.4f).SetEase(Ease.InOutQuad).SetLoops(2, LoopType.Yoyo))
+        
+                // Зацикливаем бесконечно
+                .SetLoops(-1)
+                .SetId(this)
+                .KillWith(this);
         }
 
         private void StopAnimations()
         {
-            if (ButtonTransform != null)
+            _activeSequence?.Kill();
+            glowParticles?.Stop();
+            
+            if (buttonTransform != null)
             {
-                ButtonTransform.DOKill();
-            }
-
-            if (GlowParticles != null)
-            {
-                GlowParticles.Stop();
+                buttonTransform.DOKill();
+                buttonTransform.localScale = Vector3.one;
+                buttonTransform.localEulerAngles = Vector3.zero;
             }
         }
 
-        protected override void OnDisable()
+        protected override void OnDisable() 
         {
             base.OnDisable();
-            StopAnimations();
-        }
-
-        protected override void OnDestroy()
-        {
+            
             StopAnimations();
         }
     }

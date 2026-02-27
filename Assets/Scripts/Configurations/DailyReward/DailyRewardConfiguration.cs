@@ -6,35 +6,13 @@ using Services;
 
 namespace Configurations.DailyReward
 {
-    /// <summary>
-    /// CSV-driven configuration for daily login rewards.
-    /// File name must be DailyRewardConfiguration.csv and placed under Resources.
-    /// Format:
-    /// Day; Rewards
-    /// RewardIntervalMinutes; 1440
-    /// 1; Stars 10
-    /// 2; Stars 20, HardCurrency 30
-    /// ...
-    /// RewardIntervalMinutes: time in minutes between claimable rewards (e.g. 1440 = 24h, 1 = 1 minute). Default 1440.
-    /// Rewards: comma-separated list of "CurrencyName Amount" (e.g. Stars 10, SoftCurrency 5).
-    /// Supported currency names: Stars, HardCurrency, SoftCurrency.
-    /// </summary>
     public class DailyRewardConfiguration : ICSVConfig
     {
-        /// <summary>
-        /// Time in minutes between claimable rewards (e.g. 1440 = 24h, 1 = 1 minute).
-        /// </summary>
-        public int RewardIntervalMinutes { get; private set; } = DailyRewardsSettingsConfiguration.DefaultRewardIntervalMinutes;
-
-        /// <summary>
-        /// Raw mapping of day index (1..6) to list of rewards for that day.
-        /// </summary>
         public IReadOnlyDictionary<int, IList<ICurrency>> RewardsByDay { get; private set; }
 
         public void Parse(string csvText)
         {
             var rewards = new Dictionary<int, IList<ICurrency>>();
-            RewardIntervalMinutes = DailyRewardsSettingsConfiguration.DefaultRewardIntervalMinutes;
 
             if (string.IsNullOrEmpty(csvText))
             {
@@ -56,13 +34,6 @@ namespace Configurations.DailyReward
                 if (string.IsNullOrEmpty(rewardsStr))
                     continue;
 
-                if (string.Equals(dayStr, "RewardIntervalMinutes", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (int.TryParse(rewardsStr.Trim(), out var minutes) && minutes > 0)
-                        RewardIntervalMinutes = minutes;
-                    continue;
-                }
-
                 try
                 {
                     var dayIndex = int.Parse(dayStr);
@@ -82,9 +53,6 @@ namespace Configurations.DailyReward
             RewardsByDay = rewards;
         }
 
-        /// <summary>
-        /// Parses a single "Rewards" cell: comma-separated "CurrencyName Amount" (e.g. "Stars 10, HardCurrency 30").
-        /// </summary>
         private static IList<ICurrency> ParseRewardsLine(string rewardsStr)
         {
             var list = new List<ICurrency>();
