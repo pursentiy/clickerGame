@@ -271,6 +271,7 @@ MonoBehaviour:
         m_Text: Keys
         m_Image: {fileID: 0}
         m_Tooltip: 
+        m_TextWithWhitespace: "Keys\u200B"
       headerHeight: 18
       footerHeight: 13
       slideEasing: 0.15
@@ -285,7 +286,7 @@ MonoBehaviour:
     _keyValues: 0100000000000000
     _keys: 0100000000000000
     _values:
-    - {fileID: 7738354597382539209, guid: bf40ac0fb45f1cb4caec939477e3c29b, type: 3}
+    - {fileID: 900989010036812949, guid: bf40ac0fb45f1cb4caec939477e3c29b, type: 3}
     - {fileID: 8042788745139100566, guid: 21e29160813e01a4489d8b7e4b6f4db8, type: 3}
 --- !u!114 &3363188397536524151
 MonoBehaviour:
@@ -453,20 +454,23 @@ MonoBehaviour:
   m_VerticalAlignment: 4096
   m_textAlignment: 65535
   m_characterSpacing: -0.6
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -517,10 +521,10 @@ RectTransform:
   - {fileID: 6139786766489992023}
   m_Father: {fileID: 6266864405498262059}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1.444519, y: -210.6319}
-  m_SizeDelta: {x: -313.1765, y: -510.0885}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 285.75903}
+  m_SizeDelta: {x: 801.7, y: 535.4296}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &4246133185610749420
 CanvasRenderer:
@@ -550,7 +554,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 478b9f605e0b06f428fced59f35de1df, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a4ede54fe67744de8b9443f5a2b910be, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -663,20 +667,23 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -796,7 +803,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 87d0ad4b03a84734eb42403ae6f49be2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c91fc4db0782a43e8846ea8f480be1e3, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -805,7 +812,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 7.3
+  m_PixelsPerUnitMultiplier: 0.01
 --- !u!1 &7542578563706099736
 GameObject:
   m_ObjectHideFlags: 0
@@ -884,9 +891,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 95065778261594200}
   - {fileID: 4174895957404177706}
   - {fileID: 7116815720727036191}
-  - {fileID: 95065778261594200}
   - {fileID: 2404300103626479383}
   m_Father: {fileID: 7030004906159091202}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1112,7 +1119,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -64}
+  m_AnchoredPosition: {x: 0, y: -74}
   m_SizeDelta: {x: 900, y: 247}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1167980642207254283
@@ -1143,8 +1150,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e5210422b53d64abd86f1979156280dc, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 60827d6ab2dc84d05a6cea5d22ed8999, type: 3}
+  m_Type: 1
   m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4

@@ -2,8 +2,8 @@
 using Attributes;
 using Extensions;
 using Handlers.UISystem;
+using Handlers.UISystem.Popups;
 using TMPro;
-using UI.Popups.CommonPopup;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities.Disposable;

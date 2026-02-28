@@ -1,8 +1,8 @@
 using Attributes;
 using Extensions;
 using Handlers.UISystem;
+using Handlers.UISystem.Popups;
 using Services.ScreenObserver;
-using UI.Popups.CommonPopup;
 using UnityEngine;
 using Utilities.Disposable;
 using Zenject;

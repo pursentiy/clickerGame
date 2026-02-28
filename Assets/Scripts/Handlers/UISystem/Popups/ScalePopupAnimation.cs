@@ -1,14 +1,11 @@
-using System;
 using DG.Tweening;
 using Extensions;
-using Handlers.UISystem;
 using Installers;
 using RSG;
-using Services;
 using UnityEngine;
 using Utilities.Disposable;
 
-namespace UI.Popups.CommonPopup
+namespace Handlers.UISystem.Popups
 {
     public class ScalePopupAnimation : IUIPopupAnimation
     {
