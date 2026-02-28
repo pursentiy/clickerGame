@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b5fa8563c543b4b70bdc74c1a61e81f4
+guid: c3b4a2fb95da3474e883fc6f36c2a098
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8552210192507548730
-    second: puzzle_currency 2_0
+      213: 2214104045720921952
+    second: currency_puzzles_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 256
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: puzzle_currency 2_0
+      name: currency_puzzles_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 5
-        width: 766
-        height: 782
+        x: 15
+        y: 18
+        width: 483
+        height: 477
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6cbcc173422705980800000000000000
-      internalID: -8552210192507548730
+      spriteID: 06763f416e31abe10800000000000000
+      internalID: 2214104045720921952
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      puzzle_currency 2_0: -8552210192507548730
+      currency_puzzles_0: 2214104045720921952
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
