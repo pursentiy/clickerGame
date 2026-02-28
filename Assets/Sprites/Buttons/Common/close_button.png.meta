@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: 2900fa593c3d143b4a0680a42d442cf3
+guid: 59edcdeee500f4dfaa7c622ddcb2f3bf
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -642478984565863492
-    second: settings_button_0
-  - first:
-      213: -7666546006141986600
-    second: settings_button_1
+      213: 6220736335902542612
+    second: close_button_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -75,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 128
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -116,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: settings_button_0
+      name: close_button_0
       rect:
         serializedVersion: 2
-        x: 4
+        x: 0
         y: 0
-        width: 803
-        height: 824
+        width: 754
+        height: 724
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,30 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cbb4c4d74c47517f0800000000000000
-      internalID: -642478984565863492
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: settings_button_1
-      rect:
-        serializedVersion: 2
-        x: 5
-        y: 370
-        width: 7
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8d897b9c605fa9590800000000000000
-      internalID: -7666546006141986600
+      spriteID: 41b06d61dbe745650800000000000000
+      internalID: 6220736335902542612
       vertices: []
       indices: 
       edges: []
@@ -173,8 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      settings_button_0: -642478984565863492
-      settings_button_1: -7666546006141986600
+      close_button_0: 6220736335902542612
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
